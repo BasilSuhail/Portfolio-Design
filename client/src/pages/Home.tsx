@@ -1,6 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
+import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
 
@@ -91,6 +92,20 @@ const mockTestimonials = [
 ];
 
 // todo: remove mock functionality
+const mockTechnologies = [
+  { id: "1", name: "Figma", icon: "figma" as const },
+  { id: "2", name: "Framer", icon: "framer" as const },
+  { id: "3", name: "React", icon: "react" as const },
+  { id: "4", name: "TypeScript", icon: "typescript" as const },
+  { id: "5", name: "Tailwind CSS", icon: "tailwind" as const },
+  { id: "6", name: "OpenAI", icon: "openai" as const },
+  { id: "7", name: "GitHub", icon: "github" as const },
+  { id: "8", name: "Stripe", icon: "stripe" as const },
+  { id: "9", name: "Vercel", icon: "vercel" as const },
+  { id: "10", name: "Spotify", icon: "spotify" as const },
+];
+
+// todo: remove mock functionality
 const mockSocialLinks = [
   {
     platform: "email" as const,
@@ -133,6 +148,8 @@ export default function Home() {
       <ProjectsSection projects={mockProjects} />
 
       <ExperienceSection experiences={mockExperiences} />
+
+      <TechStackSection technologies={mockTechnologies} />
 
       <TestimonialsSection testimonials={mockTestimonials} />
 
