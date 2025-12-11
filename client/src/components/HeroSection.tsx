@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Copy, Check } from "lucide-react";
+import { CheckCircle, Check } from "lucide-react";
 
 interface HeroSectionProps {
   name: string;
@@ -23,25 +23,6 @@ export default function HeroSection({
   isVerified = true,
 }: HeroSectionProps) {
   const [copied, setCopied] = useState(false);
-  const [currentTime, setCurrentTime] = useState("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(
-        now.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZoneName: "short",
-        })
-      );
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const copyEmail = () => {
     navigator.clipboard.writeText(email);
@@ -62,11 +43,6 @@ export default function HeroSection({
   return (
     <section className="py-16 md:py-24" data-testid="section-hero">
       <div className="max-w-2xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-12 text-sm text-muted-foreground">
-          <span className="font-mono" data-testid="text-established">EST. 1997</span>
-          <span className="font-mono" data-testid="text-time">{currentTime}</span>
-        </div>
-
         <div className="mb-8">
           <div className="relative inline-block">
             <Avatar className="w-20 h-20 ring-2 ring-border" data-testid="img-avatar">
