@@ -3,6 +3,7 @@ import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import WritingSection from "@/components/WritingSection";
 import ContactSection from "@/components/ContactSection";
 
 import avatarUrl from "@assets/generated_images/professional_portfolio_headshot.png";
@@ -106,6 +107,15 @@ const mockTechnologies = [
 ];
 
 // todo: remove mock functionality
+const mockPosts = [
+  { id: "1", date: "21/02/25", title: "How to think like both a designer & engineer", readTime: 2 },
+  { id: "2", date: "16/02/25", title: "UI Performance", readTime: 4 },
+  { id: "3", date: "12/02/25", title: "How AI is changing my workflow", readTime: 2 },
+  { id: "4", date: "11/01/25", title: "Design tokens 101", readTime: 2 },
+  { id: "5", date: "01/01/25", title: "Hello world", readTime: 1 },
+];
+
+// todo: remove mock functionality
 const mockSocialLinks = [
   {
     platform: "email" as const,
@@ -152,6 +162,8 @@ export default function Home() {
       <TechStackSection technologies={mockTechnologies} />
 
       <TestimonialsSection testimonials={mockTestimonials} />
+
+      <WritingSection posts={mockPosts} />
 
       <ContactSection
         socialLinks={mockSocialLinks}
