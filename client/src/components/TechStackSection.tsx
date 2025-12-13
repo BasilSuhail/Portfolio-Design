@@ -20,6 +20,7 @@ export interface TechItem {
 
 interface TechStackSectionProps {
   technologies: TechItem[];
+  intro?: string;
 }
 
 const iconMap = {
@@ -48,7 +49,7 @@ const colorMap: Record<string, string> = {
   spotify: "#1DB954",
 };
 
-export default function TechStackSection({ technologies }: TechStackSectionProps) {
+export default function TechStackSection({ technologies, intro }: TechStackSectionProps) {
   return (
     <section className="py-16" data-testid="section-stack">
       <div className="max-w-2xl mx-auto px-6">
@@ -56,6 +57,11 @@ export default function TechStackSection({ technologies }: TechStackSectionProps
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
             STACK
           </span>
+          {intro && (
+            <p className="text-foreground/80">
+              {intro}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-6">

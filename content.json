@@ -7,6 +7,13 @@
     "writing": false,
     "contact": true
   },
+  "sectionIntros": {
+    "projects": "Below are some select projects, full walkthroughs on request",
+    "experience": "Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces. Here's a brief overview.",
+    "techStack": "",
+    "testimonials": "",
+    "writing": ""
+  },
   "profile": {
     "name": "Basil Suhail",
     "title": "Data Science & Business Student",

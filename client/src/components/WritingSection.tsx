@@ -10,9 +10,10 @@ export interface BlogPost {
 
 interface WritingSectionProps {
   posts: BlogPost[];
+  intro?: string;
 }
 
-export default function WritingSection({ posts }: WritingSectionProps) {
+export default function WritingSection({ posts, intro }: WritingSectionProps) {
   return (
     <section className="py-16" data-testid="section-writing">
       <div className="max-w-2xl mx-auto px-6">
@@ -20,6 +21,11 @@ export default function WritingSection({ posts }: WritingSectionProps) {
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
             WRITING
           </span>
+          {intro && (
+            <p className="text-foreground/80">
+              {intro}
+            </p>
+          )}
         </div>
 
         <div className="space-y-1">

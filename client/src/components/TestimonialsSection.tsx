@@ -13,10 +13,12 @@ export interface Testimonial {
 
 interface TestimonialsSectionProps {
   testimonials: Testimonial[];
+  intro?: string;
 }
 
 export default function TestimonialsSection({
   testimonials,
+  intro,
 }: TestimonialsSectionProps) {
   return (
     <section className="py-16" data-testid="section-testimonials">
@@ -25,6 +27,11 @@ export default function TestimonialsSection({
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
             TESTIMONIALS
           </span>
+          {intro && (
+            <p className="text-foreground/80">
+              {intro}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

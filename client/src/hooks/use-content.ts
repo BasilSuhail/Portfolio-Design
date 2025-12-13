@@ -9,6 +9,13 @@ export interface PortfolioContent {
     writing: boolean;
     contact: boolean;
   };
+  sectionIntros: {
+    projects?: string;
+    experience?: string;
+    techStack?: string;
+    testimonials?: string;
+    writing?: string;
+  };
   profile: {
     name: string;
     title: string;

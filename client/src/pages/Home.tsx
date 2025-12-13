@@ -42,23 +42,38 @@ export default function Home() {
       />
 
       {visibility.projects && content.projects.length > 0 && (
-        <ProjectsSection projects={content.projects} />
+        <ProjectsSection
+          projects={content.projects}
+          intro={content.sectionIntros?.projects}
+        />
       )}
 
       {visibility.experience && content.experiences.length > 0 && (
-        <ExperienceSection experiences={content.experiences} />
+        <ExperienceSection
+          experiences={content.experiences}
+          intro={content.sectionIntros?.experience}
+        />
       )}
 
       {visibility.techStack && content.technologies.length > 0 && (
-        <TechStackSection technologies={content.technologies as any} />
+        <TechStackSection
+          technologies={content.technologies as any}
+          intro={content.sectionIntros?.techStack}
+        />
       )}
 
       {visibility.testimonials && content.testimonials.length > 0 && (
-        <TestimonialsSection testimonials={content.testimonials} />
+        <TestimonialsSection
+          testimonials={content.testimonials}
+          intro={content.sectionIntros?.testimonials}
+        />
       )}
 
       {visibility.writing && content.posts.length > 0 && (
-        <WritingSection posts={content.posts} />
+        <WritingSection
+          posts={content.posts}
+          intro={content.sectionIntros?.writing}
+        />
       )}
 
       {visibility.contact && (

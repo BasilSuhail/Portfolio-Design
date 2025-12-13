@@ -109,8 +109,9 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="visibility">Visibility</TabsTrigger>
+            <TabsTrigger value="intros">Intros</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="experience">Experience</TabsTrigger>
@@ -214,6 +215,62 @@ export default function Admin() {
                     onCheckedChange={(checked) =>
                       updateContent(["sectionVisibility", "contact"], checked)
                     }
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="intros">
+            <Card>
+              <CardHeader>
+                <CardTitle>Section Introductions</CardTitle>
+                <CardDescription>Edit the introduction text for each section</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Projects Section Intro</Label>
+                  <Textarea
+                    value={currentContent.sectionIntros?.projects || ""}
+                    onChange={(e) => updateContent(["sectionIntros", "projects"], e.target.value)}
+                    rows={2}
+                    placeholder="Below are some select projects, full walkthroughs on request"
+                  />
+                </div>
+                <div>
+                  <Label>Experience Section Intro</Label>
+                  <Textarea
+                    value={currentContent.sectionIntros?.experience || ""}
+                    onChange={(e) => updateContent(["sectionIntros", "experience"], e.target.value)}
+                    rows={2}
+                    placeholder="Throughout my career, I've worked on various projects..."
+                  />
+                </div>
+                <div>
+                  <Label>Tech Stack Section Intro</Label>
+                  <Textarea
+                    value={currentContent.sectionIntros?.techStack || ""}
+                    onChange={(e) => updateContent(["sectionIntros", "techStack"], e.target.value)}
+                    rows={2}
+                    placeholder="Technologies I work with"
+                  />
+                </div>
+                <div>
+                  <Label>Testimonials Section Intro</Label>
+                  <Textarea
+                    value={currentContent.sectionIntros?.testimonials || ""}
+                    onChange={(e) => updateContent(["sectionIntros", "testimonials"], e.target.value)}
+                    rows={2}
+                    placeholder="What people say about working with me"
+                  />
+                </div>
+                <div>
+                  <Label>Writing Section Intro</Label>
+                  <Textarea
+                    value={currentContent.sectionIntros?.writing || ""}
+                    onChange={(e) => updateContent(["sectionIntros", "writing"], e.target.value)}
+                    rows={2}
+                    placeholder="My thoughts and articles"
                   />
                 </div>
               </CardContent>

@@ -8,9 +8,10 @@ export interface Project {
 
 interface ProjectsSectionProps {
   projects: Project[];
+  intro?: string;
 }
 
-export default function ProjectsSection({ projects }: ProjectsSectionProps) {
+export default function ProjectsSection({ projects, intro }: ProjectsSectionProps) {
   return (
     <section className="py-16" data-testid="section-projects">
       <div className="max-w-4xl mx-auto px-6">
@@ -18,9 +19,11 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
             WORK
           </span>
-          <p className="text-foreground/80">
-            Below are some select projects, full walkthroughs on request
-          </p>
+          {intro && (
+            <p className="text-foreground/80">
+              {intro}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
