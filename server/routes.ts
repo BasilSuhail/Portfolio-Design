@@ -2,14 +2,12 @@ import type { Express, Request, Response } from "express";
 import { type Server } from "http";
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 import multer from "multer";
 import { Resend } from "resend";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const contentPath = path.join(__dirname, "..", "content.json");
-const uploadsDir = path.join(__dirname, "..", "client", "public", "uploads");
+// Use process.cwd() instead of import.meta.url for compatibility with CommonJS build
+const contentPath = path.join(process.cwd(), "content.json");
+const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
