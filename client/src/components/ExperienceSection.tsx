@@ -5,7 +5,8 @@ export interface Experience {
   dateRange: string;
   role: string;
   company: string;
-  companyColor: string;
+  companyLogoUrl?: string;
+  companyColor?: string;
   description: string;
 }
 
@@ -42,10 +43,18 @@ export default function ExperienceSection({
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium">{exp.role} at</span>
                   <div className="flex items-center gap-1.5">
-                    <Circle
-                      className="w-4 h-4"
-                      style={{ fill: exp.companyColor, color: exp.companyColor }}
-                    />
+                    {exp.companyLogoUrl ? (
+                      <img
+                        src={exp.companyLogoUrl}
+                        alt={`${exp.company} logo`}
+                        className="w-5 h-5 object-contain rounded"
+                      />
+                    ) : (
+                      <Circle
+                        className="w-4 h-4"
+                        style={{ fill: exp.companyColor || "#666", color: exp.companyColor || "#666" }}
+                      />
+                    )}
                     <span className="font-medium">{exp.company}</span>
                   </div>
                 </div>

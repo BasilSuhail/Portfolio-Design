@@ -3,6 +3,32 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Check } from "lucide-react";
 
+// Helper function to parse bio text with inline images
+// Syntax: [img:url] or [img:url:alt] for inline images
+function parseBioWithImages(bio: string) {
+  const parts: Array<{ type: 'text' | 'image', content: string, alt?: string }> = [];
+  const regex = /\[img:(.*?)(?::(.*?))?\]/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(bio)) !== null) {
+    // Add text before the image
+    if (match.index > lastIndex) {
+      parts.push({ type: 'text', content: bio.slice(lastIndex, match.index) });
+    }
+    // Add the image
+    parts.push({ type: 'image', content: match[1], alt: match[2] || 'inline image' });
+    lastIndex = regex.lastIndex;
+  }
+
+  // Add remaining text
+  if (lastIndex < bio.length) {
+    parts.push({ type: 'text', content: bio.slice(lastIndex) });
+  }
+
+  return parts.length > 0 ? parts : [{ type: 'text', content: bio }];
+}
+
 interface HeroSectionProps {
   name: string;
   title: string;
@@ -63,9 +89,21 @@ export default function HeroSection({
           <p className="text-muted-foreground" data-testid="text-title">{title}</p>
         </div>
 
-        <p className="text-foreground/90 leading-relaxed mb-8" data-testid="text-bio">
-          {bio}
-        </p>
+        <div className="text-foreground/90 leading-relaxed mb-8" data-testid="text-bio">
+          {parseBioWithImages(bio).map((part, index) => {
+            if (part.type === 'image') {
+              return (
+                <img
+                  key={index}
+                  src={part.content}
+                  alt={part.alt || 'inline image'}
+                  className="inline-block w-5 h-5 mx-1 align-middle object-contain"
+                />
+              );
+            }
+            return <span key={index}>{part.content}</span>;
+          })}
+        </div>
 
         <button
           onClick={copyEmail}

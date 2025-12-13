@@ -286,3 +286,33 @@
     inset: -1px;
   }
 }
+
+/* HIGH CONTRAST MODE */
+.high-contrast {
+  /* Increase text contrast in light mode */
+  --foreground: 0 0% 0%;
+  --muted-foreground: 0 0% 15%;
+  --card-foreground: 0 0% 0%;
+  --popover-foreground: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+  --secondary-foreground: 0 0% 0%;
+  --accent-foreground: 0 0% 0%;
+
+  /* Stronger borders */
+  --border: 0 0% 65%;
+  --card-border: 0 0% 70%;
+}
+
+.dark.high-contrast {
+  /* Increase text contrast in dark mode */
+  --foreground: 0 0% 100%;
+  --muted-foreground: 0 0% 90%;
+  --card-foreground: 0 0% 100%;
+  --popover-foreground: 0 0% 100%;
+  --secondary-foreground: 0 0% 100%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Stronger borders in dark mode */
+  --border: 0 0% 40%;
+  --card-border: 0 0% 45%;
+}

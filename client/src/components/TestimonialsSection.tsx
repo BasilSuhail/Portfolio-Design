@@ -7,6 +7,7 @@ export interface Testimonial {
   authorRole: string;
   authorAvatar?: string;
   authorFallback: string;
+  companyLogoUrl?: string;
   companyColor?: string;
 }
 
@@ -35,6 +36,7 @@ export default function TestimonialsSection({
               authorRole={testimonial.authorRole}
               authorAvatar={testimonial.authorAvatar}
               authorFallback={testimonial.authorFallback}
+              companyLogoUrl={testimonial.companyLogoUrl}
               companyColor={testimonial.companyColor}
             />
           ))}

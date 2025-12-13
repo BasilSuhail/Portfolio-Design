@@ -27,6 +27,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
           {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
+              id={project.id}
               title={project.title}
               imageUrl={project.imageUrl}
               rotation={index % 2 === 0 ? -2 : 2}
