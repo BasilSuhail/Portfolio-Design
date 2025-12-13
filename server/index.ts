@@ -92,3 +92,5 @@ app.use((req, res, next) => {
 
 // Export for Vercel serverless
 export default app;
+export { registerRoutes } from "./routes";
+export { serveStatic } from "./static";
