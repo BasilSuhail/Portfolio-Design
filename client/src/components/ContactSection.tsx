@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, ExternalLink } from "lucide-react";
+import { Mail, ExternalLink, Calendar } from "lucide-react";
 import { SiX, SiGithub, SiLinkedin } from "react-icons/si";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,6 +16,11 @@ export interface SocialLink {
 interface ContactSectionProps {
   socialLinks: SocialLink[];
   onSubmit?: (data: { name: string; email: string; message: string }) => void;
+  showForm?: boolean;
+  calendarLinks?: {
+    link15min?: string;
+    link30min?: string;
+  };
 }
 
 const platformIcons = {
@@ -28,6 +33,8 @@ const platformIcons = {
 export default function ContactSection({
   socialLinks,
   onSubmit,
+  showForm = false,
+  calendarLinks,
 }: ContactSectionProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -41,20 +48,38 @@ export default function ContactSection({
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (onSubmit) {
-      onSubmit(formData);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      if (onSubmit) {
+        onSubmit(formData);
+      }
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
+      });
+
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again or contact me directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Simulate submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. I'll get back to you soon.",
-    });
-
-    setFormData({ name: "", email: "", message: "" });
-    setIsSubmitting(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -71,54 +96,83 @@ export default function ContactSection({
             CONTACT
           </span>
           <p className="text-foreground/80">
-            You can contact me using the form or via the links below.
+            {showForm
+              ? "You can contact me using the form, schedule a meeting, or reach out via the links below."
+              : "Schedule a meeting or reach out via the links below."}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mb-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              placeholder="Name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              required
-              data-testid="input-name"
-            />
-            <Input
-              type="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              required
-              data-testid="input-email"
-            />
+        {(calendarLinks?.link15min || calendarLinks?.link30min) && (
+          <div className="mb-10 space-y-4">
+            <p className="text-sm font-medium text-muted-foreground">Book a meeting:</p>
+            <div className="flex flex-wrap gap-4">
+              {calendarLinks.link15min && (
+                <a
+                  href={calendarLinks.link15min}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" className="gap-2">
+                    <Calendar className="h-4 w-4" />
+                    15 Min Meeting
+                  </Button>
+                </a>
+              )}
+              {calendarLinks.link30min && (
+                <a
+                  href={calendarLinks.link30min}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" variant="outline" className="gap-2">
+                    <Calendar className="h-4 w-4" />
+                    30 Min Meeting
+                  </Button>
+                </a>
+              )}
+            </div>
           </div>
-          <Textarea
-            placeholder="Message"
-            className="min-h-[120px] resize-none"
-            value={formData.message}
-            onChange={(e) =>
-              setFormData({ ...formData, message: e.target.value })
-            }
-            onKeyDown={handleKeyDown}
-            required
-            data-testid="input-message"
-          />
-          <div className="flex items-center gap-4">
+        )}
+
+        {showForm && (
+          <form onSubmit={handleSubmit} className="space-y-4 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                placeholder="Name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                required
+                data-testid="input-name"
+              />
+              <Input
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                required
+                data-testid="input-email"
+              />
+            </div>
+            <Textarea
+              placeholder="Message"
+              className="min-h-[120px] resize-none"
+              value={formData.message}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
+              onKeyDown={handleKeyDown}
+              required
+              data-testid="input-message"
+            />
             <Button type="submit" disabled={isSubmitting} data-testid="button-send">
               {isSubmitting ? "Sending..." : "Send message"}
             </Button>
-            <span className="text-sm text-muted-foreground">
-              or{" "}
-              <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Enter</kbd>{" "}
-              to send
-            </span>
-          </div>
-        </form>
+          </form>
+        )}
 
         <div className="space-y-3">
           {socialLinks.map((link) => {

@@ -109,7 +109,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-10">
+          <TabsList className="grid w-full grid-cols-11">
             <TabsTrigger value="visibility">Visibility</TabsTrigger>
             <TabsTrigger value="intros">Intros</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -120,6 +120,7 @@ export default function Admin() {
             <TabsTrigger value="tech">Tech Stack</TabsTrigger>
             <TabsTrigger value="writing">Writing</TabsTrigger>
             <TabsTrigger value="social">Social</TabsTrigger>
+            <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
 
           <TabsContent value="visibility">
@@ -1097,6 +1098,60 @@ export default function Admin() {
                   <Plus className="h-4 w-4 mr-2" />
                   Add New Social Link
                 </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="contact">
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Settings</CardTitle>
+                <CardDescription>Manage contact form and calendar booking options</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>Show Contact Form</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display the contact form on your portfolio
+                    </p>
+                  </div>
+                  <Switch
+                    checked={currentContent.contactSettings?.showForm ?? true}
+                    onCheckedChange={(checked) =>
+                      updateContent(["contactSettings", "showForm"], checked)
+                    }
+                  />
+                </div>
+
+                <div className="space-y-4 pt-4 border-t">
+                  <Label className="text-base font-semibold">Calendar Booking Links</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Add your Cal.com or Calendly booking links
+                  </p>
+
+                  <div className="space-y-2">
+                    <Label>15 Minute Meeting Link</Label>
+                    <Input
+                      placeholder="https://app.cal.eu/yourusername/15min"
+                      value={currentContent.contactSettings?.calendarLinks?.link15min || ""}
+                      onChange={(e) =>
+                        updateContent(["contactSettings", "calendarLinks", "link15min"], e.target.value)
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>30 Minute Meeting Link</Label>
+                    <Input
+                      placeholder="https://app.cal.eu/yourusername/30min"
+                      value={currentContent.contactSettings?.calendarLinks?.link30min || ""}
+                      onChange={(e) =>
+                        updateContent(["contactSettings", "calendarLinks", "link30min"], e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

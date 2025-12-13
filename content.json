@@ -60,14 +60,15 @@
             }
           ]
         }
-      ]
+      ],
+      "companyLogoUrl": "/uploads/dubizzle.png"
     },
     {
       "id": "1765560589736",
       "dateRange": "Mar 2024 - Jun 2024",
       "role": "Co-Op Education Student",
       "company": "Parwaaz Financial Services Ltd",
-      "companyLogoUrl": "",
+      "companyLogoUrl": "/uploads/pfsl.png",
       "companyColor": "#006cfa",
       "description": "This wasn't a standard role, I was awarded this Co-Op placement through a competitive selection process by the Corporate Linkages & Placements Department of The University of Management and Technology. Because of that trust, I was given real responsibility immediately. I managed the monthly financial close for the company, tracked depreciation for over 200 assets, and handled the benefits for the whole team. I also got to play 'detective' with the data, running variance analysis on client accounts to give senior management a clear picture of how the business was actually performing.",
       "customSections": [
@@ -86,7 +87,7 @@
       "dateRange": "Jul 2023 - Feb 2024",
       "role": "Finance Intern",
       "company": "Parwaaz Financial Services Ltd",
-      "companyLogoUrl": "",
+      "companyLogoUrl": "/uploads/pfsl.png",
       "companyColor": "#006cfa",
       "description": "This is where I built my foundation. I learned the ropes of a finance department by processing hundreds of vouchers and making sure every single entry matched the physical tax records. I worked side-by-side with the Finance Manager to close the books at the end of the month and acted as the go-to person for external auditors, ensuring they had every document they needed without delay.",
       "customSections": [
@@ -286,5 +287,12 @@
       "value": "/in/basilsuhail",
       "url": "https://www.linkedin.com/in/basilsuhail/"
     }
-  ]
+  ],
+  "contactSettings": {
+    "showForm": false,
+    "calendarLinks": {
+      "link15min": "https://app.cal.eu/basilsuhail/15min",
+      "link30min": "https://app.cal.eu/basilsuhail/30min"
+    }
+  }
 }

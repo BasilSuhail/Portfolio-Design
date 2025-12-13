@@ -90,6 +90,8 @@ export default function Home() {
         <ContactSection
           socialLinks={content.socialLinks as any}
           onSubmit={(data) => console.log("Form submitted:", data)}
+          showForm={content.contactSettings?.showForm ?? true}
+          calendarLinks={content.contactSettings?.calendarLinks}
         />
       )}
     </div>

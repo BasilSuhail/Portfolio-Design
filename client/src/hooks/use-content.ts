@@ -103,6 +103,13 @@ export interface PortfolioContent {
     value: string;
     url: string;
   }>;
+  contactSettings?: {
+    showForm?: boolean;
+    calendarLinks?: {
+      link15min?: string;
+      link30min?: string;
+    };
+  };
 }
 
 async function fetchContent(): Promise<PortfolioContent> {

@@ -4,6 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
+import { Resend } from "resend";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -75,6 +76,40 @@ export async function registerRoutes(
       res.json({ url: imageUrl });
     } catch (error) {
       res.status(500).json({ message: "Failed to upload image" });
+    }
+  });
+
+  // Contact form submission
+  app.post("/api/contact", async (req: Request, res: Response) => {
+    try {
+      const { name, email, message } = req.body;
+
+      if (!name || !email || !message) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
+      // Initialize Resend with API key from environment variable
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      // Send email using Resend
+      await resend.emails.send({
+        from: 'Portfolio Contact <onboarding@resend.dev>', // Use Resend's default sender for testing
+        to: 'basilsuhail3@gmail.com',
+        replyTo: email,
+        subject: `Portfolio Contact: Message from ${name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message.replace(/\n/g, '<br>')}</p>
+        `,
+      });
+
+      res.json({ message: "Message sent successfully" });
+    } catch (error) {
+      console.error("Contact form error:", error);
+      res.status(500).json({ message: "Failed to send message" });
     }
   });
 
