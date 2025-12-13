@@ -2,6 +2,7 @@
   "sectionVisibility": {
     "projects": true,
     "experience": true,
+    "education": true,
     "techStack": true,
     "testimonials": true,
     "writing": false,
@@ -10,9 +11,14 @@
   "sectionIntros": {
     "projects": "Below are some select projects, full walkthroughs on request",
     "experience": "Here's a brief overview of my career.",
+    "education": "",
     "techStack": "",
     "testimonials": "",
     "writing": ""
+  },
+  "educationLabels": {
+    "achievementsLabel": "Achievements:",
+    "certificationsLabel": "Academic Projects:"
   },
   "profile": {
     "name": "Basil Suhail",
@@ -74,6 +80,85 @@
       "description": ""
     }
   ],
+  "education": [
+    {
+      "id": "1",
+      "dateRange": "Sep 2025 - Present",
+      "degree": "Master of Science - Data Science and Business Management",
+      "institution": "University of Aberdeen",
+      "institutionLogoUrl": "",
+      "institutionColor": "#ff0019",
+      "coursework": "Advanced Analytics, Machine Learning, Business Strategy",
+      "certifications": [
+        {
+          "name": "Calculus and Special Functions in Wolfram Mathematica",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-calculus/2060714a-658d-4f7e-91d4-19920a6d4490/1.html"
+        },
+        {
+          "name": "Special Functions Level 1",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-special-functions/2060714a-658d-4f7e-91d4-19920a6d4490/1.html"
+        },
+        {
+          "name": "Introduction to Calculus",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-calculus/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
+        },
+        {
+          "name": "Getting Started with Wolfram",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/a-guide-to-programming-with-the-wolfram-language/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
+        },
+        {
+          "name": "Creative Computation",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/creative-computation/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
+        },
+        {
+          "name": "Proficiency in Wolfram Language Level 1",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/level1-wolfram-language/2060714a-658d-4f7e-91d4-19920a6d4490/1.html"
+        }
+      ],
+      "achievements": []
+    },
+    {
+      "id": "2",
+      "dateRange": "2020 - 2024",
+      "degree": "Bachelor's degree - Accounting and Finance",
+      "institution": "University of Management and Technology - UMT",
+      "institutionLogoUrl": "",
+      "institutionColor": "#1E3A8A",
+      "coursework": "Business Writing, Microsoft Office, Sage 50, Microsoft Excel, Canva, Market Research, Accounting, Financial Statements, Interpersonal Communication\n",
+      "certifications": [],
+      "achievements": [
+        "Rector's Merit Award (Jul 2024)",
+        "Dean's Merit Award (Sep 2023)"
+      ],
+      "customSections": [
+        {
+          "label": "Projects:",
+          "items": [
+            {
+              "name": "Fintech - Crypto Currency Wallet App Development",
+              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+            },
+            {
+              "name": "Advanced Corporate Reporting - Financial Statements & IAS Compliance",
+              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+            },
+            {
+              "name": "Management Accounting & Budgeting - 13 Schedule Budget Analysis",
+              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+            },
+            {
+              "name": "Internal Control System Design - Financial Operations Optimization",
+              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+            },
+            {
+              "name": "Audit & Assurance - Internal Control Analysis at The Best Laboratories",
+              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "testimonials": [
     {
       "id": "2",
@@ -94,9 +179,39 @@
   ],
   "technologies": [
     {
-      "id": "10",
-      "name": "Spotify",
-      "icon": "spotify"
+      "id": "1",
+      "name": "Claude",
+      "icon": "claude"
+    },
+    {
+      "id": "2",
+      "name": "VS Code",
+      "icon": "vscode"
+    },
+    {
+      "id": "3",
+      "name": "Gemini",
+      "icon": "gemini"
+    },
+    {
+      "id": "4",
+      "name": "Perplexity",
+      "icon": "perplexity"
+    },
+    {
+      "id": "5",
+      "name": "GitHub",
+      "icon": "github"
+    },
+    {
+      "id": "6",
+      "name": "Wolfram",
+      "icon": "wolfram"
+    },
+    {
+      "id": "7",
+      "name": "Python",
+      "icon": "python"
     }
   ],
   "posts": [

@@ -4,6 +4,7 @@ export interface PortfolioContent {
   sectionVisibility: {
     projects: boolean;
     experience: boolean;
+    education: boolean;
     techStack: boolean;
     testimonials: boolean;
     writing: boolean;
@@ -12,9 +13,14 @@ export interface PortfolioContent {
   sectionIntros: {
     projects?: string;
     experience?: string;
+    education?: string;
     techStack?: string;
     testimonials?: string;
     writing?: string;
+  };
+  educationLabels?: {
+    achievementsLabel?: string;
+    certificationsLabel?: string;
   };
   profile: {
     name: string;
@@ -42,6 +48,27 @@ export interface PortfolioContent {
     companyLogoUrl?: string;
     companyColor?: string;
     description: string;
+  }>;
+  education: Array<{
+    id: string;
+    dateRange: string;
+    degree: string;
+    institution: string;
+    institutionLogoUrl?: string;
+    institutionColor?: string;
+    coursework?: string;
+    customSections?: Array<{
+      label: string;
+      items: Array<{
+        name: string;
+        url?: string;
+      }>;
+    }>;
+    certifications?: Array<{
+      name: string;
+      url?: string;
+    }>;
+    achievements?: string[];
   }>;
   testimonials: Array<{
     id: string;

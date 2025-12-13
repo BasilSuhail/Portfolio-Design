@@ -1,6 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
+import EducationSection from "@/components/EducationSection";
 import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
@@ -52,6 +53,15 @@ export default function Home() {
         <ExperienceSection
           experiences={content.experiences}
           intro={content.sectionIntros?.experience}
+        />
+      )}
+
+      {visibility.education && content.education && content.education.length > 0 && (
+        <EducationSection
+          education={content.education}
+          intro={content.sectionIntros?.education}
+          achievementsLabel={content.educationLabels?.achievementsLabel}
+          certificationsLabel={content.educationLabels?.certificationsLabel}
         />
       )}
 

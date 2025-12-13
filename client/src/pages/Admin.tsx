@@ -109,12 +109,13 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="visibility">Visibility</TabsTrigger>
             <TabsTrigger value="intros">Intros</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="experience">Experience</TabsTrigger>
+            <TabsTrigger value="education">Education</TabsTrigger>
             <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
             <TabsTrigger value="tech">Tech Stack</TabsTrigger>
             <TabsTrigger value="writing">Writing</TabsTrigger>
@@ -154,6 +155,21 @@ export default function Admin() {
                     checked={currentContent.sectionVisibility.experience}
                     onCheckedChange={(checked) =>
                       updateContent(["sectionVisibility", "experience"], checked)
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Education Section</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display your education and certifications
+                    </p>
+                  </div>
+                  <Switch
+                    checked={currentContent.sectionVisibility.education}
+                    onCheckedChange={(checked) =>
+                      updateContent(["sectionVisibility", "education"], checked)
                     }
                   />
                 </div>
@@ -247,6 +263,15 @@ export default function Admin() {
                   />
                 </div>
                 <div>
+                  <Label>Education Section Intro</Label>
+                  <Textarea
+                    value={currentContent.sectionIntros?.education || ""}
+                    onChange={(e) => updateContent(["sectionIntros", "education"], e.target.value)}
+                    rows={2}
+                    placeholder="My academic background and certifications"
+                  />
+                </div>
+                <div>
                   <Label>Tech Stack Section Intro</Label>
                   <Textarea
                     value={currentContent.sectionIntros?.techStack || ""}
@@ -272,6 +297,27 @@ export default function Admin() {
                     rows={2}
                     placeholder="My thoughts and articles"
                   />
+                </div>
+                <div className="pt-4 border-t">
+                  <h3 className="text-sm font-semibold mb-3">Education Section Labels</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Achievements Label</Label>
+                      <Input
+                        value={currentContent.educationLabels?.achievementsLabel || "Achievements:"}
+                        onChange={(e) => updateContent(["educationLabels", "achievementsLabel"], e.target.value)}
+                        placeholder="Achievements:"
+                      />
+                    </div>
+                    <div>
+                      <Label>Certifications Label</Label>
+                      <Input
+                        value={currentContent.educationLabels?.certificationsLabel || "Certifications:"}
+                        onChange={(e) => updateContent(["educationLabels", "certificationsLabel"], e.target.value)}
+                        placeholder="Certifications:"
+                      />
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -522,6 +568,198 @@ export default function Admin() {
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add New Experience
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="education">
+            <Card>
+              <CardHeader>
+                <CardTitle>Education</CardTitle>
+                <CardDescription>Edit your education and certifications</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {currentContent.education?.map((edu: any, index: number) => (
+                  <div key={edu.id} className="border rounded-lg p-4 space-y-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold">Education {index + 1}</h3>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeItem("education", index)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Remove
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>Date Range</Label>
+                        <Input
+                          value={edu.dateRange}
+                          onChange={(e) => updateContent(["education", String(index), "dateRange"], e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label>Institution</Label>
+                        <Input
+                          value={edu.institution}
+                          onChange={(e) => updateContent(["education", String(index), "institution"], e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Degree</Label>
+                      <Input
+                        value={edu.degree}
+                        onChange={(e) => updateContent(["education", String(index), "degree"], e.target.value)}
+                      />
+                    </div>
+                    <ImageUpload
+                      label="Institution Logo (Optional)"
+                      value={edu.institutionLogoUrl || ""}
+                      onChange={(url) => updateContent(["education", String(index), "institutionLogoUrl"], url)}
+                      helperText="If provided, this will replace the color circle"
+                    />
+                    <div>
+                      <Label>Institution Color (Fallback)</Label>
+                      <Input
+                        type="color"
+                        value={edu.institutionColor || "#666666"}
+                        onChange={(e) => updateContent(["education", String(index), "institutionColor"], e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Used if no logo is provided
+                      </p>
+                    </div>
+                    <div>
+                      <Label>Coursework (Optional)</Label>
+                      <Textarea
+                        value={edu.coursework || ""}
+                        onChange={(e) => updateContent(["education", String(index), "coursework"], e.target.value)}
+                        rows={2}
+                        placeholder="Relevant coursework, skills learned, etc."
+                      />
+                    </div>
+                    <div>
+                      <Label>Achievements (Optional)</Label>
+                      <Textarea
+                        value={edu.achievements?.join("\n") || ""}
+                        onChange={(e) => updateContent(["education", String(index), "achievements"], e.target.value.split("\n").filter((a: string) => a.trim()))}
+                        rows={3}
+                        placeholder="One achievement per line (e.g., Dean's Merit Award)"
+                      />
+                    </div>
+                    <div>
+                      <Label>Certifications (Optional)</Label>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Format: Certificate Name | URL (one per line). URL is optional.
+                      </p>
+                      <Textarea
+                        value={edu.certifications?.map((c: any) => c.url ? `${c.name} | ${c.url}` : c.name).join("\n") || ""}
+                        onChange={(e) => {
+                          const lines = e.target.value.split("\n").filter((l: string) => l.trim());
+                          const certs = lines.map((line: string) => {
+                            const parts = line.split("|").map((p: string) => p.trim());
+                            return parts.length > 1
+                              ? { name: parts[0], url: parts[1] }
+                              : { name: parts[0] };
+                          });
+                          updateContent(["education", String(index), "certifications"], certs);
+                        }}
+                        rows={4}
+                        placeholder="Certificate Name | https://example.com/cert"
+                      />
+                    </div>
+
+                    <div className="border-t pt-4">
+                      <div className="flex justify-between items-center mb-3">
+                        <Label className="text-base font-semibold">Custom Sections</Label>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const sections = edu.customSections || [];
+                            updateContent(["education", String(index), "customSections"], [
+                              ...sections,
+                              { label: "New Section:", items: [] }
+                            ]);
+                          }}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          Add Section
+                        </Button>
+                      </div>
+                      {edu.customSections?.map((section: any, sectionIdx: number) => (
+                        <div key={sectionIdx} className="border rounded-lg p-3 mb-3 bg-muted/30">
+                          <div className="flex justify-between items-center mb-2">
+                            <Input
+                              value={section.label}
+                              onChange={(e) => updateContent(
+                                ["education", String(index), "customSections", String(sectionIdx), "label"],
+                                e.target.value
+                              )}
+                              placeholder="Section Label (e.g., Academic Projects:)"
+                              className="font-medium"
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                const sections = [...edu.customSections];
+                                sections.splice(sectionIdx, 1);
+                                updateContent(["education", String(index), "customSections"], sections);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <Textarea
+                            value={section.items?.map((item: any) => item.url ? `${item.name} | ${item.url}` : item.name).join("\n") || ""}
+                            onChange={(e) => {
+                              const lines = e.target.value.split("\n").filter((l: string) => l.trim());
+                              const items = lines.map((line: string) => {
+                                const parts = line.split("|").map((p: string) => p.trim());
+                                return parts.length > 1
+                                  ? { name: parts[0], url: parts[1] }
+                                  : { name: parts[0] };
+                              });
+                              updateContent(["education", String(index), "customSections", String(sectionIdx), "items"], items);
+                            }}
+                            rows={3}
+                            placeholder="Item Name | URL (optional)&#10;One per line"
+                            className="text-sm"
+                          />
+                        </div>
+                      ))}
+                      {(!edu.customSections || edu.customSections.length === 0) && (
+                        <p className="text-sm text-muted-foreground italic">
+                          No custom sections yet. Click "Add Section" to create one.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  onClick={() =>
+                    addItem("education", {
+                      id: String(Date.now()),
+                      dateRange: "2020 - 2024",
+                      degree: "Degree Name",
+                      institution: "Institution Name",
+                      institutionLogoUrl: "",
+                      institutionColor: "#666666",
+                      coursework: "",
+                      customSections: [],
+                      certifications: [],
+                      achievements: [],
+                    })
+                  }
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Education
                 </Button>
               </CardContent>
             </Card>

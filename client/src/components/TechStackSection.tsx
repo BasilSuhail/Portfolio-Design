@@ -1,20 +1,26 @@
-import { 
-  SiFigma, 
-  SiFramer, 
-  SiReact, 
-  SiTypescript, 
-  SiTailwindcss, 
-  SiOpenai, 
-  SiGithub, 
-  SiStripe, 
+import {
+  SiFigma,
+  SiFramer,
+  SiReact,
+  SiTypescript,
+  SiTailwindcss,
+  SiOpenai,
+  SiGithub,
+  SiStripe,
   SiVercel,
-  SiSpotify 
+  SiSpotify,
+  SiPython,
+  SiGooglegemini,
+  SiPerplexity,
+  SiWolframmathematica,
+  SiAnthropic
 } from "react-icons/si";
+import { VscCode } from "react-icons/vsc";
 
 export interface TechItem {
   id: string;
   name: string;
-  icon: "figma" | "framer" | "react" | "typescript" | "tailwind" | "openai" | "github" | "stripe" | "vercel" | "spotify";
+  icon: "figma" | "framer" | "react" | "typescript" | "tailwind" | "openai" | "github" | "stripe" | "vercel" | "spotify" | "claude" | "vscode" | "gemini" | "perplexity" | "wolfram" | "python";
   color?: string;
 }
 
@@ -34,6 +40,12 @@ const iconMap = {
   stripe: SiStripe,
   vercel: SiVercel,
   spotify: SiSpotify,
+  claude: SiAnthropic,
+  vscode: VscCode,
+  gemini: SiGooglegemini,
+  perplexity: SiPerplexity,
+  wolfram: SiWolframmathematica,
+  python: SiPython,
 };
 
 const colorMap: Record<string, string> = {
@@ -47,6 +59,12 @@ const colorMap: Record<string, string> = {
   stripe: "#635BFF",
   vercel: "#ffffff",
   spotify: "#1DB954",
+  claude: "#D4A574",
+  vscode: "#007ACC",
+  gemini: "#4285F4",
+  perplexity: "#20808D",
+  wolfram: "#DD1100",
+  python: "#3776AB",
 };
 
 export default function TechStackSection({ technologies, intro }: TechStackSectionProps) {

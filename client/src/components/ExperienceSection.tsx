@@ -58,7 +58,7 @@ export default function ExperienceSection({
                     <span className="font-medium">{exp.company}</span>
                   </div>
                 </div>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
                   {exp.description}
                 </p>
               </div>

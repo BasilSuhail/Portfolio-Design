@@ -27,7 +27,7 @@ export default function TestimonialCard({
     >
       <blockquote className="mb-6">
         <span className="text-4xl text-muted-foreground leading-none">"</span>
-        <p className="text-foreground/90 leading-relaxed -mt-4 ml-4">{quote}</p>
+        <p className="text-foreground/90 leading-relaxed -mt-4 ml-4 whitespace-pre-line">{quote}</p>
       </blockquote>
 
       <div className="flex items-center gap-3">
