@@ -79,6 +79,22 @@ export async function registerRoutes(
     }
   });
 
+  // Admin login
+  app.post("/api/admin/login", async (req: Request, res: Response) => {
+    try {
+      const { password } = req.body;
+      const adminPassword = process.env.ADMIN_PASSWORD || "admin123"; // Default password for development
+
+      if (password === adminPassword) {
+        res.json({ success: true });
+      } else {
+        res.status(401).json({ success: false, message: "Invalid password" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
   // Contact form submission
   app.post("/api/contact", async (req: Request, res: Response) => {
     try {

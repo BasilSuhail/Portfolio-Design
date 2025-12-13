@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useContent } from "@/hooks/use-content";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,13 +11,31 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ImageUpload } from "@/components/ImageUpload";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, LogOut } from "lucide-react";
 
 export default function Admin() {
+  const [, setLocation] = useLocation();
   const { data: content, isLoading, refetch } = useContent();
   const [editedContent, setEditedContent] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+
+  // Check authentication on mount
+  useEffect(() => {
+    const isAuthenticated = sessionStorage.getItem("admin_authenticated");
+    if (!isAuthenticated) {
+      setLocation("/admin/login");
+    }
+  }, [setLocation]);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin_authenticated");
+    setLocation("/admin/login");
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully.",
+    });
+  };
 
   if (isLoading) {
     return (
@@ -104,6 +123,10 @@ export default function Admin() {
             </Button>
             <Button onClick={handleSave} disabled={isSaving || !editedContent}>
               {isSaving ? "Saving..." : "Save Changes"}
+            </Button>
+            <Button variant="ghost" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
             </Button>
           </div>
         </div>
