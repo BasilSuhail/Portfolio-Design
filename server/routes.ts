@@ -11,12 +11,11 @@ const __dirname = path.dirname(__filename);
 const contentPath = path.join(__dirname, "..", "content.json");
 const uploadsDir = path.join(__dirname, "..", "client", "public", "uploads");
 
-// Ensure uploads directory exists
-await fs.mkdir(uploadsDir, { recursive: true });
-
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: async (_req, _file, cb) => {
+    // Ensure uploads directory exists when multer needs it
+    await fs.mkdir(uploadsDir, { recursive: true });
     cb(null, uploadsDir);
   },
   filename: (_req, file, cb) => {
@@ -45,6 +44,8 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Ensure uploads directory exists at startup
+  await fs.mkdir(uploadsDir, { recursive: true });
   // Get portfolio content
   app.get("/api/content", async (_req: Request, res: Response) => {
     try {
