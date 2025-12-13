@@ -48,6 +48,13 @@ export interface PortfolioContent {
     companyLogoUrl?: string;
     companyColor?: string;
     description: string;
+    customSections?: Array<{
+      label: string;
+      items: Array<{
+        name: string;
+        url?: string;
+      }>;
+    }>;
   }>;
   education: Array<{
     id: string;

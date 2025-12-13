@@ -8,6 +8,13 @@ export interface Experience {
   companyLogoUrl?: string;
   companyColor?: string;
   description: string;
+  customSections?: Array<{
+    label: string;
+    items: Array<{
+      name: string;
+      url?: string;
+    }>;
+  }>;
 }
 
 interface ExperienceSectionProps {
@@ -61,6 +68,30 @@ export default function ExperienceSection({
                 <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
                   {exp.description}
                 </p>
+
+                {exp.customSections && exp.customSections.map((section, sectionIdx) => (
+                  <div key={sectionIdx} className="mt-2">
+                    <p className="text-xs font-medium text-muted-foreground mb-1">{section.label}</p>
+                    <ul className="space-y-1">
+                      {section.items.map((item, itemIdx) => (
+                        <li key={itemIdx} className="text-sm">
+                          {item.url ? (
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-foreground/70 hover:text-foreground transition-colors underline"
+                            >
+                              {item.name}
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground">{item.name}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           ))}

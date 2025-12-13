@@ -550,6 +550,68 @@ export default function Admin() {
                         rows={3}
                       />
                     </div>
+
+                    <div className="border-t pt-4">
+                      <div className="flex justify-between items-center mb-3">
+                        <Label className="text-base font-semibold">Custom Sections</Label>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const sections = exp.customSections || [];
+                            updateContent(["experiences", String(index), "customSections"], [
+                              ...sections,
+                              { label: "Core Focus:", items: [] }
+                            ]);
+                          }}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          Add Section
+                        </Button>
+                      </div>
+                      {exp.customSections?.map((section: any, sectionIdx: number) => (
+                        <div key={sectionIdx} className="border rounded-lg p-3 mb-3 bg-muted/30">
+                          <div className="flex justify-between items-center mb-2">
+                            <Input
+                              value={section.label}
+                              onChange={(e) => updateContent(
+                                ["experiences", String(index), "customSections", String(sectionIdx), "label"],
+                                e.target.value
+                              )}
+                              placeholder="Section Label (e.g., Core Focus:)"
+                              className="font-medium"
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                const sections = [...exp.customSections];
+                                sections.splice(sectionIdx, 1);
+                                updateContent(["experiences", String(index), "customSections"], sections);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <Textarea
+                            value={section.items?.map((item: any) => item.url ? `${item.name} | ${item.url}` : item.name).join("\n") || ""}
+                            onChange={(e) => {
+                              const lines = e.target.value.split("\n").filter((l: string) => l.trim());
+                              const items = lines.map((line: string) => {
+                                const parts = line.split("|").map((p: string) => p.trim());
+                                return parts.length > 1
+                                  ? { name: parts[0], url: parts[1] }
+                                  : { name: parts[0] };
+                              });
+                              updateContent(["experiences", String(index), "customSections", String(sectionIdx), "items"], items);
+                            }}
+                            rows={3}
+                            placeholder="Item Name | URL (optional)&#10;One per line"
+                            className="text-sm"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
                 <Button

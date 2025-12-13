@@ -47,28 +47,58 @@
     {
       "id": "1",
       "dateRange": "Jul 2024 - Aug 2025",
-      "role": " Assistant Accountant",
+      "role": "Assistant Accountant",
       "company": "Dubizzle Group",
       "companyColor": "#ff0000",
-      "description": "Streamlined and implemented an optimized workflow in Sage 300 for validating over 1,000 daily receivables from 3 different CRMs, resulting in a 25% reduction in processing time and enabling faster revenue recognition.\n\nEnhanced financial data integrity by managing complex reconciliations across 6 banks and 7 payment methods; automated key reporting tasks by applying advanced Excel functions, which improved overall accuracy by 20%.\n\nPartnered with a cross-regional team to investigate and resolve complex transactional discrepancies, achieving a 95% resolution rate and minimizing delays in financial closing.\n\nDelivered accurate weekly financial reports, including critical Sage-to-CRM reconciliations and revenue summaries, providing leadership with reliable data for strategic decision-making.\n\nRestructured 30+ key banking ledgers in Google Sheets to create a more robust and error-resistant system; this initiative cut data discrepancies by 30% and improved the speed of financial analysis for the leadership team."
+      "description": "My time at Dubizzle was all about finding smarter ways to handle big data. I took a manual process of checking over 1,000 daily payments and sped it up by 25% using Sage 300 and better workflows. I also realized our banking data needed to be clearer for the leadership team, so I cleaned up over 30 ledgers in Google Sheets and used advanced Excel to automate the boring stuff. By the end, I wasn't just reporting numbers; I was helping the team trust them.",
+      "customSections": [
+        {
+          "label": "Core Focus:",
+          "items": [
+            {
+              "name": "Process Automation, Data Integrity, Sage 300"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "1765560589736",
       "dateRange": "Mar 2024 - Jun 2024",
-      "role": "Co-Operative Education",
-      "company": " Parwaaz Financial Services Ltd",
+      "role": "Co-Op Education Student",
+      "company": "Parwaaz Financial Services Ltd",
       "companyLogoUrl": "",
       "companyColor": "#006cfa",
-      "description": "Facilitated the monthly financial close by executing key components, including multi-bank reconciliations, fixed asset depreciation schedules for 200+ assets, and benefit fund calculations for a 35+ person team.\n\nProcessed over 300 monthly financial transactions (payments, receipts, JVs) in Microsoft Dynamics, maintaining a 100% audit-ready general ledger for reliable financial reporting.\n\nConducted detailed variance analysis on 60+ client accounts and 20 investment portfolios, delivering quarterly reports that equipped senior management with actionable insights into performance trends and informed strategic financial planning."
+      "description": "This wasn't a standard role, I was awarded this Co-Op placement through a competitive selection process by the Corporate Linkages & Placements Department of The University of Management and Technology. Because of that trust, I was given real responsibility immediately. I managed the monthly financial close for the company, tracked depreciation for over 200 assets, and handled the benefits for the whole team. I also got to play 'detective' with the data, running variance analysis on client accounts to give senior management a clear picture of how the business was actually performing.",
+      "customSections": [
+        {
+          "label": "Core Focus:",
+          "items": [
+            {
+              "name": "Variance Analysis, Microsoft Dynamics, Strategic Insights"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "1765560749602",
       "dateRange": "Jul 2023 - Feb 2024",
       "role": "Finance Intern",
-      "company": " Parwaaz Financial Services Ltd",
+      "company": "Parwaaz Financial Services Ltd",
       "companyLogoUrl": "",
       "companyColor": "#006cfa",
-      "description": "Gained hands-on experience with the company's Excel-based accounting system by processing over 100 financial vouchers monthly; validated entries against tax books and physical records to ensure data accuracy.\n\nCoordinated directly with the Finance Manager during the month-end closing process, preparing key documents including bank reconciliations and initial summary reports.\n\nFacilitated clear financial communication by confirming client payment statuses and cross-referencing payment schedules for the business team.\n\nCollaborated with the external audit team by compiling and organizing requested financial statements and voucher documentation, contributing to an efficient audit process."
+      "description": "This is where I built my foundation. I learned the ropes of a finance department by processing hundreds of vouchers and making sure every single entry matched the physical tax records. I worked side-by-side with the Finance Manager to close the books at the end of the month and acted as the go-to person for external auditors, ensuring they had every document they needed without delay.",
+      "customSections": [
+        {
+          "label": "Core Focus:",
+          "items": [
+            {
+              "name": "Audit Coordination, Financial Communication, Data Validation"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "1765560844953",
@@ -86,12 +116,12 @@
       "dateRange": "Sep 2025 - Present",
       "degree": "Master of Science - Data Science and Business Management",
       "institution": "University of Aberdeen",
-      "institutionLogoUrl": "",
+      "institutionLogoUrl": "/uploads/UoA.png",
       "institutionColor": "#ff0019",
       "coursework": "Advanced Analytics, Machine Learning, Business Strategy",
       "certifications": [
         {
-          "name": "Calculus and Special Functions in Wolfram Mathematica",
+          "name": "Introduction to Calculus Level 1",
           "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-calculus/2060714a-658d-4f7e-91d4-19920a6d4490/1.html"
         },
         {
@@ -103,7 +133,11 @@
           "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-calculus/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
         },
         {
-          "name": "Getting Started with Wolfram",
+          "name": "Introduction to Special Functions",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-special-functions/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
+        },
+        {
+          "name": "A Guide to Programming with the Wolfram Language",
           "url": "https://www.wolframcloud.com/obj/online-courses/certificates/a-guide-to-programming-with-the-wolfram-language/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
         },
         {
@@ -113,6 +147,18 @@
         {
           "name": "Proficiency in Wolfram Language Level 1",
           "url": "https://www.wolframcloud.com/obj/online-courses/certificates/level1-wolfram-language/2060714a-658d-4f7e-91d4-19920a6d4490/1.html"
+        },
+        {
+          "name": "Proficiency in Mathematica Level 1",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/level1-mathematica/2060714a-658d-4f7e-91d4-19920a6d4490/1.html"
+        },
+        {
+          "name": "Introduction to Machine Learning in Wolfram Language",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/introduction-to-machine-learning-ml201/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
+        },
+        {
+          "name": "An Elementary Introduction to the Wolfram Language",
+          "url": "https://www.wolframcloud.com/obj/online-courses/certificates/an-elementary-introduction-to-the-wolfram-language/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
         }
       ],
       "achievements": []
@@ -122,7 +168,7 @@
       "dateRange": "2020 - 2024",
       "degree": "Bachelor's degree - Accounting and Finance",
       "institution": "University of Management and Technology - UMT",
-      "institutionLogoUrl": "",
+      "institutionLogoUrl": "/uploads/UMT.png",
       "institutionColor": "#1E3A8A",
       "coursework": "Business Writing, Microsoft Office, Sage 50, Microsoft Excel, Canva, Market Research, Accounting, Financial Statements, Interpersonal Communication\n",
       "certifications": [],
@@ -181,7 +227,7 @@
     {
       "id": "1",
       "name": "Claude",
-      "icon": "claude"
+      "icon": "/uploads/Claude.png"
     },
     {
       "id": "2",
@@ -212,6 +258,11 @@
       "id": "7",
       "name": "Python",
       "icon": "python"
+    },
+    {
+      "id": "1765648115250",
+      "name": "Excel",
+      "icon": "/uploads/excel.png"
     }
   ],
   "posts": [

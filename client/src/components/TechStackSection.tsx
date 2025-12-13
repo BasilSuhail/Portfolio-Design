@@ -55,11 +55,11 @@ const colorMap: Record<string, string> = {
   typescript: "#3178C6",
   tailwind: "#06B6D4",
   openai: "#ffffff",
-  github: "#ffffff",
+  github: "#000000",
   stripe: "#635BFF",
   vercel: "#ffffff",
   spotify: "#1DB954",
-  claude: "#D4A574",
+  claude: "#CC785C",
   vscode: "#007ACC",
   gemini: "#4285F4",
   perplexity: "#20808D",
@@ -84,9 +84,13 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
 
         <div className="flex flex-wrap items-center gap-6">
           {technologies.map((tech) => {
-            const Icon = iconMap[tech.icon];
+            // Check if icon is a URL (starts with / or http)
+            const isImageUrl = tech.icon.startsWith('/') || tech.icon.startsWith('http');
+            const Icon = isImageUrl ? null : iconMap[tech.icon as keyof typeof iconMap];
             const color = tech.color || colorMap[tech.icon] || "#ffffff";
-            
+            // Icons that need theme-based inversion (black/white icons)
+            const needsInversion = ['github', 'claude'].includes(tech.icon);
+
             return (
               <div
                 key={tech.id}
@@ -94,10 +98,18 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                 data-testid={`icon-tech-${tech.id}`}
               >
                 <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-card border border-card-border hover-elevate transition-all duration-200 cursor-pointer">
-                  <Icon 
-                    className="w-6 h-6 transition-transform group-hover:scale-110" 
-                    style={{ color }} 
-                  />
+                  {isImageUrl ? (
+                    <img
+                      src={tech.icon}
+                      alt={tech.name}
+                      className="w-6 h-6 object-contain transition-transform group-hover:scale-110"
+                    />
+                  ) : Icon ? (
+                    <Icon
+                      className={`w-6 h-6 transition-transform group-hover:scale-110 ${needsInversion ? 'dark:invert' : ''}`}
+                      style={{ color }}
+                    />
+                  ) : null}
                 </div>
                 <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   <span className="text-xs text-muted-foreground bg-popover px-2 py-1 rounded whitespace-nowrap">
