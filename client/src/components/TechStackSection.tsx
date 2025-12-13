@@ -13,14 +13,19 @@ import {
   SiGooglegemini,
   SiPerplexity,
   SiWolframmathematica,
-  SiAnthropic
+  SiAnthropic,
+  SiJavascript,
+  SiGit,
+  SiNumpy,
+  SiPandas,
+  SiMysql
 } from "react-icons/si";
 import { VscCode } from "react-icons/vsc";
 
 export interface TechItem {
   id: string;
   name: string;
-  icon: "figma" | "framer" | "react" | "typescript" | "tailwind" | "openai" | "github" | "stripe" | "vercel" | "spotify" | "claude" | "vscode" | "gemini" | "perplexity" | "wolfram" | "python";
+  icon: "figma" | "framer" | "react" | "typescript" | "tailwind" | "openai" | "github" | "stripe" | "vercel" | "spotify" | "claude" | "vscode" | "gemini" | "perplexity" | "wolfram" | "python" | "javascript" | "git" | "numpy" | "pandas" | "sql" | "matplotlib" | string;
   color?: string;
 }
 
@@ -46,6 +51,11 @@ const iconMap = {
   perplexity: SiPerplexity,
   wolfram: SiWolframmathematica,
   python: SiPython,
+  javascript: SiJavascript,
+  git: SiGit,
+  numpy: SiNumpy,
+  pandas: SiPandas,
+  sql: SiMysql,
 };
 
 const colorMap: Record<string, string> = {
@@ -65,6 +75,11 @@ const colorMap: Record<string, string> = {
   perplexity: "#20808D",
   wolfram: "#DD1100",
   python: "#3776AB",
+  javascript: "#F7DF1E",
+  git: "#F05032",
+  numpy: "#013243",
+  pandas: "#150458",
+  sql: "#4479A1",
 };
 
 export default function TechStackSection({ technologies, intro }: TechStackSectionProps) {
@@ -89,7 +104,7 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
             const Icon = isImageUrl ? null : iconMap[tech.icon as keyof typeof iconMap];
             const color = tech.color || colorMap[tech.icon] || "#ffffff";
             // Icons that need theme-based inversion (black/white icons)
-            const needsInversion = ['github', 'claude'].includes(tech.icon);
+            const needsInversion = ['github', 'claude', 'numpy', 'pandas'].includes(tech.icon);
 
             return (
               <div

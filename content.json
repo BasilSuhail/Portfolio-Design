@@ -227,43 +227,48 @@
   "technologies": [
     {
       "id": "1",
-      "name": "Claude",
-      "icon": "/uploads/Claude.png"
+      "name": "MS Office",
+      "icon": "/uploads/excel.png"
     },
     {
       "id": "2",
-      "name": "VS Code",
-      "icon": "vscode"
-    },
-    {
-      "id": "3",
-      "name": "Gemini",
-      "icon": "gemini"
-    },
-    {
-      "id": "4",
-      "name": "Perplexity",
-      "icon": "perplexity"
-    },
-    {
-      "id": "5",
-      "name": "GitHub",
-      "icon": "github"
-    },
-    {
-      "id": "6",
       "name": "Wolfram",
       "icon": "wolfram"
     },
     {
-      "id": "7",
+      "id": "3",
+      "name": "SQL",
+      "icon": "sql"
+    },
+    {
+      "id": "4",
       "name": "Python",
       "icon": "python"
     },
     {
-      "id": "1765648115250",
-      "name": "Excel",
-      "icon": "/uploads/excel.png"
+      "id": "5",
+      "name": "JavaScript",
+      "icon": "javascript"
+    },
+    {
+      "id": "6",
+      "name": "Git",
+      "icon": "git"
+    },
+    {
+      "id": "7",
+      "name": "NumPy",
+      "icon": "numpy"
+    },
+    {
+      "id": "8",
+      "name": "Pandas",
+      "icon": "pandas"
+    },
+    {
+      "id": "9",
+      "name": "Matplotlib",
+      "icon": "/uploads/matplotlib.svg"
     }
   ],
   "posts": [

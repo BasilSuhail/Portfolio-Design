@@ -70,13 +70,10 @@ export default function HeroSection({
     <section className="py-16 md:py-24" data-testid="section-hero">
       <div className="max-w-2xl mx-auto px-6">
         <div className="mb-8">
-          <div className="relative inline-block">
-            <Avatar className="w-20 h-20 ring-2 ring-border" data-testid="img-avatar">
-              <AvatarImage src={avatarUrl} alt={name} />
-              <AvatarFallback className="text-2xl">{avatarFallback}</AvatarFallback>
-            </Avatar>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-background" />
-          </div>
+          <Avatar className="w-20 h-20 ring-2 ring-border" data-testid="img-avatar">
+            <AvatarImage src={avatarUrl} alt={name} />
+            <AvatarFallback className="text-2xl">{avatarFallback}</AvatarFallback>
+          </Avatar>
         </div>
 
         <div className="mb-6">
