@@ -118,6 +118,8 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                       src={tech.icon}
                       alt={tech.name}
                       className="w-6 h-6 object-contain transition-transform group-hover:scale-110"
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : Icon ? (
                     <Icon

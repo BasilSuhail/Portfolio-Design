@@ -84,12 +84,15 @@ export default function HeroSection({
         <div className="text-foreground/90 leading-relaxed mb-8" data-testid="text-bio">
           {parseBioWithImages(bio).map((part, index) => {
             if (part.type === 'image') {
+              const imageAlt = 'alt' in part ? part.alt : 'inline image';
               return (
                 <img
                   key={index}
                   src={part.content}
-                  alt={part.alt || 'inline image'}
+                  alt={imageAlt || 'inline image'}
                   className="inline-block w-5 h-5 mx-1 align-middle object-contain"
+                  loading="lazy"
+                  decoding="async"
                 />
               );
             }
