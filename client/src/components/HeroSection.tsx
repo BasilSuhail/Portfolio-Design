@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 // Helper function to parse bio text with inline images
 // Syntax: [img:url] or [img:url:alt] for inline images
@@ -36,7 +36,6 @@ interface HeroSectionProps {
   email: string;
   avatarUrl: string;
   avatarFallback: string;
-  isVerified?: boolean;
 }
 
 export default function HeroSection({
@@ -46,7 +45,6 @@ export default function HeroSection({
   email,
   avatarUrl,
   avatarFallback,
-  isVerified = true,
 }: HeroSectionProps) {
   const [copied, setCopied] = useState(false);
 
@@ -77,11 +75,8 @@ export default function HeroSection({
         </div>
 
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold flex items-center gap-2" data-testid="text-name">
+          <h1 className="text-2xl font-semibold" data-testid="text-name">
             {name}
-            {isVerified && (
-              <CheckCircle className="w-5 h-5 text-primary fill-primary" />
-            )}
           </h1>
           <p className="text-muted-foreground" data-testid="text-title">{title}</p>
         </div>
