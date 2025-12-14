@@ -33,67 +33,69 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <ThemeToggle />
-      <HeroSection
-        name={content.profile.name}
-        title={content.profile.title}
-        bio={content.profile.bio}
-        email={content.profile.email}
-        avatarUrl={content.profile.avatarUrl}
-        avatarFallback={content.profile.avatarFallback}
-      />
-
-      {visibility.projects && content.projects.length > 0 && (
-        <ProjectsSection
-          projects={content.projects}
-          intro={content.sectionIntros?.projects}
+      <main id="main-content">
+        <HeroSection
+          name={content.profile.name}
+          title={content.profile.title}
+          bio={content.profile.bio}
+          email={content.profile.email}
+          avatarUrl={content.profile.avatarUrl}
+          avatarFallback={content.profile.avatarFallback}
         />
-      )}
 
-      {visibility.experience && content.experiences.length > 0 && (
-        <ExperienceSection
-          experiences={content.experiences}
-          intro={content.sectionIntros?.experience}
-        />
-      )}
+        {visibility.projects && content.projects.length > 0 && (
+          <ProjectsSection
+            projects={content.projects}
+            intro={content.sectionIntros?.projects}
+          />
+        )}
 
-      {visibility.education && content.education && content.education.length > 0 && (
-        <EducationSection
-          education={content.education}
-          intro={content.sectionIntros?.education}
-          achievementsLabel={content.educationLabels?.achievementsLabel}
-          certificationsLabel={content.educationLabels?.certificationsLabel}
-        />
-      )}
+        {visibility.experience && content.experiences.length > 0 && (
+          <ExperienceSection
+            experiences={content.experiences}
+            intro={content.sectionIntros?.experience}
+          />
+        )}
 
-      {visibility.techStack && content.technologies.length > 0 && (
-        <TechStackSection
-          technologies={content.technologies as any}
-          intro={content.sectionIntros?.techStack}
-        />
-      )}
+        {visibility.education && content.education && content.education.length > 0 && (
+          <EducationSection
+            education={content.education}
+            intro={content.sectionIntros?.education}
+            achievementsLabel={content.educationLabels?.achievementsLabel}
+            certificationsLabel={content.educationLabels?.certificationsLabel}
+          />
+        )}
 
-      {visibility.testimonials && content.testimonials.length > 0 && (
-        <TestimonialsSection
-          testimonials={content.testimonials}
-          intro={content.sectionIntros?.testimonials}
-        />
-      )}
+        {visibility.techStack && content.technologies.length > 0 && (
+          <TechStackSection
+            technologies={content.technologies as any}
+            intro={content.sectionIntros?.techStack}
+          />
+        )}
 
-      {visibility.writing && content.posts.length > 0 && (
-        <WritingSection
-          posts={content.posts}
-          intro={content.sectionIntros?.writing}
-        />
-      )}
+        {visibility.testimonials && content.testimonials.length > 0 && (
+          <TestimonialsSection
+            testimonials={content.testimonials}
+            intro={content.sectionIntros?.testimonials}
+          />
+        )}
 
-      {visibility.contact && (
-        <ContactSection
-          socialLinks={content.socialLinks as any}
-          onSubmit={(data) => console.log("Form submitted:", data)}
-          showForm={content.contactSettings?.showForm ?? true}
-          calendarLinks={content.contactSettings?.calendarLinks}
-        />
-      )}
+        {visibility.writing && content.posts.length > 0 && (
+          <WritingSection
+            posts={content.posts}
+            intro={content.sectionIntros?.writing}
+          />
+        )}
+
+        {visibility.contact && (
+          <ContactSection
+            socialLinks={content.socialLinks as any}
+            onSubmit={(data) => console.log("Form submitted:", data)}
+            showForm={content.contactSettings?.showForm ?? true}
+            calendarLinks={content.contactSettings?.calendarLinks}
+          />
+        )}
+      </main>
     </div>
   );
 }
