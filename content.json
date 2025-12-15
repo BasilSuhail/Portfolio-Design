@@ -6,7 +6,8 @@
     "techStack": true,
     "testimonials": true,
     "writing": false,
-    "contact": true
+    "contact": true,
+    "game": true
   },
   "sectionIntros": {
     "projects": "Below are some select projects, full walkthroughs on request",

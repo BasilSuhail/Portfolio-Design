@@ -257,6 +257,21 @@ export default function Admin() {
                     }
                   />
                 </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Game Section</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display Pixel Shifter game
+                    </p>
+                  </div>
+                  <Switch
+                    checked={currentContent.sectionVisibility.game}
+                    onCheckedChange={(checked) =>
+                      updateContent(["sectionVisibility", "game"], checked)
+                    }
+                  />
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

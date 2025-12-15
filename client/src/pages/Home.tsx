@@ -97,7 +97,7 @@ export default function Home() {
           />
         )}
 
-        <GameSection />
+        {visibility.game && <GameSection />}
       </main>
     </div>
   );
