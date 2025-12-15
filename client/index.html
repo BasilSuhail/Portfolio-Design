@@ -11,6 +11,9 @@
     <title>Basil Suhail | Accounting & Finance Expert | Data Science & Business Management</title>
     <link rel="icon" type="image/png" href="/uploads/headshot.png" />
 
+    <!-- Preload critical assets -->
+    <link rel="preload" as="image" href="/uploads/headshot.png" fetchpriority="high">
+
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Basil Suhail | Accounting & Finance Expert | Data Science & Business Management" />
@@ -24,12 +27,11 @@
     <meta name="twitter:title" content="Basil Suhail | Accounting & Finance Expert" />
     <meta name="twitter:description" content="Data Science & Business Student specializing in Accounting & Finance. Building the future of automated financial reporting." />
     <meta name="twitter:image" content="https://basilsuhail.com/uploads/headshot.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Load only essential fonts with display=swap to avoid render blocking -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+    <!-- Load fonts asynchronously to prevent render blocking -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
     <!-- Schema.org Structured Data for Rich Results -->
     <script type="application/ld+json">

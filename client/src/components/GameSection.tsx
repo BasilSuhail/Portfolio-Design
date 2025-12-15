@@ -52,6 +52,39 @@ const SPRITES = {
     [0,0,1,1,1,1,0,0],
     [0,0,1,1,1,1,0,0],
     [0,0,1,1,1,1,0,0],
+  ],
+  CACTUS_WIDE: [
+    [0,0,1,1,0,0,1,1,0,0],
+    [0,1,1,1,0,0,1,1,1,0],
+    [1,1,1,1,0,0,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+  ],
+  CACTUS_TALL: [
+    [0,0,1,1,0,0],
+    [0,1,1,1,0,0],
+    [1,1,1,1,0,0],
+    [1,1,1,1,1,1],
+    [0,1,1,1,1,1],
+    [0,1,1,1,1,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+    [0,0,1,1,0,0],
+  ],
+  GRASS: [
+    [0,1,0,0,1,0,1,0],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,0],
   ]
 };
 
@@ -108,7 +141,7 @@ export default function GameSection() {
       obstacles: [] as Array<{
         x: number;
         y: number;
-        type: 'SMALL' | 'LARGE';
+        type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS';
         width: number;
         height: number;
         passed: boolean;
@@ -147,6 +180,7 @@ export default function GameSection() {
       state.gameActive = true;
       state.player.y = GROUND_Y - state.player.height;
       state.player.vy = 0;
+      frame = 0; // Reset frame counter so obstacles spawn immediately
       setScore(0);
     };
 
@@ -211,16 +245,35 @@ export default function GameSection() {
       const currentSpawnRate = Math.max(40, 70 - Math.floor(state.speed * 1.5));
 
       if (frame % Math.floor(currentSpawnRate) === 0) {
-        // 80% spawn chance (was 70%)
+        // 80% spawn chance
         if (Math.random() > 0.2) {
-          const type = Math.random() > 0.5 ? 'LARGE' : 'SMALL';
-          const sprite = type === 'LARGE' ? SPRITES.CACTUS_LARGE : SPRITES.CACTUS_SMALL;
+          const types: Array<{ type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS'; sprite: number[][]; weight: number }> = [
+            { type: 'SMALL', sprite: SPRITES.CACTUS_SMALL, weight: 25 },
+            { type: 'LARGE', sprite: SPRITES.CACTUS_LARGE, weight: 20 },
+            { type: 'WIDE', sprite: SPRITES.CACTUS_WIDE, weight: 15 },
+            { type: 'TALL', sprite: SPRITES.CACTUS_TALL, weight: 15 },
+            { type: 'GRASS', sprite: SPRITES.GRASS, weight: 25 },
+          ];
+
+          // Weighted random selection
+          const totalWeight = types.reduce((sum, t) => sum + t.weight, 0);
+          let random = Math.random() * totalWeight;
+          let selectedType = types[0];
+
+          for (const obstacleType of types) {
+            random -= obstacleType.weight;
+            if (random <= 0) {
+              selectedType = obstacleType;
+              break;
+            }
+          }
+
           state.obstacles.push({
             x: canvas.width,
-            y: GROUND_Y - (sprite.length * SCALE),
-            type: type,
-            width: sprite[0].length * SCALE,
-            height: sprite.length * SCALE,
+            y: GROUND_Y - (selectedType.sprite.length * SCALE),
+            type: selectedType.type,
+            width: selectedType.sprite[0].length * SCALE,
+            height: selectedType.sprite.length * SCALE,
             passed: false
           });
         }
@@ -233,8 +286,24 @@ export default function GameSection() {
       state.obstacles.forEach(obs => {
         obs.x -= state.speed;
 
-        // Draw Cactus
-        const sprite = obs.type === 'LARGE' ? SPRITES.CACTUS_LARGE : SPRITES.CACTUS_SMALL;
+        // Draw obstacle based on type
+        let sprite: number[][];
+        switch (obs.type) {
+          case 'LARGE':
+            sprite = SPRITES.CACTUS_LARGE;
+            break;
+          case 'WIDE':
+            sprite = SPRITES.CACTUS_WIDE;
+            break;
+          case 'TALL':
+            sprite = SPRITES.CACTUS_TALL;
+            break;
+          case 'GRASS':
+            sprite = SPRITES.GRASS;
+            break;
+          default:
+            sprite = SPRITES.CACTUS_SMALL;
+        }
         drawSprite(sprite, obs.x, obs.y, state.theme.text);
 
         // Collision Check
