@@ -493,7 +493,7 @@ export default function GameSection() {
           </span>
           <h2 className="text-2xl font-semibold mb-2">Fancy a game?</h2>
           <p className="text-foreground/80 text-sm">
-            Pixel Shifter: A cyberpunk glitch runner
+            Pixel Shifter - A cyberpunk glitch runner
           </p>
         </div>
 
