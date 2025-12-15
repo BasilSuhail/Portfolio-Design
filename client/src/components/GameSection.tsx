@@ -98,6 +98,23 @@ export default function GameSection() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
 
+  // Handle jump from anywhere
+  const handleJump = () => {
+    if (gameOver) {
+      setGameOver(false);
+      setIsPlayingUser(true);
+      return;
+    }
+
+    if (!isPlayingUser) {
+      setIsPlayingUser(true);
+      return;
+    }
+
+    // Trigger jump by dispatching spacebar event
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' }));
+  };
+
   useEffect(() => {
     // Load High Score
     const saved = localStorage.getItem("pixelRunnerHighScore");
@@ -416,7 +433,8 @@ export default function GameSection() {
 
       if (!isPlayingUser) {
         setIsPlayingUser(true);
-        resetGame(); // Start fresh for fairness
+        // Don't reset - let user continue from AI's game
+        state.mode = 'USER';
         return;
       }
 
@@ -437,12 +455,12 @@ export default function GameSection() {
   }, [isPlayingUser, gameOver, highScore]);
 
   return (
-    <section className="py-16 border-t border-border">
+    <section className="py-8 border-t border-border">
       <div className="max-w-4xl mx-auto px-6">
 
         {/* Minimal Header */}
         <div className="mb-4 flex items-center gap-3">
-          <p className="text-sm text-foreground/80">Want to play?</p>
+          <p className="text-sm text-foreground/80">Want to play? Press spacebar or tap to jump</p>
           {!isPlayingUser && !gameOver && (
             <Button
               size="sm"
@@ -459,12 +477,7 @@ export default function GameSection() {
         {/* Game Container */}
         <div
           ref={containerRef}
-          onClick={() => {
-            if (gameOver) {
-              setGameOver(false);
-              setIsPlayingUser(true);
-            }
-          }}
+          onClick={handleJump}
           className="relative w-full overflow-hidden rounded-lg border border-border bg-background cursor-pointer"
           style={{ height: '200px' }}
         >
