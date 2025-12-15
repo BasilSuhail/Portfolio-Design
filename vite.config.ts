@@ -47,20 +47,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Core React libraries
-          if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
-            return 'react';
-          }
-          // Large chart library
-          if (id.includes('recharts') || id.includes('victory') || id.includes('d3-')) {
-            return 'charts';
-          }
-          // UI components
-          if (id.includes('@radix-ui')) {
-            return 'ui';
-          }
-          // Other vendor
           if (id.includes('node_modules')) {
+            // Put ALL node_modules in vendor
             return 'vendor';
           }
         },
