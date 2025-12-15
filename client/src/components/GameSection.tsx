@@ -182,6 +182,21 @@ export default function GameSection() {
       state.player.vy = 0;
       frame = 0; // Reset frame counter so obstacles spawn immediately
       setScore(0);
+
+      // Spawn first obstacle on screen - visible in 1 second
+      const canvas = canvasRef.current;
+      if (canvas) {
+        // At speed 6, dino moves 360 pixels per second
+        // Spawn at edge of screen so it arrives in ~1 second
+        state.obstacles.push({
+          x: canvas.width - 50, // Just offscreen on the right
+          y: GROUND_Y - (SPRITES.CACTUS_SMALL.length * SCALE),
+          type: 'SMALL',
+          width: SPRITES.CACTUS_SMALL[0].length * SCALE,
+          height: SPRITES.CACTUS_SMALL.length * SCALE,
+          passed: false
+        });
+      }
     };
 
     const jump = () => {
@@ -241,12 +256,13 @@ export default function GameSection() {
 
       // 5. Spawn Obstacles - MORE FREQUENT
       frame++;
-      // Much more aggressive spawning
-      const currentSpawnRate = Math.max(40, 70 - Math.floor(state.speed * 1.5));
+      // Spawn first obstacle at 15 frames (~0.25 seconds), then every 90-120 frames
+      const isFirstObstacle = state.obstacles.length === 0 && frame >= 15;
+      const currentSpawnRate = Math.max(90, 120 - Math.floor(state.speed * 2));
 
-      if (frame % Math.floor(currentSpawnRate) === 0) {
-        // 80% spawn chance
-        if (Math.random() > 0.2) {
+      if (isFirstObstacle || frame % currentSpawnRate === 0) {
+        // Always spawn (100% chance)
+        if (true) {
           const types: Array<{ type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS'; sprite: number[][]; weight: number }> = [
             { type: 'SMALL', sprite: SPRITES.CACTUS_SMALL, weight: 25 },
             { type: 'LARGE', sprite: SPRITES.CACTUS_LARGE, weight: 20 },
@@ -374,6 +390,16 @@ export default function GameSection() {
     };
     handleResize();
     window.addEventListener("resize", handleResize);
+
+    // Spawn initial obstacles for AI demo mode
+    state.obstacles.push({
+      x: canvas.width + 300,
+      y: GROUND_Y - (SPRITES.CACTUS_SMALL.length * SCALE),
+      type: 'SMALL',
+      width: SPRITES.CACTUS_SMALL[0].length * SCALE,
+      height: SPRITES.CACTUS_SMALL.length * SCALE,
+      passed: false
+    });
 
     render();
 
