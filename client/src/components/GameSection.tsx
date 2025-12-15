@@ -93,7 +93,7 @@ export default function GameSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Game Logic State
-  const [isPlayingUser, setIsPlayingUser] = useState(false); // False = Auto Mode
+  const [isPlaying, setIsPlaying] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
@@ -102,13 +102,12 @@ export default function GameSection() {
   const handleJump = () => {
     if (gameOver) {
       setGameOver(false);
-      setIsPlayingUser(true);
+      setIsPlaying(true);
       return;
     }
 
-    if (!isPlayingUser) {
-      setIsPlayingUser(true);
-      return;
+    if (!isPlaying) {
+      setIsPlaying(true);
     }
 
     // Trigger jump by dispatching spacebar event
@@ -141,8 +140,7 @@ export default function GameSection() {
     const BASE_SPEED = 6;
 
     const state = {
-      gameActive: true,
-      mode: 'AUTO' as 'AUTO' | 'USER',
+      gameActive: false,
       speed: BASE_SPEED,
       score: 0,
       theme: { text: '#535353', bg: '#ffffff' }, // Chrome Dino colors
@@ -165,8 +163,8 @@ export default function GameSection() {
       }>
     };
 
-    // Update state based on React prop
-    state.mode = isPlayingUser ? 'USER' : 'AUTO';
+    // Game only runs when user is playing
+    state.gameActive = isPlaying;
 
     // --- HELPER: Draw 2D Binary Arrays ---
     const drawSprite = (
@@ -258,18 +256,7 @@ export default function GameSection() {
         state.player.isGrounded = true;
       }
 
-      // 4. AI Auto-Pilot Logic
-      if (state.mode === 'AUTO') {
-        const nextObs = state.obstacles.find(o => o.x > state.player.x);
-        if (nextObs) {
-          const dist = nextObs.x - state.player.x;
-          // Calculate jump based on current speed (dynamic lookahead)
-          const jumpDist = state.speed * 15;
-          if (dist < jumpDist && dist > 0 && state.player.isGrounded) {
-            jump();
-          }
-        }
-      }
+      // No AI logic - user controls only
 
       // 5. Spawn Obstacles - MORE FREQUENT
       frame++;
@@ -347,26 +334,19 @@ export default function GameSection() {
           state.player.y < obs.y + obs.height - hitboxPadding &&
           state.player.y + state.player.height > obs.y + hitboxPadding
         ) {
-          if (state.mode === 'USER') {
-            state.gameActive = false;
-            setGameOver(true);
-            if (state.score > highScore) {
-              setHighScore(Math.floor(state.score));
-              localStorage.setItem("pixelRunnerHighScore", Math.floor(state.score).toString());
-            }
-          } else {
-            // AI Invincibility cheat (prevents glitching)
-            obs.passed = true;
+          state.gameActive = false;
+          setGameOver(true);
+          if (state.score > highScore) {
+            setHighScore(Math.floor(state.score));
+            localStorage.setItem("pixelRunnerHighScore", Math.floor(state.score).toString());
           }
         }
 
         // Score
         if (!obs.passed && obs.x + obs.width < state.player.x) {
           obs.passed = true;
-          if (state.mode === 'USER') {
-             state.score += 1;
-             setScore(Math.floor(state.score));
-          }
+          state.score += 1;
+          setScore(Math.floor(state.score));
         }
       });
 
@@ -383,12 +363,10 @@ export default function GameSection() {
       ctx.fillRect(0, GROUND_Y, canvas.width, 2);
 
       // Speed up progressively - FASTER ACCELERATION
-      if (state.mode === 'USER') {
+      if (state.gameActive) {
         state.speed += 0.005; // Increased from 0.001
         // Cap at reasonable max
         if (state.speed > 15) state.speed = 15;
-      } else {
-        state.speed = BASE_SPEED; // Constant speed for AI to look clean
       }
 
       animationId = requestAnimationFrame(render);
@@ -408,9 +386,10 @@ export default function GameSection() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Spawn initial obstacles for AI demo mode
+    // Spawn initial obstacle visible on screen
+    state.player.y = GROUND_Y - state.player.height;
     state.obstacles.push({
-      x: canvas.width + 300,
+      x: canvas.width / 2,  // Start in middle of screen, visible immediately
       y: GROUND_Y - (SPRITES.CACTUS_SMALL.length * SCALE),
       type: 'SMALL',
       width: SPRITES.CACTUS_SMALL[0].length * SCALE,
@@ -426,15 +405,13 @@ export default function GameSection() {
 
       if (gameOver) {
         setGameOver(false);
-        setIsPlayingUser(true);
+        setIsPlaying(true);
         resetGame();
         return;
       }
 
-      if (!isPlayingUser) {
-        setIsPlayingUser(true);
-        // Don't reset - let user continue from AI's game
-        state.mode = 'USER';
+      if (!isPlaying) {
+        setIsPlaying(true);
         return;
       }
 
@@ -452,20 +429,20 @@ export default function GameSection() {
       window.removeEventListener('keydown', handleKeyDown);
       cancelAnimationFrame(animationId);
     };
-  }, [isPlayingUser, gameOver, highScore]);
+  }, [isPlaying, gameOver, highScore]);
 
   return (
-    <section className="py-8 border-t border-border">
+    <section className="py-8">
       <div className="max-w-4xl mx-auto px-6">
 
         {/* Minimal Header */}
         <div className="mb-4 flex items-center gap-3">
           <p className="text-sm text-foreground/80">Want to play? Press spacebar or tap to jump</p>
-          {!isPlayingUser && !gameOver && (
+          {!isPlaying && !gameOver && (
             <Button
               size="sm"
               variant="outline"
-              onClick={() => setIsPlayingUser(true)}
+              onClick={() => setIsPlaying(true)}
               className="gap-2"
             >
               <Play className="h-3 w-3" />
@@ -495,7 +472,7 @@ export default function GameSection() {
                 onClick={(e) => {
                   e.stopPropagation();
                   setGameOver(false);
-                  setIsPlayingUser(true);
+                  setIsPlaying(true);
                 }}
                 size="sm"
               >
@@ -505,7 +482,7 @@ export default function GameSection() {
           )}
 
           {/* Score HUD - Minimal */}
-          {isPlayingUser && !gameOver && (
+          {isPlaying && !gameOver && (
             <div className="absolute right-4 top-4 text-lg font-mono text-foreground/30 select-none">
               {score.toString().padStart(5, '0')}
             </div>

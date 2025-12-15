@@ -199,8 +199,6 @@ export default function ContactSection({
           })}
         </div>
 
-        <div className="mt-16 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-        </div>
       </div>
     </section>
   );
