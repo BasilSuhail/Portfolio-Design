@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="/uploads/headshot.png" />
 
     <!-- Preload critical assets -->
-    <link rel="preload" as="image" href="/uploads/headshot.png" fetchpriority="high">
+    <link rel="preload" as="image" href="/uploads/headshot.png" fetchpriority="high" imagesrcset="/uploads/headshot.png 1x" imagesizes="150px">
 
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:type" content="website" />
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Load fonts asynchronously to prevent render blocking -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" fetchpriority="low">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
     <!-- Schema.org Structured Data for Rich Results -->
@@ -128,8 +128,11 @@
       ]
     }
     </script>
-    <script type="module" crossorigin src="/assets/index-BREC44iA.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DaMrmPhG.css">
+    <script type="module" crossorigin src="/assets/index-B87e2DQB.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-CTFK7JM4.js">
+    <link rel="modulepreload" crossorigin href="/assets/ui-1jqlrV-B.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-Bs01FnHe.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-DEt_HH3x.css">
   </head>
   <body>
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md">Skip to main content</a>
