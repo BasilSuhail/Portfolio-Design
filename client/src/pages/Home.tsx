@@ -6,6 +6,7 @@ import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
 import ContactSection from "@/components/ContactSection";
+import GameSection from "@/components/GameSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useContent } from "@/hooks/use-content";
 
@@ -95,6 +96,8 @@ export default function Home() {
             calendarLinks={content.contactSettings?.calendarLinks}
           />
         )}
+
+        <GameSection />
       </main>
     </div>
   );
