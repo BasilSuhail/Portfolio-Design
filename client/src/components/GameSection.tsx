@@ -54,15 +54,15 @@ const SPRITES = {
     [0,0,1,1,1,1,0,0],
   ],
   CACTUS_WIDE: [
-    [0,0,1,1,0,0,1,1,0,0],
-    [0,1,1,1,0,0,1,1,1,0],
-    [1,1,1,1,0,0,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,1],
+    [0,1,1,1,0,0,0,0,1,1,1,0,0,1,1,1,0,0,1,1],
+    [1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
   ],
   CACTUS_TALL: [
     [0,0,1,1,0,0],
@@ -386,14 +386,23 @@ export default function GameSection() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Spawn initial obstacle visible on screen
+    // Spawn initial obstacle visible on screen (random type)
     state.player.y = GROUND_Y - state.player.height;
+    const types: Array<{ type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS'; sprite: number[][] }> = [
+      { type: 'SMALL', sprite: SPRITES.CACTUS_SMALL },
+      { type: 'LARGE', sprite: SPRITES.CACTUS_LARGE },
+      { type: 'WIDE', sprite: SPRITES.CACTUS_WIDE },
+      { type: 'TALL', sprite: SPRITES.CACTUS_TALL },
+      { type: 'GRASS', sprite: SPRITES.GRASS },
+    ];
+    const randomType = types[Math.floor(Math.random() * types.length)];
+
     state.obstacles.push({
-      x: canvas.width / 2,  // Start in middle of screen, visible immediately
-      y: GROUND_Y - (SPRITES.CACTUS_SMALL.length * SCALE),
-      type: 'SMALL',
-      width: SPRITES.CACTUS_SMALL[0].length * SCALE,
-      height: SPRITES.CACTUS_SMALL.length * SCALE,
+      x: canvas.width * 0.6,  // 60% across screen - visible but gives space
+      y: GROUND_Y - (randomType.sprite.length * SCALE),
+      type: randomType.type,
+      width: randomType.sprite[0].length * SCALE,
+      height: randomType.sprite.length * SCALE,
       passed: false
     });
 
