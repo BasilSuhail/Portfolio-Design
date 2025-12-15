@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Play, RotateCcw } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react";
 
 export default function GameSection() {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
@@ -14,317 +13,415 @@ export default function GameSection() {
 
   // Load high score from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("spaceRunnerHighScore");
+    const saved = localStorage.getItem("pixelShifterHighScore");
     if (saved) setHighScore(parseInt(saved));
   }, []);
 
-  // Initialize game when expanded
+  // Initialize game
   useEffect(() => {
-    if (!isExpanded || !canvasRef.current) return;
+    if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
+
+    // Colors
+    const COLORS = {
+      bg: "#050505",
+      player: "#39ff14",
+      floor: "#ffffff",
+      obstacle: "#ff00ff",
+      gap: "#050505",
+    };
 
     // Set canvas size
     const updateCanvasSize = () => {
       const container = canvas.parentElement;
       if (container) {
         canvas.width = container.clientWidth;
-        canvas.height = Math.min(500, window.innerHeight * 0.6);
+        // Responsive height: larger on mobile
+        const isMobile = window.innerWidth < 768;
+        canvas.height = isMobile ? Math.min(400, window.innerHeight * 0.5) : 350;
       }
     };
     updateCanvasSize();
     window.addEventListener("resize", updateCanvasSize);
 
+    // Prevent scroll on touch
+    const preventScroll = (e: TouchEvent) => {
+      if (e.target === canvas) {
+        e.preventDefault();
+      }
+    };
+    canvas.addEventListener("touchstart", preventScroll, { passive: false });
+    canvas.addEventListener("touchmove", preventScroll, { passive: false });
+
     // Game state
     const gameState = {
       player: {
         x: 100,
-        y: canvas.height / 2,
-        width: 40,
+        y: 0,
+        width: 30,
         height: 30,
-        speed: 5,
         velocityY: 0,
-        trail: [] as { x: number; y: number; alpha: number }[],
+        gravity: 0.8,
+        jumpPower: -15,
+        isOnGround: false,
+        glitchTimer: 0,
       },
-      obstacles: [] as { x: number; y: number; width: number; height: number; speed: number; rotation: number }[],
-      particles: [] as { x: number; y: number; vx: number; vy: number; alpha: number; size: number }[],
-      stars: [] as { x: number; y: number; size: number; speed: number }[],
+      floor: {
+        y: 0, // Will be set based on canvas height
+        height: 40,
+      },
+      obstacles: [] as Array<{
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        type: "block" | "gap";
+        scored?: boolean;
+      }>,
+      speed: 6,
+      baseSpeed: 6,
+      distance: 0,
       score: 0,
+      lastObstacleX: 0,
+      difficultyTimer: 0,
       isAnimating: true,
-      keysPressed: new Set<string>(),
-      touchY: null as number | null,
+      glitchActive: false,
+      deathGlitchTimer: 0,
     };
 
     gameStateRef.current = gameState;
 
-    // Initialize stars for background
-    for (let i = 0; i < 50; i++) {
-      gameState.stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2 + 1,
-        speed: Math.random() * 2 + 1,
-      });
-    }
+    // Set floor position
+    gameState.floor.y = canvas.height - gameState.floor.height;
+    gameState.player.y = gameState.floor.y - gameState.player.height;
 
-    // Keyboard controls
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (["ArrowUp", "ArrowDown", "w", "s", "W", "S"].includes(e.key)) {
-        e.preventDefault();
-        gameState.keysPressed.add(e.key.toLowerCase());
+    // Glitch effect functions
+    const applyGlitch = (intensity = 1) => {
+      const slices = Math.floor(5 * intensity);
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext("2d");
+      if (!tempCtx) return;
+
+      tempCtx.drawImage(canvas, 0, 0);
+
+      for (let i = 0; i < slices; i++) {
+        const y = Math.random() * canvas.height;
+        const h = Math.random() * 30 + 10;
+        const offset = (Math.random() - 0.5) * 20 * intensity;
+
+        ctx.drawImage(
+          tempCanvas,
+          0,
+          y,
+          canvas.width,
+          h,
+          offset,
+          y,
+          canvas.width,
+          h
+        );
+      }
+
+      // Digital noise
+      if (intensity > 1) {
+        for (let i = 0; i < 20; i++) {
+          ctx.fillStyle = Math.random() > 0.5 ? COLORS.player : COLORS.obstacle;
+          ctx.globalAlpha = 0.3;
+          ctx.fillRect(
+            Math.random() * canvas.width,
+            Math.random() * canvas.height,
+            Math.random() * 50,
+            Math.random() * 5
+          );
+          ctx.globalAlpha = 1;
+        }
       }
     };
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-      gameState.keysPressed.delete(e.key.toLowerCase());
+    const applyRGBSplit = () => {
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext("2d");
+      if (!tempCtx) return;
+
+      tempCtx.drawImage(canvas, 0, 0);
+
+      ctx.globalCompositeOperation = "screen";
+
+      // Red channel
+      ctx.globalAlpha = 0.5;
+      ctx.drawImage(tempCanvas, -5, 0);
+
+      // Blue channel
+      ctx.drawImage(tempCanvas, 5, 0);
+
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = "source-over";
     };
 
-    // Touch controls
-    const handleTouchStart = (e: TouchEvent) => {
+    // Jump handler
+    const jump = () => {
+      if (gameState.isAnimating && !gameStarted) return;
+      if (!gameStarted || gameOver) return;
+
+      if (gameState.player.isOnGround) {
+        gameState.player.velocityY = gameState.player.jumpPower;
+        gameState.player.isOnGround = false;
+        gameState.player.glitchTimer = 3; // Trigger glitch on jump
+      }
+    };
+
+    // Input handlers
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        jump();
+      }
+    };
+
+    const handleClick = () => jump();
+    const handleTouch = (e: TouchEvent) => {
       e.preventDefault();
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      gameState.touchY = touch.clientY - rect.top;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      gameState.touchY = touch.clientY - rect.top;
-    };
-
-    const handleTouchEnd = () => {
-      gameState.touchY = null;
+      jump();
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
-    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
-    canvas.addEventListener("touchend", handleTouchEnd);
+    canvas.addEventListener("click", handleClick);
+    canvas.addEventListener("touchstart", handleTouch);
 
-    // Draw spaceship
-    const drawShip = (x: number, y: number, rotation = 0) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
+    // Spawn obstacles
+    const spawnObstacle = () => {
+      const types = ["block", "gap"] as const;
+      const type = types[Math.floor(Math.random() * types.length)];
 
-      // Ship body (gray triangle)
-      ctx.fillStyle = "#9ca3af";
-      ctx.beginPath();
-      ctx.moveTo(20, 0);
-      ctx.lineTo(-10, -12);
-      ctx.lineTo(-10, 12);
-      ctx.closePath();
-      ctx.fill();
-
-      // Cockpit (blue)
-      ctx.fillStyle = "#60a5fa";
-      ctx.beginPath();
-      ctx.moveTo(15, 0);
-      ctx.lineTo(5, -6);
-      ctx.lineTo(5, 6);
-      ctx.closePath();
-      ctx.fill();
-
-      // Engine glow
-      if (!gameState.isAnimating || gameStarted) {
-        ctx.fillStyle = `rgba(251, 191, 36, ${0.6 + Math.random() * 0.4})`;
-        ctx.beginPath();
-        ctx.arc(-10, 0, 6, 0, Math.PI * 2);
-        ctx.fill();
+      if (type === "block") {
+        gameState.obstacles.push({
+          x: canvas.width + 50,
+          y: gameState.floor.y - 40,
+          width: 30,
+          height: 40,
+          type: "block",
+        });
+      } else {
+        // Gap
+        gameState.obstacles.push({
+          x: canvas.width + 50,
+          y: gameState.floor.y,
+          width: 80 + Math.random() * 40,
+          height: gameState.floor.height,
+          type: "gap",
+        });
       }
 
-      ctx.restore();
+      gameState.lastObstacleX = canvas.width + 50;
     };
 
-    // Draw asteroid
-    const drawAsteroid = (x: number, y: number, size: number, rotation: number) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-
-      ctx.strokeStyle = "#78716c";
-      ctx.fillStyle = "#57534e";
-      ctx.lineWidth = 2;
-
-      const points = 8;
-      ctx.beginPath();
-      for (let i = 0; i < points; i++) {
-        const angle = (i / points) * Math.PI * 2;
-        const radius = size * (0.8 + Math.random() * 0.4);
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+    // Draw player with glitch trail
+    const drawPlayer = () => {
+      // Glitch trail
+      if (gameState.player.glitchTimer > 0) {
+        ctx.fillStyle = COLORS.player;
+        ctx.globalAlpha = 0.3;
+        ctx.fillRect(
+          gameState.player.x + (Math.random() - 0.5) * 4,
+          gameState.player.y + (Math.random() - 0.5) * 4,
+          gameState.player.width,
+          gameState.player.height
+        );
+        ctx.globalAlpha = 1;
       }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
 
-      ctx.restore();
+      // Main player
+      ctx.fillStyle = COLORS.player;
+      ctx.fillRect(
+        gameState.player.x,
+        gameState.player.y,
+        gameState.player.width,
+        gameState.player.height
+      );
+
+      // Pixel detail
+      ctx.fillStyle = "#050505";
+      ctx.fillRect(
+        gameState.player.x + 10,
+        gameState.player.y + 10,
+        10,
+        10
+      );
     };
 
     // Game loop
     const update = () => {
-      const { player, obstacles, particles, stars } = gameState;
+      const { player, floor, obstacles } = gameState;
 
       // Clear canvas
-      ctx.fillStyle = "#000000";
+      ctx.fillStyle = COLORS.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Update and draw stars
-      stars.forEach((star) => {
-        star.x -= star.speed;
-        if (star.x < 0) star.x = canvas.width;
+      // Idle animation
+      if (gameState.isAnimating && !gameStarted) {
+        const pulse = Math.sin(Date.now() / 200) * 5;
+        ctx.fillStyle = COLORS.player;
+        ctx.fillRect(
+          canvas.width / 2 - 15,
+          canvas.height / 2 - 15 + pulse,
+          30,
+          30
+        );
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.size / 3})`;
-        ctx.fillRect(star.x, star.y, star.size, star.size);
-      });
+        // Animated text
+        ctx.fillStyle = COLORS.player;
+        ctx.font = "20px 'JetBrains Mono', monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("PRESS START", canvas.width / 2, canvas.height / 2 + 60);
+        ctx.fillText("SPACE / TAP TO JUMP", canvas.width / 2, canvas.height / 2 + 90);
+        ctx.textAlign = "left";
 
-      // Handle player movement
+        gameLoopRef.current = requestAnimationFrame(update);
+        return;
+      }
+
       if (gameStarted && !gameOver) {
-        // Keyboard controls
-        if (gameState.keysPressed.has("arrowup") || gameState.keysPressed.has("w")) {
-          player.velocityY = -player.speed;
-        } else if (gameState.keysPressed.has("arrowdown") || gameState.keysPressed.has("s")) {
-          player.velocityY = player.speed;
-        } else {
-          player.velocityY *= 0.9; // Smooth deceleration
+        // Update difficulty
+        gameState.difficultyTimer++;
+        if (gameState.difficultyTimer % 600 === 0) {
+          // Every 10 seconds (at 60fps)
+          gameState.speed = gameState.baseSpeed * (1 + gameState.difficultyTimer / 6000);
         }
 
-        // Touch controls
-        if (gameState.touchY !== null) {
-          const targetY = gameState.touchY;
-          const diff = targetY - player.y;
-          player.velocityY = diff * 0.1;
-        }
-
+        // Player physics
+        player.velocityY += player.gravity;
         player.y += player.velocityY;
 
-        // Boundary check
-        if (player.y < player.height / 2) player.y = player.height / 2;
-        if (player.y > canvas.height - player.height / 2)
-          player.y = canvas.height - player.height / 2;
-
-        // Add trail
-        player.trail.push({ x: player.x, y: player.y, alpha: 1 });
-        if (player.trail.length > 10) player.trail.shift();
-
-        // Update trail alpha
-        player.trail.forEach((t, i) => {
-          t.alpha = i / player.trail.length;
-        });
+        // Ground collision
+        if (player.y >= floor.y - player.height) {
+          player.y = floor.y - player.height;
+          player.velocityY = 0;
+          player.isOnGround = true;
+          if (player.glitchTimer === 0) {
+            player.glitchTimer = 2; // Landing glitch
+          }
+        } else {
+          player.isOnGround = false;
+        }
 
         // Spawn obstacles
-        if (Math.random() < 0.02) {
-          obstacles.push({
-            x: canvas.width + 50,
-            y: Math.random() * canvas.height,
-            width: 30 + Math.random() * 30,
-            height: 30 + Math.random() * 30,
-            speed: 3 + Math.random() * 2,
-            rotation: Math.random() * Math.PI * 2,
-          });
+        if (
+          obstacles.length === 0 ||
+          gameState.lastObstacleX < canvas.width - 200 - Math.random() * 200
+        ) {
+          spawnObstacle();
         }
 
         // Update obstacles
         obstacles.forEach((obs, index) => {
-          obs.x -= obs.speed;
-          obs.rotation += 0.02;
+          obs.x -= gameState.speed;
 
-          // Remove off-screen obstacles
-          if (obs.x < -100) {
-            obstacles.splice(index, 1);
+          // Scoring
+          if (obs.x + obs.width < player.x && !obs.scored) {
+            obs.scored = true;
             gameState.score += 10;
+            gameState.distance++;
             setScore(gameState.score);
           }
 
+          // Remove off-screen
+          if (obs.x + obs.width < 0) {
+            obstacles.splice(index, 1);
+          }
+
           // Collision detection
-          const dx = player.x - obs.x;
-          const dy = player.y - obs.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < (obs.width / 2 + player.width / 2)) {
-            // Game over - create explosion particles
-            for (let i = 0; i < 30; i++) {
-              particles.push({
-                x: player.x,
-                y: player.y,
-                vx: (Math.random() - 0.5) * 10,
-                vy: (Math.random() - 0.5) * 10,
-                alpha: 1,
-                size: Math.random() * 4 + 2,
-              });
-            }
-            setGameOver(true);
-
-            // Update high score
-            if (gameState.score > highScore) {
-              setHighScore(gameState.score);
-              localStorage.setItem("spaceRunnerHighScore", gameState.score.toString());
+          if (
+            player.x < obs.x + obs.width &&
+            player.x + player.width > obs.x
+          ) {
+            if (obs.type === "block") {
+              // Hit block
+              if (
+                player.y + player.height > obs.y &&
+                player.y < obs.y + obs.height
+              ) {
+                gameState.deathGlitchTimer = 30;
+                setGameOver(true);
+                if (gameState.score > highScore) {
+                  setHighScore(gameState.score);
+                  localStorage.setItem("pixelShifterHighScore", gameState.score.toString());
+                }
+              }
+            } else if (obs.type === "gap") {
+              // Fell in gap
+              if (player.isOnGround) {
+                gameState.deathGlitchTimer = 30;
+                setGameOver(true);
+                if (gameState.score > highScore) {
+                  setHighScore(gameState.score);
+                  localStorage.setItem("pixelShifterHighScore", gameState.score.toString());
+                }
+              }
             }
           }
         });
+
+        // Update glitch timer
+        if (player.glitchTimer > 0) player.glitchTimer--;
       }
 
-      // Idle animation (ship wobbles)
-      if (gameState.isAnimating && !gameStarted) {
-        player.y = canvas.height / 2 + Math.sin(Date.now() / 500) * 20;
+      // Draw floor
+      ctx.fillStyle = COLORS.floor;
+      ctx.fillRect(0, floor.y, canvas.width, floor.height);
+
+      // Draw floor pattern
+      for (let x = 0; x < canvas.width; x += 20) {
+        ctx.fillStyle = COLORS.bg;
+        ctx.fillRect(x, floor.y + 5, 10, 5);
       }
-
-      // Draw trail
-      player.trail.forEach((t) => {
-        ctx.fillStyle = `rgba(96, 165, 250, ${t.alpha * 0.3})`;
-        ctx.beginPath();
-        ctx.arc(t.x - 15, t.y, 3, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // Draw player
-      drawShip(player.x, player.y);
 
       // Draw obstacles
       obstacles.forEach((obs) => {
-        drawAsteroid(obs.x, obs.y, obs.width / 2, obs.rotation);
-      });
+        if (obs.type === "block") {
+          ctx.fillStyle = COLORS.obstacle;
+          ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
 
-      // Update and draw particles
-      particles.forEach((p, index) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.02;
-        p.vy += 0.2; // Gravity
-
-        if (p.alpha <= 0) {
-          particles.splice(index, 1);
-          return;
+          // Block detail
+          ctx.fillStyle = COLORS.player;
+          ctx.globalAlpha = 0.3;
+          ctx.fillRect(obs.x + 5, obs.y + 5, 5, 5);
+          ctx.fillRect(obs.x + 15, obs.y + 15, 5, 5);
+          ctx.globalAlpha = 1;
+        } else {
+          // Gap (draw as absence of floor)
+          ctx.fillStyle = COLORS.gap;
+          ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
         }
-
-        ctx.fillStyle = `rgba(251, 191, 36, ${p.alpha})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
       });
+
+      // Draw player
+      drawPlayer();
 
       // Draw score
       if (gameStarted) {
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "24px 'JetBrains Mono', monospace";
-        ctx.fillText(`Score: ${gameState.score}`, 20, 40);
+        ctx.fillStyle = COLORS.player;
+        ctx.font = "20px 'JetBrains Mono', monospace";
+        ctx.fillText(`DISTANCE: ${Math.floor(gameState.distance)}`, 20, 35);
+        ctx.fillText(`SCORE: ${gameState.score}`, 20, 60);
       }
 
-      // Draw start message
-      if (!gameStarted && !gameOver) {
-        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-        ctx.font = "20px 'Open Sans', sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("Press START to play", canvas.width / 2, canvas.height / 2 + 60);
-        ctx.fillText("Use ↑↓ or W/S keys to move", canvas.width / 2, canvas.height / 2 + 90);
-        ctx.textAlign = "left";
+      // Apply glitch effects
+      if (player.glitchTimer > 0) {
+        applyGlitch(0.5);
+      }
+
+      // Death glitch
+      if (gameState.deathGlitchTimer > 0) {
+        gameState.deathGlitchTimer--;
+        applyRGBSplit();
+        applyGlitch(2);
       }
 
       gameLoopRef.current = requestAnimationFrame(update);
@@ -335,23 +432,29 @@ export default function GameSection() {
     return () => {
       window.removeEventListener("resize", updateCanvasSize);
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      canvas.removeEventListener("touchstart", handleTouchStart);
-      canvas.removeEventListener("touchmove", handleTouchMove);
-      canvas.removeEventListener("touchend", handleTouchEnd);
+      canvas.removeEventListener("click", handleClick);
+      canvas.removeEventListener("touchstart", handleTouch);
+      canvas.removeEventListener("touchstart", preventScroll);
+      canvas.removeEventListener("touchmove", preventScroll);
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [isExpanded, gameStarted, gameOver, highScore]);
+  }, [gameStarted, gameOver, highScore]);
 
   const handleStart = () => {
     if (gameStateRef.current) {
       gameStateRef.current.isAnimating = false;
       gameStateRef.current.obstacles = [];
-      gameStateRef.current.particles = [];
       gameStateRef.current.score = 0;
-      gameStateRef.current.player.trail = [];
+      gameStateRef.current.distance = 0;
+      gameStateRef.current.speed = gameStateRef.current.baseSpeed;
+      gameStateRef.current.difficultyTimer = 0;
+      gameStateRef.current.deathGlitchTimer = 0;
+      gameStateRef.current.player.glitchTimer = 0;
       if (canvasRef.current) {
-        gameStateRef.current.player.y = canvasRef.current.height / 2;
+        const floor = gameStateRef.current.floor;
+        gameStateRef.current.player.y = floor.y - gameStateRef.current.player.height;
+        gameStateRef.current.player.velocityY = 0;
+        gameStateRef.current.player.isOnGround = true;
       }
     }
     setScore(0);
@@ -363,11 +466,17 @@ export default function GameSection() {
     if (gameStateRef.current) {
       gameStateRef.current.isAnimating = false;
       gameStateRef.current.obstacles = [];
-      gameStateRef.current.particles = [];
       gameStateRef.current.score = 0;
-      gameStateRef.current.player.trail = [];
+      gameStateRef.current.distance = 0;
+      gameStateRef.current.speed = gameStateRef.current.baseSpeed;
+      gameStateRef.current.difficultyTimer = 0;
+      gameStateRef.current.deathGlitchTimer = 0;
+      gameStateRef.current.player.glitchTimer = 0;
       if (canvasRef.current) {
-        gameStateRef.current.player.y = canvasRef.current.height / 2;
+        const floor = gameStateRef.current.floor;
+        gameStateRef.current.player.y = floor.y - gameStateRef.current.player.height;
+        gameStateRef.current.player.velocityY = 0;
+        gameStateRef.current.player.isOnGround = true;
       }
     }
     setScore(0);
@@ -378,73 +487,60 @@ export default function GameSection() {
   return (
     <section className="py-16 border-t border-border">
       <div className="max-w-4xl mx-auto px-6">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
-              GAME
-            </span>
-            <h2 className="text-2xl font-semibold mb-2">Fancy a game?</h2>
-            <p className="text-foreground/80 text-sm">
-              Take a break and try this retro space runner game
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="gap-2"
-          >
-            {isExpanded ? (
-              <>
-                Hide <ChevronUp className="w-4 h-4" />
-              </>
-            ) : (
-              <>
-                Show <ChevronDown className="w-4 h-4" />
-              </>
-            )}
-          </Button>
+        <div className="mb-6">
+          <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
+            GAME
+          </span>
+          <h2 className="text-2xl font-semibold mb-2">Fancy a game?</h2>
+          <p className="text-foreground/80 text-sm">
+            Pixel Shifter: A cyberpunk glitch runner
+          </p>
         </div>
 
-        {isExpanded && (
-          <div className="space-y-4">
-            <div className="relative rounded-lg overflow-hidden border border-border bg-black">
-              <canvas
-                ref={canvasRef}
-                className="w-full h-auto"
-                style={{ display: "block" }}
-              />
-              {gameOver && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-                  <div className="text-center space-y-4">
-                    <h3 className="text-3xl font-bold text-white">Game Over!</h3>
-                    <p className="text-xl text-white">Score: {score}</p>
-                    {score === highScore && score > 0 && (
-                      <p className="text-amber-400 text-sm">New High Score!</p>
-                    )}
-                    <Button onClick={handleRestart} className="gap-2">
-                      <RotateCcw className="w-4 h-4" />
-                      Play Again
-                    </Button>
-                  </div>
+        <div className="space-y-4">
+          <div className="relative rounded-lg overflow-hidden border border-border bg-black">
+            <canvas
+              ref={canvasRef}
+              className="w-full h-auto cursor-pointer"
+              style={{ display: "block" }}
+            />
+            {gameOver && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/90">
+                <div className="text-center space-y-4">
+                  <h3
+                    className="text-3xl font-bold font-mono"
+                    style={{ color: "#39ff14" }}
+                  >
+                    GAME OVER
+                  </h3>
+                  <p className="text-xl text-white font-mono">SCORE: {score}</p>
+                  {score === highScore && score > 0 && (
+                    <p className="text-sm font-mono" style={{ color: "#ff00ff" }}>
+                      NEW HIGH SCORE!
+                    </p>
+                  )}
+                  <Button onClick={handleRestart} className="gap-2">
+                    <RotateCcw className="w-4 h-4" />
+                    Play Again
+                  </Button>
                 </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex gap-4 text-sm text-muted-foreground">
-                <span>High Score: {highScore}</span>
-                {gameStarted && !gameOver && <span>Current: {score}</span>}
               </div>
-              {!gameStarted && !gameOver && (
-                <Button onClick={handleStart} className="gap-2">
-                  <Play className="w-4 h-4" />
-                  Start Game
-                </Button>
-              )}
-            </div>
+            )}
           </div>
-        )}
+
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 text-sm text-muted-foreground font-mono">
+              <span>HIGH SCORE: {highScore}</span>
+              {gameStarted && !gameOver && <span>CURRENT: {score}</span>}
+            </div>
+            {!gameStarted && !gameOver && (
+              <Button onClick={handleStart} className="gap-2">
+                <Play className="w-4 h-4" />
+                Start Game
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
