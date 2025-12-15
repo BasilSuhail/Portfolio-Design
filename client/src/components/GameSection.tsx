@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, Terminal } from "lucide-react";
+import { Play } from "lucide-react";
 
 // --- PIXEL ART ASSETS (Bitmaps) ---
 // 1 = Pixel drawn, 0 = Empty
@@ -88,14 +88,14 @@ export default function GameSection() {
     // Physics
     const GRAVITY = 0.6;
     const JUMP_FORCE = -11;
-    const BASE_SPEED = 5;
+    const BASE_SPEED = 6;
 
     const state = {
       gameActive: true,
       mode: 'AUTO' as 'AUTO' | 'USER',
       speed: BASE_SPEED,
       score: 0,
-      theme: { text: '#000000', bg: '#ffffff' }, // Will update automatically
+      theme: { text: '#535353', bg: '#ffffff' }, // Chrome Dino colors
       player: {
         x: 40,
         y: 0,
@@ -159,15 +159,15 @@ export default function GameSection() {
 
     // --- MAIN LOOP ---
     const render = () => {
-      // 1. Theme Detection (Checks every frame for seamless transition)
-      const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      // You can also check for a class on the document body if you use manual toggling
+      // 1. Theme Detection - Google Chrome Dino style
       const isDarkClass = document.documentElement.classList.contains('dark');
 
-      if (isDark || isDarkClass) {
-        state.theme = { text: '#22c55e', bg: '#0f172a' }; // Tailwind: Green-500 / Slate-900
+      if (isDarkClass) {
+        // Dark mode: White dino on dark background (inverted)
+        state.theme = { text: '#ffffff', bg: '#0a0a0a' };
       } else {
-        state.theme = { text: '#1a1a1a', bg: '#f8fafc' }; // Tailwind: Gray-900 / Slate-50
+        // Light mode: Dark gray dino on white background (original Chrome)
+        state.theme = { text: '#535353', bg: '#ffffff' };
       }
 
       // 2. Clear Canvas
@@ -197,22 +197,23 @@ export default function GameSection() {
         const nextObs = state.obstacles.find(o => o.x > state.player.x);
         if (nextObs) {
           const dist = nextObs.x - state.player.x;
-          // Calculate jump based on speed (Lookahead)
-          const jumpDist = state.speed * 16;
+          // Calculate jump based on current speed (dynamic lookahead)
+          const jumpDist = state.speed * 15;
           if (dist < jumpDist && dist > 0 && state.player.isGrounded) {
             jump();
           }
         }
       }
 
-      // 5. Spawn Obstacles
+      // 5. Spawn Obstacles - MORE FREQUENT
       frame++;
-      // Spawn rate decreases as speed increases
-      const currentSpawnRate = Math.max(60, 100 - (state.speed * 2));
+      // Much more aggressive spawning
+      const currentSpawnRate = Math.max(40, 70 - Math.floor(state.speed * 1.5));
 
       if (frame % Math.floor(currentSpawnRate) === 0) {
-        if (Math.random() > 0.3) {
-          const type = Math.random() > 0.6 ? 'LARGE' : 'SMALL';
+        // 80% spawn chance (was 70%)
+        if (Math.random() > 0.2) {
+          const type = Math.random() > 0.5 ? 'LARGE' : 'SMALL';
           const sprite = type === 'LARGE' ? SPRITES.CACTUS_LARGE : SPRITES.CACTUS_SMALL;
           state.obstacles.push({
             x: canvas.width,
@@ -237,7 +238,7 @@ export default function GameSection() {
         drawSprite(sprite, obs.x, obs.y, state.theme.text);
 
         // Collision Check
-        const hitboxPadding = 8; // Forgiveness padding
+        const hitboxPadding = 6; // Slightly tighter for more challenge
         if (
           state.player.x < obs.x + obs.width - hitboxPadding &&
           state.player.x + state.player.width > obs.x + hitboxPadding &&
@@ -268,11 +269,10 @@ export default function GameSection() {
       });
 
       // 7. Draw Player (Animation Cycle)
-      // Cycle frames every 10 ticks
       const isRun1 = Math.floor(frame / 8) % 2 === 0;
       const playerSprite = state.player.isGrounded
         ? (isRun1 ? SPRITES.DINO_RUN_1 : SPRITES.DINO_RUN_2)
-        : SPRITES.DINO_RUN_1; // Jump pose (could add specific sprite)
+        : SPRITES.DINO_RUN_1;
 
       drawSprite(playerSprite, state.player.x, state.player.y, state.theme.text);
 
@@ -280,9 +280,14 @@ export default function GameSection() {
       ctx.fillStyle = state.theme.text;
       ctx.fillRect(0, GROUND_Y, canvas.width, 2);
 
-      // Speed up slightly
-      if (state.mode === 'USER') state.speed += 0.001;
-      else state.speed = BASE_SPEED; // Constant speed for AI to look clean
+      // Speed up progressively - FASTER ACCELERATION
+      if (state.mode === 'USER') {
+        state.speed += 0.005; // Increased from 0.001
+        // Cap at reasonable max
+        if (state.speed > 15) state.speed = 15;
+      } else {
+        state.speed = BASE_SPEED; // Constant speed for AI to look clean
+      }
 
       animationId = requestAnimationFrame(render);
     };
@@ -337,90 +342,74 @@ export default function GameSection() {
   }, [isPlayingUser, gameOver, highScore]);
 
   return (
-    <section className="w-full border-t border-border bg-background py-10 transition-colors duration-300">
-      <div className="mx-auto max-w-3xl px-6">
+    <section className="py-16 border-t border-border">
+      <div className="max-w-4xl mx-auto px-6">
 
-        {/* Header Information */}
-        <div className="mb-4 flex items-end justify-between font-mono">
-          <div>
-            <div className="flex items-center gap-2 text-primary">
-              <Terminal className="h-4 w-4" />
-              <h2 className="text-sm font-bold tracking-widest uppercase">
-                {isPlayingUser ? "MANUAL OVERRIDE" : "AUTO-PILOT ENABLED"}
-              </h2>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {isPlayingUser ? "Avoid obstacles. Speed increases over time." : "System currently idle. Waiting for input."}
-            </p>
-          </div>
-          <div className="text-right">
-            <div className="text-[10px] uppercase text-muted-foreground">High Score</div>
-            <div className="text-xl font-bold text-foreground">{highScore.toString().padStart(5, '0')}</div>
-          </div>
+        {/* Minimal Header */}
+        <div className="mb-4 flex items-center gap-3">
+          <p className="text-sm text-foreground/80">Want to play?</p>
+          {!isPlayingUser && !gameOver && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setIsPlayingUser(true)}
+              className="gap-2"
+            >
+              <Play className="h-3 w-3" />
+              Start
+            </Button>
+          )}
         </div>
 
         {/* Game Container */}
         <div
           ref={containerRef}
           onClick={() => {
-            if (!isPlayingUser) setIsPlayingUser(true);
-            else if (gameOver) {
-                setGameOver(false);
-                setIsPlayingUser(true);
+            if (gameOver) {
+              setGameOver(false);
+              setIsPlayingUser(true);
             }
-            // Note: Jump is handled by window listener to prevent double triggers
           }}
-          className="relative w-full overflow-hidden rounded-md border border-border bg-card shadow-sm transition-all hover:border-primary/50 cursor-pointer"
+          className="relative w-full overflow-hidden rounded-lg border border-border bg-background cursor-pointer"
           style={{ height: '200px' }}
         >
           <canvas ref={canvasRef} className="block h-full w-full" />
 
-          {/* Overlay: Attract Mode */}
-          {!isPlayingUser && !gameOver && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/10 backdrop-blur-[2px]">
-              <Button
-                variant="secondary"
-                className="animate-bounce shadow-lg font-mono tracking-widest gap-2"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setIsPlayingUser(true);
-                }}
-              >
-                <Play className="h-4 w-4 fill-current" />
-                START GAME
-              </Button>
-            </div>
-          )}
-
           {/* Overlay: Game Over */}
           {gameOver && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
-              <h3 className="mb-2 font-mono text-3xl font-black text-foreground">GAME OVER</h3>
-              <p className="mb-6 font-mono text-lg text-muted-foreground">SCORE: {score}</p>
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/95">
+              <h3 className="mb-2 text-2xl font-bold text-foreground">Game Over</h3>
+              <p className="mb-4 text-muted-foreground">Score: {score}</p>
+              {score === highScore && score > 0 && (
+                <p className="mb-4 text-sm text-primary">New High Score!</p>
+              )}
               <Button
                 onClick={(e) => {
-                    e.stopPropagation();
-                    setGameOver(false);
-                    setIsPlayingUser(true);
+                  e.stopPropagation();
+                  setGameOver(false);
+                  setIsPlayingUser(true);
                 }}
+                size="sm"
               >
-                TRY AGAIN
+                Try Again
               </Button>
             </div>
           )}
 
-          {/* Score HUD */}
+          {/* Score HUD - Minimal */}
           {isPlayingUser && !gameOver && (
-            <div className="absolute right-4 top-4 font-mono text-2xl font-bold text-foreground/20 select-none">
+            <div className="absolute right-4 top-4 text-lg font-mono text-foreground/30 select-none">
               {score.toString().padStart(5, '0')}
             </div>
           )}
         </div>
 
-        <div className="mt-2 flex justify-between text-[10px] text-muted-foreground font-mono uppercase">
-           <span>v1.0.4 // STABLE</span>
-           <span>SPACE to JUMP</span>
-        </div>
+        {/* High Score - Minimal */}
+        {highScore > 0 && (
+          <div className="mt-2 text-right text-xs text-muted-foreground font-mono">
+            HI {highScore.toString().padStart(5, '0')}
+          </div>
+        )}
 
       </div>
     </section>
