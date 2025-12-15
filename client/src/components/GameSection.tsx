@@ -25,13 +25,15 @@ export default function GameSection() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Colors
+    // Colors - Realistic tunnel aesthetic
     const COLORS = {
-      bg: "#050505",
-      player: "#00FFFF",
-      enemy: "#FF00FF",
-      grid: "#BF00FF",
-      laser: "#00FFFF",
+      bg: "#0a0a12",
+      player: "#4CAF50", // Green
+      enemy: "#FF5722", // Orange-red
+      grid: "#64B5F6", // Light blue
+      laser: "#FFC107", // Amber/gold
+      tunnel: "#1a1a2e",
+      tunnelLight: "#16213e",
     };
 
     // Set canvas size
@@ -59,30 +61,29 @@ export default function GameSection() {
       centerX: canvas.width / 2,
       centerY: canvas.height / 2,
       player: {
-        angle: 0,
-        rotation: 0,
-        radius: Math.min(canvas.width, canvas.height) * 0.45,
+        segment: 0,
+        z: 1.0, // Player is at front of tunnel
       },
       enemies: [] as Array<{
-        angle: number;
-        depth: number;
+        segment: number;
+        z: number;
         speed: number;
       }>,
       lasers: [] as Array<{
-        angle: number;
-        depth: number;
+        segment: number;
+        z: number;
         speed: number;
       }>,
       particles: [] as Array<{
-        x: number;
-        y: number;
-        vx: number;
-        vy: number;
+        segment: number;
+        z: number;
+        angle: number;
+        speed: number;
         life: number;
       }>,
       stars: [] as Array<{
-        angle: number;
-        depth: number;
+        segment: number;
+        z: number;
         speed: number;
       }>,
       score: 0,
@@ -95,8 +96,9 @@ export default function GameSection() {
       isAnimating: true,
       autoFire: false,
       fireTimer: 0,
-      tunnelSegments: 16,
-      tunnelDepth: 10,
+      segments: 16, // Number of tunnel segments
+      tunnelSpeed: 0.01, // Tunnel rotation speed (doubled)
+      tunnelRotation: 0,
     };
 
     gameStateRef.current = gameState;
@@ -104,9 +106,9 @@ export default function GameSection() {
     // Initialize starfield
     for (let i = 0; i < 100; i++) {
       gameState.stars.push({
-        angle: Math.random() * Math.PI * 2,
-        depth: Math.random() * 400,
-        speed: 0.5 + Math.random() * 1.5,
+        segment: Math.floor(Math.random() * gameState.segments),
+        z: Math.random() * 0.9 + 0.1,
+        speed: 0.004 + Math.random() * 0.006, // Doubled speed
       });
     }
 
@@ -149,66 +151,166 @@ export default function GameSection() {
     canvas.addEventListener("touchmove", handleTouchMove);
     canvas.addEventListener("touchend", handleTouchEnd);
 
-    // Helper: Project polar to screen
-    const project = (angle: number, depth: number) => {
-      const scale = 1 - depth / 500;
-      const radius = gameState.player.radius * scale;
+    // Project 3D point to 2D screen with proper perspective
+    const project3D = (segment: number, z: number, offset = 0) => {
+      const perspective = 400; // Focal length
+      const scale = perspective / (perspective + z * 600 - 200);
+
+      const angle = ((segment + offset) / gameState.segments) * Math.PI * 2 + gameState.tunnelRotation;
+      const radius = Math.min(canvas.width, canvas.height) * 0.4 * scale;
+
       return {
         x: gameState.centerX + Math.cos(angle) * radius,
         y: gameState.centerY + Math.sin(angle) * radius,
         scale: scale,
+        z: z,
       };
     };
 
-    // Draw tunnel grid
+    // Draw 3D tunnel with proper depth
     const drawTunnel = () => {
+      const zLayers = 15; // More layers for smoother look
+
+      // Draw tunnel faces (polygons between rings)
+      for (let layer = 0; layer < zLayers - 1; layer++) {
+        const z1 = layer / zLayers;
+        const z2 = (layer + 1) / zLayers;
+
+        for (let seg = 0; seg < gameState.segments; seg++) {
+          const p1 = project3D(seg, z1);
+          const p2 = project3D(seg + 1, z1);
+          const p3 = project3D(seg + 1, z2);
+          const p4 = project3D(seg, z2);
+
+          // Fill polygon with realistic gradient
+          const depth = 1 - z1;
+          const r = Math.floor(22 + depth * 40); // Dark blue-grey
+          const g = Math.floor(33 + depth * 50);
+          const b = Math.floor(62 + depth * 80);
+          ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.lineTo(p3.x, p3.y);
+          ctx.lineTo(p4.x, p4.y);
+          ctx.closePath();
+          ctx.fill();
+
+          // Draw grid lines
+          ctx.strokeStyle = COLORS.grid;
+          ctx.lineWidth = 0.8;
+          ctx.shadowBlur = 2;
+          ctx.shadowColor = COLORS.grid;
+          ctx.globalAlpha = 0.5 * depth;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      // Draw radial lines (subtle glow)
       ctx.strokeStyle = COLORS.grid;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.2;
       ctx.shadowBlur = 5;
       ctx.shadowColor = COLORS.grid;
 
-      // Radial lines
-      for (let i = 0; i < gameState.tunnelSegments; i++) {
-        const angle = (i / gameState.tunnelSegments) * Math.PI * 2;
+      for (let seg = 0; seg < gameState.segments; seg++) {
         ctx.beginPath();
-        const start = project(angle, 0);
-        const end = project(angle, 400);
-        ctx.moveTo(start.x, start.y);
-        ctx.lineTo(end.x, end.y);
+        const front = project3D(seg, 0.95);
+        const back = project3D(seg, 0);
+        ctx.moveTo(front.x, front.y);
+        ctx.lineTo(back.x, back.y);
+        ctx.globalAlpha = 0.6;
         ctx.stroke();
       }
-
-      // Circular rings
-      for (let d = 0; d < 400; d += 50) {
-        ctx.beginPath();
-        for (let i = 0; i <= gameState.tunnelSegments; i++) {
-          const angle = (i / gameState.tunnelSegments) * Math.PI * 2;
-          const pos = project(angle, d);
-          if (i === 0) ctx.moveTo(pos.x, pos.y);
-          else ctx.lineTo(pos.x, pos.y);
-        }
-        ctx.stroke();
-      }
+      ctx.globalAlpha = 1;
     };
 
-    // Draw player claw
+    // Draw player as a 3D claw at the front
     const drawPlayer = () => {
-      const pos = project(gameState.player.angle, 400);
+      const seg = gameState.player.segment;
+      const pos = project3D(seg, gameState.player.z);
+      const posL = project3D(seg - 0.3, gameState.player.z);
+      const posR = project3D(seg + 0.3, gameState.player.z);
+      const posBack = project3D(seg, gameState.player.z - 0.05);
+
       ctx.strokeStyle = COLORS.player;
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 10;
+      ctx.fillStyle = COLORS.player;
+      ctx.lineWidth = 3;
+      ctx.shadowBlur = 20;
       ctx.shadowColor = COLORS.player;
 
+      // Draw filled claw shape
       ctx.beginPath();
-      // Claw shape
-      const size = 15;
-      ctx.moveTo(pos.x - size, pos.y - size);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.lineTo(pos.x - size, pos.y + size);
-      ctx.moveTo(pos.x + size, pos.y - size);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.lineTo(pos.x + size, pos.y + size);
+      ctx.moveTo(pos.x, pos.y);
+      ctx.lineTo(posL.x, posL.y);
+      ctx.lineTo(posBack.x, posBack.y);
+      ctx.lineTo(posR.x, posR.y);
+      ctx.closePath();
+      ctx.globalAlpha = 0.7;
+      ctx.fill();
+      ctx.globalAlpha = 1;
       ctx.stroke();
+
+      // Draw center dot
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    // Draw 3D enemy
+    const drawEnemy = (segment: number, z: number) => {
+      const pos = project3D(segment, z);
+      const size = 12 * pos.scale;
+
+      ctx.strokeStyle = COLORS.enemy;
+      ctx.fillStyle = COLORS.enemy;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = COLORS.enemy;
+
+      // Draw diamond shape
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y - size);
+      ctx.lineTo(pos.x + size, pos.y);
+      ctx.lineTo(pos.x, pos.y + size);
+      ctx.lineTo(pos.x - size, pos.y);
+      ctx.closePath();
+      ctx.globalAlpha = 0.6;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.stroke();
+
+      // Inner square
+      const innerSize = size * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y - innerSize);
+      ctx.lineTo(pos.x + innerSize, pos.y);
+      ctx.lineTo(pos.x, pos.y + innerSize);
+      ctx.lineTo(pos.x - innerSize, pos.y);
+      ctx.closePath();
+      ctx.stroke();
+    };
+
+    // Draw 3D laser
+    const drawLaser = (segment: number, z: number) => {
+      const pos1 = project3D(segment, z);
+      const pos2 = project3D(segment, z - 0.08);
+
+      ctx.strokeStyle = COLORS.laser;
+      ctx.lineWidth = 3;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = COLORS.laser;
+
+      ctx.beginPath();
+      ctx.moveTo(pos1.x, pos1.y);
+      ctx.lineTo(pos2.x, pos2.y);
+      ctx.stroke();
+
+      // Add glow point
+      ctx.fillStyle = COLORS.laser;
+      ctx.beginPath();
+      ctx.arc(pos1.x, pos1.y, 3, 0, Math.PI * 2);
+      ctx.fill();
     };
 
     // RGB Split effect
@@ -223,46 +325,39 @@ export default function GameSection() {
 
       ctx.globalCompositeOperation = "screen";
       ctx.globalAlpha = 0.5;
-      ctx.drawImage(tempCanvas, -2, 0);
-      ctx.drawImage(tempCanvas, 2, 0);
+      ctx.drawImage(tempCanvas, -3, 0);
+      ctx.drawImage(tempCanvas, 3, 0);
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
     };
 
     // Spawn enemy
     const spawnEnemy = () => {
-      const angle =
-        (Math.floor(Math.random() * gameState.tunnelSegments) /
-          gameState.tunnelSegments) *
-        Math.PI *
-        2;
+      const segment = Math.floor(Math.random() * gameState.segments);
       gameState.enemies.push({
-        angle: angle,
-        depth: 0,
-        speed: 2 + Math.random(),
+        segment: segment,
+        z: 0.05,
+        speed: 0.012 + Math.random() * 0.008, // Faster enemies
       });
     };
 
     // Fire laser
     const fireLaser = () => {
       gameState.lasers.push({
-        angle: gameState.player.angle,
-        depth: 400,
-        speed: 8,
+        segment: gameState.player.segment,
+        z: gameState.player.z,
+        speed: 0.025, // Faster lasers
       });
     };
 
     // Create explosion particles
-    const createExplosion = (angle: number, depth: number) => {
-      const pos = project(angle, depth);
-      for (let i = 0; i < 15; i++) {
-        const speed = 2 + Math.random() * 3;
-        const particleAngle = Math.random() * Math.PI * 2;
+    const createExplosion = (segment: number, z: number) => {
+      for (let i = 0; i < 12; i++) {
         gameState.particles.push({
-          x: pos.x,
-          y: pos.y,
-          vx: Math.cos(particleAngle) * speed,
-          vy: Math.sin(particleAngle) * speed,
+          segment: segment,
+          z: z,
+          angle: (i / 12) * Math.PI * 2,
+          speed: 0.01 + Math.random() * 0.01,
           life: 30,
         });
       }
@@ -270,16 +365,14 @@ export default function GameSection() {
 
     // Game loop
     const update = () => {
-      // Update center based on canvas size
       gameState.centerX = canvas.width / 2;
       gameState.centerY = canvas.height / 2;
-      gameState.player.radius = Math.min(canvas.width, canvas.height) * 0.45;
 
       // Screen shake
       if (gameState.screenShake > 0) {
         gameState.screenShake--;
-        gameState.shakeX = (Math.random() - 0.5) * 10;
-        gameState.shakeY = (Math.random() - 0.5) * 10;
+        gameState.shakeX = (Math.random() - 0.5) * 15;
+        gameState.shakeY = (Math.random() - 0.5) * 15;
       } else {
         gameState.shakeX = 0;
         gameState.shakeY = 0;
@@ -291,38 +384,45 @@ export default function GameSection() {
       ctx.fillStyle = COLORS.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw starfield
-      ctx.fillStyle = COLORS.grid;
-      ctx.shadowBlur = 2;
+      // Rotate tunnel
+      gameState.tunnelRotation += gameState.tunnelSpeed;
+
+      // Draw stars in tunnel (brighter, more visible)
+      ctx.fillStyle = "#ffffff";
       gameState.stars.forEach((star) => {
-        star.depth += star.speed;
-        if (star.depth > 400) {
-          star.depth = 0;
-          star.angle = Math.random() * Math.PI * 2;
+        star.z += star.speed;
+        if (star.z > 1) {
+          star.z = 0.05;
+          star.segment = Math.floor(Math.random() * gameState.segments);
         }
-        const pos = project(star.angle, star.depth);
-        ctx.globalAlpha = 0.3 * pos.scale;
-        ctx.fillRect(pos.x, pos.y, 2, 2);
+        const pos = project3D(star.segment, star.z);
+        const brightness = (1 - star.z) * 0.7;
+        ctx.globalAlpha = brightness;
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = "#ffffff";
+        ctx.fillRect(pos.x - 1.5, pos.y - 1.5, 3, 3);
       });
       ctx.globalAlpha = 1;
 
-      // Draw tunnel
+      // Draw 3D tunnel
       drawTunnel();
 
       // Idle animation
       if (gameState.isAnimating && !gameStarted) {
-        gameState.player.angle = Math.sin(Date.now() / 1000) * 0.5;
+        gameState.player.segment = 8 + Math.sin(Date.now() / 800) * 3;
         drawPlayer();
 
         ctx.fillStyle = COLORS.player;
-        ctx.font = "24px 'JetBrains Mono', monospace";
+        ctx.font = "28px 'JetBrains Mono', monospace";
         ctx.textAlign = "center";
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = COLORS.player;
-        ctx.fillText("NEON TEMPEST", canvas.width / 2, canvas.height / 2 - 40);
+        ctx.fillText("NEON TEMPEST", canvas.width / 2, canvas.height / 2 - 50);
         ctx.font = "16px 'JetBrains Mono', monospace";
-        ctx.fillText("PRESS START", canvas.width / 2, canvas.height / 2 + 20);
-        ctx.fillText("← → ARROWS / SPACE TO SHOOT", canvas.width / 2, canvas.height / 2 + 50);
+        ctx.shadowBlur = 15;
+        ctx.fillText("PRESS START", canvas.width / 2, canvas.height / 2 + 10);
+        ctx.font = "14px 'JetBrains Mono', monospace";
+        ctx.fillText("← → TO MOVE • SPACE TO SHOOT", canvas.width / 2, canvas.height / 2 + 40);
         ctx.textAlign = "left";
 
         ctx.restore();
@@ -331,20 +431,24 @@ export default function GameSection() {
       }
 
       if (gameStarted && !gameOver) {
-        // Player movement
+        // Player movement (faster, more responsive)
         if (gameState.keysPressed.has("ArrowLeft")) {
-          gameState.player.angle -= 0.08;
+          gameState.player.segment -= 0.25;
         }
         if (gameState.keysPressed.has("ArrowRight")) {
-          gameState.player.angle += 0.08;
+          gameState.player.segment += 0.25;
         }
+
+        // Wrap around
+        if (gameState.player.segment < 0) gameState.player.segment += gameState.segments;
+        if (gameState.player.segment >= gameState.segments) gameState.player.segment -= gameState.segments;
 
         // Touch controls
         if (gameState.touchX !== null) {
           if (gameState.touchX < canvas.width / 3) {
-            gameState.player.angle -= 0.08;
+            gameState.player.segment -= 0.25;
           } else if (gameState.touchX > (canvas.width * 2) / 3) {
-            gameState.player.angle += 0.08;
+            gameState.player.segment += 0.25;
           }
         }
 
@@ -352,7 +456,7 @@ export default function GameSection() {
         if (gameState.keysPressed.has("Space")) {
           if (gameState.fireTimer === 0) {
             fireLaser();
-            gameState.fireTimer = 10;
+            gameState.fireTimer = 8;
           }
         }
 
@@ -360,7 +464,7 @@ export default function GameSection() {
         if (gameState.autoFire) {
           if (gameState.fireTimer === 0) {
             fireLaser();
-            gameState.fireTimer = 10;
+            gameState.fireTimer = 8;
           }
         }
 
@@ -368,22 +472,23 @@ export default function GameSection() {
 
         // Spawn enemies
         gameState.spawnTimer++;
-        if (gameState.spawnTimer > 60 - Math.min(gameState.score / 5, 40)) {
+        if (gameState.spawnTimer > 70 - Math.min(gameState.score / 3, 45)) {
           spawnEnemy();
           gameState.spawnTimer = 0;
         }
 
         // Update enemies
         gameState.enemies.forEach((enemy, index) => {
-          enemy.depth += enemy.speed;
+          enemy.z += enemy.speed;
 
           // Enemy reached player
-          if (enemy.depth > 400) {
-            const angleDiff = Math.abs(enemy.angle - gameState.player.angle);
-            if (angleDiff < 0.3 || angleDiff > Math.PI * 2 - 0.3) {
-              // Hit!
-              gameState.screenShake = 20;
-              createExplosion(enemy.angle, 400);
+          if (enemy.z >= gameState.player.z - 0.05) {
+            const segDiff = Math.abs(enemy.segment - gameState.player.segment);
+            const wrappedDiff = Math.min(segDiff, gameState.segments - segDiff);
+
+            if (wrappedDiff < 0.8) {
+              gameState.screenShake = 25;
+              createExplosion(enemy.segment, enemy.z);
               setGameOver(true);
               if (gameState.score > highScore) {
                 setHighScore(gameState.score);
@@ -396,18 +501,20 @@ export default function GameSection() {
 
         // Update lasers
         gameState.lasers.forEach((laser, index) => {
-          laser.depth -= laser.speed;
+          laser.z -= laser.speed;
 
-          if (laser.depth < 0) {
+          if (laser.z < 0.05) {
             gameState.lasers.splice(index, 1);
           }
 
           // Check collision with enemies
           gameState.enemies.forEach((enemy, eIndex) => {
-            const angleDiff = Math.abs(laser.angle - enemy.angle);
-            const depthDiff = Math.abs(laser.depth - enemy.depth);
-            if ((angleDiff < 0.2 || angleDiff > Math.PI * 2 - 0.2) && depthDiff < 30) {
-              createExplosion(enemy.angle, enemy.depth);
+            const segDiff = Math.abs(laser.segment - enemy.segment);
+            const wrappedDiff = Math.min(segDiff, gameState.segments - segDiff);
+            const zDiff = Math.abs(laser.z - enemy.z);
+
+            if (wrappedDiff < 0.5 && zDiff < 0.08) {
+              createExplosion(enemy.segment, enemy.z);
               gameState.enemies.splice(eIndex, 1);
               gameState.lasers.splice(index, 1);
               gameState.score += 10;
@@ -418,55 +525,34 @@ export default function GameSection() {
 
         // Update particles
         gameState.particles.forEach((p, index) => {
-          p.x += p.vx;
-          p.y += p.vy;
+          p.segment += Math.cos(p.angle) * 0.3;
+          p.z += Math.sin(p.angle) * 0.01;
           p.life--;
-          if (p.life <= 0) {
+          if (p.life <= 0 || p.z > 1 || p.z < 0) {
             gameState.particles.splice(index, 1);
           }
         });
       }
 
       // Draw enemies
-      ctx.strokeStyle = COLORS.enemy;
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = COLORS.enemy;
       gameState.enemies.forEach((enemy) => {
-        const pos = project(enemy.angle, enemy.depth);
-        const size = 10 * pos.scale;
-        ctx.beginPath();
-        ctx.moveTo(pos.x - size, pos.y - size);
-        ctx.lineTo(pos.x + size, pos.y - size);
-        ctx.lineTo(pos.x + size, pos.y + size);
-        ctx.lineTo(pos.x - size, pos.y + size);
-        ctx.closePath();
-        ctx.stroke();
+        drawEnemy(enemy.segment, enemy.z);
       });
 
       // Draw lasers
-      ctx.strokeStyle = COLORS.laser;
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = COLORS.laser;
       gameState.lasers.forEach((laser) => {
-        const pos = project(laser.angle, laser.depth);
-        const pos2 = project(laser.angle, laser.depth - 20);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        ctx.lineTo(pos2.x, pos2.y);
-        ctx.stroke();
+        drawLaser(laser.segment, laser.z);
       });
 
       // Draw particles
       ctx.strokeStyle = COLORS.enemy;
-      ctx.lineWidth = 1;
-      ctx.shadowBlur = 5;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
       gameState.particles.forEach((p) => {
+        const pos = project3D(p.segment, p.z);
         ctx.globalAlpha = p.life / 30;
         ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x + p.vx * 2, p.y + p.vy * 2);
+        ctx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
         ctx.stroke();
       });
       ctx.globalAlpha = 1;
@@ -477,9 +563,10 @@ export default function GameSection() {
       // Draw score
       if (gameStarted) {
         ctx.fillStyle = COLORS.player;
-        ctx.font = "20px 'JetBrains Mono', monospace";
-        ctx.shadowBlur = 10;
-        ctx.fillText(`SCORE: ${gameState.score}`, 20, 35);
+        ctx.font = "22px 'JetBrains Mono', monospace";
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = COLORS.player;
+        ctx.fillText(`SCORE: ${gameState.score}`, 20, 40);
       }
 
       // RGB Split on death
@@ -515,7 +602,7 @@ export default function GameSection() {
       gameStateRef.current.score = 0;
       gameStateRef.current.spawnTimer = 0;
       gameStateRef.current.screenShake = 0;
-      gameStateRef.current.player.angle = 0;
+      gameStateRef.current.player.segment = 8;
     }
     setScore(0);
     setGameOver(false);
@@ -531,7 +618,7 @@ export default function GameSection() {
       gameStateRef.current.score = 0;
       gameStateRef.current.spawnTimer = 0;
       gameStateRef.current.screenShake = 0;
-      gameStateRef.current.player.angle = 0;
+      gameStateRef.current.player.segment = 8;
     }
     setScore(0);
     setGameOver(false);
