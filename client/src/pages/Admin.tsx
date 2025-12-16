@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ImageUpload } from "@/components/ImageUpload";
+import { BlogManager } from "@/components/BlogManager";
 import { Plus, Trash2, LogOut } from "lucide-react";
 
 export default function Admin() {
@@ -132,7 +133,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-11">
+          <TabsList className="grid w-full grid-cols-12">
             <TabsTrigger value="visibility">Visibility</TabsTrigger>
             <TabsTrigger value="intros">Intros</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -144,6 +145,7 @@ export default function Admin() {
             <TabsTrigger value="writing">Writing</TabsTrigger>
             <TabsTrigger value="social">Social</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="blogs">Blogs</TabsTrigger>
           </TabsList>
 
           <TabsContent value="visibility">
@@ -1192,6 +1194,10 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="blogs">
+            <BlogManager />
           </TabsContent>
         </Tabs>
       </div>

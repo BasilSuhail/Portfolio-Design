@@ -7,6 +7,7 @@ import { Resend } from "resend";
 
 // Use process.cwd() instead of import.meta.url for compatibility with CommonJS build
 const contentPath = path.join(process.cwd(), "content.json");
+const blogsPath = path.join(process.cwd(), "blogs.json");
 const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
 
 // Configure multer for file uploads
@@ -125,6 +126,115 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Contact form error:", error);
       res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Blog API endpoints
+
+  // Get all blogs (public - only published)
+  app.get("/api/blogs", async (_req: Request, res: Response) => {
+    try {
+      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
+      const blogs = JSON.parse(data);
+      // Only return published blogs for public view
+      const publishedBlogs = blogs.filter((blog: any) => blog.published);
+      res.json(publishedBlogs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch blogs" });
+    }
+  });
+
+  // Get all blogs (admin - including drafts)
+  app.get("/api/admin/blogs", async (_req: Request, res: Response) => {
+    try {
+      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
+      const blogs = JSON.parse(data);
+      res.json(blogs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch blogs" });
+    }
+  });
+
+  // Get single blog by slug
+  app.get("/api/blogs/:slug", async (req: Request, res: Response) => {
+    try {
+      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
+      const blogs = JSON.parse(data);
+      const blog = blogs.find((b: any) => b.slug === req.params.slug);
+
+      if (!blog) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+
+      // Only allow viewing published blogs publicly
+      if (!blog.published) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+
+      res.json(blog);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch blog" });
+    }
+  });
+
+  // Create blog (admin)
+  app.post("/api/admin/blogs", async (req: Request, res: Response) => {
+    try {
+      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
+      const blogs = JSON.parse(data);
+
+      const newBlog = {
+        id: Date.now().toString(),
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      blogs.push(newBlog);
+      await fs.writeFile(blogsPath, JSON.stringify(blogs, null, 2));
+
+      res.json(newBlog);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create blog" });
+    }
+  });
+
+  // Update blog (admin)
+  app.put("/api/admin/blogs/:id", async (req: Request, res: Response) => {
+    try {
+      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
+      const blogs = JSON.parse(data);
+
+      const index = blogs.findIndex((b: any) => b.id === req.params.id);
+      if (index === -1) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+
+      blogs[index] = {
+        ...blogs[index],
+        ...req.body,
+        updatedAt: new Date().toISOString(),
+      };
+
+      await fs.writeFile(blogsPath, JSON.stringify(blogs, null, 2));
+      res.json(blogs[index]);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update blog" });
+    }
+  });
+
+  // Delete blog (admin)
+  app.delete("/api/admin/blogs/:id", async (req: Request, res: Response) => {
+    try {
+      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
+      let blogs = JSON.parse(data);
+
+      blogs = blogs.filter((b: any) => b.id !== req.params.id);
+      await fs.writeFile(blogsPath, JSON.stringify(blogs, null, 2));
+
+      res.json({ message: "Blog deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete blog" });
     }
   });
 
