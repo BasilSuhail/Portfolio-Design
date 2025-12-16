@@ -17,6 +17,7 @@ interface Blog {
   excerpt?: string;
   coverImage?: string;
   published: boolean;
+  featuredInWriting?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -35,6 +36,7 @@ export function BlogManager() {
     excerpt: "",
     coverImage: "",
     published: false,
+    featuredInWriting: false,
   };
 
   useEffect(() => {
@@ -267,15 +269,38 @@ export function BlogManager() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="published"
-                checked={blog.published}
-                onCheckedChange={(checked) =>
-                  setEditingBlog({ ...(blog as Blog), published: checked })
-                }
-              />
-              <Label htmlFor="published">Published</Label>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="published"
+                  checked={blog.published}
+                  onCheckedChange={(checked) =>
+                    setEditingBlog({ ...(blog as Blog), published: checked })
+                  }
+                />
+                <div>
+                  <Label htmlFor="published">Published</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Make this blog visible to the public
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="featured"
+                  checked={blog.featuredInWriting || false}
+                  onCheckedChange={(checked) =>
+                    setEditingBlog({ ...(blog as Blog), featuredInWriting: checked })
+                  }
+                />
+                <div>
+                  <Label htmlFor="featured">Feature in Writing Section</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Show this blog in the homepage Writing section
+                  </p>
+                </div>
+              </div>
             </div>
 
             <Button
@@ -334,7 +359,7 @@ export function BlogManager() {
                         {blog.excerpt}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 mt-2">
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="text-xs text-muted-foreground">
                         {new Date(blog.createdAt).toLocaleDateString()}
                       </span>
@@ -347,6 +372,11 @@ export function BlogManager() {
                       >
                         {blog.published ? "Published" : "Draft"}
                       </span>
+                      {blog.featuredInWriting && (
+                        <span className="text-xs px-2 py-1 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                          ⭐ Featured
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="flex gap-2">
