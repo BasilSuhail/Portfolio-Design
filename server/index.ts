@@ -49,10 +49,9 @@ app.use(session({
 const csrfProtection = doubleCsrf({
   getSecret: () => sessionSecret,
   getSessionIdentifier: (req) => {
-    // Generate a unique identifier for the session
-    if (!req.session) return "";
-    // Use the session ID if available, otherwise create a random one
-    return (req.session as any).id || `session-${Date.now()}-${Math.random()}`;
+    // Use the session ID from express-session
+    // sessionID is automatically generated and persisted by express-session
+    return req.sessionID || "";
   },
   cookieName: "x-csrf-token",
   cookieOptions: {
