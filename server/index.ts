@@ -64,7 +64,11 @@ const csrfProtection = doubleCsrf({
   getSessionIdentifier: (req) => {
     // Use the session ID from express-session
     // sessionID is automatically generated and persisted by express-session
-    return req.sessionID || "";
+    const sessionId = req.sessionID || "";
+    if (!sessionId) {
+      log(`WARNING: No session ID found for request to ${req.path}`);
+    }
+    return sessionId;
   },
   cookieName: "x-csrf-token",
   cookieOptions: {
@@ -83,14 +87,32 @@ const { generateCsrfToken, doubleCsrfProtection } = csrfProtection;
 // Endpoint to get CSRF token for frontend
 app.get("/api/csrf-token", (req, res) => {
   try {
-    const token = generateCsrfToken(req, res);
-    log(`CSRF token generated for session: ${req.sessionID?.substring(0, 8)}...`);
-    res.json({ token });
+    // Force session save before generating token
+    req.session.save((err) => {
+      if (err) {
+        log(`Session save error: ${err}`);
+        return res.status(500).json({ message: "Failed to save session" });
+      }
+
+      const token = generateCsrfToken(req, res);
+      log(`CSRF token generated | Session: ${req.sessionID?.substring(0, 8)}... | IP: ${req.ip}`);
+      res.json({ token });
+    });
   } catch (error) {
     log(`Failed to generate CSRF token: ${error}`);
     res.status(500).json({ message: "Failed to generate CSRF token" });
   }
 });
+
+// Middleware to debug CSRF issues on admin routes
+const debugCsrfMiddleware = (req: Request, _res: Response, next: NextFunction) => {
+  if (req.path.startsWith('/api/admin')) {
+    log(`Admin request | Method: ${req.method} | Path: ${req.path} | Session: ${req.sessionID?.substring(0, 8)}... | Has CSRF header: ${!!req.headers['x-csrf-token']} | Has CSRF cookie: ${!!req.cookies['x-csrf-token']} | IP: ${req.ip}`);
+  }
+  next();
+};
+
+app.use(debugCsrfMiddleware);
 
 // Export CSRF protection for use in routes
 export { doubleCsrfProtection };
