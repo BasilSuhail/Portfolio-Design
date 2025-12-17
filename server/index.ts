@@ -11,6 +11,10 @@ import { doubleCsrf } from "csrf-csrf";
 const app = express();
 const httpServer = createServer(app);
 
+// Trust proxy - REQUIRED for Cloudflare/reverse proxies
+// This allows Express to trust X-Forwarded-* headers
+app.set('trust proxy', 1);
+
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
