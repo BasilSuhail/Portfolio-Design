@@ -13,6 +13,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ImageUpload } from "@/components/ImageUpload";
 import { BlogManager } from "@/components/BlogManager";
 import { Plus, Trash2, LogOut } from "lucide-react";
+import { secureFetch } from "@/lib/csrf";
 
 export default function Admin() {
   const [, setLocation] = useLocation();
@@ -59,7 +60,7 @@ export default function Admin() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch("/api/content", {
+      const response = await secureFetch("/api/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(currentContent),

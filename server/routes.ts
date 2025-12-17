@@ -4,10 +4,28 @@ import fs from "fs/promises";
 import path from "path";
 import multer from "multer";
 import { Resend } from "resend";
+import * as blogService from "./blogService";
+import { body, validationResult } from "express-validator";
+import DOMPurify from "isomorphic-dompurify";
+import { doubleCsrfProtection } from "./index";
+
+// Sanitize HTML content - allows safe tags, strips scripts
+function sanitizeHTML(dirty: string): string {
+  return DOMPurify.sanitize(dirty, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                   'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead',
+                   'tbody', 'tr', 'th', 'td', 'span', 'div'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel'],
+  });
+}
+
+// Sanitize plain text - strips all HTML
+function sanitizeText(text: string): string {
+  return DOMPurify.sanitize(text, { ALLOWED_TAGS: [] });
+}
 
 // Use process.cwd() instead of import.meta.url for compatibility with CommonJS build
 const contentPath = path.join(process.cwd(), "content.json");
-const blogsPath = path.join(process.cwd(), "blogs.json");
 const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
 
 // Configure multer for file uploads
@@ -56,7 +74,7 @@ export async function registerRoutes(
   });
 
   // Update portfolio content
-  app.post("/api/content", async (req: Request, res: Response) => {
+  app.post("/api/content", doubleCsrfProtection, async (req: Request, res: Response) => {
     try {
       await fs.writeFile(contentPath, JSON.stringify(req.body, null, 2));
       res.json({ message: "Content updated successfully" });
@@ -66,7 +84,7 @@ export async function registerRoutes(
   });
 
   // Upload image
-  app.post("/api/upload", upload.single("image"), async (req: Request, res: Response) => {
+  app.post("/api/upload", doubleCsrfProtection, upload.single("image"), async (req: Request, res: Response) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
@@ -80,7 +98,7 @@ export async function registerRoutes(
   });
 
   // Admin login
-  app.post("/api/admin/login", async (req: Request, res: Response) => {
+  app.post("/api/admin/login", doubleCsrfProtection, async (req: Request, res: Response) => {
     try {
       const { password } = req.body;
       const adminPassword = process.env.ADMIN_PASSWORD || "admin123"; // Default password for development
@@ -95,51 +113,62 @@ export async function registerRoutes(
     }
   });
 
-  // Contact form submission
-  app.post("/api/contact", async (req: Request, res: Response) => {
-    try {
-      const { name, email, message } = req.body;
-
-      if (!name || !email || !message) {
-        return res.status(400).json({ message: "All fields are required" });
+  // Contact form submission - with validation and sanitization
+  app.post(
+    "/api/contact",
+    doubleCsrfProtection,
+    [
+      body('name').trim().notEmpty().isLength({ max: 100 }).escape(),
+      body('email').trim().notEmpty().isEmail().normalizeEmail(),
+      body('message').trim().notEmpty().isLength({ max: 5000 }),
+    ],
+    async (req: Request, res: Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: "Invalid input", errors: errors.array() });
       }
 
-      // Initialize Resend with API key from environment variable
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      try {
+        // Sanitize inputs
+        const sanitizedName = sanitizeText(req.body.name);
+        const sanitizedEmail = sanitizeText(req.body.email);
+        const sanitizedMessage = sanitizeText(req.body.message);
 
-      // Send email using Resend
-      await resend.emails.send({
-        from: 'Portfolio Contact <onboarding@resend.dev>', // Use Resend's default sender for testing
-        to: 'basilsuhail3@gmail.com',
-        replyTo: email,
-        subject: `Portfolio Contact: Message from ${name}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <p>${message.replace(/\n/g, '<br>')}</p>
-        `,
-      });
+        // Initialize Resend with API key from environment variable
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
-      res.json({ message: "Message sent successfully" });
-    } catch (error) {
-      console.error("Contact form error:", error);
-      res.status(500).json({ message: "Failed to send message" });
+        // Send email using Resend
+        await resend.emails.send({
+          from: 'Portfolio Contact <onboarding@resend.dev>', // Use Resend's default sender for testing
+          to: 'basilsuhail3@gmail.com',
+          replyTo: sanitizedEmail,
+          subject: `Portfolio Contact: Message from ${sanitizedName}`,
+          html: `
+            <h2>New Contact Form Submission</h2>
+            <p><strong>Name:</strong> ${sanitizedName}</p>
+            <p><strong>Email:</strong> ${sanitizedEmail}</p>
+            <p><strong>Message:</strong></p>
+            <p>${sanitizedMessage.replace(/\n/g, '<br>')}</p>
+          `,
+        });
+
+        res.json({ message: "Message sent successfully" });
+      } catch (error) {
+        console.error("Contact form error:", error);
+        res.status(500).json({ message: "Failed to send message" });
+      }
     }
-  });
+  );
 
   // Blog API endpoints
 
   // Get all blogs (public - only published)
   app.get("/api/blogs", async (_req: Request, res: Response) => {
     try {
-      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
-      const blogs = JSON.parse(data);
-      // Only return published blogs for public view
-      const publishedBlogs = blogs.filter((blog: any) => blog.published);
-      res.json(publishedBlogs);
+      const blogs = await blogService.getAllBlogs();
+      res.json(blogs);
     } catch (error) {
+      console.error("Failed to fetch blogs:", error);
       res.status(500).json({ message: "Failed to fetch blogs" });
     }
   });
@@ -147,10 +176,10 @@ export async function registerRoutes(
   // Get all blogs (admin - including drafts)
   app.get("/api/admin/blogs", async (_req: Request, res: Response) => {
     try {
-      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
-      const blogs = JSON.parse(data);
+      const blogs = await blogService.getAllBlogsAdmin();
       res.json(blogs);
     } catch (error) {
+      console.error("Failed to fetch blogs:", error);
       res.status(500).json({ message: "Failed to fetch blogs" });
     }
   });
@@ -158,82 +187,101 @@ export async function registerRoutes(
   // Get single blog by slug
   app.get("/api/blogs/:slug", async (req: Request, res: Response) => {
     try {
-      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
-      const blogs = JSON.parse(data);
-      const blog = blogs.find((b: any) => b.slug === req.params.slug);
+      const blog = await blogService.getBlogBySlug(req.params.slug);
 
       if (!blog) {
         return res.status(404).json({ message: "Blog not found" });
       }
 
-      // Only allow viewing published blogs publicly
-      if (!blog.published) {
-        return res.status(404).json({ message: "Blog not found" });
-      }
-
       res.json(blog);
     } catch (error) {
+      console.error("Failed to fetch blog:", error);
       res.status(500).json({ message: "Failed to fetch blog" });
     }
   });
 
-  // Create blog (admin)
-  app.post("/api/admin/blogs", async (req: Request, res: Response) => {
-    try {
-      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
-      const blogs = JSON.parse(data);
-
-      const newBlog = {
-        id: Date.now().toString(),
-        ...req.body,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      blogs.push(newBlog);
-      await fs.writeFile(blogsPath, JSON.stringify(blogs, null, 2));
-
-      res.json(newBlog);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to create blog" });
-    }
-  });
-
-  // Update blog (admin)
-  app.put("/api/admin/blogs/:id", async (req: Request, res: Response) => {
-    try {
-      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
-      const blogs = JSON.parse(data);
-
-      const index = blogs.findIndex((b: any) => b.id === req.params.id);
-      if (index === -1) {
-        return res.status(404).json({ message: "Blog not found" });
+  // Create blog (admin) - with validation and sanitization
+  app.post(
+    "/api/admin/blogs",
+    doubleCsrfProtection,
+    [
+      body('title').trim().notEmpty().isLength({ max: 200 }).escape(),
+      body('slug').trim().notEmpty().isLength({ max: 200 }).matches(/^[a-z0-9-]+$/),
+      body('excerpt').optional().trim().isLength({ max: 500 }),
+      body('content').notEmpty(),
+      body('coverImage').optional().trim().isURL(),
+    ],
+    async (req: Request, res: Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: "Invalid input", errors: errors.array() });
       }
 
-      blogs[index] = {
-        ...blogs[index],
-        ...req.body,
-        updatedAt: new Date().toISOString(),
-      };
+      try {
+        // Sanitize inputs
+        const sanitizedData = {
+          ...req.body,
+          title: sanitizeText(req.body.title),
+          slug: sanitizeText(req.body.slug),
+          excerpt: req.body.excerpt ? sanitizeText(req.body.excerpt) : undefined,
+          content: sanitizeHTML(req.body.content), // Allow safe HTML in content
+        };
 
-      await fs.writeFile(blogsPath, JSON.stringify(blogs, null, 2));
-      res.json(blogs[index]);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to update blog" });
+        const newBlog = await blogService.createBlog(sanitizedData);
+        res.json(newBlog);
+      } catch (error) {
+        console.error("Failed to create blog:", error);
+        res.status(500).json({ message: "Failed to create blog" });
+      }
     }
-  });
+  );
+
+  // Update blog (admin) - with validation and sanitization
+  app.put(
+    "/api/admin/blogs/:id",
+    doubleCsrfProtection,
+    [
+      body('title').optional().trim().isLength({ max: 200 }).escape(),
+      body('slug').optional().trim().matches(/^[a-z0-9-]+$/),
+      body('excerpt').optional().trim().isLength({ max: 500 }),
+      body('content').optional(),
+      body('coverImage').optional().trim().isURL(),
+    ],
+    async (req: Request, res: Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: "Invalid input", errors: errors.array() });
+      }
+
+      try {
+        // Sanitize inputs
+        const sanitizedData: any = { ...req.body };
+        if (req.body.title) sanitizedData.title = sanitizeText(req.body.title);
+        if (req.body.slug) sanitizedData.slug = sanitizeText(req.body.slug);
+        if (req.body.excerpt) sanitizedData.excerpt = sanitizeText(req.body.excerpt);
+        if (req.body.content) sanitizedData.content = sanitizeHTML(req.body.content);
+
+        const updatedBlog = await blogService.updateBlog(req.params.id, sanitizedData);
+
+        if (!updatedBlog) {
+          return res.status(404).json({ message: "Blog not found" });
+        }
+
+        res.json(updatedBlog);
+      } catch (error) {
+        console.error("Failed to update blog:", error);
+        res.status(500).json({ message: "Failed to update blog" });
+      }
+    }
+  );
 
   // Delete blog (admin)
-  app.delete("/api/admin/blogs/:id", async (req: Request, res: Response) => {
+  app.delete("/api/admin/blogs/:id", doubleCsrfProtection, async (req: Request, res: Response) => {
     try {
-      const data = await fs.readFile(blogsPath, "utf-8").catch(() => "[]");
-      let blogs = JSON.parse(data);
-
-      blogs = blogs.filter((b: any) => b.id !== req.params.id);
-      await fs.writeFile(blogsPath, JSON.stringify(blogs, null, 2));
-
+      await blogService.deleteBlog(req.params.id);
       res.json({ message: "Blog deleted successfully" });
     } catch (error) {
+      console.error("Failed to delete blog:", error);
       res.status(500).json({ message: "Failed to delete blog" });
     }
   });

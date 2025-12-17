@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Trash2, Plus, Edit, Save } from "lucide-react";
+import { Trash2, Plus, Edit, Save, Upload, Image as ImageIcon } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { secureFetch } from "@/lib/csrf";
 
 interface Blog {
   id: string;
@@ -27,7 +28,10 @@ export function BlogManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const quillRef = useRef<ReactQuill>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const emptyBlog: Omit<Blog, "id" | "createdAt" | "updatedAt"> = {
     title: "",
@@ -63,7 +67,7 @@ export function BlogManager() {
     if (!editingBlog) return;
 
     try {
-      const response = await fetch("/api/admin/blogs", {
+      const response = await secureFetch("/api/admin/blogs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editingBlog),
@@ -90,7 +94,7 @@ export function BlogManager() {
 
   const handleUpdate = async (blog: Blog) => {
     try {
-      const response = await fetch(`/api/admin/blogs/${blog.id}`, {
+      const response = await secureFetch(`/api/admin/blogs/${blog.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(blog),
@@ -118,7 +122,7 @@ export function BlogManager() {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const response = await fetch(`/api/admin/blogs/${id}`, {
+      const response = await secureFetch(`/api/admin/blogs/${id}`, {
         method: "DELETE",
       });
 
@@ -144,6 +148,66 @@ export function BlogManager() {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
+  };
+
+  // Handle image upload (for cover image or inline images)
+  const handleImageUpload = async (file: File, isInline: boolean = false): Promise<string> => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await secureFetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Upload failed");
+
+      const data = await response.json();
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully!",
+      });
+
+      return data.url;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Insert image into editor at cursor
+  const insertImageIntoEditor = async () => {
+    if (!fileInputRef.current) return;
+
+    const file = fileInputRef.current.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await handleImageUpload(file, true);
+
+      // Insert image into Quill editor
+      const quill = quillRef.current?.getEditor();
+      if (quill) {
+        const range = quill.getSelection();
+        quill.insertEmbed(range?.index || 0, 'image', url);
+      }
+
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error("Failed to insert image:", error);
+    }
   };
 
   if (isLoading) {
@@ -226,9 +290,34 @@ export function BlogManager() {
             </div>
 
             <div className="space-y-2">
-              <Label>Content (Rich Text Editor)</Label>
+              <div className="flex items-center justify-between">
+                <Label>Content (Rich Text Editor)</Label>
+                <div className="flex gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={insertImageIntoEditor}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    {isUploading ? "Uploading..." : "Insert Image"}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                💡 Tip: You can also paste from Google Docs (Ctrl/Cmd+V) to preserve formatting, or drag & drop images directly into the editor
+              </p>
               <div className="bg-white dark:bg-gray-900 rounded-md">
                 <ReactQuill
+                  ref={quillRef}
                   theme="snow"
                   value={blog.content}
                   onChange={(content) =>

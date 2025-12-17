@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, ExternalLink, Calendar } from "lucide-react";
 import { SiX, SiGithub, SiLinkedin } from "react-icons/si";
 import { useToast } from "@/hooks/use-toast";
+import { secureFetch } from "@/lib/csrf";
 
 export interface SocialLink {
   platform: "email" | "x" | "github" | "linkedin";
@@ -49,7 +50,7 @@ export default function ContactSection({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await secureFetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

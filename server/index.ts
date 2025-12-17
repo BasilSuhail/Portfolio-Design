@@ -2,6 +2,11 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import { doubleCsrf } from "csrf-csrf";
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,15 +17,87 @@ declare module "http" {
   }
 }
 
+// Security middleware - helmet adds various HTTP headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for now (can enable later with proper config)
+  crossOriginEmbedderPolicy: false,
+}));
+
+// Cookie parser for CSRF tokens
+app.use(cookieParser());
+
+// Session middleware - required for CSRF protection
+const sessionSecret = process.env.SESSION_SECRET || "dev-secret-change-in-production";
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // HTTPS only in production
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: "strict",
+  },
+}));
+
+// CSRF protection middleware
+const {
+  generateToken,
+  doubleCsrfProtection,
+} = doubleCsrf({
+  getSecret: () => sessionSecret,
+  getSessionIdentifier: (req) => (req.session as any).id || "",
+  cookieName: "x-csrf-token",
+  cookieOptions: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  },
+  size: 64,
+  ignoredMethods: ["GET", "HEAD", "OPTIONS"],
+});
+
+// Endpoint to get CSRF token for frontend
+app.get("/api/csrf-token", (req, res) => {
+  const token = generateToken(req, res);
+  res.json({ token });
+});
+
+// Export CSRF protection for use in routes
+export { doubleCsrfProtection };
+
+// Rate limiting - prevent brute force and DDoS
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: { message: "Too many requests, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting to all routes
+app.use(limiter);
+
+// Stricter rate limit for admin/write operations
+const strictLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Only 20 requests per 15 minutes for admin operations
+  message: { message: "Too many admin requests, please slow down" },
+});
+
+app.use("/api/admin", strictLimiter);
+app.use("/api/contact", strictLimiter);
+
 app.use(
   express.json({
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
+    limit: "10mb", // Limit request body size
   }),
 );
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 
 // Add X-Robots-Tag header for SEO
 app.use((_req, res, next) => {
