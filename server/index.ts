@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import { doubleCsrf } from "csrf-csrf";
+import createMemoryStore from "memorystore";
 
 const app = express();
 const httpServer = createServer(app);
@@ -33,15 +34,27 @@ app.use(cookieParser());
 
 // Session middleware - required for CSRF protection
 const sessionSecret = process.env.SESSION_SECRET || "dev-secret-change-in-production";
+
+// Use MemoryStore for session persistence in production
+const MemoryStore = createMemoryStore(session);
+const sessionStore = new MemoryStore({
+  checkPeriod: 86400000, // prune expired entries every 24h
+});
+
 app.use(session({
+  store: sessionStore,
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
+  name: 'sessionId', // Custom name to avoid conflicts
+  proxy: true, // Trust the reverse proxy
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // HTTPS only in production
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     sameSite: "lax", // Changed from "strict" to "lax" for better compatibility with proxies
+    path: '/', // Explicitly set cookie path
+    domain: undefined, // Let the browser determine the domain
   },
 }));
 
@@ -58,6 +71,8 @@ const csrfProtection = doubleCsrf({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax", // Changed from "strict" to "lax" for better compatibility with proxies
+    path: '/', // Explicitly set cookie path
+    domain: undefined, // Let the browser determine the domain
   },
   size: 64,
   ignoredMethods: ["GET", "HEAD", "OPTIONS"],
@@ -67,8 +82,14 @@ const { generateCsrfToken, doubleCsrfProtection } = csrfProtection;
 
 // Endpoint to get CSRF token for frontend
 app.get("/api/csrf-token", (req, res) => {
-  const token = generateCsrfToken(req, res);
-  res.json({ token });
+  try {
+    const token = generateCsrfToken(req, res);
+    log(`CSRF token generated for session: ${req.sessionID?.substring(0, 8)}...`);
+    res.json({ token });
+  } catch (error) {
+    log(`Failed to generate CSRF token: ${error}`);
+    res.status(500).json({ message: "Failed to generate CSRF token" });
+  }
 });
 
 // Export CSRF protection for use in routes
@@ -153,12 +174,24 @@ app.use((req, res, next) => {
 (async () => {
   await registerRoutes(httpServer, app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  // Enhanced error handler with CSRF-specific handling
+  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    // Log CSRF errors with more context
+    if (err.code === "EBADCSRFTOKEN" || message.toLowerCase().includes("csrf")) {
+      log(`CSRF Error: ${message} | Method: ${req.method} | Path: ${req.path} | Session: ${req.sessionID?.substring(0, 8)}... | IP: ${req.ip}`);
+    } else if (status >= 400) {
+      log(`Error ${status}: ${message} | Method: ${req.method} | Path: ${req.path}`);
+    }
+
     res.status(status).json({ message });
-    throw err;
+
+    // Only throw in development for better error visibility
+    if (process.env.NODE_ENV !== "production") {
+      throw err;
+    }
   });
 
   // importantly only setup vite in development and after
