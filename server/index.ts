@@ -45,9 +45,10 @@ app.use(session({
   store: sessionStore,
   secret: sessionSecret,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // Changed to true - must save session even if uninitialized for CSRF to work
   name: 'sessionId', // Custom name to avoid conflicts
   proxy: true, // Trust the reverse proxy
+  rolling: true, // Reset cookie expiry on every request
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // HTTPS only in production
