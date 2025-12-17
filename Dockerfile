@@ -10,8 +10,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Cache busting - forces Docker to rebuild from this point
-ARG CACHEBUST=1
+# Cache busting - copy version file to invalidate cache on new commits
+COPY .buildversion* ./
 
 # Copy source code
 COPY . .
