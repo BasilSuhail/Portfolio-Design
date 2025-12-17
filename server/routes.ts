@@ -6,22 +6,26 @@ import multer from "multer";
 import { Resend } from "resend";
 import * as blogService from "./blogService";
 import { body, validationResult } from "express-validator";
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 import { doubleCsrfProtection } from "./index";
 
 // Sanitize HTML content - allows safe tags, strips scripts
 function sanitizeHTML(dirty: string): string {
-  return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                   'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead',
-                   'tbody', 'tr', 'th', 'td', 'span', 'div'],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel'],
+  return sanitizeHtml(dirty, {
+    allowedTags: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                  'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead',
+                  'tbody', 'tr', 'th', 'td', 'span', 'div'],
+    allowedAttributes: {
+      a: ['href', 'target', 'rel'],
+      img: ['src', 'alt', 'class', 'style'],
+      '*': ['class', 'style'],
+    },
   });
 }
 
 // Sanitize plain text - strips all HTML
 function sanitizeText(text: string): string {
-  return DOMPurify.sanitize(text, { ALLOWED_TAGS: [] });
+  return sanitizeHtml(text, { allowedTags: [], allowedAttributes: {} });
 }
 
 // Use process.cwd() instead of import.meta.url for compatibility with CommonJS build
