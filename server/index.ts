@@ -41,7 +41,7 @@ app.use(session({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // HTTPS only in production
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: "strict",
+    sameSite: "lax", // Changed from "strict" to "lax" for better compatibility with proxies
   },
 }));
 
@@ -57,7 +57,7 @@ const csrfProtection = doubleCsrf({
   cookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax", // Changed from "strict" to "lax" for better compatibility with proxies
   },
   size: 64,
   ignoredMethods: ["GET", "HEAD", "OPTIONS"],
