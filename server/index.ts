@@ -41,12 +41,14 @@ app.use(session({
 }));
 
 // CSRF protection middleware
-const {
-  generateToken,
-  doubleCsrfProtection,
-} = doubleCsrf({
+const csrfProtection = doubleCsrf({
   getSecret: () => sessionSecret,
-  getSessionIdentifier: (req) => (req.session as any).id || "",
+  getSessionIdentifier: (req) => {
+    // Generate a unique identifier for the session
+    if (!req.session) return "";
+    // Use the session ID if available, otherwise create a random one
+    return (req.session as any).id || `session-${Date.now()}-${Math.random()}`;
+  },
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -57,9 +59,11 @@ const {
   ignoredMethods: ["GET", "HEAD", "OPTIONS"],
 });
 
+const { generateCsrfToken, doubleCsrfProtection } = csrfProtection;
+
 // Endpoint to get CSRF token for frontend
 app.get("/api/csrf-token", (req, res) => {
-  const token = generateToken(req, res);
+  const token = generateCsrfToken(req, res);
   res.json({ token });
 });
 
