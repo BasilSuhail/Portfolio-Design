@@ -6,3 +6,4 @@ vite.config.ts.*
 .env
 .env.local
 .env.production
+dist
