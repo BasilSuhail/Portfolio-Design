@@ -13,6 +13,7 @@ const httpServer = createServer(app);
 
 // Trust proxy - REQUIRED for Cloudflare/reverse proxies
 // This allows Express to trust X-Forwarded-* headers
+// Build: 2025-12-17-force-rebuild
 app.set('trust proxy', 1);
 
 declare module "http" {
