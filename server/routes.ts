@@ -277,24 +277,47 @@ export async function registerRoutes(
       body('title').trim().notEmpty().isLength({ max: 200 }).escape(),
       body('slug').trim().notEmpty().isLength({ max: 200 }).matches(/^[a-z0-9-]+$/),
       body('excerpt').optional().trim().isLength({ max: 500 }),
-      body('content').notEmpty(),
-      body('coverImage').optional().trim().isURL(),
+      body('content').optional(), // Content is optional for PDF blogs
+      body('coverImage').optional().custom((value) => {
+        // Allow empty string or valid URL paths (including /uploads/...)
+        if (!value || value === '') return true;
+        if (value.startsWith('/uploads/') || value.startsWith('http://') || value.startsWith('https://')) return true;
+        throw new Error('Cover image must be a valid URL or path');
+      }),
+      body('contentType').optional().isIn(['html', 'pdf']),
+      body('pdfUrl').optional().custom((value) => {
+        // Allow empty string or valid URL paths
+        if (!value || value === '') return true;
+        if (value.startsWith('/uploads/') || value.startsWith('http://') || value.startsWith('https://')) return true;
+        throw new Error('PDF URL must be a valid URL or path');
+      }),
     ],
     async (req: Request, res: Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.error("Blog validation errors:", errors.array());
         return res.status(400).json({ message: "Invalid input", errors: errors.array() });
       }
 
       try {
         // Sanitize inputs
-        const sanitizedData = {
+        const sanitizedData: any = {
           ...req.body,
           title: sanitizeText(req.body.title),
           slug: sanitizeText(req.body.slug),
           excerpt: req.body.excerpt ? sanitizeText(req.body.excerpt) : undefined,
-          content: sanitizeHTML(req.body.content), // Allow safe HTML in content
+          contentType: req.body.contentType || 'html',
         };
+
+        // Only sanitize HTML content if it's an HTML blog
+        if (req.body.contentType === 'pdf') {
+          // For PDF blogs, use content as-is or set a default
+          sanitizedData.content = req.body.content || `PDF Document: ${req.body.title}`;
+          sanitizedData.pdfUrl = req.body.pdfUrl;
+        } else {
+          // For HTML blogs, sanitize the HTML content
+          sanitizedData.content = req.body.content ? sanitizeHTML(req.body.content) : '';
+        }
 
         const newBlog = await blogService.createBlog(sanitizedData);
         res.json(newBlog);
@@ -314,11 +337,22 @@ export async function registerRoutes(
       body('slug').optional().trim().matches(/^[a-z0-9-]+$/),
       body('excerpt').optional().trim().isLength({ max: 500 }),
       body('content').optional(),
-      body('coverImage').optional().trim().isURL(),
+      body('coverImage').optional().custom((value) => {
+        if (!value || value === '') return true;
+        if (value.startsWith('/uploads/') || value.startsWith('http://') || value.startsWith('https://')) return true;
+        throw new Error('Cover image must be a valid URL or path');
+      }),
+      body('contentType').optional().isIn(['html', 'pdf']),
+      body('pdfUrl').optional().custom((value) => {
+        if (!value || value === '') return true;
+        if (value.startsWith('/uploads/') || value.startsWith('http://') || value.startsWith('https://')) return true;
+        throw new Error('PDF URL must be a valid URL or path');
+      }),
     ],
     async (req: Request, res: Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.error("Blog update validation errors:", errors.array());
         return res.status(400).json({ message: "Invalid input", errors: errors.array() });
       }
 
@@ -328,7 +362,16 @@ export async function registerRoutes(
         if (req.body.title) sanitizedData.title = sanitizeText(req.body.title);
         if (req.body.slug) sanitizedData.slug = sanitizeText(req.body.slug);
         if (req.body.excerpt) sanitizedData.excerpt = sanitizeText(req.body.excerpt);
-        if (req.body.content) sanitizedData.content = sanitizeHTML(req.body.content);
+
+        // Handle content based on type
+        if (req.body.contentType === 'pdf') {
+          // For PDF blogs, keep content minimal
+          if (req.body.content) sanitizedData.content = req.body.content;
+          if (req.body.pdfUrl) sanitizedData.pdfUrl = req.body.pdfUrl;
+        } else if (req.body.content) {
+          // For HTML blogs, sanitize HTML content
+          sanitizedData.content = sanitizeHTML(req.body.content);
+        }
 
         const updatedBlog = await blogService.updateBlog(req.params.id, sanitizedData);
 

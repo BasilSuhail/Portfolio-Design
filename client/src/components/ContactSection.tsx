@@ -92,36 +92,32 @@ export default function ContactSection({
         return;
       }
 
-      // Send email using Web3Forms (FormsFree) - completely free, no backend needed
-      // Get access key from environment variable
-      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+      // Send email using Formspree - completely free, no backend needed
+      // Get form endpoint from environment variable
+      const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
 
-      if (!accessKey) {
-        throw new Error('Web3Forms not configured. Please set VITE_WEB3FORMS_ACCESS_KEY in .env file.');
+      if (!formspreeEndpoint) {
+        throw new Error('Formspree not configured. Please set VITE_FORMSPREE_ENDPOINT in .env file.');
       }
 
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch(formspreeEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
         body: JSON.stringify({
-          access_key: accessKey,
           name: formData.name,
           email: formData.email,
           message: formData.message,
-          subject: `Portfolio Contact: Message from ${formData.name}`,
-          from_name: "Portfolio Contact Form",
-          // Optional: Add redirect URL after successful submission
-          // redirect: "https://yoursite.com/thank-you"
+          _subject: `Portfolio Contact: Message from ${formData.name}`,
         }),
       });
 
       const result = await response.json();
 
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || 'Failed to send message');
+      if (!response.ok) {
+        throw new Error(result.error || result.errors?.[0]?.message || 'Failed to send message');
       }
 
       if (onSubmit) {
