@@ -9,6 +9,10 @@ interface Blog {
   title: string;
   slug: string;
   content: string;
+  contentType?: 'html' | 'pdf'; // New: Type of content
+  pdfUrl?: string; // New: URL to PDF file if contentType is 'pdf'
+  content_type?: 'html' | 'pdf';
+  pdf_url?: string;
   excerpt?: string;
   coverImage?: string;
   cover_image?: string;
@@ -28,6 +32,8 @@ function normalizeBlog(blog: any): Blog {
     title: blog.title,
     slug: blog.slug,
     content: blog.content,
+    contentType: blog.content_type || blog.contentType || 'html',
+    pdfUrl: blog.pdf_url || blog.pdfUrl,
     excerpt: blog.excerpt,
     coverImage: blog.cover_image || blog.coverImage,
     published: blog.published,
@@ -44,6 +50,16 @@ function toSupabaseFormat(blog: Partial<Blog>) {
   if (blog.coverImage) {
     result.cover_image = blog.coverImage;
     delete result.coverImage;
+  }
+
+  if (blog.contentType) {
+    result.content_type = blog.contentType;
+    delete result.contentType;
+  }
+
+  if (blog.pdfUrl) {
+    result.pdf_url = blog.pdfUrl;
+    delete result.pdfUrl;
   }
 
   if (blog.featuredInWriting !== undefined) {

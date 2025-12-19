@@ -47,7 +47,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit for images
   fileFilter: (_req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -57,6 +57,23 @@ const upload = multer({
       return cb(null, true);
     } else {
       cb(new Error("Only image files are allowed!"));
+    }
+  },
+});
+
+// Separate multer config for PDF uploads
+const pdfUpload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for PDFs
+  fileFilter: (_req, file, cb) => {
+    const allowedTypes = /pdf/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = file.mimetype === 'application/pdf';
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Only PDF files are allowed!"));
     }
   },
 });
@@ -101,6 +118,28 @@ export async function registerRoutes(
     }
   });
 
+  // Upload PDF
+  app.post("/api/upload-pdf", doubleCsrfProtection, pdfUpload.single("pdf"), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No PDF file uploaded" });
+      }
+
+      const pdfUrl = `/uploads/${req.file.filename}`;
+      const fileSize = (req.file.size / (1024 * 1024)).toFixed(2); // Size in MB
+
+      res.json({
+        url: pdfUrl,
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        size: fileSize + ' MB'
+      });
+    } catch (error) {
+      console.error("PDF upload error:", error);
+      res.status(500).json({ message: "Failed to upload PDF" });
+    }
+  });
+
   // Admin login
   app.post("/api/admin/login", doubleCsrfProtection, async (req: Request, res: Response) => {
     try {
@@ -133,6 +172,32 @@ export async function registerRoutes(
       }
 
       try {
+        // Anti-spam validation
+        // 1. Honeypot check - reject if honeypot field is filled
+        if (req.body._honeypot) {
+          console.log(`Spam detected from ${req.ip}: honeypot filled`);
+          return res.status(400).json({ message: "Invalid submission" });
+        }
+
+        // 2. Time-based check - reject if form submitted too quickly (less than 3 seconds)
+        if (req.body._timestamp) {
+          const timeTaken = Date.now() - parseInt(req.body._timestamp);
+          if (timeTaken < 3000) {
+            console.log(`Spam detected from ${req.ip}: submitted too quickly (${timeTaken}ms)`);
+            return res.status(400).json({ message: "Form submitted too quickly" });
+          }
+        }
+
+        // 3. Spam keyword detection
+        const spamKeywords = ['viagra', 'crypto', 'bitcoin', 'forex', 'casino', 'prize', 'winner', 'click here', 'buy now', 'limited time'];
+        const messageText = req.body.message.toLowerCase();
+        const hasSpam = spamKeywords.some(keyword => messageText.includes(keyword));
+
+        if (hasSpam) {
+          console.log(`Spam detected from ${req.ip}: contains spam keywords`);
+          return res.status(400).json({ message: "Message contains suspicious content" });
+        }
+
         // Sanitize inputs
         const sanitizedName = sanitizeText(req.body.name);
         const sanitizedEmail = sanitizeText(req.body.email);

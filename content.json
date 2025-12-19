@@ -295,7 +295,7 @@
     }
   ],
   "contactSettings": {
-    "showForm": false,
+    "showForm": true,
     "calendarLinks": {
       "link15min": "https://app.cal.eu/basilsuhail/15min",
       "link30min": "https://app.cal.eu/basilsuhail/30min"

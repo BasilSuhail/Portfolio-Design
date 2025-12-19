@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowLeft } from "lucide-react";
+import PdfViewer from "@/components/PdfViewer";
 import "react-quill/dist/quill.snow.css";
 
 interface Blog {
@@ -9,6 +10,8 @@ interface Blog {
   title: string;
   slug: string;
   content: string;
+  contentType?: 'html' | 'pdf';
+  pdfUrl?: string;
   excerpt?: string;
   coverImage?: string;
   published: boolean;
@@ -125,31 +128,37 @@ export default function BlogDetail() {
       )}
 
       {/* Blog Content */}
-      <article className="max-w-3xl mx-auto px-6 pb-20">
-        <div
-          className="prose prose-lg dark:prose-invert max-w-none
-            prose-headings:font-bold prose-headings:tracking-tight
-            prose-h1:text-4xl prose-h1:mb-4
-            prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4
-            prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-3
-            prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-6
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-            prose-strong:text-foreground prose-strong:font-semibold
-            prose-ul:my-6 prose-ul:space-y-2
-            prose-ol:my-6 prose-ol:space-y-2
-            prose-li:text-foreground/90
-            prose-blockquote:border-l-primary prose-blockquote:bg-muted/50
-            prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r
-            prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-            prose-code:text-sm prose-code:font-mono prose-code:before:content-none
-            prose-code:after:content-none
-            prose-pre:bg-muted prose-pre:border prose-pre:border-border
-            prose-img:rounded-lg prose-img:shadow-md
-            prose-table:border-collapse prose-table:w-full
-            prose-th:border prose-th:border-border prose-th:bg-muted/50 prose-th:p-3
-            prose-td:border prose-td:border-border prose-td:p-3"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
-        />
+      <article className="max-w-5xl mx-auto px-6 pb-20">
+        {blog.contentType === 'pdf' && blog.pdfUrl ? (
+          // PDF Viewer
+          <PdfViewer pdfUrl={blog.pdfUrl} title={blog.title} />
+        ) : (
+          // HTML Content
+          <div
+            className="prose prose-lg dark:prose-invert max-w-none
+              prose-headings:font-bold prose-headings:tracking-tight
+              prose-h1:text-4xl prose-h1:mb-4
+              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4
+              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-3
+              prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-6
+              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-foreground prose-strong:font-semibold
+              prose-ul:my-6 prose-ul:space-y-2
+              prose-ol:my-6 prose-ol:space-y-2
+              prose-li:text-foreground/90
+              prose-blockquote:border-l-primary prose-blockquote:bg-muted/50
+              prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r
+              prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+              prose-code:text-sm prose-code:font-mono prose-code:before:content-none
+              prose-code:after:content-none
+              prose-pre:bg-muted prose-pre:border prose-pre:border-border
+              prose-img:rounded-lg prose-img:shadow-md
+              prose-table:border-collapse prose-table:w-full
+              prose-th:border prose-th:border-border prose-th:bg-muted/50 prose-th:p-3
+              prose-td:border prose-td:border-border prose-td:p-3"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
+        )}
       </article>
 
       {/* Footer */}

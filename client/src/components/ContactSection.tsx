@@ -44,18 +44,65 @@ export default function ContactSection({
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [honeypot, setHoneypot] = useState(""); // Spam trap
+  const [formStartTime] = useState(Date.now()); // Track when form was loaded
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      // Anti-spam checks
+      // 1. Honeypot check - if filled, it's a bot
+      if (honeypot) {
+        console.log("Spam detected: honeypot filled");
+        // Pretend success to fool bots
+        toast({
+          title: "Message sent!",
+          description: "Thank you for reaching out.",
+        });
+        setFormData({ name: "", email: "", message: "" });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Time-based check - form must take at least 3 seconds to fill
+      const timeTaken = Date.now() - formStartTime;
+      if (timeTaken < 3000) {
+        toast({
+          title: "Slow down!",
+          description: "Please take your time filling out the form.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 3. Basic spam keyword check
+      const spamKeywords = ['viagra', 'crypto', 'bitcoin', 'forex', 'casino', 'prize', 'winner', 'click here'];
+      const messageText = formData.message.toLowerCase();
+      const hasSpam = spamKeywords.some(keyword => messageText.includes(keyword));
+
+      if (hasSpam) {
+        toast({
+          title: "Message flagged",
+          description: "Your message contains suspicious content. Please rephrase and try again.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       const response = await secureFetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          _honeypot: honeypot, // Send honeypot to backend for double-check
+          _timestamp: formStartTime, // Send timestamp for backend validation
+        }),
       });
 
       if (!response.ok) {
@@ -137,6 +184,18 @@ export default function ContactSection({
 
         {showForm && (
           <form onSubmit={handleSubmit} className="space-y-4 mb-10">
+            {/* Honeypot field - hidden from users, visible to bots */}
+            <input
+              type="text"
+              name="website"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px' }}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 placeholder="Name"

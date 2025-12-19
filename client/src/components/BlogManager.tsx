@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Trash2, Plus, Edit, Save, Upload, Image as ImageIcon } from "lucide-react";
+import { Trash2, Plus, Edit, Save, Upload, Image as ImageIcon, FileText } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { secureFetch } from "@/lib/csrf";
@@ -15,6 +15,8 @@ interface Blog {
   title: string;
   slug: string;
   content: string;
+  contentType?: 'html' | 'pdf';
+  pdfUrl?: string;
   excerpt?: string;
   coverImage?: string;
   published: boolean;
@@ -29,14 +31,18 @@ export function BlogManager() {
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isPdfUploading, setIsPdfUploading] = useState(false);
   const { toast } = useToast();
   const quillRef = useRef<ReactQuill>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const emptyBlog: Omit<Blog, "id" | "createdAt" | "updatedAt"> = {
     title: "",
     slug: "",
     content: "",
+    contentType: "html",
+    pdfUrl: "",
     excerpt: "",
     coverImage: "",
     published: false,
@@ -184,6 +190,68 @@ export function BlogManager() {
     }
   };
 
+  // Handle PDF upload
+  const handlePdfUpload = async (file: File): Promise<string> => {
+    setIsPdfUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("pdf", file);
+
+      const response = await secureFetch("/api/upload-pdf", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("PDF upload failed");
+
+      const data = await response.json();
+
+      toast({
+        title: "Success",
+        description: `PDF uploaded successfully! Size: ${data.size}`,
+      });
+
+      return data.url;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload PDF",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsPdfUploading(false);
+    }
+  };
+
+  // Upload PDF for blog
+  const uploadPdfForBlog = async () => {
+    if (!pdfInputRef.current) return;
+
+    const file = pdfInputRef.current.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await handlePdfUpload(file);
+
+      // Update editing blog with PDF URL and change content type
+      if (editingBlog) {
+        setEditingBlog({
+          ...editingBlog,
+          pdfUrl: url,
+          contentType: 'pdf',
+        });
+      }
+
+      // Reset file input
+      if (pdfInputRef.current) {
+        pdfInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error("PDF upload error:", error);
+    }
+  };
+
   // Insert image into editor at cursor
   const insertImageIntoEditor = async () => {
     if (!fileInputRef.current) return;
@@ -289,9 +357,95 @@ export function BlogManager() {
               />
             </div>
 
+            {/* Content Type Selector */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Content (Rich Text Editor)</Label>
+              <Label>Content Type</Label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="contentType"
+                    value="html"
+                    checked={blog.contentType === 'html'}
+                    onChange={(e) =>
+                      setEditingBlog({ ...(blog as Blog), contentType: e.target.value as 'html' | 'pdf' })
+                    }
+                    className="w-4 h-4"
+                  />
+                  <span>Rich Text (HTML)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="contentType"
+                    value="pdf"
+                    checked={blog.contentType === 'pdf'}
+                    onChange={(e) =>
+                      setEditingBlog({ ...(blog as Blog), contentType: e.target.value as 'html' | 'pdf' })
+                    }
+                    className="w-4 h-4"
+                  />
+                  <span>PDF Document</span>
+                </label>
+              </div>
+            </div>
+
+            {/* PDF Upload Section - Show only when content type is PDF */}
+            {blog.contentType === 'pdf' && (
+              <div className="space-y-2">
+                <Label>Upload PDF Document</Label>
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <input
+                      ref={pdfInputRef}
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={uploadPdfForBlog}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => pdfInputRef.current?.click()}
+                      disabled={isPdfUploading}
+                      className="gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      {isPdfUploading ? "Uploading..." : blog.pdfUrl ? "Change PDF" : "Upload PDF"}
+                    </Button>
+                    {blog.pdfUrl && (
+                      <a
+                        href={blog.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 text-sm border rounded-md hover:bg-accent"
+                      >
+                        View Current PDF
+                      </a>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    📄 Upload your research paper, report, or any PDF document (max 50MB)
+                  </p>
+                  {blog.pdfUrl && (
+                    <Input
+                      value={blog.pdfUrl}
+                      onChange={(e) =>
+                        setEditingBlog({ ...(blog as Blog), pdfUrl: e.target.value })
+                      }
+                      placeholder="/uploads/document.pdf"
+                      className="text-xs"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Rich Text Editor - Show only when content type is HTML */}
+            {blog.contentType === 'html' && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Content (Rich Text Editor)</Label>
                 <div className="flex gap-2">
                   <input
                     ref={fileInputRef}
@@ -356,7 +510,8 @@ export function BlogManager() {
                   style={{ minHeight: "400px" }}
                 />
               </div>
-            </div>
+              </div>
+            )}
 
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
