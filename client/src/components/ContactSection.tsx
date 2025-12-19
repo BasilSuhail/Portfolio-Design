@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, ExternalLink, Calendar } from "lucide-react";
 import { SiX, SiGithub, SiLinkedin } from "react-icons/si";
 import { useToast } from "@/hooks/use-toast";
-import { secureFetch } from "@/lib/csrf";
 
 export interface SocialLink {
   platform: "email" | "x" | "github" | "linkedin";
@@ -93,20 +92,36 @@ export default function ContactSection({
         return;
       }
 
-      const response = await secureFetch("/api/contact", {
+      // Send email using Web3Forms (FormsFree) - completely free, no backend needed
+      // Get access key from environment variable
+      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+
+      if (!accessKey) {
+        throw new Error('Web3Forms not configured. Please set VITE_WEB3FORMS_ACCESS_KEY in .env file.');
+      }
+
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
-          _honeypot: honeypot, // Send honeypot to backend for double-check
-          _timestamp: formStartTime, // Send timestamp for backend validation
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: `Portfolio Contact: Message from ${formData.name}`,
+          from_name: "Portfolio Contact Form",
+          // Optional: Add redirect URL after successful submission
+          // redirect: "https://yoursite.com/thank-you"
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send message");
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'Failed to send message');
       }
 
       if (onSubmit) {
@@ -120,6 +135,7 @@ export default function ContactSection({
 
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: "Error",
         description: "Failed to send message. Please try again or contact me directly.",
@@ -130,10 +146,13 @@ export default function ContactSection({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Only handle Ctrl/Cmd+Enter for submit, allow all other keys
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
       handleSubmit(e as unknown as React.FormEvent);
     }
+    // Allow space and all other keys to work normally
   };
 
   return (

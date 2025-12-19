@@ -348,7 +348,7 @@ Ready to deploy? Check these:
 
 ```env
 # In .env
-RESEND_API_KEY=re_EcniFaKg_GxSGup6YuYxRqn9zYSvjHrJV  ← Active
+RESEND_API_KEY=your_resend_api_key_here
 ```
 
 ```typescript

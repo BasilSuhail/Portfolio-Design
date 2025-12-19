@@ -73,10 +73,18 @@ export function BlogManager() {
     if (!editingBlog) return;
 
     try {
+      // For PDF blogs, set placeholder content if not provided
+      const blogData = {
+        ...editingBlog,
+        content: editingBlog.contentType === 'pdf' && !editingBlog.content
+          ? `PDF Document: ${editingBlog.title}`
+          : editingBlog.content
+      };
+
       const response = await secureFetch("/api/admin/blogs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingBlog),
+        body: JSON.stringify(blogData),
       });
 
       if (!response.ok) throw new Error("Failed to create blog");
