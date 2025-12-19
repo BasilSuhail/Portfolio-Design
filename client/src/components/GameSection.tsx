@@ -428,6 +428,12 @@ export default function GameSection() {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger game if user is typing in an input/textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
       if (e.code === "Space" || e.code === "ArrowUp") handleInput(e);
     };
 

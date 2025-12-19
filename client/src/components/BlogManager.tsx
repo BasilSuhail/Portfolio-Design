@@ -21,6 +21,7 @@ interface Blog {
   coverImage?: string;
   published: boolean;
   featuredInWriting?: boolean;
+  customDate?: string; // Custom display date for blog posts
   createdAt: string;
   updatedAt: string;
 }
@@ -363,6 +364,22 @@ export function BlogManager() {
                 }
                 placeholder="/uploads/image.jpg"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="customDate">Custom Display Date (Optional)</Label>
+              <Input
+                id="customDate"
+                type="date"
+                value={blog.customDate || ""}
+                onChange={(e) =>
+                  setEditingBlog({ ...(blog as Blog), customDate: e.target.value })
+                }
+                placeholder="YYYY-MM-DD"
+              />
+              <p className="text-xs text-muted-foreground">
+                Leave empty to use creation date. This date will be shown on blog cards.
+              </p>
             </div>
 
             {/* Content Type Selector */}

@@ -16,6 +16,8 @@ interface Blog {
   excerpt?: string;
   coverImage?: string;
   cover_image?: string;
+  customDate?: string; // Custom display date
+  custom_date?: string;
   published: boolean;
   featuredInWriting?: boolean;
   featured_in_writing?: boolean;
@@ -36,6 +38,7 @@ function normalizeBlog(blog: any): Blog {
     pdfUrl: blog.pdf_url || blog.pdfUrl,
     excerpt: blog.excerpt,
     coverImage: blog.cover_image || blog.coverImage,
+    customDate: blog.custom_date || blog.customDate,
     published: blog.published,
     featuredInWriting: blog.featured_in_writing ?? blog.featuredInWriting ?? false,
     createdAt: blog.created_at || blog.createdAt,
@@ -60,6 +63,11 @@ function toSupabaseFormat(blog: Partial<Blog>) {
   if (blog.pdfUrl) {
     result.pdf_url = blog.pdfUrl;
     delete result.pdfUrl;
+  }
+
+  if (blog.customDate) {
+    result.custom_date = blog.customDate;
+    delete result.customDate;
   }
 
   if (blog.featuredInWriting !== undefined) {
