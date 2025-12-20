@@ -14,6 +14,7 @@ interface Blog {
   pdfUrl?: string;
   excerpt?: string;
   coverImage?: string;
+  customDate?: string;
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -95,8 +96,8 @@ export default function BlogDetail() {
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
             <Calendar className="w-4 h-4" />
-            <time dateTime={blog.createdAt}>
-              {new Date(blog.createdAt).toLocaleDateString("en-US", {
+            <time dateTime={blog.customDate || blog.createdAt}>
+              {new Date(blog.customDate || blog.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

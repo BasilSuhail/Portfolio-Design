@@ -15,6 +15,7 @@ interface Blog {
   title: string;
   slug: string;
   excerpt?: string;
+  customDate?: string;
   createdAt: string;
   featuredInWriting?: boolean;
 }
@@ -84,7 +85,7 @@ export default function WritingSection({ intro }: WritingSectionProps) {
                 data-testid={`link-post-${blog.id}`}
               >
                 <span className="text-sm text-muted-foreground font-mono">
-                  {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                  {new Date(blog.customDate || blog.createdAt).toLocaleDateString("en-US", {
                     month: "2-digit",
                     day: "2-digit",
                     year: "numeric",
