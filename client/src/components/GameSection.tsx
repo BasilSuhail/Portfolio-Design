@@ -129,15 +129,16 @@ export default function GameSection() {
 
     let animationId: number;
     let frame = 0;
+    let lastTime = performance.now();
 
     // --- CONFIG ---
     const SCALE = 4; // Size of each "pixel"
     const GROUND_Y = 160;
 
-    // Physics
-    const GRAVITY = 0.6;
-    const JUMP_FORCE = -11;
-    const BASE_SPEED = 6;
+    // Physics (converted to per-second values)
+    const GRAVITY = 36; // pixels per second squared (0.6 * 60fps)
+    const JUMP_FORCE = -660; // pixels per second (-11 * 60fps)
+    const BASE_SPEED = 540; // pixels per second (9 * 60fps)
 
     const state = {
       gameActive: false,
@@ -196,13 +197,13 @@ export default function GameSection() {
       state.player.y = GROUND_Y - state.player.height;
       state.player.vy = 0;
       frame = 0; // Reset frame counter so obstacles spawn immediately
+      lastTime = performance.now(); // Reset delta time
       setScore(0);
 
       // Spawn first obstacle on screen - visible in 1 second
       const canvas = canvasRef.current;
       if (canvas) {
-        // At speed 6, dino moves 360 pixels per second
-        // Spawn at edge of screen so it arrives in ~1 second
+        // At base speed (540 px/sec), spawn at edge of screen
         state.obstacles.push({
           x: canvas.width - 50, // Just offscreen on the right
           y: GROUND_Y - (SPRITES.CACTUS_SMALL.length * SCALE),
@@ -222,7 +223,11 @@ export default function GameSection() {
     };
 
     // --- MAIN LOOP ---
-    const render = () => {
+    const render = (currentTime: number) => {
+      // Calculate delta time in seconds
+      const deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1); // Cap at 0.1s to prevent huge jumps
+      lastTime = currentTime;
+
       // 1. Theme Detection - Google Chrome Dino style
       const isDarkClass = document.documentElement.classList.contains('dark');
 
@@ -244,9 +249,9 @@ export default function GameSection() {
         return;
       }
 
-      // 3. Update Player Physics
-      state.player.vy += GRAVITY;
-      state.player.y += state.player.vy;
+      // 3. Update Player Physics (using delta time)
+      state.player.vy += GRAVITY * deltaTime;
+      state.player.y += state.player.vy * deltaTime;
 
       // Ground Collision
       const floorY = GROUND_Y - state.player.height;
@@ -299,12 +304,12 @@ export default function GameSection() {
         }
       }
 
-      // 6. Update & Draw Obstacles
+      // 6. Update & Draw Obstacles (using delta time)
       // Clean up off-screen
       state.obstacles = state.obstacles.filter(obs => obs.x + obs.width > -50);
 
       state.obstacles.forEach(obs => {
-        obs.x -= state.speed;
+        obs.x -= state.speed * deltaTime;
 
         // Draw obstacle based on type
         let sprite: number[][];
@@ -362,11 +367,11 @@ export default function GameSection() {
       ctx.fillStyle = state.theme.text;
       ctx.fillRect(0, GROUND_Y, canvas.width, 2);
 
-      // Speed up progressively - FASTER ACCELERATION
+      // Speed up progressively - FASTER ACCELERATION (using delta time)
       if (state.gameActive) {
-        state.speed += 0.005; // Increased from 0.001
+        state.speed += 480 * deltaTime; // 480 pixels/sec² acceleration (0.008 * 60fps)
         // Cap at reasonable max
-        if (state.speed > 15) state.speed = 15;
+        if (state.speed > 1080) state.speed = 1080; // 1080 pixels/sec max (18 * 60fps)
       }
 
       animationId = requestAnimationFrame(render);
@@ -406,7 +411,8 @@ export default function GameSection() {
       passed: false
     });
 
-    render();
+    // Start the render loop with initial timestamp
+    animationId = requestAnimationFrame(render);
 
     // --- INPUT HANDLERS ---
     const handleInput = (e?: KeyboardEvent) => {

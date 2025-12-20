@@ -52,7 +52,7 @@ export default function EducationSection({
   };
 
   return (
-    <section className="py-8 pt-8" data-testid="section-education">
+    <section className="py-8 pt-4" data-testid="section-education">
       <div className="max-w-2xl mx-auto px-6">
         <div className="mb-10">
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-4 block">

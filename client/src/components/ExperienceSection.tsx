@@ -66,9 +66,9 @@ export default function ExperienceSection({
                 </div>
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{exp.role} at</span>
-                      <div className="flex items-center gap-1.5">
+                    <div className="flex flex-col">
+                      <span className="font-medium">{exp.role}</span>
+                      <div className="flex items-center gap-1.5 mt-1">
                         {exp.companyLogoUrl ? (
                           <img
                             src={exp.companyLogoUrl}
@@ -81,12 +81,12 @@ export default function ExperienceSection({
                             style={{ fill: exp.companyColor || "#666", color: exp.companyColor || "#666" }}
                           />
                         )}
-                        <span className="font-medium">{exp.company}</span>
+                        <span className="text-sm text-muted-foreground">{exp.company}</span>
                       </div>
                     </div>
                     <button
                       onClick={() => toggleExpand(exp.id)}
-                      className="p-1 hover:bg-muted rounded transition-colors"
+                      className="p-1 hover:bg-muted rounded transition-colors self-start"
                       aria-label={isExpanded ? "Collapse details" : "Expand details"}
                     >
                       {isExpanded ? (
