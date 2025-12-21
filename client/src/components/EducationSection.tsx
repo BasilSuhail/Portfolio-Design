@@ -54,127 +54,147 @@ export default function EducationSection({
   return (
     <section className="py-8 pt-4" data-testid="section-education">
       <div className="max-w-2xl mx-auto px-6">
-        <div className="mb-10">
+        <div className="mb-12">
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-4 block">
             EDUCATION
           </span>
           {intro && <p className="text-foreground/80 leading-relaxed">{intro}</p>}
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6">
           {education.map((edu) => {
             const isExpanded = expandedItems.has(edu.id);
             return (
               <div
                 key={edu.id}
-                className="grid grid-cols-[120px_1fr] gap-6"
+                className="group relative"
                 data-testid={`education-item-${edu.id}`}
               >
-                <div className="text-sm text-muted-foreground font-mono">
-                  {edu.dateRange}
-                </div>
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <div className="flex flex-col">
-                      <span className="font-medium">{edu.degree}</span>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        {edu.institutionLogoUrl ? (
-                          <img
-                            src={edu.institutionLogoUrl}
-                            alt={`${edu.institution} logo`}
-                            className="w-5 h-5 object-contain rounded"
-                          />
-                        ) : (
-                          <Circle
-                            className="w-4 h-4"
-                            style={{ fill: edu.institutionColor || "#666", color: edu.institutionColor || "#666" }}
-                          />
-                        )}
-                        <span className="text-sm text-muted-foreground">{edu.institution}</span>
-                      </div>
+                {/* Clickable Header Area */}
+                <div
+                  onClick={() => toggleExpand(edu.id)}
+                  className="cursor-pointer hover:bg-muted/30 -mx-3 px-3 py-3 rounded-lg transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    {/* Left: Date (smaller, subtle) */}
+                    <div className="text-xs text-muted-foreground font-mono shrink-0 mt-0.5">
+                      {edu.dateRange}
                     </div>
-                    <button
-                      onClick={() => toggleExpand(edu.id)}
-                      className="p-1 hover:bg-muted rounded transition-colors self-start"
-                      aria-label={isExpanded ? "Collapse details" : "Expand details"}
-                    >
+
+                    {/* Right: Chevron */}
+                    <div className="shrink-0">
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                        <ChevronUp className="w-4 h-4 text-muted-foreground transition-transform" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                        <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
                       )}
-                    </button>
+                    </div>
                   </div>
 
-                  {isExpanded && (
-                    <div className="mt-2">
-                      {edu.coursework && (
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-2">
-                          {edu.coursework}
-                        </p>
+                  {/* Degree and Institution */}
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-semibold text-lg text-foreground">{edu.degree}</h3>
+                    <div className="flex items-center gap-2">
+                      {edu.institutionLogoUrl ? (
+                        <img
+                          src={edu.institutionLogoUrl}
+                          alt={`${edu.institution} logo`}
+                          className="w-5 h-5 object-contain rounded"
+                        />
+                      ) : (
+                        <Circle
+                          className="w-4 h-4"
+                          style={{ fill: edu.institutionColor || "#666", color: edu.institutionColor || "#666" }}
+                        />
                       )}
-
-                      {edu.customSections && edu.customSections.map((section, sectionIdx) => (
-                        <div key={sectionIdx} className="mt-2">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">{section.label}</p>
-                          <ul className="space-y-1">
-                            {section.items.map((item, itemIdx) => (
-                              <li key={itemIdx} className="text-sm">
-                                {item.url ? (
-                                  <a
-                                    href={item.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-foreground/70 hover:text-foreground transition-colors underline"
-                                  >
-                                    {item.name}
-                                  </a>
-                                ) : (
-                                  <span className="text-muted-foreground">{item.name}</span>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-
-                      {edu.achievements && edu.achievements.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">{achievementsLabel}</p>
-                          <ul className="list-disc list-inside text-sm text-muted-foreground space-y-0.5">
-                            {edu.achievements.map((achievement, idx) => (
-                              <li key={idx}>{achievement}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {edu.certifications && edu.certifications.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">{certificationsLabel}</p>
-                          <ul className="space-y-1">
-                            {edu.certifications.map((cert, idx) => (
-                              <li key={idx} className="text-sm">
-                                {cert.url ? (
-                                  <a
-                                    href={cert.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-foreground/70 hover:text-foreground transition-colors underline"
-                                  >
-                                    {cert.name}
-                                  </a>
-                                ) : (
-                                  <span className="text-muted-foreground">{cert.name}</span>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      <span className="text-sm text-muted-foreground font-medium">{edu.institution}</span>
                     </div>
-                  )}
+                  </div>
                 </div>
+
+                {/* Expanded Content - Full Width */}
+                {isExpanded && (
+                  <div className="mt-3 px-3 pb-2">
+                    {edu.coursework && (
+                      <p className="text-foreground/90 text-sm leading-relaxed mb-4">
+                        {edu.coursework}
+                      </p>
+                    )}
+
+                    {edu.customSections && edu.customSections.map((section, sectionIdx) => (
+                      <div key={sectionIdx} className="mt-3">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                          {section.label}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {section.items.map((item, itemIdx) => (
+                            <li key={itemIdx} className="text-sm flex items-start">
+                              <span className="text-muted-foreground mr-2">•</span>
+                              {item.url ? (
+                                <a
+                                  href={item.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-foreground/80 hover:text-primary transition-colors underline"
+                                >
+                                  {item.name}
+                                </a>
+                              ) : (
+                                <span className="text-foreground/80">{item.name}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+
+                    {edu.achievements && edu.achievements.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                          {achievementsLabel}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {edu.achievements.map((achievement, idx) => (
+                            <li key={idx} className="text-sm flex items-start">
+                              <span className="text-muted-foreground mr-2">•</span>
+                              <span className="text-foreground/80">{achievement}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {edu.certifications && edu.certifications.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                          {certificationsLabel}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {edu.certifications.map((cert, idx) => (
+                            <li key={idx} className="text-sm flex items-start">
+                              <span className="text-muted-foreground mr-2">•</span>
+                              {cert.url ? (
+                                <a
+                                  href={cert.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-foreground/80 hover:text-primary transition-colors underline"
+                                >
+                                  {cert.name}
+                                </a>
+                              ) : (
+                                <span className="text-foreground/80">{cert.name}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Bottom Border */}
+                {!isExpanded && <div className="h-px bg-border mt-3" />}
               </div>
             );
           })}
