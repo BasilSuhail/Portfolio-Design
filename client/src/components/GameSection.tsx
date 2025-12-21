@@ -136,9 +136,9 @@ export default function GameSection() {
     const GROUND_Y = 160;
 
     // Physics (converted to per-second values)
-    const GRAVITY = 36; // pixels per second squared (0.6 * 60fps)
-    const JUMP_FORCE = -660; // pixels per second (-11 * 60fps)
-    const BASE_SPEED = 540; // pixels per second (9 * 60fps)
+    const GRAVITY = 1800; // pixels per second squared
+    const JUMP_FORCE = -600; // pixels per second
+    const BASE_SPEED = 300; // pixels per second (slower base speed)
 
     const state = {
       gameActive: false,
@@ -367,11 +367,11 @@ export default function GameSection() {
       ctx.fillStyle = state.theme.text;
       ctx.fillRect(0, GROUND_Y, canvas.width, 2);
 
-      // Speed up progressively - FASTER ACCELERATION (using delta time)
+      // Speed up progressively - SLOWER ACCELERATION (using delta time)
       if (state.gameActive) {
-        state.speed += 480 * deltaTime; // 480 pixels/sec² acceleration (0.008 * 60fps)
+        state.speed += 150 * deltaTime; // 150 pixels/sec² acceleration
         // Cap at reasonable max
-        if (state.speed > 1080) state.speed = 1080; // 1080 pixels/sec max (18 * 60fps)
+        if (state.speed > 600) state.speed = 600; // 600 pixels/sec max
       }
 
       animationId = requestAnimationFrame(render);

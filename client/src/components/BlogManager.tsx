@@ -9,6 +9,7 @@ import { Trash2, Plus, Edit, Save, Upload, Image as ImageIcon, FileText } from "
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { secureFetch } from "@/lib/csrf";
+import { GoogleDocsImporter } from "./GoogleDocsImporter";
 
 interface Blog {
   id: string;
@@ -468,7 +469,14 @@ export function BlogManager() {
 
             {/* Rich Text Editor - Show only when content type is HTML */}
             {blog.contentType === 'html' && (
-              <div className="space-y-2">
+              <div className="space-y-4">
+                {/* Google Docs Importer */}
+                <GoogleDocsImporter
+                  onImport={(html) => {
+                    setEditingBlog({ ...(blog as Blog), content: html });
+                  }}
+                />
+
                 <div className="flex items-center justify-between">
                   <Label>Content (Rich Text Editor)</Label>
                 <div className="flex gap-2">
