@@ -43,16 +43,16 @@ export default function ExperienceSection({
   };
 
   return (
-    <section className="py-16 pb-8" data-testid="section-experience">
+    <section className="py-16 pb-4" data-testid="section-experience">
       <div className="max-w-2xl mx-auto px-6">
-        <div className="mb-12">
+        <div className="mb-8">
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-4 block">
             EXPERIENCE
           </span>
           <p className="text-foreground/80 leading-relaxed">{intro}</p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {experiences.map((exp) => {
             const isExpanded = expandedItems.has(exp.id);
             return (

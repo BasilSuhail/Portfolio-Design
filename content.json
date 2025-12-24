@@ -1,4 +1,15 @@
 {
+  "sectionOrder": [
+    "projects",
+    "experience",
+    "education",
+    "techStack",
+    "testimonials",
+    "writing",
+    "news",
+    "contact",
+    "game"
+  ],
   "sectionVisibility": {
     "projects": true,
     "experience": true,

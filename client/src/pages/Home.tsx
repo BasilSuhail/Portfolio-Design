@@ -7,7 +7,9 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
 import ContactSection from "@/components/ContactSection";
 import GameSection from "@/components/GameSection";
+import { NewsSection } from "@/components/NewsSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NavigationMenu } from "@/components/NavigationMenu";
 import { useContent } from "@/hooks/use-content";
 
 export default function Home() {
@@ -30,9 +32,87 @@ export default function Home() {
   }
 
   const visibility = content.sectionVisibility;
+  const sectionOrder = content.sectionOrder || [
+    "projects",
+    "experience",
+    "education",
+    "techStack",
+    "testimonials",
+    "writing",
+    "news",
+    "contact",
+    "game",
+  ];
+
+  const sections: Record<string, JSX.Element | null> = {
+    projects:
+      visibility.projects && content.projects.length > 0 ? (
+        <ProjectsSection
+          projects={content.projects}
+          intro={content.sectionIntros?.projects}
+        />
+      ) : null,
+    experience:
+      visibility.experience && content.experiences.length > 0 ? (
+        <ExperienceSection
+          experiences={content.experiences}
+          intro={content.sectionIntros?.experience}
+        />
+      ) : null,
+    education:
+      visibility.education &&
+      content.education &&
+      content.education.length > 0 ? (
+        <EducationSection
+          education={content.education}
+          intro={content.sectionIntros?.education}
+          achievementsLabel={content.educationLabels?.achievementsLabel}
+          certificationsLabel={content.educationLabels?.certificationsLabel}
+        />
+      ) : null,
+    techStack:
+      visibility.techStack && content.technologies.length > 0 ? (
+        <TechStackSection
+          technologies={content.technologies as any}
+          intro={content.sectionIntros?.techStack}
+        />
+      ) : null,
+    testimonials:
+      visibility.testimonials && content.testimonials.length > 0 ? (
+        <TestimonialsSection
+          testimonials={content.testimonials}
+          intro={content.sectionIntros?.testimonials}
+        />
+      ) : null,
+    writing:
+      visibility.writing && content.posts.length > 0 ? (
+        <WritingSection
+          posts={content.posts}
+          intro={content.sectionIntros?.writing}
+        />
+      ) : null,
+    news: <NewsSection />,
+    contact: visibility.contact ? (
+      <ContactSection
+        socialLinks={content.socialLinks as any}
+        onSubmit={(data) => console.log("Form submitted:", data)}
+        showForm={content.contactSettings?.showForm ?? true}
+        calendarLinks={content.contactSettings?.calendarLinks}
+      />
+    ) : null,
+    game: (visibility as any).game ? <GameSection /> : null,
+  };
+
+  const menuSections = [
+    { id: "projects", label: "Projects" },
+    { id: "background", label: "Background", subsections: ["experience", "education"] },
+    { id: "writing", label: "Blogs & News", subsections: ["writing", "news"] },
+    { id: "contact", label: "Contact" },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
+      <NavigationMenu sections={menuSections} />
       <ThemeToggle />
       <main id="main-content">
         <HeroSection
@@ -44,60 +124,14 @@ export default function Home() {
           avatarFallback={content.profile.avatarFallback}
         />
 
-        {visibility.projects && content.projects.length > 0 && (
-          <ProjectsSection
-            projects={content.projects}
-            intro={content.sectionIntros?.projects}
-          />
-        )}
-
-        {visibility.experience && content.experiences.length > 0 && (
-          <ExperienceSection
-            experiences={content.experiences}
-            intro={content.sectionIntros?.experience}
-          />
-        )}
-
-        {visibility.education && content.education && content.education.length > 0 && (
-          <EducationSection
-            education={content.education}
-            intro={content.sectionIntros?.education}
-            achievementsLabel={content.educationLabels?.achievementsLabel}
-            certificationsLabel={content.educationLabels?.certificationsLabel}
-          />
-        )}
-
-        {visibility.techStack && content.technologies.length > 0 && (
-          <TechStackSection
-            technologies={content.technologies as any}
-            intro={content.sectionIntros?.techStack}
-          />
-        )}
-
-        {visibility.testimonials && content.testimonials.length > 0 && (
-          <TestimonialsSection
-            testimonials={content.testimonials}
-            intro={content.sectionIntros?.testimonials}
-          />
-        )}
-
-        {visibility.writing && content.posts.length > 0 && (
-          <WritingSection
-            posts={content.posts}
-            intro={content.sectionIntros?.writing}
-          />
-        )}
-
-        {visibility.contact && (
-          <ContactSection
-            socialLinks={content.socialLinks as any}
-            onSubmit={(data) => console.log("Form submitted:", data)}
-            showForm={content.contactSettings?.showForm ?? true}
-            calendarLinks={content.contactSettings?.calendarLinks}
-          />
-        )}
-
-        {visibility.game && <GameSection />}
+        {sectionOrder.map((sectionKey: string) => {
+          const section = sections[sectionKey];
+          return section ? (
+            <div key={sectionKey} data-section={sectionKey}>
+              {section}
+            </div>
+          ) : null;
+        })}
       </main>
     </div>
   );

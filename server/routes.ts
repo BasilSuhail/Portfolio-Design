@@ -398,5 +398,103 @@ export async function registerRoutes(
     }
   });
 
+  // News API endpoints
+  const newsDataPath = path.join(process.cwd(), "news_feed.json");
+  const newsSettingsPath = path.join(process.cwd(), "news_settings.json");
+
+  // Get news feed
+  app.get("/api/news", async (_req: Request, res: Response) => {
+    try {
+      // Read news data
+      let newsData = [];
+      try {
+        const newsContent = await fs.readFile(newsDataPath, "utf-8");
+        newsData = JSON.parse(newsContent);
+      } catch (err) {
+        // If file doesn't exist, return empty array
+        newsData = [];
+      }
+
+      // Read settings
+      let settings = { visible: true };
+      try {
+        const settingsContent = await fs.readFile(newsSettingsPath, "utf-8");
+        settings = JSON.parse(settingsContent);
+      } catch (err) {
+        // Default to visible if settings don't exist
+        settings = { visible: true };
+      }
+
+      res.json({ news: newsData, visible: settings.visible });
+    } catch (error) {
+      console.error("Failed to fetch news:", error);
+      res.status(500).json({ message: "Failed to fetch news" });
+    }
+  });
+
+  // Get single news by date
+  app.get("/api/news/:date", async (req: Request, res: Response) => {
+    try {
+      const newsContent = await fs.readFile(newsDataPath, "utf-8");
+      const newsData = JSON.parse(newsContent);
+
+      const newsDay = newsData.find((item: any) => item.date === req.params.date);
+
+      if (!newsDay) {
+        return res.status(404).json({ message: "News not found" });
+      }
+
+      res.json(newsDay);
+    } catch (error) {
+      console.error("Failed to fetch news:", error);
+      res.status(500).json({ message: "Failed to fetch news" });
+    }
+  });
+
+  // Refresh news feed
+  app.post("/api/news/refresh", doubleCsrfProtection, async (_req: Request, res: Response) => {
+    try {
+      // This endpoint would trigger the news scraper script
+      // For now, we'll just return success
+      // In production, you would run the Python script here
+      res.json({ success: true, message: "News refresh triggered" });
+    } catch (error) {
+      console.error("Failed to refresh news:", error);
+      res.status(500).json({ message: "Failed to refresh news" });
+    }
+  });
+
+  // Update news settings (admin)
+  app.post("/api/admin/news/settings", doubleCsrfProtection, async (req: Request, res: Response) => {
+    try {
+      const { visible } = req.body;
+      const settings = { visible: visible !== false };
+
+      await fs.writeFile(newsSettingsPath, JSON.stringify(settings, null, 2));
+      res.json({ message: "News settings updated successfully", settings });
+    } catch (error) {
+      console.error("Failed to update news settings:", error);
+      res.status(500).json({ message: "Failed to update news settings" });
+    }
+  });
+
+  // Get news settings (admin)
+  app.get("/api/admin/news/settings", async (_req: Request, res: Response) => {
+    try {
+      let settings = { visible: true };
+      try {
+        const settingsContent = await fs.readFile(newsSettingsPath, "utf-8");
+        settings = JSON.parse(settingsContent);
+      } catch (err) {
+        settings = { visible: true };
+      }
+
+      res.json(settings);
+    } catch (error) {
+      console.error("Failed to fetch news settings:", error);
+      res.status(500).json({ message: "Failed to fetch news settings" });
+    }
+  });
+
   return httpServer;
 }

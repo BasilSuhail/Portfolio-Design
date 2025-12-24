@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ImageUpload } from "@/components/ImageUpload";
 import { BlogManager } from "@/components/BlogManager";
+import { NewsManager } from "@/components/NewsManager";
 import { Plus, Trash2, LogOut } from "lucide-react";
 import { secureFetch } from "@/lib/csrf";
 
@@ -146,16 +147,87 @@ export default function Admin() {
             <TabsTrigger value="writing">Writing</TabsTrigger>
             <TabsTrigger value="social">Social</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="news">News</TabsTrigger>
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
           </TabsList>
 
           <TabsContent value="visibility">
             <Card>
               <CardHeader>
-                <CardTitle>Section Visibility</CardTitle>
-                <CardDescription>Show or hide sections on your portfolio homepage</CardDescription>
+                <CardTitle>Section Visibility & Order</CardTitle>
+                <CardDescription>Show or hide sections and reorder them on your portfolio homepage</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Section Order */}
+                <div className="border rounded-lg p-4 space-y-4">
+                  <div>
+                    <h3 className="text-base font-semibold mb-2">Section Order</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Use the arrows to reorder sections on your homepage
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    {(currentContent.sectionOrder || []).map((sectionKey: string, index: number) => {
+                      const sectionNames: Record<string, string> = {
+                        projects: "Projects",
+                        experience: "Experience",
+                        education: "Education",
+                        techStack: "Tech Stack",
+                        testimonials: "Testimonials",
+                        writing: "Writing",
+                        news: "News",
+                        contact: "Contact",
+                        game: "Game",
+                      };
+
+                      return (
+                        <div key={sectionKey} className="flex items-center gap-2 p-3 border rounded-lg bg-card">
+                          <div className="flex flex-col gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const newOrder = [...currentContent.sectionOrder];
+                                if (index > 0) {
+                                  [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
+                                  updateContent(["sectionOrder"], newOrder);
+                                }
+                              }}
+                              disabled={index === 0}
+                              className="h-6 w-6 p-0"
+                            >
+                              ↑
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const newOrder = [...currentContent.sectionOrder];
+                                if (index < newOrder.length - 1) {
+                                  [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+                                  updateContent(["sectionOrder"], newOrder);
+                                }
+                              }}
+                              disabled={index === currentContent.sectionOrder.length - 1}
+                              className="h-6 w-6 p-0"
+                            >
+                              ↓
+                            </Button>
+                          </div>
+                          <div className="flex-1">
+                            <span className="font-medium">{sectionNames[sectionKey] || sectionKey}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">Position {index + 1}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Section Visibility */}
+                <div className="border-t pt-6">
+                  <h3 className="text-base font-semibold mb-4">Section Visibility</h3>
+                  <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="space-y-0.5">
                     <Label className="text-base">Projects Section</Label>
@@ -274,6 +346,8 @@ export default function Admin() {
                       updateContent(["sectionVisibility", "game"], checked)
                     }
                   />
+                </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -1195,6 +1269,10 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="news">
+            <NewsManager />
           </TabsContent>
 
           <TabsContent value="blogs">

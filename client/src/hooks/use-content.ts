@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 export interface PortfolioContent {
+  sectionOrder?: string[];
   sectionVisibility: {
     projects: boolean;
     experience: boolean;

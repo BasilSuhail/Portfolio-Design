@@ -52,16 +52,16 @@ export default function EducationSection({
   };
 
   return (
-    <section className="py-8 pt-4" data-testid="section-education">
+    <section className="py-8 pt-2" data-testid="section-education">
       <div className="max-w-2xl mx-auto px-6">
-        <div className="mb-12">
+        <div className="mb-8">
           <span className="text-xs uppercase tracking-widest text-muted-foreground mb-4 block">
             EDUCATION
           </span>
           {intro && <p className="text-foreground/80 leading-relaxed">{intro}</p>}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {education.map((edu) => {
             const isExpanded = expandedItems.has(edu.id);
             return (

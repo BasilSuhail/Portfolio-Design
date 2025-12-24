@@ -38,6 +38,7 @@ export function BlogManager() {
   const quillRef = useRef<ReactQuill>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
+  const coverImageInputRef = useRef<HTMLInputElement>(null);
 
   const emptyBlog: Omit<Blog, "id" | "createdAt" | "updatedAt"> = {
     title: "",
@@ -356,15 +357,56 @@ export function BlogManager() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="coverImage">Cover Image URL</Label>
-              <Input
-                id="coverImage"
-                value={blog.coverImage || ""}
-                onChange={(e) =>
-                  setEditingBlog({ ...(blog as Blog), coverImage: e.target.value })
-                }
-                placeholder="/uploads/image.jpg"
-              />
+              <Label htmlFor="coverImage">Cover Image</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="coverImage"
+                  value={blog.coverImage || ""}
+                  onChange={(e) =>
+                    setEditingBlog({ ...(blog as Blog), coverImage: e.target.value })
+                  }
+                  placeholder="/uploads/image.jpg"
+                  className="flex-1"
+                />
+                <input
+                  ref={coverImageInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      try {
+                        const url = await handleImageUpload(file);
+                        setEditingBlog({ ...(blog as Blog), coverImage: url });
+                        if (coverImageInputRef.current) {
+                          coverImageInputRef.current.value = '';
+                        }
+                      } catch (error) {
+                        console.error("Failed to upload cover image:", error);
+                      }
+                    }
+                  }}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => coverImageInputRef.current?.click()}
+                  disabled={isUploading}
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  {isUploading ? "Uploading..." : "Upload"}
+                </Button>
+              </div>
+              {blog.coverImage && (
+                <div className="mt-2">
+                  <img
+                    src={blog.coverImage}
+                    alt="Cover preview"
+                    className="w-full max-w-md h-48 object-cover rounded border"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">

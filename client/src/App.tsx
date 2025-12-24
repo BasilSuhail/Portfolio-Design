@@ -7,12 +7,13 @@ import { lazy, Suspense } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 
-// Lazy load admin pages, project detail, and blog pages
+// Lazy load admin pages, project detail, blog pages, and news pages
 const Admin = lazy(() => import("@/pages/Admin"));
 const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
 const BlogList = lazy(() => import("@/pages/BlogList"));
 const BlogDetail = lazy(() => import("@/pages/BlogDetail"));
+const NewsDetail = lazy(() => import("@/pages/NewsDetail"));
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/blog" component={BlogList} />
         <Route path="/blog/:slug" component={BlogDetail} />
+        <Route path="/news/:date" component={NewsDetail} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
