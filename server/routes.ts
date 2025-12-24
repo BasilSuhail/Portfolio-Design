@@ -8,6 +8,10 @@ import * as blogService from "./blogService";
 import { body, validationResult } from "express-validator";
 import sanitizeHtml from "sanitize-html";
 import { doubleCsrfProtection } from "./index";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execPromise = promisify(exec);
 
 // Sanitize HTML content - allows safe tags, strips scripts
 function sanitizeHTML(dirty: string): string {
@@ -454,13 +458,9 @@ export async function registerRoutes(
   // Refresh news feed
   app.post("/api/news/refresh", doubleCsrfProtection, async (_req: Request, res: Response) => {
     try {
-      // This endpoint reloads the news data from the JSON file
-      // To implement actual news scraping, you would need to:
-      // 1. Add a news scraper script (Python/Node.js)
-      // 2. Execute it here using child_process.exec or spawn
-      // 3. Wait for it to update news_feed.json
-      // For now, this just triggers a client-side reload
-      res.json({ success: true, message: "News data reloaded" });
+      // Run the news scraper script
+      await execPromise("node scrape-news.js");
+      res.json({ success: true, message: "News refreshed successfully" });
     } catch (error) {
       console.error("Failed to refresh news:", error);
       res.status(500).json({ message: "Failed to refresh news" });

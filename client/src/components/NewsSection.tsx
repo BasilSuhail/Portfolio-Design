@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, RefreshCw } from "lucide-react";
+import { secureFetch } from "@/lib/csrf";
 
 interface NewsItem {
   ticker: string;
@@ -50,7 +51,7 @@ export function NewsSection() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const res = await fetch("/api/news/refresh", { method: "POST" });
+      const res = await secureFetch("/api/news/refresh", { method: "POST" });
       const data = await res.json();
       if (data.success) {
         await loadNews();
