@@ -454,10 +454,13 @@ export async function registerRoutes(
   // Refresh news feed
   app.post("/api/news/refresh", doubleCsrfProtection, async (_req: Request, res: Response) => {
     try {
-      // This endpoint would trigger the news scraper script
-      // For now, we'll just return success
-      // In production, you would run the Python script here
-      res.json({ success: true, message: "News refresh triggered" });
+      // This endpoint reloads the news data from the JSON file
+      // To implement actual news scraping, you would need to:
+      // 1. Add a news scraper script (Python/Node.js)
+      // 2. Execute it here using child_process.exec or spawn
+      // 3. Wait for it to update news_feed.json
+      // For now, this just triggers a client-side reload
+      res.json({ success: true, message: "News data reloaded" });
     } catch (error) {
       console.error("Failed to refresh news:", error);
       res.status(500).json({ message: "Failed to refresh news" });

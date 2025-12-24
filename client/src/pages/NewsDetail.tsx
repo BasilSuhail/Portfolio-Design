@@ -144,7 +144,7 @@ export default function NewsDetail() {
       <article className="max-w-4xl mx-auto px-6 py-12 space-y-12">
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
-            AI Summary
+            Summary
           </h2>
           <div className="text-lg leading-relaxed text-foreground bg-muted/30 p-6 rounded-xl border border-border">
             {newsDay.content.briefing}

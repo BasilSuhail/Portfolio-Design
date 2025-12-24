@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, RefreshCw, Newspaper } from "lucide-react";
+import { CalendarDays, RefreshCw } from "lucide-react";
 
 interface NewsItem {
   ticker: string;
@@ -72,17 +72,14 @@ export function NewsSection() {
   }
 
   return (
-    <section className="py-16 border-t">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-16">
+      <div className="max-w-4xl mx-auto px-6">
         <div className="flex items-center justify-between mb-8">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <Newspaper className="w-6 h-6 text-primary" />
-              <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                TECH NEWS
-              </h2>
-            </div>
-            <p className="text-muted-foreground">
+          <div>
+            <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
+              TECH NEWS
+            </span>
+            <p className="text-foreground/80">
               Follow the news while you're here
             </p>
           </div>
