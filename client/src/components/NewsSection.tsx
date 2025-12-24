@@ -98,7 +98,7 @@ export function NewsSection() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {news.slice(0, 6).map((day) => (
+          {news.slice(0, 3).map((day) => (
             <Link key={day.date} href={`/news/${day.date}`}>
               <a className="block group h-full">
                 <Card className="h-full transition-all hover:border-primary/50 hover:shadow-md bg-card">
@@ -130,7 +130,7 @@ export function NewsSection() {
           ))}
         </div>
 
-        {news.length > 6 && (
+        {news.length > 3 && (
           <div className="mt-8 text-center">
             <Link href="/news">
               <a className="inline-flex items-center gap-2 text-primary hover:underline font-medium">

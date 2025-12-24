@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Helmet } from "react-helmet-async";
 
 export default function ProjectDetail() {
   const [, params] = useRoute("/project/:id");
@@ -44,6 +45,12 @@ export default function ProjectDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{project.title} | Your Portfolio</title>
+        <meta name="description" content={project.description || project.title} />
+        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+      </Helmet>
+
       <ThemeToggle />
 
       <div className="container mx-auto px-4 py-16 max-w-5xl">

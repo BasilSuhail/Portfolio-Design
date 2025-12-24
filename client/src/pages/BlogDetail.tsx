@@ -102,6 +102,9 @@ export default function BlogDetail() {
         <meta name="twitter:description" content={blog.excerpt || blog.content.substring(0, 160).replace(/<[^>]*>/g, '')} />
         {blog.coverImage && <meta name="twitter:image" content={blog.coverImage} />}
 
+        {/* Favicon */}
+        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+
         {/* Article Metadata */}
         <meta property="article:published_time" content={blog.customDate || blog.createdAt} />
         <meta property="article:modified_time" content={blog.updatedAt} />

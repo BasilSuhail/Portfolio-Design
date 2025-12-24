@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface NewsItem {
   ticker: string;
@@ -64,6 +66,7 @@ export default function NewsDetail() {
   if (!newsDay) {
     return (
       <div className="min-h-screen bg-background">
+        <ThemeToggle />
         <div className="max-w-4xl mx-auto px-6 py-20">
           <div className="text-center space-y-4">
             <h2 className="text-2xl font-bold text-foreground">News Not Found</h2>
@@ -71,10 +74,10 @@ export default function NewsDetail() {
               This news briefing does not exist or has been removed.
             </p>
             <Link href="/">
-              <a className="text-primary inline-flex items-center hover:underline mt-4">
+              <Button variant="ghost" className="mt-4">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
-              </a>
+              </Button>
             </Link>
           </div>
         </div>
@@ -104,15 +107,18 @@ export default function NewsDetail() {
           property="og:description"
           content={newsDay.content.briefing.substring(0, 160)}
         />
+        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
       </Helmet>
+
+      <ThemeToggle />
 
       <div className="border-b bg-background">
         <div className="max-w-4xl mx-auto px-6 py-8">
           <Link href="/">
-            <a className="text-sm text-muted-foreground hover:text-primary inline-flex items-center transition-colors mb-4">
-              <ArrowLeft className="w-4 h-4 mr-1" />
+            <Button variant="ghost" className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
-            </a>
+            </Button>
           </Link>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-tight">
             Tech Briefing:{" "}
