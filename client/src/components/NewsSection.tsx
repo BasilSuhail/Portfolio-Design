@@ -29,6 +29,7 @@ export function NewsSection() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [error, setError] = useState(false);
 
   const loadNews = async () => {
     try {
@@ -37,8 +38,10 @@ export function NewsSection() {
       const data = await res.json();
       setNews(data.news || []);
       setIsVisible(data.visible !== false);
+      setError(false);
     } catch (e) {
-      console.error(e);
+      console.error("News fetch error:", e);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -63,11 +66,8 @@ export function NewsSection() {
     loadNews();
   }, []);
 
-  if (!isVisible || loading) {
-    return null;
-  }
-
-  if (news.length === 0) {
+  // Hide if loading, error, not visible, or no news
+  if (loading || error || !isVisible || news.length === 0) {
     return null;
   }
 
