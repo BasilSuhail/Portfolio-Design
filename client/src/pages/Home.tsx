@@ -105,9 +105,9 @@ export default function Home() {
 
   const menuSections = [
     { id: "projects", label: "Projects" },
-    { id: "background", label: "Background", subsections: ["experience", "education"] },
-    { id: "writing", label: "Blogs & News", subsections: ["writing", "news"] },
+    { id: "writing", label: "Blogs" },
     { id: "contact", label: "Contact" },
+    { id: "gallery", label: "Gallery", href: "/gallery" },
   ];
 
   return (

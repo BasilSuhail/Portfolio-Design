@@ -235,6 +235,29 @@ app.use((req, res, next) => {
   httpServer.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
+
+  // Start auto-refresh news service
+  if (process.env.NODE_ENV === "production") {
+    const { exec } = await import("child_process");
+    const { promisify } = await import("util");
+    const execPromise = promisify(exec);
+
+    // Check every minute if it's noon to refresh news
+    setInterval(async () => {
+      const now = new Date();
+      if (now.getHours() === 12 && now.getMinutes() === 0) {
+        log('Auto-refreshing news at noon...');
+        try {
+          await execPromise('node scrape-news.js');
+          log('News auto-refresh completed');
+        } catch (error) {
+          log(`Failed to auto-refresh news: ${error}`);
+        }
+      }
+    }, 60000); // Check every minute
+
+    log('Auto-refresh news service started (daily at 12:00 PM)');
+  }
 })();
 
 // Export for Vercel serverless

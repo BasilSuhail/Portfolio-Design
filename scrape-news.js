@@ -146,8 +146,8 @@ async function updateNewsFeed() {
     console.log(`Added news for ${today}`);
   }
 
-  // Keep only last 30 days
-  newsFeed = newsFeed.slice(0, 30);
+  // Keep only last 7 days
+  newsFeed = newsFeed.slice(0, 7);
 
   // Save to file
   fs.writeFileSync(newsFeedPath, JSON.stringify(newsFeed, null, 2));

@@ -13,6 +13,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ImageUpload } from "@/components/ImageUpload";
 import { BlogManager } from "@/components/BlogManager";
 import { NewsManager } from "@/components/NewsManager";
+import { GalleryManager } from "@/components/GalleryManager";
 import { Plus, Trash2, LogOut } from "lucide-react";
 import { secureFetch } from "@/lib/csrf";
 
@@ -147,6 +148,7 @@ export default function Admin() {
             <TabsTrigger value="writing">Writing</TabsTrigger>
             <TabsTrigger value="social">Social</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="gallery">Gallery</TabsTrigger>
             <TabsTrigger value="news">News</TabsTrigger>
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
           </TabsList>
@@ -1269,6 +1271,10 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="gallery">
+            <GalleryManager />
           </TabsContent>
 
           <TabsContent value="news">

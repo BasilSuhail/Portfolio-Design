@@ -499,5 +499,172 @@ export async function registerRoutes(
     }
   });
 
+  // Gallery API endpoints
+  const galleryDataPath = path.join(process.cwd(), "gallery.json");
+  const gallerySettingsPath = path.join(process.cwd(), "gallery_settings.json");
+
+  // Get gallery
+  app.get("/api/gallery", async (_req: Request, res: Response) => {
+    try {
+      // Read gallery data
+      let photos = [];
+      try {
+        const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
+        photos = JSON.parse(galleryContent);
+      } catch (err) {
+        photos = [];
+      }
+
+      // Read settings
+      let settings = { visible: true };
+      try {
+        const settingsContent = await fs.readFile(gallerySettingsPath, "utf-8");
+        settings = JSON.parse(settingsContent);
+      } catch (err) {
+        settings = { visible: true };
+      }
+
+      res.json({ photos, visible: settings.visible });
+    } catch (error) {
+      console.error("Failed to fetch gallery:", error);
+      res.status(500).json({ message: "Failed to fetch gallery" });
+    }
+  });
+
+  // Get gallery settings (admin)
+  app.get("/api/admin/gallery/settings", async (_req: Request, res: Response) => {
+    try {
+      let settings = { visible: true };
+      try {
+        const settingsContent = await fs.readFile(gallerySettingsPath, "utf-8");
+        settings = JSON.parse(settingsContent);
+      } catch (err) {
+        settings = { visible: true };
+      }
+
+      res.json(settings);
+    } catch (error) {
+      console.error("Failed to fetch gallery settings:", error);
+      res.status(500).json({ message: "Failed to fetch gallery settings" });
+    }
+  });
+
+  // Update gallery settings (admin)
+  app.post("/api/admin/gallery/settings", doubleCsrfProtection, async (req: Request, res: Response) => {
+    try {
+      const { visible } = req.body;
+      const settings = { visible: visible !== false };
+
+      await fs.writeFile(gallerySettingsPath, JSON.stringify(settings, null, 2));
+      res.json({ message: "Gallery settings updated successfully", settings });
+    } catch (error) {
+      console.error("Failed to update gallery settings:", error);
+      res.status(500).json({ message: "Failed to update gallery settings" });
+    }
+  });
+
+  // Get all photos (admin)
+  app.get("/api/admin/gallery", async (_req: Request, res: Response) => {
+    try {
+      let photos = [];
+      try {
+        const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
+        photos = JSON.parse(galleryContent);
+      } catch (err) {
+        photos = [];
+      }
+
+      res.json(photos);
+    } catch (error) {
+      console.error("Failed to fetch gallery:", error);
+      res.status(500).json({ message: "Failed to fetch gallery" });
+    }
+  });
+
+  // Upload photo (admin)
+  app.post("/api/admin/gallery/upload", doubleCsrfProtection, upload.single("photo"), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const { alt, location, date, orientation } = req.body;
+
+      // Read existing gallery
+      let photos = [];
+      try {
+        const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
+        photos = JSON.parse(galleryContent);
+      } catch (err) {
+        photos = [];
+      }
+
+      // Create new photo entry
+      const newPhoto = {
+        id: Date.now(),
+        src: `/uploads/${req.file.filename}`,
+        alt: sanitizeText(alt || ""),
+        location: sanitizeText(location || ""),
+        date: sanitizeText(date || ""),
+        orientation: orientation || "landscape"
+      };
+
+      photos.push(newPhoto);
+
+      // Save to file
+      await fs.writeFile(galleryDataPath, JSON.stringify(photos, null, 2));
+
+      res.json({ message: "Photo uploaded successfully", photo: newPhoto });
+    } catch (error) {
+      console.error("Failed to upload photo:", error);
+      res.status(500).json({ message: "Failed to upload photo" });
+    }
+  });
+
+  // Delete photo (admin)
+  app.delete("/api/admin/gallery/:id", doubleCsrfProtection, async (req: Request, res: Response) => {
+    try {
+      const photoId = parseInt(req.params.id);
+
+      // Read gallery
+      let photos = [];
+      try {
+        const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
+        photos = JSON.parse(galleryContent);
+      } catch (err) {
+        return res.status(404).json({ message: "Gallery not found" });
+      }
+
+      // Find and remove photo
+      const photoIndex = photos.findIndex((p: any) => p.id === photoId);
+      if (photoIndex === -1) {
+        return res.status(404).json({ message: "Photo not found" });
+      }
+
+      const photo = photos[photoIndex];
+
+      // Delete image file
+      if (photo.src && photo.src.startsWith("/uploads/")) {
+        const imagePath = path.join(uploadsDir, path.basename(photo.src));
+        try {
+          await fs.unlink(imagePath);
+        } catch (err) {
+          console.error("Failed to delete image file:", err);
+        }
+      }
+
+      // Remove from array
+      photos.splice(photoIndex, 1);
+
+      // Save updated gallery
+      await fs.writeFile(galleryDataPath, JSON.stringify(photos, null, 2));
+
+      res.json({ message: "Photo deleted successfully" });
+    } catch (error) {
+      console.error("Failed to delete photo:", error);
+      res.status(500).json({ message: "Failed to delete photo" });
+    }
+  });
+
   return httpServer;
 }
