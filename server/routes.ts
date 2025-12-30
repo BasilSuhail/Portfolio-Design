@@ -519,6 +519,9 @@ export async function registerRoutes(
         photos = [];
       }
 
+      // Sort photos by ID descending (newest first)
+      photos.sort((a: any, b: any) => b.id - a.id);
+
       // Read settings
       let settings = { visible: true };
       try {
@@ -577,6 +580,9 @@ export async function registerRoutes(
       } catch (err) {
         photos = [];
       }
+
+      // Sort photos by ID descending (newest first)
+      photos.sort((a: any, b: any) => b.id - a.id);
 
       res.json(photos);
     } catch (error) {
