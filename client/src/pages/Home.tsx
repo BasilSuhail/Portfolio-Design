@@ -112,7 +112,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-6 right-6 z-50 flex gap-6 items-center">
+      <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50 flex gap-2 sm:gap-6 items-center flex-wrap justify-end max-w-[calc(100vw-1.5rem)] sm:max-w-none">
         <NavigationMenu sections={menuSections} />
         <ThemeToggle />
       </div>

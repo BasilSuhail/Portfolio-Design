@@ -32,6 +32,7 @@ export function GalleryManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
   // Bulk upload state
@@ -40,6 +41,9 @@ export function GalleryManager() {
   const [defaultDate, setDefaultDate] = useState("");
   const [defaultOrientation, setDefaultOrientation] = useState<"portrait" | "landscape" | "square">("landscape");
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
+
+  // Bulk delete state
+  const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetchData();
@@ -155,7 +159,12 @@ export function GalleryManager() {
       // Upload each file sequentially
       for (let i = 0; i < bulkFiles.length; i++) {
         const bulkFile = bulkFiles[i];
+
+        // Update progress before starting upload
         setUploadProgress({ current: i + 1, total: bulkFiles.length });
+
+        // Small delay to allow UI to update and prevent blocking
+        await new Promise(resolve => setTimeout(resolve, 50));
 
         try {
           const formData = new FormData();
@@ -215,6 +224,86 @@ export function GalleryManager() {
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const togglePhotoSelection = (photoId: number) => {
+    setSelectedPhotos(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(photoId)) {
+        newSet.delete(photoId);
+      } else {
+        newSet.add(photoId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedPhotos.size === photos.length) {
+      setSelectedPhotos(new Set());
+    } else {
+      setSelectedPhotos(new Set(photos.map(p => p.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedPhotos.size === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one photo to delete",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete ${selectedPhotos.size} photo${selectedPhotos.size > 1 ? 's' : ''}?`)) return;
+
+    setIsDeleting(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    try {
+      for (const photoId of selectedPhotos) {
+        try {
+          const response = await secureFetch(`/api/admin/gallery/${photoId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (err) {
+          console.error("Failed to delete photo:", photoId, err);
+          failCount++;
+        }
+      }
+
+      if (failCount === 0) {
+        toast({
+          title: "Success",
+          description: `Successfully deleted ${successCount} photo${successCount > 1 ? 's' : ''}!`,
+        });
+      } else {
+        toast({
+          title: "Partial Success",
+          description: `Deleted ${successCount} photo(s). ${failCount} failed.`,
+          variant: "destructive",
+        });
+      }
+
+      setSelectedPhotos(new Set());
+      await fetchData();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete photos. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -441,15 +530,38 @@ export function GalleryManager() {
                 ))}
               </div>
 
-              <Button
-                type="button"
-                onClick={handleBulkUpload}
-                disabled={isUploading}
-                className="w-full"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                {isUploading ? `Uploading ${uploadProgress.current} of ${uploadProgress.total}...` : `Upload ${bulkFiles.length} Photo${bulkFiles.length > 1 ? 's' : ''}`}
-              </Button>
+              <div className="space-y-3">
+                {isUploading && (
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-foreground">
+                        Uploading {uploadProgress.current} of {uploadProgress.total}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {Math.round((uploadProgress.current / uploadProgress.total) * 100)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-primary h-full transition-all duration-300"
+                        style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Please wait, this may take a few minutes...
+                    </p>
+                  </div>
+                )}
+                <Button
+                  type="button"
+                  onClick={handleBulkUpload}
+                  disabled={isUploading}
+                  className="w-full"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  {isUploading ? `Uploading ${uploadProgress.current} of ${uploadProgress.total}...` : `Upload ${bulkFiles.length} Photo${bulkFiles.length > 1 ? 's' : ''}`}
+                </Button>
+              </div>
             </div>
           )}
         </CardContent>
@@ -458,13 +570,40 @@ export function GalleryManager() {
       {/* Photo List */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Image className="w-5 h-5" />
-            Gallery Photos ({photos.length})
-          </CardTitle>
-          <CardDescription>
-            Manage your uploaded photos
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Image className="w-5 h-5" />
+                Gallery Photos ({photos.length})
+              </CardTitle>
+              <CardDescription>
+                Manage your uploaded photos
+              </CardDescription>
+            </div>
+            {photos.length > 0 && (
+              <div className="flex gap-2 items-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleSelectAll}
+                  disabled={isDeleting}
+                >
+                  {selectedPhotos.size === photos.length ? "Deselect All" : "Select All"}
+                </Button>
+                {selectedPhotos.size > 0 && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleBulkDelete}
+                    disabled={isDeleting}
+                  >
+                    <Trash2 className="w-3 h-3 mr-1" />
+                    Delete {selectedPhotos.size} Selected
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {photos.length === 0 ? (
@@ -475,13 +614,24 @@ export function GalleryManager() {
             <div className="max-h-[600px] overflow-y-auto">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {photos.map((photo) => (
-                  <div key={photo.id} className="border rounded-lg overflow-hidden">
-                    <img
-                      src={photo.src}
-                      alt={photo.alt}
-                      className="w-full h-48 object-cover"
-                      loading="lazy"
-                    />
+                  <div key={photo.id} className={`border rounded-lg overflow-hidden transition-all ${selectedPhotos.has(photo.id) ? 'ring-2 ring-primary' : ''}`}>
+                    <div className="relative">
+                      <img
+                        src={photo.src}
+                        alt={photo.alt}
+                        className="w-full h-48 object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-2 left-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedPhotos.has(photo.id)}
+                          onChange={() => togglePhotoSelection(photo.id)}
+                          className="w-5 h-5 rounded cursor-pointer"
+                          disabled={isDeleting}
+                        />
+                      </div>
+                    </div>
                     <div className="p-3 space-y-2">
                       <p className="font-medium text-sm truncate">{photo.location}</p>
                       <p className="text-xs text-muted-foreground">{photo.date}</p>
@@ -491,6 +641,7 @@ export function GalleryManager() {
                         variant="destructive"
                         onClick={() => handleDelete(photo.id)}
                         className="w-full"
+                        disabled={isDeleting}
                       >
                         <Trash2 className="w-3 h-3 mr-1" />
                         Delete

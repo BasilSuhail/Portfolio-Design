@@ -44,7 +44,7 @@ export default function Gallery() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="fixed top-6 right-6 z-50">
+        <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50">
           <ThemeToggle />
         </div>
         <div className="max-w-7xl mx-auto px-6 py-20">
@@ -57,7 +57,7 @@ export default function Gallery() {
   if (error || !isVisible) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="fixed top-6 right-6 z-50">
+        <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50">
           <ThemeToggle />
         </div>
         <div className="max-w-7xl mx-auto px-6 py-20">
@@ -86,7 +86,7 @@ export default function Gallery() {
         <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
       </Helmet>
 
-      <div className="fixed top-6 right-6 z-50">
+      <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50">
         <ThemeToggle />
       </div>
 

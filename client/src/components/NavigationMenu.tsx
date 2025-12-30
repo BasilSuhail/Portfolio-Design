@@ -20,11 +20,11 @@ export function NavigationMenu({ sections }: NavigationMenuProps) {
   };
 
   return (
-    <>
+    <div className="flex gap-3 sm:gap-4 items-center flex-wrap">
       {sections.map((section) => (
         section.href ? (
           <Link key={section.id} href={section.href}>
-            <a className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <a className="text-xs sm:text-sm font-medium text-foreground hover:text-primary transition-colors whitespace-nowrap">
               {section.label}
             </a>
           </Link>
@@ -32,12 +32,12 @@ export function NavigationMenu({ sections }: NavigationMenuProps) {
           <button
             key={section.id}
             onClick={() => scrollToSection(section.id)}
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            className="text-xs sm:text-sm font-medium text-foreground hover:text-primary transition-colors whitespace-nowrap"
           >
             {section.label}
           </button>
         )
       ))}
-    </>
+    </div>
   );
 }

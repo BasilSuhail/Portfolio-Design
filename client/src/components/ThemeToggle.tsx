@@ -32,36 +32,37 @@ export function ThemeToggle() {
   };
 
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-2 sm:gap-3 items-center">
       <button
         onClick={toggleTheme}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md transition-all whitespace-nowrap"
+        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md transition-all whitespace-nowrap"
         aria-label="Toggle theme"
       >
         {theme === "light" ? (
           <>
-            <Moon className="h-4 w-4" />
-            <span className="text-sm font-medium">Dark</span>
+            <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="text-xs sm:text-sm font-medium">Dark</span>
           </>
         ) : (
           <>
-            <Sun className="h-4 w-4" />
-            <span className="text-sm font-medium">Light</span>
+            <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="text-xs sm:text-sm font-medium">Light</span>
           </>
         )}
       </button>
 
       <button
         onClick={toggleHighContrast}
-        className={`flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm hover:shadow-md transition-all whitespace-nowrap ${
+        className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full border shadow-sm hover:shadow-md transition-all whitespace-nowrap ${
           highContrast
             ? "bg-foreground text-background border-foreground"
             : "bg-background text-foreground border-border"
         }`}
         aria-label="Toggle high contrast"
       >
-        <Contrast className="h-4 w-4" />
-        <span className="text-sm font-medium">High Contrast</span>
+        <Contrast className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+        <span className="text-xs sm:text-sm font-medium hidden sm:inline">High Contrast</span>
+        <span className="text-xs sm:text-sm font-medium inline sm:hidden">HC</span>
       </button>
     </div>
   );
