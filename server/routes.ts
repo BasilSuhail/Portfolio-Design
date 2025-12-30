@@ -3,7 +3,7 @@ import { type Server } from "http";
 import fs from "fs/promises";
 import path from "path";
 import multer from "multer";
-import sharp from "sharp";
+import convert from "heic-convert";
 import { Resend } from "resend";
 import * as blogService from "./blogService";
 import { body, validationResult } from "express-validator";
@@ -606,11 +606,14 @@ export async function registerRoutes(
         const jpegPath = path.join(uploadsDir, jpegFilename);
 
         try {
-          await sharp(originalPath)
-            .jpeg({ quality: 90 })
-            .toFile(jpegPath);
+          const inputBuffer = await fs.readFile(originalPath);
+          const outputBuffer = await convert({
+            buffer: inputBuffer,
+            format: 'JPEG',
+            quality: 0.9
+          });
 
-          // Delete original HEIC file
+          await fs.writeFile(jpegPath, outputBuffer);
           await fs.unlink(originalPath);
           finalFilename = jpegFilename;
           console.log("✅ Converted to JPEG:", jpegFilename);
