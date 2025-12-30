@@ -112,8 +112,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationMenu sections={menuSections} />
-      <ThemeToggle />
+      <div className="fixed top-6 right-6 z-50 flex gap-6 items-center">
+        <NavigationMenu sections={menuSections} />
+        <ThemeToggle />
+      </div>
       <main id="main-content">
         <HeroSection
           name={content.profile.name}

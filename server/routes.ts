@@ -584,7 +584,12 @@ export async function registerRoutes(
   // Upload photo (admin)
   app.post("/api/admin/gallery/upload", doubleCsrfProtection, upload.single("photo"), async (req: Request, res: Response) => {
     try {
+      console.log("📸 Gallery upload request received");
+      console.log("File:", req.file);
+      console.log("Body:", req.body);
+
       if (!req.file) {
+        console.error("❌ No file in request");
         return res.status(400).json({ message: "No file uploaded" });
       }
 
@@ -595,7 +600,9 @@ export async function registerRoutes(
       try {
         const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
         photos = JSON.parse(galleryContent);
+        console.log("📚 Existing photos count:", photos.length);
       } catch (err) {
+        console.log("📚 No existing gallery, starting fresh");
         photos = [];
       }
 
@@ -610,14 +617,16 @@ export async function registerRoutes(
       };
 
       photos.push(newPhoto);
+      console.log("✅ Adding new photo:", newPhoto);
 
       // Save to file
       await fs.writeFile(galleryDataPath, JSON.stringify(photos, null, 2));
+      console.log("💾 Saved to gallery.json");
 
       res.json({ message: "Photo uploaded successfully", photo: newPhoto });
     } catch (error) {
-      console.error("Failed to upload photo:", error);
-      res.status(500).json({ message: "Failed to upload photo" });
+      console.error("❌ Failed to upload photo:", error);
+      res.status(500).json({ message: "Failed to upload photo", error: String(error) });
     }
   });
 

@@ -20,7 +20,7 @@ export function NavigationMenu({ sections }: NavigationMenuProps) {
   };
 
   return (
-    <div className="fixed top-6 left-6 z-50 flex gap-6 items-center">
+    <>
       {sections.map((section) => (
         section.href ? (
           <Link key={section.id} href={section.href}>
@@ -38,6 +38,6 @@ export function NavigationMenu({ sections }: NavigationMenuProps) {
           </button>
         )
       ))}
-    </div>
+    </>
   );
 }

@@ -39,6 +39,7 @@ export function GalleryManager() {
   const [defaultLocation, setDefaultLocation] = useState("");
   const [defaultDate, setDefaultDate] = useState("");
   const [defaultOrientation, setDefaultOrientation] = useState<"portrait" | "landscape" | "square">("landscape");
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
   useEffect(() => {
     fetchData();
@@ -146,12 +147,16 @@ export function GalleryManager() {
     }
 
     setIsUploading(true);
+    setUploadProgress({ current: 0, total: bulkFiles.length });
     let successCount = 0;
     let failCount = 0;
 
     try {
       // Upload each file sequentially
-      for (const bulkFile of bulkFiles) {
+      for (let i = 0; i < bulkFiles.length; i++) {
+        const bulkFile = bulkFiles[i];
+        setUploadProgress({ current: i + 1, total: bulkFiles.length });
+
         try {
           const formData = new FormData();
           formData.append("photo", bulkFile.file);
@@ -437,7 +442,7 @@ export function GalleryManager() {
                 className="w-full"
               >
                 <Upload className="w-4 h-4 mr-2" />
-                {isUploading ? `Uploading ${bulkFiles.length} photo(s)...` : `Upload ${bulkFiles.length} Photo${bulkFiles.length > 1 ? 's' : ''}`}
+                {isUploading ? `Uploading ${uploadProgress.current} of ${uploadProgress.total}...` : `Upload ${bulkFiles.length} Photo${bulkFiles.length > 1 ? 's' : ''}`}
               </Button>
             </div>
           )}

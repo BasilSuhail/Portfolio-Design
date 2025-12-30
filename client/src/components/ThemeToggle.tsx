@@ -32,7 +32,7 @@ export function ThemeToggle() {
   };
 
   return (
-    <div className="fixed top-6 right-6 z-50 flex gap-2">
+    <>
       <button
         onClick={toggleTheme}
         className="flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md transition-all"
@@ -63,6 +63,6 @@ export function ThemeToggle() {
         <Contrast className="h-4 w-4" />
         <span className="text-sm font-medium">High Contrast</span>
       </button>
-    </div>
+    </>
   );
 }
