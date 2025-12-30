@@ -3,6 +3,7 @@ import { type Server } from "http";
 import fs from "fs/promises";
 import path from "path";
 import multer from "multer";
+import sharp from "sharp";
 import { Resend } from "resend";
 import * as blogService from "./blogService";
 import { body, validationResult } from "express-validator";
@@ -594,6 +595,31 @@ export async function registerRoutes(
 
       const { alt, location, date, orientation } = req.body;
 
+      let finalFilename = req.file.filename;
+      const originalPath = req.file.path;
+      const ext = path.extname(req.file.originalname).toLowerCase();
+
+      // Convert HEIC to JPEG
+      if (ext === '.heic' || ext === '.heif') {
+        console.log("🔄 Converting HEIC to JPEG...");
+        const jpegFilename = finalFilename.replace(/\.(heic|heif)$/i, '.jpg');
+        const jpegPath = path.join(uploadsDir, jpegFilename);
+
+        try {
+          await sharp(originalPath)
+            .jpeg({ quality: 90 })
+            .toFile(jpegPath);
+
+          // Delete original HEIC file
+          await fs.unlink(originalPath);
+          finalFilename = jpegFilename;
+          console.log("✅ Converted to JPEG:", jpegFilename);
+        } catch (conversionError) {
+          console.error("❌ HEIC conversion failed:", conversionError);
+          // Continue with original file if conversion fails
+        }
+      }
+
       // Read existing gallery
       let photos = [];
       try {
@@ -608,7 +634,7 @@ export async function registerRoutes(
       // Create new photo entry
       const newPhoto = {
         id: Date.now(),
-        src: `/uploads/${req.file.filename}`,
+        src: `/uploads/${finalFilename}`,
         alt: sanitizeText(alt || ""),
         location: sanitizeText(location || ""),
         date: sanitizeText(date || ""),

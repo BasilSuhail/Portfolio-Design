@@ -32,10 +32,10 @@ export function ThemeToggle() {
   };
 
   return (
-    <>
+    <div className="flex gap-3 items-center">
       <button
         onClick={toggleTheme}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md transition-all"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md transition-all whitespace-nowrap"
         aria-label="Toggle theme"
       >
         {theme === "light" ? (
@@ -53,7 +53,7 @@ export function ThemeToggle() {
 
       <button
         onClick={toggleHighContrast}
-        className={`flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm hover:shadow-md transition-all ${
+        className={`flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm hover:shadow-md transition-all whitespace-nowrap ${
           highContrast
             ? "bg-foreground text-background border-foreground"
             : "bg-background text-foreground border-border"
@@ -63,6 +63,6 @@ export function ThemeToggle() {
         <Contrast className="h-4 w-4" />
         <span className="text-sm font-medium">High Contrast</span>
       </button>
-    </>
+    </div>
   );
 }
