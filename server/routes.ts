@@ -35,7 +35,11 @@ function sanitizeText(text: string): string {
 
 // Use process.cwd() instead of import.meta.url for compatibility with CommonJS build
 const contentPath = path.join(process.cwd(), "content.json");
-const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
+// In production, uploads go to dist/public/uploads (served by Express)
+// In dev, uploads go to client/public/uploads (served by Vite)
+const uploadsDir = process.env.NODE_ENV === "production"
+  ? path.join(process.cwd(), "dist", "public", "uploads")
+  : path.join(process.cwd(), "client", "public", "uploads");
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({

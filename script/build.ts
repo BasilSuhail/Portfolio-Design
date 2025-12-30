@@ -1,6 +1,7 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile } from "fs/promises";
+import { rm, readFile, mkdir, cp } from "fs/promises";
+import { existsSync } from "fs";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -37,6 +38,21 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
+
+  // Copy uploads directory to dist/public if it exists
+  console.log("copying uploads directory...");
+  const sourceUploads = "client/public/uploads";
+  const destUploads = "dist/public/uploads";
+
+  if (existsSync(sourceUploads)) {
+    await mkdir(destUploads, { recursive: true });
+    await cp(sourceUploads, destUploads, { recursive: true });
+    console.log(`✓ copied ${sourceUploads} to ${destUploads}`);
+  } else {
+    // Create empty uploads directory if source doesn't exist
+    await mkdir(destUploads, { recursive: true });
+    console.log(`✓ created empty ${destUploads}`);
+  }
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
