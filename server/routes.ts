@@ -38,9 +38,8 @@ const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
-  destination: async (_req, _file, cb) => {
-    // Ensure uploads directory exists when multer needs it
-    await fs.mkdir(uploadsDir, { recursive: true });
+  destination: (_req, _file, cb) => {
+    // Directory is created at startup, just use it
     cb(null, uploadsDir);
   },
   filename: (_req, file, cb) => {
@@ -51,9 +50,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit for images
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for images (increased from 5MB)
   fileFilter: (_req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const allowedTypes = /jpeg|jpg|png|gif|webp|heic/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
 

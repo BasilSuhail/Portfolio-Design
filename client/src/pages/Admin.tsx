@@ -114,7 +114,9 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <ThemeToggle />
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>

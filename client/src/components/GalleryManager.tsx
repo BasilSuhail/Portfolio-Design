@@ -165,6 +165,8 @@ export function GalleryManager() {
           formData.append("date", bulkFile.date);
           formData.append("orientation", bulkFile.orientation);
 
+          console.log("Uploading photo:", bulkFile.file.name);
+
           const response = await secureFetch("/api/admin/gallery/upload", {
             method: "POST",
             body: formData,
@@ -172,10 +174,14 @@ export function GalleryManager() {
 
           if (response.ok) {
             successCount++;
+            console.log("✅ Upload success:", bulkFile.file.name);
           } else {
+            const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
+            console.error("❌ Upload failed:", bulkFile.file.name, response.status, errorData);
             failCount++;
           }
         } catch (err) {
+          console.error("❌ Upload error:", bulkFile.file.name, err);
           failCount++;
         }
       }

@@ -51,7 +51,9 @@ export default function ProjectDetail() {
         <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
       </Helmet>
 
-      <ThemeToggle />
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
 
       <div className="container mx-auto px-4 py-16 max-w-5xl">
         <Link href="/">

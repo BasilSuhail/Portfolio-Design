@@ -66,7 +66,9 @@ export default function NewsDetail() {
   if (!newsDay) {
     return (
       <div className="min-h-screen bg-background">
-        <ThemeToggle />
+        <div className="fixed top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
         <div className="max-w-4xl mx-auto px-6 py-20">
           <div className="text-center space-y-4">
             <h2 className="text-2xl font-bold text-foreground">News Not Found</h2>
@@ -110,7 +112,9 @@ export default function NewsDetail() {
         <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
       </Helmet>
 
-      <ThemeToggle />
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
 
       <div className="border-b bg-background">
         <div className="max-w-4xl mx-auto px-6 py-8">

@@ -44,7 +44,9 @@ export default function Gallery() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <ThemeToggle />
+        <div className="fixed top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
         <div className="max-w-7xl mx-auto px-6 py-20">
           <p className="text-center text-muted-foreground">Loading gallery...</p>
         </div>
@@ -55,7 +57,9 @@ export default function Gallery() {
   if (error || !isVisible) {
     return (
       <div className="min-h-screen bg-background">
-        <ThemeToggle />
+        <div className="fixed top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center space-y-4">
             <h2 className="text-2xl font-bold text-foreground">Gallery Not Available</h2>
@@ -82,7 +86,9 @@ export default function Gallery() {
         <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
       </Helmet>
 
-      <ThemeToggle />
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
 
       <div className="border-b bg-background">
         <div className="max-w-7xl mx-auto px-6 py-8">
