@@ -325,7 +325,7 @@ export function GalleryManager() {
                 <Label htmlFor="default-orientation" className="text-xs">Default Orientation</Label>
                 <select
                   id="default-orientation"
-                  className="w-full border rounded-md p-1.5 text-sm h-8"
+                  className="w-full border border-border bg-background text-foreground rounded-md p-1.5 text-sm h-8"
                   value={defaultOrientation}
                   onChange={(e) => setDefaultOrientation(e.target.value as "portrait" | "landscape" | "square")}
                 >
@@ -417,7 +417,7 @@ export function GalleryManager() {
                           <select
                             value={bulkFile.orientation}
                             onChange={(e) => updateBulkFile(index, "orientation", e.target.value)}
-                            className="border rounded-md px-2 py-1 text-xs h-7"
+                            className="border border-border bg-background text-foreground rounded-md px-2 py-1 text-xs h-7"
                           >
                             <option value="landscape">Landscape</option>
                             <option value="portrait">Portrait</option>
@@ -461,30 +461,33 @@ export function GalleryManager() {
               No photos uploaded yet. Upload your first photo above!
             </p>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {photos.map((photo) => (
-                <div key={photo.id} className="border rounded-lg overflow-hidden">
-                  <img
-                    src={photo.src}
-                    alt={photo.alt}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-3 space-y-2">
-                    <p className="font-medium text-sm truncate">{photo.location}</p>
-                    <p className="text-xs text-muted-foreground">{photo.date}</p>
-                    <p className="text-xs text-muted-foreground truncate">{photo.alt}</p>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(photo.id)}
-                      className="w-full"
-                    >
-                      <Trash2 className="w-3 h-3 mr-1" />
-                      Delete
-                    </Button>
+            <div className="max-h-[600px] overflow-y-auto">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {photos.map((photo) => (
+                  <div key={photo.id} className="border rounded-lg overflow-hidden">
+                    <img
+                      src={photo.src}
+                      alt={photo.alt}
+                      className="w-full h-48 object-cover"
+                      loading="lazy"
+                    />
+                    <div className="p-3 space-y-2">
+                      <p className="font-medium text-sm truncate">{photo.location}</p>
+                      <p className="text-xs text-muted-foreground">{photo.date}</p>
+                      <p className="text-xs text-muted-foreground truncate">{photo.alt}</p>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(photo.id)}
+                        className="w-full"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </CardContent>

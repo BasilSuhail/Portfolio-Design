@@ -20,11 +20,11 @@ export function NavigationMenu({ sections }: NavigationMenuProps) {
   };
 
   return (
-    <div className="fixed top-6 left-6 z-50 flex gap-2 items-center">
+    <div className="fixed top-6 left-6 z-50 flex gap-6 items-center">
       {sections.map((section) => (
         section.href ? (
           <Link key={section.id} href={section.href}>
-            <a className="text-sm font-medium text-foreground hover:text-primary transition-colors px-4 py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md">
+            <a className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               {section.label}
             </a>
           </Link>
@@ -32,7 +32,7 @@ export function NavigationMenu({ sections }: NavigationMenuProps) {
           <button
             key={section.id}
             onClick={() => scrollToSection(section.id)}
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors px-4 py-2 rounded-full bg-background border border-border shadow-sm hover:shadow-md"
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
           >
             {section.label}
           </button>

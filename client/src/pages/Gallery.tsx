@@ -93,14 +93,11 @@ export default function Gallery() {
             </Button>
           </Link>
           <div>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
-              GALLERY
-            </span>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-tight mb-2">
-              Moments Captured
+              Gallery
             </h1>
             <p className="text-foreground/80">
-              A collection of {photos.length} photo{photos.length !== 1 ? 's' : ''} from my travels and adventures
+              A collection of my gallery
             </p>
           </div>
         </div>
