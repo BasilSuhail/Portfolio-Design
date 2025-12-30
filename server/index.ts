@@ -121,7 +121,7 @@ export { doubleCsrfProtection };
 // Rate limiting - prevent brute force and DDoS
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 200, // Limit each IP to 200 requests per windowMs (increased for bulk uploads)
   message: { message: "Too many requests, please try again later" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -130,11 +130,15 @@ const limiter = rateLimit({
 // Apply rate limiting to all routes
 app.use(limiter);
 
-// Stricter rate limit for admin/write operations
+// Stricter rate limit for admin/write operations (excluding gallery uploads)
 const strictLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20, // Only 20 requests per 15 minutes for admin operations
+  max: 50, // Increased to 50 for non-gallery admin operations
   message: { message: "Too many admin requests, please slow down" },
+  skip: (req) => {
+    // Skip rate limit for gallery uploads to allow bulk uploading
+    return req.path === "/api/admin/gallery/upload";
+  },
 });
 
 app.use("/api/admin", strictLimiter);

@@ -97,6 +97,14 @@ export function GalleryManager() {
   const handleFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
+    // Warn if uploading too many files at once
+    if (files.length > 50) {
+      if (!confirm(`You're uploading ${files.length} photos. For best results, we recommend uploading in batches of 50 or fewer. Continue anyway?`)) {
+        e.target.value = ""; // Reset file input
+        return;
+      }
+    }
+
     const newFiles: BulkUploadFile[] = files.map((file) => ({
       file,
       alt: file.name.replace(/\.[^/.]+$/, ""), // Remove extension for default alt
@@ -163,8 +171,8 @@ export function GalleryManager() {
         // Update progress before starting upload
         setUploadProgress({ current: i + 1, total: bulkFiles.length });
 
-        // Small delay to allow UI to update and prevent blocking
-        await new Promise(resolve => setTimeout(resolve, 50));
+        // Longer delay to allow UI updates and prevent memory issues (100ms)
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         try {
           const formData = new FormData();
@@ -174,7 +182,7 @@ export function GalleryManager() {
           formData.append("date", bulkFile.date);
           formData.append("orientation", bulkFile.orientation);
 
-          console.log("Uploading photo:", bulkFile.file.name);
+          console.log(`[${i + 1}/${bulkFiles.length}] Uploading:`, bulkFile.file.name);
 
           const response = await secureFetch("/api/admin/gallery/upload", {
             method: "POST",
@@ -183,22 +191,39 @@ export function GalleryManager() {
 
           if (response.ok) {
             successCount++;
-            console.log("✅ Upload success:", bulkFile.file.name);
+            console.log(`✅ [${i + 1}/${bulkFiles.length}] Success:`, bulkFile.file.name);
+
+            // Clean up preview URL immediately after successful upload to free memory
+            URL.revokeObjectURL(bulkFile.preview);
           } else {
             const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
-            console.error("❌ Upload failed:", bulkFile.file.name, response.status, errorData);
+            console.error(`❌ [${i + 1}/${bulkFiles.length}] Failed:`, bulkFile.file.name, response.status, errorData);
             failCount++;
           }
         } catch (err) {
-          console.error("❌ Upload error:", bulkFile.file.name, err);
+          console.error(`❌ [${i + 1}/${bulkFiles.length}] Error:`, bulkFile.file.name, err);
           failCount++;
+
+          // Continue even if one upload fails - don't stop the entire batch
+          continue;
         }
       }
 
-      // Clean up previews
-      bulkFiles.forEach((f) => URL.revokeObjectURL(f.preview));
+      // Clean up remaining previews
+      bulkFiles.forEach((f) => {
+        try {
+          URL.revokeObjectURL(f.preview);
+        } catch (e) {
+          // Ignore errors if URL was already revoked
+        }
+      });
+
+      // Clear file input and state to free memory
+      const fileInput = document.getElementById("bulk-upload") as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = "";
+      }
       setBulkFiles([]);
-      (document.getElementById("bulk-upload") as HTMLInputElement).value = "";
 
       // Show result
       if (failCount === 0) {
@@ -457,21 +482,24 @@ export function GalleryManager() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold text-sm">{bulkFiles.length} Photo{bulkFiles.length > 1 ? 's' : ''} Selected</h4>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    bulkFiles.forEach((f) => URL.revokeObjectURL(f.preview));
-                    setBulkFiles([]);
-                  }}
-                >
-                  Clear All
-                </Button>
+                {!isUploading && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      bulkFiles.forEach((f) => URL.revokeObjectURL(f.preview));
+                      setBulkFiles([]);
+                    }}
+                  >
+                    Clear All
+                  </Button>
+                )}
               </div>
 
-              <div className="max-h-96 overflow-y-auto space-y-3 border rounded-lg p-3">
-                {bulkFiles.map((bulkFile, index) => (
+              {!isUploading && (
+                <div className="max-h-96 overflow-y-auto space-y-3 border rounded-lg p-3">
+                  {bulkFiles.map((bulkFile, index) => (
                   <div key={index} className="border rounded-lg p-3 bg-card space-y-2">
                     <div className="flex gap-3">
                       <img
@@ -528,7 +556,8 @@ export function GalleryManager() {
                     </div>
                   </div>
                 ))}
-              </div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {isUploading && (
