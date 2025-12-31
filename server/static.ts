@@ -10,6 +10,17 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Serve uploaded photos from client/public/uploads (persistent storage)
+  const uploadsPath = path.resolve(process.cwd(), "client", "public", "uploads");
+  if (fs.existsSync(uploadsPath)) {
+    app.use('/uploads', express.static(uploadsPath, {
+      maxAge: '1w',
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'public, max-age=604800');
+      }
+    }));
+  }
+
   // Serve static files with aggressive caching
   app.use(express.static(distPath, {
     maxAge: '1y', // Cache static assets for 1 year
