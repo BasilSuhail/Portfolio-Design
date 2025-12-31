@@ -159,50 +159,65 @@ export function GalleryManager() {
     }
 
     setIsUploading(true);
-    setUploadProgress({ current: 1, total: 1 }); // Single request
 
     try {
-      console.log(`📤 Uploading ${bulkFiles.length} photos in bulk...`);
+      console.log(`📤 Uploading ${bulkFiles.length} photos in chunks of 15...`);
       console.log(`📦 Total file size: ${bulkFiles.reduce((sum, f) => sum + f.file.size, 0) / 1024 / 1024} MB`);
 
-      // Create single FormData with all files
-      console.log("🔨 Creating FormData...");
-      const formData = new FormData();
-
-      // Add all files
-      console.log(`📎 Adding ${bulkFiles.length} files to FormData...`);
-      bulkFiles.forEach((bulkFile, index) => {
-        formData.append("photos", bulkFile.file);
-        if (index % 10 === 0) {
-          console.log(`  Added ${index + 1}/${bulkFiles.length} files...`);
-        }
-      });
-
-      // Add metadata as JSON string
-      console.log("📝 Adding metadata...");
-      const metadata = bulkFiles.map((bulkFile) => ({
-        alt: bulkFile.alt,
-        location: bulkFile.location,
-        date: bulkFile.date,
-        orientation: bulkFile.orientation,
-      }));
-      formData.append("metadata", JSON.stringify(metadata));
-
-      console.log("🚀 Sending request to server...");
-      // Make single request to bulk upload endpoint
-      const response = await secureFetch("/api/admin/gallery/bulk-upload", {
-        method: "POST",
-        body: formData,
-      });
-      console.log("✅ Server responded:", response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: "Upload failed" }));
-        throw new Error(errorData.message || "Upload failed");
+      const CHUNK_SIZE = 15;
+      const chunks = [];
+      for (let i = 0; i < bulkFiles.length; i += CHUNK_SIZE) {
+        chunks.push(bulkFiles.slice(i, i + CHUNK_SIZE));
       }
 
-      const result = await response.json();
-      console.log("✅ Bulk upload complete:", result);
+      console.log(`📦 Split into ${chunks.length} chunks`);
+      setUploadProgress({ current: 0, total: chunks.length });
+
+      let totalSuccess = 0;
+      let totalFail = 0;
+
+      // Upload chunks sequentially
+      for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+        const chunk = chunks[chunkIndex];
+        console.log(`📤 Uploading chunk ${chunkIndex + 1}/${chunks.length} (${chunk.length} photos)...`);
+
+        setUploadProgress({ current: chunkIndex + 1, total: chunks.length });
+
+        const formData = new FormData();
+
+        // Add files from this chunk
+        chunk.forEach((bulkFile) => {
+          formData.append("photos", bulkFile.file);
+        });
+
+        // Add metadata for this chunk
+        const metadata = chunk.map((bulkFile) => ({
+          alt: bulkFile.alt,
+          location: bulkFile.location,
+          date: bulkFile.date,
+          orientation: bulkFile.orientation,
+        }));
+        formData.append("metadata", JSON.stringify(metadata));
+
+        // Upload this chunk
+        const response = await secureFetch("/api/admin/gallery/bulk-upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: "Upload failed" }));
+          throw new Error(errorData.message || `Chunk ${chunkIndex + 1} failed`);
+        }
+
+        const result = await response.json();
+        totalSuccess += result.successCount;
+        totalFail += result.failCount;
+        console.log(`✅ Chunk ${chunkIndex + 1} complete: ${result.successCount} success, ${result.failCount} failed`);
+      }
+
+      const result = { successCount: totalSuccess, failCount: totalFail };
+      console.log(`✅ All chunks uploaded: ${totalSuccess} success, ${totalFail} failed`);
 
       // Clean up all preview URLs
       bulkFiles.forEach((f) => {
@@ -562,12 +577,18 @@ export function GalleryManager() {
                       <span className="text-sm font-medium text-foreground">
                         Uploading {bulkFiles.length} photo{bulkFiles.length > 1 ? 's' : ''}...
                       </span>
+                      <span className="text-xs text-muted-foreground">
+                        Chunk {uploadProgress.current}/{uploadProgress.total}
+                      </span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                      <div className="bg-primary h-full animate-pulse" style={{ width: "100%" }} />
+                      <div
+                        className="bg-primary h-full transition-all duration-300"
+                        style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                      />
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      Processing all photos in a single request. Please wait...
+                      Uploading in chunks of 15 photos. Please wait...
                     </p>
                   </div>
                 )}
