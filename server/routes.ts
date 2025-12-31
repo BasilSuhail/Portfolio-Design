@@ -614,14 +614,9 @@ export async function registerRoutes(
         photos = [];
       }
 
-      let successCount = 0;
-      let failCount = 0;
-      const results = [];
-
-      // Process all files
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const meta = metadata[i] || {};
+      // Process all files in parallel for faster HEIC conversion
+      const processFile = async (file: Express.Multer.File, index: number) => {
+        const meta = metadata[index] || {};
 
         try {
           let finalFilename = file.filename;
@@ -651,7 +646,7 @@ export async function registerRoutes(
 
           // Create photo entry
           const newPhoto = {
-            id: Date.now() + i, // Add index to ensure unique IDs
+            id: Date.now() + index, // Add index to ensure unique IDs
             src: `/uploads/${finalFilename}`,
             alt: sanitizeText(meta.alt || ""),
             location: sanitizeText(meta.location || ""),
@@ -659,13 +654,31 @@ export async function registerRoutes(
             orientation: meta.orientation || "landscape"
           };
 
-          photos.push(newPhoto);
-          successCount++;
-          results.push({ success: true, filename: file.originalname });
+          return { success: true, photo: newPhoto, filename: file.originalname };
         } catch (err) {
           console.error(`❌ Failed to process ${file.originalname}:`, err);
+          return { success: false, filename: file.originalname, error: String(err) };
+        }
+      };
+
+      // Process all files in parallel
+      const processResults = await Promise.all(
+        files.map((file, index) => processFile(file, index))
+      );
+
+      // Collect results
+      let successCount = 0;
+      let failCount = 0;
+      const results = [];
+
+      for (const result of processResults) {
+        if (result.success) {
+          photos.push(result.photo);
+          successCount++;
+          results.push({ success: true, filename: result.filename });
+        } else {
           failCount++;
-          results.push({ success: false, filename: file.originalname, error: String(err) });
+          results.push({ success: false, filename: result.filename, error: result.error });
         }
       }
 
