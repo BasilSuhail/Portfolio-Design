@@ -159,57 +159,43 @@ export function GalleryManager() {
     }
 
     setIsUploading(true);
-    setUploadProgress({ current: 0, total: bulkFiles.length });
-    let successCount = 0;
-    let failCount = 0;
+    setUploadProgress({ current: 1, total: 1 }); // Single request
 
     try {
-      // Upload each file sequentially
-      for (let i = 0; i < bulkFiles.length; i++) {
-        const bulkFile = bulkFiles[i];
+      console.log(`📤 Uploading ${bulkFiles.length} photos in bulk...`);
 
-        // Update progress before starting upload
-        setUploadProgress({ current: i + 1, total: bulkFiles.length });
+      // Create single FormData with all files
+      const formData = new FormData();
 
-        // Longer delay to allow UI updates and prevent memory issues (100ms)
-        await new Promise(resolve => setTimeout(resolve, 100));
+      // Add all files
+      bulkFiles.forEach((bulkFile) => {
+        formData.append("photos", bulkFile.file);
+      });
 
-        try {
-          const formData = new FormData();
-          formData.append("photo", bulkFile.file);
-          formData.append("alt", bulkFile.alt);
-          formData.append("location", bulkFile.location);
-          formData.append("date", bulkFile.date);
-          formData.append("orientation", bulkFile.orientation);
+      // Add metadata as JSON string
+      const metadata = bulkFiles.map((bulkFile) => ({
+        alt: bulkFile.alt,
+        location: bulkFile.location,
+        date: bulkFile.date,
+        orientation: bulkFile.orientation,
+      }));
+      formData.append("metadata", JSON.stringify(metadata));
 
-          console.log(`[${i + 1}/${bulkFiles.length}] Uploading:`, bulkFile.file.name);
+      // Make single request to bulk upload endpoint
+      const response = await secureFetch("/api/admin/gallery/bulk-upload", {
+        method: "POST",
+        body: formData,
+      });
 
-          const response = await secureFetch("/api/admin/gallery/upload", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (response.ok) {
-            successCount++;
-            console.log(`✅ [${i + 1}/${bulkFiles.length}] Success:`, bulkFile.file.name);
-
-            // Clean up preview URL immediately after successful upload to free memory
-            URL.revokeObjectURL(bulkFile.preview);
-          } else {
-            const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
-            console.error(`❌ [${i + 1}/${bulkFiles.length}] Failed:`, bulkFile.file.name, response.status, errorData);
-            failCount++;
-          }
-        } catch (err) {
-          console.error(`❌ [${i + 1}/${bulkFiles.length}] Error:`, bulkFile.file.name, err);
-          failCount++;
-
-          // Continue even if one upload fails - don't stop the entire batch
-          continue;
-        }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: "Upload failed" }));
+        throw new Error(errorData.message || "Upload failed");
       }
 
-      // Clean up remaining previews
+      const result = await response.json();
+      console.log("✅ Bulk upload complete:", result);
+
+      // Clean up all preview URLs
       bulkFiles.forEach((f) => {
         try {
           URL.revokeObjectURL(f.preview);
@@ -226,15 +212,15 @@ export function GalleryManager() {
       setBulkFiles([]);
 
       // Show result
-      if (failCount === 0) {
+      if (result.failCount === 0) {
         toast({
           title: "Success",
-          description: `Successfully uploaded ${successCount} photo${successCount > 1 ? 's' : ''}!`,
+          description: `Successfully uploaded ${result.successCount} photo${result.successCount > 1 ? 's' : ''}!`,
         });
       } else {
         toast({
           title: "Partial Success",
-          description: `Uploaded ${successCount} photo(s). ${failCount} failed.`,
+          description: `Uploaded ${result.successCount} photo(s). ${result.failCount} failed.`,
           variant: "destructive",
         });
       }
@@ -242,9 +228,10 @@ export function GalleryManager() {
       // Refresh photos
       await fetchData();
     } catch (error) {
+      console.error("❌ Bulk upload error:", error);
       toast({
         title: "Error",
-        description: "Failed to upload photos. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to upload photos. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -564,20 +551,14 @@ export function GalleryManager() {
                   <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-foreground">
-                        Uploading {uploadProgress.current} of {uploadProgress.total}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {Math.round((uploadProgress.current / uploadProgress.total) * 100)}%
+                        Uploading {bulkFiles.length} photo{bulkFiles.length > 1 ? 's' : ''}...
                       </span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-primary h-full transition-all duration-300"
-                        style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
-                      />
+                      <div className="bg-primary h-full animate-pulse" style={{ width: "100%" }} />
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      Please wait, this may take a few minutes...
+                      Processing all photos in a single request. Please wait...
                     </p>
                   </div>
                 )}
@@ -588,7 +569,7 @@ export function GalleryManager() {
                   className="w-full"
                 >
                   <Upload className="w-4 h-4 mr-2" />
-                  {isUploading ? `Uploading ${uploadProgress.current} of ${uploadProgress.total}...` : `Upload ${bulkFiles.length} Photo${bulkFiles.length > 1 ? 's' : ''}`}
+                  {isUploading ? `Uploading ${bulkFiles.length} photo${bulkFiles.length > 1 ? 's' : ''}...` : `Upload ${bulkFiles.length} Photo${bulkFiles.length > 1 ? 's' : ''}`}
                 </Button>
               </div>
             </div>

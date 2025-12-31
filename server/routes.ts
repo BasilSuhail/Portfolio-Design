@@ -591,7 +591,103 @@ export async function registerRoutes(
     }
   });
 
-  // Upload photo (admin)
+  // Bulk upload photos (admin) - NEW endpoint for multiple files
+  app.post("/api/admin/gallery/bulk-upload", doubleCsrfProtection, upload.array("photos", 100), async (req: Request, res: Response) => {
+    try {
+      console.log("📸 Bulk upload request received");
+      const files = req.files as Express.Multer.File[];
+
+      if (!files || files.length === 0) {
+        console.error("❌ No files in request");
+        return res.status(400).json({ message: "No files uploaded" });
+      }
+
+      console.log(`📦 Processing ${files.length} files`);
+
+      // Parse metadata from request body
+      const metadata = JSON.parse(req.body.metadata || "[]");
+
+      // Read existing gallery
+      let photos = [];
+      try {
+        const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
+        photos = JSON.parse(galleryContent);
+      } catch (err) {
+        photos = [];
+      }
+
+      let successCount = 0;
+      let failCount = 0;
+      const results = [];
+
+      // Process all files
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const meta = metadata[i] || {};
+
+        try {
+          let finalFilename = file.filename;
+          const originalPath = file.path;
+          const ext = path.extname(file.originalname).toLowerCase();
+
+          // Convert HEIC to JPEG
+          if (ext === '.heic' || ext === '.heif') {
+            const jpegFilename = finalFilename.replace(/\.(heic|heif)$/i, '.jpg');
+            const jpegPath = path.join(uploadsDir, jpegFilename);
+
+            try {
+              const inputBuffer = await fs.readFile(originalPath);
+              const outputBuffer = await convert({
+                buffer: inputBuffer,
+                format: 'JPEG',
+                quality: 0.9
+              });
+
+              await fs.writeFile(jpegPath, outputBuffer);
+              await fs.unlink(originalPath);
+              finalFilename = jpegFilename;
+            } catch (conversionError) {
+              console.error(`⚠️ HEIC conversion failed for ${file.originalname}, using original`);
+            }
+          }
+
+          // Create photo entry
+          const newPhoto = {
+            id: Date.now() + i, // Add index to ensure unique IDs
+            src: `/uploads/${finalFilename}`,
+            alt: sanitizeText(meta.alt || ""),
+            location: sanitizeText(meta.location || ""),
+            date: sanitizeText(meta.date || ""),
+            orientation: meta.orientation || "landscape"
+          };
+
+          photos.push(newPhoto);
+          successCount++;
+          results.push({ success: true, filename: file.originalname });
+        } catch (err) {
+          console.error(`❌ Failed to process ${file.originalname}:`, err);
+          failCount++;
+          results.push({ success: false, filename: file.originalname, error: String(err) });
+        }
+      }
+
+      // Save all photos at once
+      await fs.writeFile(galleryDataPath, JSON.stringify(photos, null, 2));
+      console.log(`💾 Saved ${successCount} photos to gallery.json`);
+
+      res.json({
+        message: `Uploaded ${successCount} of ${files.length} photos`,
+        successCount,
+        failCount,
+        results
+      });
+    } catch (error) {
+      console.error("❌ Bulk upload failed:", error);
+      res.status(500).json({ message: "Bulk upload failed", error: String(error) });
+    }
+  });
+
+  // Upload single photo (admin) - kept for backwards compatibility
   app.post("/api/admin/gallery/upload", doubleCsrfProtection, upload.single("photo"), async (req: Request, res: Response) => {
     try {
       console.log("📸 Gallery upload request received");
