@@ -163,16 +163,23 @@ export function GalleryManager() {
 
     try {
       console.log(`📤 Uploading ${bulkFiles.length} photos in bulk...`);
+      console.log(`📦 Total file size: ${bulkFiles.reduce((sum, f) => sum + f.file.size, 0) / 1024 / 1024} MB`);
 
       // Create single FormData with all files
+      console.log("🔨 Creating FormData...");
       const formData = new FormData();
 
       // Add all files
-      bulkFiles.forEach((bulkFile) => {
+      console.log(`📎 Adding ${bulkFiles.length} files to FormData...`);
+      bulkFiles.forEach((bulkFile, index) => {
         formData.append("photos", bulkFile.file);
+        if (index % 10 === 0) {
+          console.log(`  Added ${index + 1}/${bulkFiles.length} files...`);
+        }
       });
 
       // Add metadata as JSON string
+      console.log("📝 Adding metadata...");
       const metadata = bulkFiles.map((bulkFile) => ({
         alt: bulkFile.alt,
         location: bulkFile.location,
@@ -181,11 +188,13 @@ export function GalleryManager() {
       }));
       formData.append("metadata", JSON.stringify(metadata));
 
+      console.log("🚀 Sending request to server...");
       // Make single request to bulk upload endpoint
       const response = await secureFetch("/api/admin/gallery/bulk-upload", {
         method: "POST",
         body: formData,
       });
+      console.log("✅ Server responded:", response.status);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: "Upload failed" }));
