@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Link as LinkIcon, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { secureFetch } from "@/lib/csrf";
 
 interface ImageUploadProps {
   label: string;
@@ -46,7 +47,7 @@ export function ImageUpload({ label, value, onChange, placeholder, helperText }:
     formData.append("image", file);
 
     try {
-      const response = await fetch("/api/upload", {
+      const response = await secureFetch("/api/upload", {
         method: "POST",
         body: formData,
       });
