@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { GalleryGrid } from "@/components/GalleryGrid";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Helmet } from "react-helmet-async";
@@ -120,6 +121,7 @@ export default function Gallery() {
           <GalleryGrid photos={photos} />
         )}
       </div>
+      <Footer />
     </div>
   );
 }

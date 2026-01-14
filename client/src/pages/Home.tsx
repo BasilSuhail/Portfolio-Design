@@ -5,11 +5,11 @@ import EducationSection from "@/components/EducationSection";
 import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
-import ContactSection from "@/components/ContactSection";
 import GameSection from "@/components/GameSection";
 import { NewsSection } from "@/components/NewsSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NavigationMenu } from "@/components/NavigationMenu";
+import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/use-content";
 
 export default function Home() {
@@ -40,7 +40,6 @@ export default function Home() {
     "testimonials",
     "writing",
     "news",
-    "contact",
     "game",
   ];
 
@@ -92,21 +91,12 @@ export default function Home() {
         />
       ) : null,
     news: <NewsSection />,
-    contact: visibility.contact ? (
-      <ContactSection
-        socialLinks={content.socialLinks as any}
-        onSubmit={(data) => console.log("Form submitted:", data)}
-        showForm={content.contactSettings?.showForm ?? true}
-        calendarLinks={content.contactSettings?.calendarLinks}
-      />
-    ) : null,
     game: (visibility as any).game ? <GameSection /> : null,
   };
 
   const menuSections = [
     { id: "projects", label: "Projects" },
     { id: "writing", label: "Blogs" },
-    { id: "contact", label: "Contact" },
     { id: "gallery", label: "Gallery", href: "/gallery" },
   ];
 
@@ -135,6 +125,7 @@ export default function Home() {
           ) : null;
         })}
       </main>
+      <Footer />
     </div>
   );
 }
