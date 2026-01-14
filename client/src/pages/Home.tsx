@@ -8,7 +8,6 @@ import WritingSection from "@/components/WritingSection";
 import GameSection from "@/components/GameSection";
 import { NewsSection } from "@/components/NewsSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { NavigationMenu } from "@/components/NavigationMenu";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/use-content";
 
@@ -94,16 +93,9 @@ export default function Home() {
     game: (visibility as any).game ? <GameSection /> : null,
   };
 
-  const menuSections = [
-    { id: "projects", label: "Projects" },
-    { id: "writing", label: "Blogs" },
-    { id: "gallery", label: "Gallery", href: "/gallery" },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50 flex gap-2 sm:gap-6 items-center flex-wrap justify-end max-w-[calc(100vw-1.5rem)] sm:max-w-none">
-        <NavigationMenu sections={menuSections} />
+      <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50">
         <ThemeToggle />
       </div>
       <main id="main-content">
