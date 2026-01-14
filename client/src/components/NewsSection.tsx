@@ -4,7 +4,6 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
-import { secureFetch } from "@/lib/csrf";
 
 interface NewsItem {
   ticker: string;
@@ -54,11 +53,8 @@ export function NewsSection() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const res = await secureFetch("/api/news/refresh", { method: "POST" });
-      const data = await res.json();
-      if (data.success) {
-        await loadNews();
-      }
+      // Just reload news data from the server (fast)
+      await loadNews();
     } catch (e) {
       console.error("Refresh failed:", e);
     } finally {
@@ -133,26 +129,24 @@ export function NewsSection() {
           </Button>
         </div>
 
-        {/* Slider container */}
-        <div className="relative">
+        {/* Slider container with space for arrows */}
+        <div className="flex items-center gap-2">
           {/* Left scroll button */}
-          {canScrollLeft && (
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-background shadow-md hidden sm:flex"
-              onClick={() => scroll("left")}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="icon"
+            className={`flex-shrink-0 bg-background shadow-sm hidden sm:flex ${!canScrollLeft ? "invisible" : ""}`}
+            onClick={() => scroll("left")}
+            disabled={!canScrollLeft}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
 
           {/* Scrollable news cards */}
           <div
             ref={sliderRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+            className="flex gap-3 overflow-x-auto scrollbar-hide scroll-smooth pb-2 flex-1"
             style={{ scrollSnapType: "x mandatory" }}
-            onTouchStart={() => {}}
           >
             {displayedNews.map((day) => (
               <Link key={day.date} href={`/news/${day.date}`}>
@@ -160,10 +154,10 @@ export function NewsSection() {
                   className="block group flex-shrink-0"
                   style={{ scrollSnapAlign: "start" }}
                 >
-                  <Card className="w-[280px] sm:w-[300px] h-full transition-all hover:border-primary/50 hover:shadow-md bg-card">
-                    <CardHeader>
-                      <div className="flex justify-between items-start mb-3">
-                        <CalendarDays className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <Card className="w-[240px] sm:w-[260px] h-full transition-all hover:border-primary/50 hover:shadow-md bg-card">
+                    <CardHeader className="p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <CalendarDays className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                         <Badge variant="outline" className="text-xs">
                           {new Date(day.date).toLocaleDateString("en-US", {
                             month: "short",
@@ -171,15 +165,14 @@ export function NewsSection() {
                           })}
                         </Badge>
                       </div>
-                      <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
+                      <CardTitle className="text-base group-hover:text-primary transition-colors line-clamp-2">
                         {new Date(day.date).toLocaleDateString("en-US", {
                           weekday: "long",
-                          year: "numeric",
-                          month: "long",
+                          month: "short",
                           day: "numeric",
                         })}
                       </CardTitle>
-                      <CardDescription className="line-clamp-3 text-sm mt-2">
+                      <CardDescription className="line-clamp-2 text-sm mt-1">
                         {day.content.briefing}
                       </CardDescription>
                     </CardHeader>
@@ -190,21 +183,20 @@ export function NewsSection() {
           </div>
 
           {/* Right scroll button */}
-          {canScrollRight && (
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-background shadow-md hidden sm:flex"
-              onClick={() => scroll("right")}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="icon"
+            className={`flex-shrink-0 bg-background shadow-sm hidden sm:flex ${!canScrollRight ? "invisible" : ""}`}
+            onClick={() => scroll("right")}
+            disabled={!canScrollRight}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
         </div>
 
         {/* Scroll indicators for mobile */}
         <div className="flex justify-center gap-1 mt-4 sm:hidden">
-          {displayedNews.map((day, index) => (
+          {displayedNews.map((day) => (
             <div
               key={day.date}
               className="w-2 h-2 rounded-full bg-muted-foreground/30"

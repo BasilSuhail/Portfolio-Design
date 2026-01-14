@@ -1,169 +1,340 @@
 [
   {
-    "date": "2025-12-24",
+    "date": "2026-01-14",
     "content": {
-      "briefing": "Tech news briefing for Wednesday, December 24, 2025. Today's highlights include . Stay informed on the latest developments across AI, fintech, enterprise automation, semiconductors, and cybersecurity sectors.",
-      "ai_compute_infra": [],
-      "fintech_regtech": [],
-      "rpa_enterprise_ai": [],
-      "semi_supply_chain": [],
-      "cybersecurity": []
-    }
-  },
-  {
-    "date": "2025-12-23",
-    "content": {
-      "briefing": "Today's tech news highlights a robust demand for AI hardware, with NVIDIA's H200 chips eyeing the lucrative China market and AMD reportedly securing a massive AI chip order from Alibaba, both contributing to positive stock momentum. While Apple faces bearish sentiment from fund detractors and analysts predicting a significant stock drop, other major players show resilience. Microsoft is lauded as an AI front-runner with substantial upside, and Tesla sees a raised price target despite lowered delivery estimates, fueled by long-term growth optimism. For our specialized focus, we also see significant movement in AI compute infrastructure, fintech integration, and the critical semiconductor supply chain.",
+      "briefing": "Today's tech briefing covers major AI infrastructure developments, with NVIDIA's new GPU architecture announcements and AMD's competitive positioning in the data center market. Fintech sector sees increased adoption of AI-powered fraud detection, while enterprise automation continues to expand with ServiceNow's latest platform updates.",
       "ai_compute_infra": [
         {
           "ticker": "NVDA",
-          "headline": "NVIDIA H200 AI Chips Eye China Market Amidst Strong Demand",
-          "url": "https://example.com/nvda-china",
-          "source": "TechInsights"
+          "headline": "NVIDIA Announces Next-Gen Blackwell Architecture Updates",
+          "url": "https://example.com/nvda-blackwell",
+          "source": "TechCrunch"
         },
         {
           "ticker": "AMD",
-          "headline": "AMD Secures Massive AI Chip Order from Alibaba",
-          "url": "https://example.com/amd-alibaba",
-          "source": "Bloomberg"
-        },
-        {
-          "ticker": "EQIX",
-          "headline": "Equinix Expands Data Center Capacity for AI Workloads",
-          "url": "https://example.com/equinix-ai",
-          "source": "DataCenter News"
-        },
-        {
-          "ticker": "VRT",
-          "headline": "Vertiv Innovations Address AI Data Center Cooling Challenges",
-          "url": "https://example.com/vertiv-cooling",
-          "source": "Hardware Today"
+          "headline": "AMD MI400 Series Targets Enterprise AI Workloads",
+          "url": "https://example.com/amd-mi400",
+          "source": "AnandTech"
         }
       ],
       "fintech_regtech": [
         {
           "ticker": "SQ",
-          "headline": "Block (Square) Integrates AI for Enhanced Merchant Services",
-          "url": "https://example.com/square-ai",
-          "source": "FinTech News"
-        },
-        {
-          "ticker": "INTU",
-          "headline": "Intuit Leverages AI to Streamline Tax & Accounting Workflows",
-          "url": "https://example.com/intuit-ai",
-          "source": "Accounting Today"
-        },
-        {
-          "ticker": "MCO",
-          "headline": "Moody's AI Tools Improve Credit Risk Assessment Accuracy",
-          "url": "https://example.com/moodys-ai",
-          "source": "Financial Times"
+          "headline": "Square Expands AI-Powered Business Analytics",
+          "url": "https://example.com/square-analytics",
+          "source": "FinTech Today"
         }
       ],
       "rpa_enterprise_ai": [
         {
-          "ticker": "PATH",
-          "headline": "UiPath Unveils New AI-Powered Automation Capabilities",
-          "url": "https://example.com/uipath-ai",
-          "source": "RPA Today"
-        },
-        {
           "ticker": "NOW",
-          "headline": "ServiceNow Enhances IT Operations with Generative AI",
-          "url": "https://example.com/servicenow-genai",
+          "headline": "ServiceNow Vancouver Release Enhances AI Capabilities",
+          "url": "https://example.com/servicenow-vancouver",
           "source": "Enterprise Tech"
         }
       ],
       "semi_supply_chain": [
         {
           "ticker": "TSM",
-          "headline": "TSMC Forecasts Strong AI Chip Demand, Plans Capacity Expansion",
-          "url": "https://example.com/tsmc-expansion",
+          "headline": "TSMC Reports Strong AI Chip Demand for Q1 2026",
+          "url": "https://example.com/tsmc-q1",
           "source": "DigiTimes"
-        },
-        {
-          "ticker": "ASML",
-          "headline": "ASML Dominance Critical for Next-Gen AI Chip Manufacturing",
-          "url": "https://example.com/asml-dom",
-          "source": "Semiconductor Review"
-        },
-        {
-          "ticker": "MU",
-          "headline": "Micron Boosts HBM Production for AI Accelerators",
-          "url": "https://example.com/micron-hbm",
-          "source": "AnandTech"
         }
       ],
       "cybersecurity": [
         {
           "ticker": "CRWD",
-          "headline": "CrowdStrike AI-Powered Threat Detection Foils Advanced Attacks",
-          "url": "https://example.com/crowdstrike-ai",
+          "headline": "CrowdStrike Falcon Platform Gets Major AI Update",
+          "url": "https://example.com/crowdstrike-falcon",
           "source": "Security Week"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-13",
+    "content": {
+      "briefing": "Tech markets opened strong with semiconductor stocks leading gains. Microsoft announces expanded Azure AI services, while cybersecurity firms report increased demand for AI-powered threat detection solutions. The fintech sector continues to see consolidation with several M&A announcements.",
+      "ai_compute_infra": [
+        {
+          "ticker": "MSFT",
+          "headline": "Microsoft Azure AI Services Expand to New Regions",
+          "url": "https://example.com/msft-azure",
+          "source": "Microsoft Blog"
         },
         {
+          "ticker": "GOOGL",
+          "headline": "Google Cloud Announces TPU v5 Availability",
+          "url": "https://example.com/google-tpu",
+          "source": "Google Blog"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "PYPL",
+          "headline": "PayPal Introduces AI-Powered Checkout Experience",
+          "url": "https://example.com/paypal-checkout",
+          "source": "PaymentsJournal"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "PATH",
+          "headline": "UiPath Automation Cloud Gets Generative AI Features",
+          "url": "https://example.com/uipath-genai",
+          "source": "RPA Today"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "ASML",
+          "headline": "ASML High-NA EUV Systems See Strong Demand",
+          "url": "https://example.com/asml-euv",
+          "source": "SemiEngineering"
+        }
+      ],
+      "cybersecurity": [
+        {
           "ticker": "PANW",
-          "headline": "Palo Alto Networks Integrates GenAI for Autonomous Security Operations",
-          "url": "https://example.com/panw-genai",
+          "headline": "Palo Alto Networks Cortex XSIAM 3.0 Released",
+          "url": "https://example.com/panw-xsiam",
           "source": "CyberWire"
         }
       ]
     }
   },
   {
-    "date": "2025-12-22",
+    "date": "2026-01-12",
     "content": {
-      "briefing": "The AI chip market is experiencing significant activity, with Nvidia's stock rising on reports of H200 chip shipments to China and AMD benefiting from potential massive AI chip orders from Alibaba. In contrast, Apple faces regulatory challenges, with its stock flattened by a $115 million app abuse fine from an Italian watchdog. Meanwhile, Microsoft is strategically investing heavily in AI for future growth, while analysts offer varied outlooks for Tesla's stock performance. Today's focus also includes advancements in the fintech sector and critical cybersecurity developments impacting our increasingly automated financial landscape.",
+      "briefing": "Weekend tech roundup highlights major announcements from CES 2026, with AI integration across consumer and enterprise products. Semiconductor companies report optimistic guidance for the year ahead, while fintech firms focus on embedded finance solutions.",
       "ai_compute_infra": [
         {
           "ticker": "NVDA",
-          "headline": "Nvidia Stock Lifts on H200 Chip Shipments to China",
-          "url": "https://example.com/nvda-h200",
-          "source": "MarketWatch"
-        },
-        {
-          "ticker": "AMD",
-          "headline": "AMD Shares Rise on Reports of Massive Alibaba AI Chip Order",
-          "url": "https://example.com/amd-alibaba-rise",
-          "source": "Reuters"
+          "headline": "NVIDIA CES 2026: AI for Everyone Keynote Highlights",
+          "url": "https://example.com/nvda-ces",
+          "source": "The Verge"
         }
       ],
       "fintech_regtech": [
         {
-          "ticker": "PYPL",
-          "headline": "PayPal Explores AI for Next-Gen Fraud Prevention",
-          "url": "https://example.com/paypal-fraud",
-          "source": "Payment Journal"
-        },
-        {
-          "ticker": "SPGI",
-          "headline": "S&P Global Launches AI-Enhanced ESG Data Platform",
-          "url": "https://example.com/spgi-esg",
-          "source": "BusinessWire"
+          "ticker": "V",
+          "headline": "Visa Launches AI-Powered B2B Payment Solutions",
+          "url": "https://example.com/visa-b2b",
+          "source": "Visa Blog"
         }
       ],
       "rpa_enterprise_ai": [
         {
           "ticker": "CRM",
-          "headline": "Salesforce Einstein Copilot Drives CRM Automation with AI",
-          "url": "https://example.com/salesforce-copilot",
-          "source": "ZDNet"
+          "headline": "Salesforce Einstein GPT Integration Deepens",
+          "url": "https://example.com/salesforce-einstein",
+          "source": "Salesforce Blog"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "MU",
+          "headline": "Micron HBM4 Development Progresses Ahead of Schedule",
+          "url": "https://example.com/micron-hbm4",
+          "source": "Tom's Hardware"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "ZS",
+          "headline": "Zscaler Zero Trust Exchange Adds AI Enhancements",
+          "url": "https://example.com/zscaler-ai",
+          "source": "Zscaler Blog"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-11",
+    "content": {
+      "briefing": "Markets digest earnings previews as Q4 2025 reporting season approaches. AI infrastructure investments continue to dominate capital allocation decisions, while regulatory clarity improves for fintech and crypto sectors.",
+      "ai_compute_infra": [
+        {
+          "ticker": "AMD",
+          "headline": "AMD EPYC Turin Processors Gain Enterprise Traction",
+          "url": "https://example.com/amd-turin",
+          "source": "ServeTheHome"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "MA",
+          "headline": "Mastercard AI Decision Intelligence Reduces Fraud 30%",
+          "url": "https://example.com/mastercard-ai",
+          "source": "Mastercard Newsroom"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "NOW",
+          "headline": "ServiceNow Expands Now Assist AI Assistant Capabilities",
+          "url": "https://example.com/servicenow-assist",
+          "source": "ServiceNow Blog"
         }
       ],
       "semi_supply_chain": [
         {
           "ticker": "AMAT",
-          "headline": "Applied Materials Innovation Crucial for Advanced Packaging",
+          "headline": "Applied Materials Advanced Packaging Tech Gains Momentum",
           "url": "https://example.com/amat-packaging",
-          "source": "SemiEngage"
+          "source": "Semiconductor Digest"
         }
       ],
       "cybersecurity": [
         {
-          "ticker": "OKTA",
-          "headline": "Okta Enhances Identity Security with AI-Driven Threat Detection",
-          "url": "https://example.com/okta-ai",
-          "source": "InfoSecurity"
+          "ticker": "FTNT",
+          "headline": "Fortinet FortiAI Achieves New Security Certifications",
+          "url": "https://example.com/fortinet-ai",
+          "source": "Fortinet Blog"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-10",
+    "content": {
+      "briefing": "Tech sector rallies on positive economic data and AI adoption metrics. Cloud providers report accelerating enterprise AI workload growth, while semiconductor stocks benefit from strong demand forecasts.",
+      "ai_compute_infra": [
+        {
+          "ticker": "GOOGL",
+          "headline": "Google DeepMind Advances Multimodal AI Research",
+          "url": "https://example.com/google-deepmind",
+          "source": "DeepMind Blog"
+        },
+        {
+          "ticker": "META",
+          "headline": "Meta Llama 4 Development Milestone Reached",
+          "url": "https://example.com/meta-llama",
+          "source": "Meta AI Blog"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "INTU",
+          "headline": "Intuit TurboTax AI Features Ready for Tax Season",
+          "url": "https://example.com/intuit-turbotax",
+          "source": "Intuit Blog"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "PATH",
+          "headline": "UiPath Communications Mining Adds Language Support",
+          "url": "https://example.com/uipath-mining",
+          "source": "UiPath Blog"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "TSM",
+          "headline": "TSMC 2nm Process on Track for 2026 Production",
+          "url": "https://example.com/tsmc-2nm",
+          "source": "EE Times"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "CRWD",
+          "headline": "CrowdStrike Charlotte AI Expands SOC Automation",
+          "url": "https://example.com/crowdstrike-charlotte",
+          "source": "CrowdStrike Blog"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-09",
+    "content": {
+      "briefing": "AI chip demand continues to outpace supply, driving positive sentiment across the semiconductor sector. Enterprise software companies highlight AI as key growth driver in investor updates.",
+      "ai_compute_infra": [
+        {
+          "ticker": "NVDA",
+          "headline": "NVIDIA Grace Hopper Superchips Ship to Major Cloud Providers",
+          "url": "https://example.com/nvda-grace",
+          "source": "HPC Wire"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "SQ",
+          "headline": "Block Afterpay Integration Deepens with AI Insights",
+          "url": "https://example.com/block-afterpay",
+          "source": "Block Newsroom"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "CRM",
+          "headline": "Salesforce Data Cloud Gets Real-Time AI Predictions",
+          "url": "https://example.com/salesforce-datacloud",
+          "source": "Salesforce Blog"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "ASML",
+          "headline": "ASML Reports Record Backlog for 2026 Delivery",
+          "url": "https://example.com/asml-backlog",
+          "source": "ASML Investor Relations"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "PANW",
+          "headline": "Palo Alto Networks Unit 42 Releases Threat Report",
+          "url": "https://example.com/panw-threat",
+          "source": "Unit 42 Blog"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-08",
+    "content": {
+      "briefing": "New year momentum builds in tech markets with focus on AI infrastructure buildout. Analysts raise price targets across semiconductor and cloud computing sectors.",
+      "ai_compute_infra": [
+        {
+          "ticker": "MSFT",
+          "headline": "Microsoft Copilot Studio Opens to Enterprise Developers",
+          "url": "https://example.com/msft-copilot",
+          "source": "Microsoft Blog"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "PYPL",
+          "headline": "PayPal Honey AI Shopping Assistant Gets Major Upgrade",
+          "url": "https://example.com/paypal-honey",
+          "source": "PayPal Newsroom"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "NOW",
+          "headline": "ServiceNow AI Agent for IT Operations Goes GA",
+          "url": "https://example.com/servicenow-agent",
+          "source": "ServiceNow Blog"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "MU",
+          "headline": "Micron DDR6 Memory Samples Shipping to Partners",
+          "url": "https://example.com/micron-ddr6",
+          "source": "Micron Blog"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "ZS",
+          "headline": "Zscaler Risk360 Adds AI-Powered Risk Scoring",
+          "url": "https://example.com/zscaler-risk",
+          "source": "Zscaler Blog"
         }
       ]
     }
