@@ -156,7 +156,7 @@ export default function NewsDetail() {
           <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
             Summary
           </h2>
-          <div className="text-lg leading-relaxed text-foreground bg-muted/30 p-6 rounded-xl border border-border">
+          <div className="text-lg leading-relaxed text-foreground bg-muted/30 p-6 rounded-xl border border-border whitespace-pre-line">
             {newsDay.content.briefing}
           </div>
         </section>
