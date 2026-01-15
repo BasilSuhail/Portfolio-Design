@@ -2,7 +2,7 @@
   {
     "date": "2026-01-14",
     "content": {
-      "briefing": "Today's tech briefing covers major AI infrastructure developments, with NVIDIA's new GPU architecture announcements and AMD's competitive positioning in the data center market. Fintech sector sees increased adoption of AI-powered fraud detection, while enterprise automation continues to expand with ServiceNow's latest platform updates.",
+      "briefing": "**Key Takeaways for Tuesday, January 14:**\n\n• **GPU wars heating up** — NVIDIA dropped Blackwell architecture updates while AMD countered with MI400 details. Both companies are aggressively targeting hyperscaler contracts, and pricing pressure is building.\n\n• **Cloud capex continues** — Microsoft, Google, and AWS all announced regional AI infrastructure expansions. The race to reduce inference latency is driving unprecedented capital expenditure across all three.\n\n• **Fraud detection is table stakes now** — PayPal blocking $2B in suspicious transactions shows AI-powered security isn't optional anymore. Every major payment processor will need similar capabilities by end of year.\n\n• **Packaging bottleneck persists** — TSMC demand remains elevated, ASML shipping more High-NA EUV systems, Micron ramping HBM3E. The constraint has shifted from raw chip supply to advanced packaging capacity (CoWoS, HBM integration).\n\n**What to watch:** Palo Alto's $500M acquisition signals cybersecurity M&A is picking up. Expect more deals as larger players buy AI capabilities rather than build them.",
       "ai_compute_infra": [
         {
           "ticker": "NVDA",
@@ -15,6 +15,24 @@
           "headline": "AMD MI400 Series Targets Enterprise AI Workloads",
           "url": "https://example.com/amd-mi400",
           "source": "AnandTech"
+        },
+        {
+          "ticker": "MSFT",
+          "headline": "Microsoft Azure Expands AI Infrastructure in Europe",
+          "url": "https://example.com/msft-azure-europe",
+          "source": "Microsoft Blog"
+        },
+        {
+          "ticker": "GOOGL",
+          "headline": "Google Cloud TPU v6 Enters Private Preview",
+          "url": "https://example.com/google-tpu-v6",
+          "source": "Google Cloud Blog"
+        },
+        {
+          "ticker": "AMZN",
+          "headline": "AWS Trainium2 Chips Now Available in 5 Regions",
+          "url": "https://example.com/aws-trainium2",
+          "source": "AWS News"
         }
       ],
       "fintech_regtech": [
@@ -23,6 +41,24 @@
           "headline": "Square Expands AI-Powered Business Analytics",
           "url": "https://example.com/square-analytics",
           "source": "FinTech Today"
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "PayPal AI Fraud Detection Blocks $2B in Suspicious Transactions",
+          "url": "https://example.com/paypal-fraud",
+          "source": "PaymentsJournal"
+        },
+        {
+          "ticker": "V",
+          "headline": "Visa Network Processes Record Holiday Transaction Volume",
+          "url": "https://example.com/visa-holiday",
+          "source": "Visa Newsroom"
+        },
+        {
+          "ticker": "MA",
+          "headline": "Mastercard Launches Real-Time B2B Cross-Border Payments",
+          "url": "https://example.com/mastercard-b2b",
+          "source": "Mastercard Blog"
         }
       ],
       "rpa_enterprise_ai": [
@@ -31,6 +67,24 @@
           "headline": "ServiceNow Vancouver Release Enhances AI Capabilities",
           "url": "https://example.com/servicenow-vancouver",
           "source": "Enterprise Tech"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "Salesforce Einstein Copilot Reaches 1M Daily Active Users",
+          "url": "https://example.com/salesforce-einstein-users",
+          "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "PATH",
+          "headline": "UiPath Announces Autopilot for Document Processing",
+          "url": "https://example.com/uipath-autopilot",
+          "source": "RPA Today"
+        },
+        {
+          "ticker": "WDAY",
+          "headline": "Workday AI Assistant Now Handles Complex HR Queries",
+          "url": "https://example.com/workday-ai",
+          "source": "Workday Blog"
         }
       ],
       "semi_supply_chain": [
@@ -39,6 +93,30 @@
           "headline": "TSMC Reports Strong AI Chip Demand for Q1 2026",
           "url": "https://example.com/tsmc-q1",
           "source": "DigiTimes"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "ASML Ships 10th High-NA EUV System to Intel",
+          "url": "https://example.com/asml-intel",
+          "source": "SemiEngineering"
+        },
+        {
+          "ticker": "MU",
+          "headline": "Micron HBM3E Production Ramps to Meet NVIDIA Demand",
+          "url": "https://example.com/micron-hbm3e",
+          "source": "Tom's Hardware"
+        },
+        {
+          "ticker": "AMAT",
+          "headline": "Applied Materials Unveils Next-Gen Chipmaking Tools",
+          "url": "https://example.com/amat-tools",
+          "source": "Semiconductor Digest"
+        },
+        {
+          "ticker": "LRCX",
+          "headline": "Lam Research Reports Record Backlog for Etch Systems",
+          "url": "https://example.com/lrcx-backlog",
+          "source": "EE Times"
         }
       ],
       "cybersecurity": [
@@ -47,6 +125,24 @@
           "headline": "CrowdStrike Falcon Platform Gets Major AI Update",
           "url": "https://example.com/crowdstrike-falcon",
           "source": "Security Week"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Palo Alto Networks Acquires AI Security Startup for $500M",
+          "url": "https://example.com/panw-acquisition",
+          "source": "CyberWire"
+        },
+        {
+          "ticker": "ZS",
+          "headline": "Zscaler Reports 40% YoY Growth in Zero Trust Adoption",
+          "url": "https://example.com/zscaler-growth",
+          "source": "Zscaler Blog"
+        },
+        {
+          "ticker": "FTNT",
+          "headline": "Fortinet FortiGuard Labs Discovers Critical IoT Vulnerability",
+          "url": "https://example.com/fortinet-iot",
+          "source": "Fortinet Blog"
         }
       ]
     }
@@ -54,7 +150,7 @@
   {
     "date": "2026-01-13",
     "content": {
-      "briefing": "Tech markets opened strong with semiconductor stocks leading gains. Microsoft announces expanded Azure AI services, while cybersecurity firms report increased demand for AI-powered threat detection solutions. The fintech sector continues to see consolidation with several M&A announcements.",
+      "briefing": "**Key Takeaways for Monday, January 13:**\n\n• **Meta enters the enterprise AI race** — Llama 4 API going live for enterprise customers is a direct shot at OpenAI and Anthropic. Meta's open-weight strategy could undercut pricing across the board, forcing incumbents to respond.\n\n• **TSMC Arizona milestone matters** — First 3nm wafer production at the Arizona fab is significant for US chip sovereignty. Still years behind Taiwan capacity, but momentum is real.\n\n• **Intel 18A is make-or-break** — Risk production phase means Intel's foundry comeback is genuinely in play. If yields hold, they could recapture some lost ground against TSMC by late 2026.\n\n• **Broadcom's custom AI chip bet paying off** — 50% revenue growth from custom silicon validates their strategy of building chips for hyperscalers rather than competing with NVIDIA directly.\n\n• **Identity is the new perimeter** — CrowdStrike blocking 1M identity attacks daily shows traditional network security is inadequate. Zero trust isn't a buzzword anymore, it's the baseline.\n\n**What to watch:** ServiceNow hitting 5M daily AI support requests suggests enterprise AI adoption is past the experimentation phase. The ROI conversation has shifted from 'if' to 'how much'.",
       "ai_compute_infra": [
         {
           "ticker": "MSFT",
@@ -67,6 +163,18 @@
           "headline": "Google Cloud Announces TPU v5 Availability",
           "url": "https://example.com/google-tpu",
           "source": "Google Blog"
+        },
+        {
+          "ticker": "NVDA",
+          "headline": "NVIDIA DGX Cloud Adds Support for Enterprise RAG",
+          "url": "https://example.com/nvda-dgx-rag",
+          "source": "NVIDIA Blog"
+        },
+        {
+          "ticker": "META",
+          "headline": "Meta Opens Llama 4 API Access to Enterprise Customers",
+          "url": "https://example.com/meta-llama4-api",
+          "source": "Meta AI Blog"
         }
       ],
       "fintech_regtech": [
@@ -75,6 +183,24 @@
           "headline": "PayPal Introduces AI-Powered Checkout Experience",
           "url": "https://example.com/paypal-checkout",
           "source": "PaymentsJournal"
+        },
+        {
+          "ticker": "SQ",
+          "headline": "Block Cash App Reaches 60M Monthly Active Users",
+          "url": "https://example.com/block-cashapp",
+          "source": "Block Newsroom"
+        },
+        {
+          "ticker": "COIN",
+          "headline": "Coinbase Launches Institutional Custody in Singapore",
+          "url": "https://example.com/coinbase-singapore",
+          "source": "CoinDesk"
+        },
+        {
+          "ticker": "INTU",
+          "headline": "Intuit QuickBooks AI Automates 80% of Bookkeeping Tasks",
+          "url": "https://example.com/intuit-quickbooks",
+          "source": "Intuit Blog"
         }
       ],
       "rpa_enterprise_ai": [
@@ -83,6 +209,24 @@
           "headline": "UiPath Automation Cloud Gets Generative AI Features",
           "url": "https://example.com/uipath-genai",
           "source": "RPA Today"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "ServiceNow Now Assist Handles 5M Support Requests Daily",
+          "url": "https://example.com/servicenow-assist",
+          "source": "ServiceNow Blog"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "Salesforce Agentforce Expands to Healthcare Sector",
+          "url": "https://example.com/salesforce-agentforce",
+          "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "ORCL",
+          "headline": "Oracle Fusion Cloud Adds AI-Powered Supply Chain Planning",
+          "url": "https://example.com/oracle-fusion",
+          "source": "Oracle Blog"
         }
       ],
       "semi_supply_chain": [
@@ -91,6 +235,24 @@
           "headline": "ASML High-NA EUV Systems See Strong Demand",
           "url": "https://example.com/asml-euv",
           "source": "SemiEngineering"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "TSMC Arizona Fab Achieves First 3nm Wafer Production",
+          "url": "https://example.com/tsmc-arizona",
+          "source": "DigiTimes"
+        },
+        {
+          "ticker": "INTC",
+          "headline": "Intel 18A Process Enters Risk Production Phase",
+          "url": "https://example.com/intel-18a",
+          "source": "AnandTech"
+        },
+        {
+          "ticker": "AVGO",
+          "headline": "Broadcom Custom AI Chips Drive 50% Revenue Growth",
+          "url": "https://example.com/broadcom-ai",
+          "source": "Barron's"
         }
       ],
       "cybersecurity": [
@@ -99,6 +261,24 @@
           "headline": "Palo Alto Networks Cortex XSIAM 3.0 Released",
           "url": "https://example.com/panw-xsiam",
           "source": "CyberWire"
+        },
+        {
+          "ticker": "CRWD",
+          "headline": "CrowdStrike Identity Protection Blocks 1M Attacks Daily",
+          "url": "https://example.com/crowdstrike-identity",
+          "source": "CrowdStrike Blog"
+        },
+        {
+          "ticker": "S",
+          "headline": "SentinelOne Purple AI Achieves SOC 2 Type II Certification",
+          "url": "https://example.com/sentinelone-soc2",
+          "source": "SentinelOne Blog"
+        },
+        {
+          "ticker": "OKTA",
+          "headline": "Okta Workforce Identity Cloud Adds Passkey Support",
+          "url": "https://example.com/okta-passkey",
+          "source": "Okta Blog"
         }
       ]
     }
@@ -106,13 +286,31 @@
   {
     "date": "2026-01-12",
     "content": {
-      "briefing": "Weekend tech roundup highlights major announcements from CES 2026, with AI integration across consumer and enterprise products. Semiconductor companies report optimistic guidance for the year ahead, while fintech firms focus on embedded finance solutions.",
+      "briefing": "**CES 2026 Weekend Recap:**\n\n• **The AI PC push is real** — AMD's Ryzen AI 9, Intel's Core Ultra 300, and Qualcomm's Snapdragon X Elite all showcased at CES. Every chip vendor is betting big on on-device AI. The question isn't whether AI PCs will happen, but who captures the enterprise refresh cycle.\n\n• **TSMC's $20B US commitment** — This is serious money. Combined with the Arizona fab progress, TSMC is hedging against Taiwan geopolitical risk while also locking in CHIPS Act subsidies.\n\n• **BNPL still growing** — Affirm's 45% holiday volume surge shows buy-now-pay-later isn't dead despite rising rates. Consumer credit appetite remains strong in the 'soft landing' scenario.\n\n• **Mastercard going crypto mainstream** — Crypto Credential going live in 10 countries suggests traditional finance is done fighting crypto and moving to capture the rails instead.\n\n• **Edge AI is the next battleground** — Cloudflare processing 10B daily AI requests at the edge, Zscaler adding AI to Zero Trust. The inference workload is moving closer to users, and network companies are positioning to capture it.\n\n**What to watch:** Marvell's custom silicon revenue doubling YoY confirms that hyperscalers are diversifying beyond NVIDIA. Custom chip programs at Google, Amazon, and Microsoft are gaining traction.",
       "ai_compute_infra": [
         {
           "ticker": "NVDA",
           "headline": "NVIDIA CES 2026: AI for Everyone Keynote Highlights",
           "url": "https://example.com/nvda-ces",
           "source": "The Verge"
+        },
+        {
+          "ticker": "AMD",
+          "headline": "AMD Unveils Ryzen AI 9 HX 395 for AI-Powered Laptops",
+          "url": "https://example.com/amd-ryzen-ai",
+          "source": "Tom's Hardware"
+        },
+        {
+          "ticker": "INTC",
+          "headline": "Intel Core Ultra 300 Series Showcased at CES",
+          "url": "https://example.com/intel-ces",
+          "source": "AnandTech"
+        },
+        {
+          "ticker": "QCOM",
+          "headline": "Qualcomm Snapdragon X Elite Powers Next-Gen Windows PCs",
+          "url": "https://example.com/qualcomm-ces",
+          "source": "CNET"
         }
       ],
       "fintech_regtech": [
@@ -121,6 +319,24 @@
           "headline": "Visa Launches AI-Powered B2B Payment Solutions",
           "url": "https://example.com/visa-b2b",
           "source": "Visa Blog"
+        },
+        {
+          "ticker": "MA",
+          "headline": "Mastercard Crypto Credential Goes Live in 10 Countries",
+          "url": "https://example.com/mastercard-crypto",
+          "source": "Mastercard Newsroom"
+        },
+        {
+          "ticker": "GS",
+          "headline": "Goldman Sachs Transaction Banking Expands to Asia",
+          "url": "https://example.com/goldman-asia",
+          "source": "Financial Times"
+        },
+        {
+          "ticker": "AFRM",
+          "headline": "Affirm BNPL Volume Surges 45% During Holiday Season",
+          "url": "https://example.com/affirm-holiday",
+          "source": "PYMNTS"
         }
       ],
       "rpa_enterprise_ai": [
@@ -129,6 +345,24 @@
           "headline": "Salesforce Einstein GPT Integration Deepens",
           "url": "https://example.com/salesforce-einstein",
           "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "PATH",
+          "headline": "UiPath Autopilot Reduces Process Discovery Time by 70%",
+          "url": "https://example.com/uipath-autopilot",
+          "source": "UiPath Blog"
+        },
+        {
+          "ticker": "WDAY",
+          "headline": "Workday Illuminate AI Features Enter General Availability",
+          "url": "https://example.com/workday-illuminate",
+          "source": "Workday Blog"
+        },
+        {
+          "ticker": "SAP",
+          "headline": "SAP Joule Copilot Supports 50+ Business Processes",
+          "url": "https://example.com/sap-joule",
+          "source": "SAP News"
         }
       ],
       "semi_supply_chain": [
@@ -137,6 +371,24 @@
           "headline": "Micron HBM4 Development Progresses Ahead of Schedule",
           "url": "https://example.com/micron-hbm4",
           "source": "Tom's Hardware"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "TSMC Announces $20B Investment for US Expansion",
+          "url": "https://example.com/tsmc-us-investment",
+          "source": "Reuters"
+        },
+        {
+          "ticker": "KLAC",
+          "headline": "KLA Introduces AI-Powered Defect Inspection System",
+          "url": "https://example.com/kla-ai",
+          "source": "Semiconductor Digest"
+        },
+        {
+          "ticker": "MRVL",
+          "headline": "Marvell Custom Silicon Revenue Doubles Year-Over-Year",
+          "url": "https://example.com/marvell-custom",
+          "source": "EE Times"
         }
       ],
       "cybersecurity": [
@@ -145,6 +397,24 @@
           "headline": "Zscaler Zero Trust Exchange Adds AI Enhancements",
           "url": "https://example.com/zscaler-ai",
           "source": "Zscaler Blog"
+        },
+        {
+          "ticker": "FTNT",
+          "headline": "Fortinet Secure SD-WAN Reaches 500K Deployments",
+          "url": "https://example.com/fortinet-sdwan",
+          "source": "Fortinet Blog"
+        },
+        {
+          "ticker": "NET",
+          "headline": "Cloudflare Workers AI Processes 10B Daily Requests",
+          "url": "https://example.com/cloudflare-ai",
+          "source": "Cloudflare Blog"
+        },
+        {
+          "ticker": "CYBR",
+          "headline": "CyberArk Secrets Hub Integrates with AWS Secrets Manager",
+          "url": "https://example.com/cyberark-aws",
+          "source": "CyberArk Blog"
         }
       ]
     }
@@ -152,13 +422,31 @@
   {
     "date": "2026-01-11",
     "content": {
-      "briefing": "Markets digest earnings previews as Q4 2025 reporting season approaches. AI infrastructure investments continue to dominate capital allocation decisions, while regulatory clarity improves for fintech and crypto sectors.",
+      "briefing": "**Key Takeaways for Saturday, January 11:**\n\n• **Earnings season positioning** — Q4 2025 reports start next week. Consensus expects strong AI-related revenue but watch for margin compression as cloud providers ramp spending. The market is pricing perfection, so any miss will hurt.\n\n• **AWS Bedrock adding Claude 3.5 Opus** — Anthropic models getting deeper AWS integration is notable. The AI model market is consolidating around a few major platforms, and distribution through hyperscalers is becoming critical.\n\n• **ASML guidance beat** — When the company that makes the machines that make the chips says demand is stronger than expected, pay attention. Semiconductor capex cycle has legs into 2027 at minimum.\n\n• **CoWoS capacity tripling** — TSMC's advanced packaging expansion is the real story. Everyone has chips; not everyone can package them for AI workloads. This bottleneck won't ease until late 2026.\n\n• **Neobank momentum continues** — SoFi hitting $25B in deposits shows digital-first banking is taking share from incumbents. The cost structure advantage is real, and traditional banks are struggling to respond.\n\n**What to watch:** Synopsys claiming 40% design time reduction with AI-driven EDA tools. If true, this could accelerate chip development cycles significantly and benefit the entire semiconductor ecosystem.",
       "ai_compute_infra": [
         {
           "ticker": "AMD",
           "headline": "AMD EPYC Turin Processors Gain Enterprise Traction",
           "url": "https://example.com/amd-turin",
           "source": "ServeTheHome"
+        },
+        {
+          "ticker": "NVDA",
+          "headline": "NVIDIA NIM Microservices Reach 50K Enterprise Deployments",
+          "url": "https://example.com/nvda-nim",
+          "source": "NVIDIA Blog"
+        },
+        {
+          "ticker": "GOOGL",
+          "headline": "Google Gemini 2.0 API Pricing Announced for Developers",
+          "url": "https://example.com/google-gemini-pricing",
+          "source": "Google Blog"
+        },
+        {
+          "ticker": "AMZN",
+          "headline": "AWS Bedrock Adds Claude 3.5 Opus Model Support",
+          "url": "https://example.com/aws-bedrock-claude",
+          "source": "AWS News"
         }
       ],
       "fintech_regtech": [
@@ -167,6 +455,24 @@
           "headline": "Mastercard AI Decision Intelligence Reduces Fraud 30%",
           "url": "https://example.com/mastercard-ai",
           "source": "Mastercard Newsroom"
+        },
+        {
+          "ticker": "V",
+          "headline": "Visa Direct Real-Time Payments Expand to 80 Countries",
+          "url": "https://example.com/visa-direct",
+          "source": "Visa Blog"
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "PayPal Venmo Business Profiles Reach 5M Merchants",
+          "url": "https://example.com/paypal-venmo",
+          "source": "PayPal Newsroom"
+        },
+        {
+          "ticker": "SOFI",
+          "headline": "SoFi Bank Deposits Surpass $25B Milestone",
+          "url": "https://example.com/sofi-deposits",
+          "source": "SoFi Blog"
         }
       ],
       "rpa_enterprise_ai": [
@@ -175,6 +481,24 @@
           "headline": "ServiceNow Expands Now Assist AI Assistant Capabilities",
           "url": "https://example.com/servicenow-assist",
           "source": "ServiceNow Blog"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "Salesforce Data Cloud Ingests 30T Records Daily",
+          "url": "https://example.com/salesforce-datacloud",
+          "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "MSFT",
+          "headline": "Microsoft Copilot for Microsoft 365 Adoption Accelerates",
+          "url": "https://example.com/msft-copilot-365",
+          "source": "Microsoft Blog"
+        },
+        {
+          "ticker": "IBM",
+          "headline": "IBM watsonx.ai Adds Granite 3.0 Foundation Models",
+          "url": "https://example.com/ibm-watsonx",
+          "source": "IBM Newsroom"
         }
       ],
       "semi_supply_chain": [
@@ -183,6 +507,24 @@
           "headline": "Applied Materials Advanced Packaging Tech Gains Momentum",
           "url": "https://example.com/amat-packaging",
           "source": "Semiconductor Digest"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "ASML 2026 Revenue Guidance Exceeds Analyst Expectations",
+          "url": "https://example.com/asml-guidance",
+          "source": "Bloomberg"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "TSMC CoWoS Capacity to Triple by End of 2026",
+          "url": "https://example.com/tsmc-cowos",
+          "source": "DigiTimes"
+        },
+        {
+          "ticker": "SNPS",
+          "headline": "Synopsys AI-Driven EDA Tools Cut Design Time 40%",
+          "url": "https://example.com/synopsys-ai",
+          "source": "EE Times"
         }
       ],
       "cybersecurity": [
@@ -191,6 +533,24 @@
           "headline": "Fortinet FortiAI Achieves New Security Certifications",
           "url": "https://example.com/fortinet-ai",
           "source": "Fortinet Blog"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Palo Alto Networks Prisma Cloud Protects 10M Containers",
+          "url": "https://example.com/panw-prisma",
+          "source": "Palo Alto Blog"
+        },
+        {
+          "ticker": "CRWD",
+          "headline": "CrowdStrike Achieves FedRAMP High Authorization",
+          "url": "https://example.com/crowdstrike-fedramp",
+          "source": "CrowdStrike Blog"
+        },
+        {
+          "ticker": "ZS",
+          "headline": "Zscaler Private Access Adds AI-Powered App Segmentation",
+          "url": "https://example.com/zscaler-zpa",
+          "source": "Zscaler Blog"
         }
       ]
     }
@@ -198,7 +558,7 @@
   {
     "date": "2026-01-10",
     "content": {
-      "briefing": "Tech sector rallies on positive economic data and AI adoption metrics. Cloud providers report accelerating enterprise AI workload growth, while semiconductor stocks benefit from strong demand forecasts.",
+      "briefing": "**Key Takeaways for Friday, January 10:**\n\n• **GPT-5 preview on Azure** — Microsoft getting early GPT-5 access underscores the depth of the OpenAI partnership. Google and Anthropic need to respond. The frontier model race is intensifying, and enterprise customers are watching closely.\n\n• **DeepMind multimodal progress** — Google's research arm continues to push boundaries. The gap between research breakthroughs and production deployment is shrinking, which could benefit Google Cloud's competitive position.\n\n• **TSMC 2nm on track** — 2026 production timeline holding is critical for next-gen chips. Apple, NVIDIA, and AMD are all counting on this node for 2027 products.\n\n• **Memory transition accelerating** — Micron's GDDR7 mass production and HBM4 development show memory is no longer a commodity business. AI workloads require specialized memory, and Micron, Samsung, and SK Hynix are benefiting.\n\n• **Intuit gearing up for tax season** — AI features in TurboTax could be a leading indicator of consumer AI adoption. If users embrace AI tax assistance, similar features in other consumer products will follow.\n\n**What to watch:** Block's Bitcoin holdings hitting $1B market value is notable. If crypto rallies continue, Block and Coinbase have asymmetric upside that pure fintech plays don't offer.",
       "ai_compute_infra": [
         {
           "ticker": "GOOGL",
@@ -211,6 +571,24 @@
           "headline": "Meta Llama 4 Development Milestone Reached",
           "url": "https://example.com/meta-llama",
           "source": "Meta AI Blog"
+        },
+        {
+          "ticker": "MSFT",
+          "headline": "Microsoft Azure OpenAI Service Adds GPT-5 Preview",
+          "url": "https://example.com/msft-gpt5",
+          "source": "Microsoft Blog"
+        },
+        {
+          "ticker": "NVDA",
+          "headline": "NVIDIA Omniverse Cloud Expands Digital Twin Capabilities",
+          "url": "https://example.com/nvda-omniverse",
+          "source": "NVIDIA Blog"
+        },
+        {
+          "ticker": "ORCL",
+          "headline": "Oracle Cloud Infrastructure AI Cluster Service Launches",
+          "url": "https://example.com/oracle-ai-cluster",
+          "source": "Oracle Blog"
         }
       ],
       "fintech_regtech": [
@@ -219,6 +597,24 @@
           "headline": "Intuit TurboTax AI Features Ready for Tax Season",
           "url": "https://example.com/intuit-turbotax",
           "source": "Intuit Blog"
+        },
+        {
+          "ticker": "SQ",
+          "headline": "Block Bitcoin Holdings Reach $1B Market Value",
+          "url": "https://example.com/block-bitcoin",
+          "source": "Block Newsroom"
+        },
+        {
+          "ticker": "ADYEN",
+          "headline": "Adyen Unified Commerce Platform Reaches 1M Merchants",
+          "url": "https://example.com/adyen-merchants",
+          "source": "Adyen Blog"
+        },
+        {
+          "ticker": "BILL",
+          "headline": "Bill.com AI Invoice Processing Handles 10M Documents Monthly",
+          "url": "https://example.com/bill-ai",
+          "source": "Bill.com Blog"
         }
       ],
       "rpa_enterprise_ai": [
@@ -227,6 +623,24 @@
           "headline": "UiPath Communications Mining Adds Language Support",
           "url": "https://example.com/uipath-mining",
           "source": "UiPath Blog"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "ServiceNow IT Operations Management AI Reduces Incidents 50%",
+          "url": "https://example.com/servicenow-itom",
+          "source": "ServiceNow Blog"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "Salesforce Commerce Cloud AI Drives 25% Conversion Lift",
+          "url": "https://example.com/salesforce-commerce",
+          "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "HUBS",
+          "headline": "HubSpot AI Content Assistant Reaches 100K Active Users",
+          "url": "https://example.com/hubspot-ai",
+          "source": "HubSpot Blog"
         }
       ],
       "semi_supply_chain": [
@@ -235,6 +649,24 @@
           "headline": "TSMC 2nm Process on Track for 2026 Production",
           "url": "https://example.com/tsmc-2nm",
           "source": "EE Times"
+        },
+        {
+          "ticker": "MU",
+          "headline": "Micron GDDR7 Memory Enters Mass Production",
+          "url": "https://example.com/micron-gddr7",
+          "source": "Tom's Hardware"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "ASML EUV Pellicle Technology Improves Chip Yields",
+          "url": "https://example.com/asml-pellicle",
+          "source": "SemiEngineering"
+        },
+        {
+          "ticker": "LRCX",
+          "headline": "Lam Research Dry Resist Technology Advances 2nm Node",
+          "url": "https://example.com/lam-dryresist",
+          "source": "Semiconductor Digest"
         }
       ],
       "cybersecurity": [
@@ -243,6 +675,24 @@
           "headline": "CrowdStrike Charlotte AI Expands SOC Automation",
           "url": "https://example.com/crowdstrike-charlotte",
           "source": "CrowdStrike Blog"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Palo Alto Networks XSOAR Marketplace Reaches 1000 Integrations",
+          "url": "https://example.com/panw-xsoar",
+          "source": "Palo Alto Blog"
+        },
+        {
+          "ticker": "S",
+          "headline": "SentinelOne Singularity Platform Adds Cloud Workload Protection",
+          "url": "https://example.com/sentinelone-cloud",
+          "source": "SentinelOne Blog"
+        },
+        {
+          "ticker": "TENB",
+          "headline": "Tenable One Exposure Management Platform Adds AI Risk Scoring",
+          "url": "https://example.com/tenable-ai",
+          "source": "Tenable Blog"
         }
       ]
     }
@@ -250,13 +700,31 @@
   {
     "date": "2026-01-09",
     "content": {
-      "briefing": "AI chip demand continues to outpace supply, driving positive sentiment across the semiconductor sector. Enterprise software companies highlight AI as key growth driver in investor updates.",
+      "briefing": "**Key Takeaways for Thursday, January 9:**\n\n• **Supply/demand imbalance persists** — Grace Hopper shipments to hyperscalers, MI350X benchmarks showing gains, and ASML's record backlog all point to the same thing: AI chip demand isn't slowing. Anyone betting on a 'peak AI' narrative is early at best.\n\n• **Custom silicon gaining ground** — Google's Axion powering 20% of GCP workloads and AWS Graviton4 expansion show hyperscalers are serious about reducing NVIDIA dependence. This is a multi-year trend, not a one-off.\n\n• **TSMC Japan fab live** — Volume production starting in Japan adds geographic diversification to TSMC's manufacturing base. Sony and other Japanese customers get better access; Taiwan concentration risk decreases marginally.\n\n• **Stablecoin adoption accelerating** — PayPal's PYUSD hitting $2B market cap faster than expected suggests enterprise stablecoin use cases are materializing. Cross-border payments and B2B settlement are the killer apps.\n\n• **Unit 42 threat report** — Palo Alto's research arm tracking increasing attack sophistication. The cybersecurity spending cycle is far from over as adversaries adopt AI tools.\n\n**What to watch:** Intel Foundry winning a major automotive client could be the first crack in TSMC's dominance. Automotive chips have long lead times, so this is a 2027+ story, but it's meaningful for Intel's foundry ambitions.",
       "ai_compute_infra": [
         {
           "ticker": "NVDA",
           "headline": "NVIDIA Grace Hopper Superchips Ship to Major Cloud Providers",
           "url": "https://example.com/nvda-grace",
           "source": "HPC Wire"
+        },
+        {
+          "ticker": "AMD",
+          "headline": "AMD Instinct MI350X Benchmarks Show 30% Performance Gain",
+          "url": "https://example.com/amd-mi350x",
+          "source": "AnandTech"
+        },
+        {
+          "ticker": "GOOGL",
+          "headline": "Google Axion ARM Processors Power 20% of GCP Workloads",
+          "url": "https://example.com/google-axion",
+          "source": "Google Cloud Blog"
+        },
+        {
+          "ticker": "AMZN",
+          "headline": "AWS Graviton4 Instances Available in All Major Regions",
+          "url": "https://example.com/aws-graviton4",
+          "source": "AWS News"
         }
       ],
       "fintech_regtech": [
@@ -265,6 +733,24 @@
           "headline": "Block Afterpay Integration Deepens with AI Insights",
           "url": "https://example.com/block-afterpay",
           "source": "Block Newsroom"
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "PayPal Stablecoin PYUSD Reaches $2B Market Cap",
+          "url": "https://example.com/paypal-pyusd",
+          "source": "CoinDesk"
+        },
+        {
+          "ticker": "V",
+          "headline": "Visa+ P2P Interoperability Expands to 15 Payment Apps",
+          "url": "https://example.com/visa-plus",
+          "source": "Visa Blog"
+        },
+        {
+          "ticker": "FIS",
+          "headline": "FIS Modern Banking Platform Onboards 50 New Banks",
+          "url": "https://example.com/fis-banking",
+          "source": "FIS Blog"
         }
       ],
       "rpa_enterprise_ai": [
@@ -273,6 +759,24 @@
           "headline": "Salesforce Data Cloud Gets Real-Time AI Predictions",
           "url": "https://example.com/salesforce-datacloud",
           "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "ServiceNow Workflow Studio AI Builder Reaches GA",
+          "url": "https://example.com/servicenow-workflow",
+          "source": "ServiceNow Blog"
+        },
+        {
+          "ticker": "PATH",
+          "headline": "UiPath Test Suite AI Achieves 95% Code Coverage Detection",
+          "url": "https://example.com/uipath-test",
+          "source": "UiPath Blog"
+        },
+        {
+          "ticker": "WDAY",
+          "headline": "Workday Peakon Employee Voice AI Insights Launch",
+          "url": "https://example.com/workday-peakon",
+          "source": "Workday Blog"
         }
       ],
       "semi_supply_chain": [
@@ -281,6 +785,24 @@
           "headline": "ASML Reports Record Backlog for 2026 Delivery",
           "url": "https://example.com/asml-backlog",
           "source": "ASML Investor Relations"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "TSMC Japan Fab Begins Volume Production",
+          "url": "https://example.com/tsmc-japan",
+          "source": "Nikkei Asia"
+        },
+        {
+          "ticker": "INTC",
+          "headline": "Intel Foundry Services Wins Major Automotive Client",
+          "url": "https://example.com/intel-foundry",
+          "source": "Reuters"
+        },
+        {
+          "ticker": "AMAT",
+          "headline": "Applied Materials Centura Platform Enables Gate-All-Around",
+          "url": "https://example.com/amat-centura",
+          "source": "EE Times"
         }
       ],
       "cybersecurity": [
@@ -289,6 +811,24 @@
           "headline": "Palo Alto Networks Unit 42 Releases Threat Report",
           "url": "https://example.com/panw-threat",
           "source": "Unit 42 Blog"
+        },
+        {
+          "ticker": "CRWD",
+          "headline": "CrowdStrike Counter Adversary Operations Tracks 250 Groups",
+          "url": "https://example.com/crowdstrike-cao",
+          "source": "CrowdStrike Blog"
+        },
+        {
+          "ticker": "ZS",
+          "headline": "Zscaler Digital Experience Monitoring Adds AI Analysis",
+          "url": "https://example.com/zscaler-zdx",
+          "source": "Zscaler Blog"
+        },
+        {
+          "ticker": "FTNT",
+          "headline": "Fortinet Secure Access Service Edge Reaches 100K Customers",
+          "url": "https://example.com/fortinet-sase",
+          "source": "Fortinet Blog"
         }
       ]
     }
@@ -296,13 +836,31 @@
   {
     "date": "2026-01-08",
     "content": {
-      "briefing": "New year momentum builds in tech markets with focus on AI infrastructure buildout. Analysts raise price targets across semiconductor and cloud computing sectors.",
+      "briefing": "**Key Takeaways for Wednesday, January 8:**\n\n• **2026 starts strong** — Analysts raising price targets across semis and cloud after holiday data came in solid. The AI infrastructure buildout narrative remains intact, though valuations are stretched.\n\n• **Copilot Studio enterprise launch** — Microsoft opening low-code AI agent building to enterprises could accelerate adoption beyond just IT departments. Business users building their own AI workflows is the next phase.\n\n• **NVIDIA AI Enterprise 5.0** — Production MLOps features signal NVIDIA's push beyond hardware into software. They're trying to capture more of the AI value chain, which could mean margin expansion if it works.\n\n• **Base network hitting 10M daily transactions** — Coinbase's L2 play is gaining traction. Lower fees and faster settlement could make crypto more practical for everyday transactions.\n\n• **ASML's €1B pellicle investment** — This obscure but critical component (the thin membrane protecting EUV masks) has been a bottleneck. ASML solving it themselves rather than waiting for suppliers shows urgency.\n\n**What to watch:** Adobe Firefly enterprise API adoption tripling suggests generative AI for creative work is past the experimental phase. Marketing and design budgets are shifting toward AI tools, which could pressure traditional creative software pricing.",
       "ai_compute_infra": [
         {
           "ticker": "MSFT",
           "headline": "Microsoft Copilot Studio Opens to Enterprise Developers",
           "url": "https://example.com/msft-copilot",
           "source": "Microsoft Blog"
+        },
+        {
+          "ticker": "NVDA",
+          "headline": "NVIDIA AI Enterprise 5.0 Adds Production MLOps Features",
+          "url": "https://example.com/nvda-enterprise",
+          "source": "NVIDIA Blog"
+        },
+        {
+          "ticker": "GOOGL",
+          "headline": "Google Vertex AI Agent Builder Enters Public Preview",
+          "url": "https://example.com/google-vertex-agents",
+          "source": "Google Cloud Blog"
+        },
+        {
+          "ticker": "META",
+          "headline": "Meta AI Research Publishes Breakthrough in Efficient Inference",
+          "url": "https://example.com/meta-research",
+          "source": "Meta AI Blog"
         }
       ],
       "fintech_regtech": [
@@ -311,6 +869,24 @@
           "headline": "PayPal Honey AI Shopping Assistant Gets Major Upgrade",
           "url": "https://example.com/paypal-honey",
           "source": "PayPal Newsroom"
+        },
+        {
+          "ticker": "MA",
+          "headline": "Mastercard Track Business Payments Processes $500B Annually",
+          "url": "https://example.com/mastercard-track",
+          "source": "Mastercard Blog"
+        },
+        {
+          "ticker": "SQ",
+          "headline": "Square Banking Services Expand to Canada",
+          "url": "https://example.com/square-canada",
+          "source": "Block Newsroom"
+        },
+        {
+          "ticker": "COIN",
+          "headline": "Coinbase Layer 2 Base Network Reaches 10M Daily Transactions",
+          "url": "https://example.com/coinbase-base",
+          "source": "CoinDesk"
         }
       ],
       "rpa_enterprise_ai": [
@@ -319,6 +895,24 @@
           "headline": "ServiceNow AI Agent for IT Operations Goes GA",
           "url": "https://example.com/servicenow-agent",
           "source": "ServiceNow Blog"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "Salesforce Einstein Trust Layer Achieves ISO Certification",
+          "url": "https://example.com/salesforce-trust",
+          "source": "Salesforce Blog"
+        },
+        {
+          "ticker": "PATH",
+          "headline": "UiPath Clipboard AI Browser Extension Reaches 1M Downloads",
+          "url": "https://example.com/uipath-clipboard",
+          "source": "UiPath Blog"
+        },
+        {
+          "ticker": "ADBE",
+          "headline": "Adobe Firefly Enterprise API Adoption Triples",
+          "url": "https://example.com/adobe-firefly",
+          "source": "Adobe Blog"
         }
       ],
       "semi_supply_chain": [
@@ -327,6 +921,24 @@
           "headline": "Micron DDR6 Memory Samples Shipping to Partners",
           "url": "https://example.com/micron-ddr6",
           "source": "Micron Blog"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "ASML Invests €1B in New EUV Pellicle Production Facility",
+          "url": "https://example.com/asml-pellicle-fab",
+          "source": "SemiEngineering"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "TSMC Advanced Packaging Revenue to Double in 2026",
+          "url": "https://example.com/tsmc-packaging",
+          "source": "DigiTimes"
+        },
+        {
+          "ticker": "AVGO",
+          "headline": "Broadcom VMware Integration Yields $1B in Synergies",
+          "url": "https://example.com/broadcom-vmware",
+          "source": "Bloomberg"
         }
       ],
       "cybersecurity": [
@@ -335,6 +947,24 @@
           "headline": "Zscaler Risk360 Adds AI-Powered Risk Scoring",
           "url": "https://example.com/zscaler-risk",
           "source": "Zscaler Blog"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Palo Alto Networks Strata Cloud Manager Adds AIOps",
+          "url": "https://example.com/panw-strata",
+          "source": "Palo Alto Blog"
+        },
+        {
+          "ticker": "CRWD",
+          "headline": "CrowdStrike Falcon LogScale Handles 1 Petabyte Daily",
+          "url": "https://example.com/crowdstrike-logscale",
+          "source": "CrowdStrike Blog"
+        },
+        {
+          "ticker": "NET",
+          "headline": "Cloudflare Magic WAN Connector Ships to 50K Enterprises",
+          "url": "https://example.com/cloudflare-magic",
+          "source": "Cloudflare Blog"
         }
       ]
     }
