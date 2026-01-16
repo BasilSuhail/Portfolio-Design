@@ -1,5 +1,171 @@
 [
   {
+    "date": "2026-01-16",
+    "content": {
+      "briefing": "TSMC's strong quarterly outlook sent Nasdaq futures higher today, reinforcing the sustained demand for advanced semiconductor manufacturing as AI workloads continue scaling. Mizuho raised its price target on NVIDIA, reflecting confidence that Blackwell-based systems will drive another leg of datacenter GPU growth. The semiconductor supply chain remains the backbone of the AI infrastructure buildout, and TSMC's commentary suggests no near-term slowdown in orders from hyperscalers.\n\nCrowdStrike's CEO flagged AI agents as an emerging security concern, noting their unpredictable behavior patterns create new attack surfaces. The company is addressing this through acquisitions, snapping up cybersecurity startups to bolster its AI-native threat detection capabilities. Meanwhile, AI-driven shopping is emerging as a major 2026 theme for payment networks, with analysts pointing to Visa and Mastercard as beneficiaries of increased transaction volumes from AI-powered commerce platforms.",
+      "ai_compute_infra": [
+        {
+          "ticker": "NVDA",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "NVDA",
+          "headline": "Mizuho Raises PT on NVIDIA (NVDA) Stock",
+          "url": "https://finance.yahoo.com/news/mizuho-raises-pt-nvidia-nvda-175302588.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "AMD",
+          "headline": "Discrete thermal analysis of the E–type shell–and–tube heat exchanger",
+          "url": "https://www.nature.com/articles/s41598-026-35215-z",
+          "source": "Nature.com"
+        },
+        {
+          "ticker": "AMD",
+          "headline": "HP's New USB Gadget Fits An Entire Computer Inside A Keyboard",
+          "url": "https://www.bgr.com/2071496/hp-new-usb-gadget-computer-keyboard-eliteboard/",
+          "source": "BGR"
+        },
+        {
+          "ticker": "GOOGL",
+          "headline": "Stocks Retreat as Big Tech Falters",
+          "url": "https://www.barchart.com/story/news/37043512/stocks-retreat-as-big-tech-falters",
+          "source": "Barchart.com"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "SQ",
+          "headline": "2 men charged with murder in 2023 death of Outaouais man",
+          "url": "https://www.cbc.ca/news/canada/ottawa/2-men-charged-with-murder-in-2023-death-of-outaouais-man-9.7045780",
+          "source": "CBC News"
+        },
+        {
+          "ticker": "SQ",
+          "headline": "2 men charged with 1st-degree murder in 2023 death of Outaouais man",
+          "url": "https://www.cbc.ca/news/canada/ottawa/2-men-charged-with-1st-degree-murder-in-2023-death-of-outaouais-man-9.7045780",
+          "source": "CBC News"
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "Here Are Tuesday’s Top Wall Street Analyst Research Calls: Adobe, AMD, Disney, Five Below, Intel, Reddit, KLA Corp, PayPal, Super Micro Computer and More",
+          "url": "https://247wallst.com/investing/2026/01/13/here-are-tuesdays-top-wall-street-analyst-research-calls-adobe-amd-disney-five-below-intel-reddit-kla-corp-paypal-super-micro-computer-and-more/",
+          "source": "24/7 Wall St."
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "With AI-Driven Shopping a 'Major 2026 Theme,' Experts Like This Pair of Stocks",
+          "url": "https://www.investopedia.com/these-experts-like-a-pair-of-stocks-with-ai-driven-shopping-a-major-2026-theme-v-ma-11883481",
+          "source": "Investopedia"
+        },
+        {
+          "ticker": "INTU",
+          "headline": "Here’s Why Fundsmith Equity Fund Reestablished Its Stake in Intuit (INTU)",
+          "url": "https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_1774083f-4a5f-4549-8f9a-1159b3900984",
+          "source": "Yahoo Entertainment"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "PATH",
+          "headline": "Trump’s Icebox: Has the President Gone MAD?",
+          "url": "https://original.antiwar.com/david_stockman/2026/01/14/trumps-icebox-has-the-president-gone-mad/",
+          "source": "Antiwar.com"
+        },
+        {
+          "ticker": "PATH",
+          "headline": "U.S. health officials urge balanced meals with lean protein, healthy fats in guidelines",
+          "url": "https://ktvo.com/news/local/us-health-officials-urge-balanced-meals-with-lean-protein-healthy-fats-in-guidelines-diet-lifestyle-vegetables-fruit-whole-grains-cholesterol-heart-science",
+          "source": "ktvo.com"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "Aimé Leon Dore Is Dropping Another New Balance Basketball Shoe",
+          "url": "https://sneakernews.com/2026/01/14/aime-leon-dore-new-balance-fresh-foam-bb-v3/",
+          "source": "Sneaker News"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "People filming ICE raids are being used as ‘tools’ by Trump administration, MS Now reporter claims",
+          "url": "https://www.foxnews.com/media/people-filming-ice-raids-being-used-tools-trump-administration-ms-now-reporter-claims",
+          "source": "Fox News"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "Instagram marketing at scale: How a CRM makes it possible",
+          "url": "https://www.kommo.com/blog/instagram-marketing/",
+          "source": "Kommo.com"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "TSM",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "Two New Exoplanets And The Need For New Habitable Zone Definitions",
+          "url": "https://www.universetoday.com/articles/two-new-exoplanets-and-the-need-for-new-habitable-zone-definitions",
+          "source": "Universe Today"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "Startup Substrate Could Enable the Age of XRay Lithography for sub-Nanometer Chips",
+          "url": "https://www.nextbigfuture.com/2026/01/startup-substrate-could-enable-the-age-of-xray-lithography-for-sub-nanometer-chips.html",
+          "source": "Next Big Future"
+        },
+        {
+          "ticker": "MU",
+          "headline": "Integration of imaging-based and sequencing-based spatial omics mapping on the same tissue section via DBiTplus",
+          "url": "https://www.nature.com/articles/s41592-025-02948-0",
+          "source": "Nature.com"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "CRWD",
+          "headline": "CrowdStrike CEO says AI agents are unpredictable as company snaps up more cybersecurity startups",
+          "url": "https://finance.yahoo.com/news/crowdstrike-ceo-says-ai-agents-are-unpredictable-as-company-snaps-up-more-cybersecurity-startups-165836482.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "CRWD",
+          "headline": "Upgrades: Analysts are Still Bullish on Nvidia (NVDA), Crowdstrike (CRWD) and Oracle (ORCL) Upside",
+          "url": "https://consent.yahoo.com/v2/collectConsent?sessionId=1_cc-session_665a0060-9857-41e0-b855-cac5690754fd",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Stock Index Futures Slip With Focus on U.S. Retail Sales and PPI Data, More Big Bank Earnings on Tap",
+          "url": "https://www.barchart.com/story/news/37035107/stock-index-futures-slip-with-focus-on-u-s-retail-sales-and-ppi-data-more-big-bank-earnings-on-tap",
+          "source": "Barchart.com"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq futures slip amid upbeat bank earnings, Iran fears",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-slip-amid-upbeat-bank-earnings-iran-fears-000622380.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "ZS",
+          "headline": "Daily Rome Shot 1526",
+          "url": "https://wdtprs.com/2026/01/daily-rome-shot-1526/",
+          "source": "Wdtprs.com"
+        }
+      ]
+    }
+  },
+  {
     "date": "2026-01-14",
     "content": {
       "briefing": "The GPU wars are heating up as NVIDIA dropped Blackwell architecture updates while AMD countered with MI400 details. Both companies are going after the same hyperscaler contracts, and pricing pressure is building. Meanwhile, Microsoft, Google, and AWS all announced regional AI infrastructure expansions this week. The race to reduce inference latency is driving massive capital expenditure across all three cloud giants.\n\nOn the semiconductor side, the bottleneck has shifted from raw chip supply to advanced packaging capacity. TSMC demand remains elevated, ASML is shipping more High-NA EUV systems, and Micron is ramping HBM3E production. PayPal blocking $2B in suspicious transactions shows AI-powered fraud detection is no longer optional for payment processors. Palo Alto's $500M acquisition signals cybersecurity M&A is picking up as larger players buy AI capabilities rather than build them in-house.",
