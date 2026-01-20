@@ -6,8 +6,8 @@ import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
 import GameSection from "@/components/GameSection";
-import { NewsSection } from "@/components/NewsSection";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ContactSection } from "@/components/ContactSection";
+import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/use-content";
 
@@ -16,16 +16,18 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="min-h-screen bg-white dark:bg-neutral-900 flex items-center justify-center">
+        <div className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-gray-400 rounded-full dark:text-neutral-500" role="status" aria-label="loading">
+          <span className="sr-only">Loading...</span>
+        </div>
       </div>
     );
   }
 
   if (error || !content) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-destructive">Failed to load content. Please try again.</p>
+      <div className="min-h-screen bg-white dark:bg-neutral-900 flex items-center justify-center">
+        <p className="text-red-500 dark:text-red-400">Failed to load content. Please try again.</p>
       </div>
     );
   }
@@ -41,6 +43,13 @@ export default function Home() {
     "news",
     "game",
   ];
+
+  // Extract social links from content
+  const socialLinks = {
+    github: content.socialLinks?.find((l: any) => l.platform === 'github')?.url,
+    linkedin: content.socialLinks?.find((l: any) => l.platform === 'linkedin')?.url,
+    twitter: content.socialLinks?.find((l: any) => l.platform === 'twitter')?.url,
+  };
 
   const sections: Record<string, JSX.Element | null> = {
     projects:
@@ -89,16 +98,17 @@ export default function Home() {
           intro={content.sectionIntros?.writing}
         />
       ) : null,
-    news: <NewsSection />,
+    news: null, // News is now a separate page accessible via nav
     game: (visibility as any).game ? <GameSection /> : null,
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="fixed top-3 right-3 sm:top-6 sm:right-6 z-50">
-        <ThemeToggle />
-      </div>
+    <div className="min-h-screen bg-white dark:bg-neutral-900">
+      {/* Navigation */}
+      <Navigation name={content.profile.name} />
+
       <main id="main-content">
+        {/* Hero Section */}
         <HeroSection
           name={content.profile.name}
           title={content.profile.title}
@@ -106,18 +116,28 @@ export default function Home() {
           email={content.profile.email}
           avatarUrl={content.profile.avatarUrl}
           avatarFallback={content.profile.avatarFallback}
+          socialLinks={socialLinks}
         />
 
+        {/* Dynamic Sections */}
         {sectionOrder.map((sectionKey: string) => {
           const section = sections[sectionKey];
           return section ? (
-            <div key={sectionKey} data-section={sectionKey}>
+            <div key={sectionKey}>
               {section}
             </div>
           ) : null;
         })}
+
+        {/* Contact Section */}
+        <ContactSection email={content.profile.email} />
       </main>
-      <Footer />
+
+      {/* Footer */}
+      <Footer
+        name={content.profile.name}
+        socialLinks={socialLinks}
+      />
     </div>
   );
 }

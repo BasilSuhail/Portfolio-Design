@@ -13,6 +13,7 @@ const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
 const BlogList = lazy(() => import("@/pages/BlogList"));
 const BlogDetail = lazy(() => import("@/pages/BlogDetail"));
+const News = lazy(() => import("@/pages/News"));
 const NewsDetail = lazy(() => import("@/pages/NewsDetail"));
 const Gallery = lazy(() => import("@/pages/Gallery"));
 
@@ -26,6 +27,7 @@ function Router() {
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/blog" component={BlogList} />
         <Route path="/blog/:slug" component={BlogDetail} />
+        <Route path="/news" component={News} />
         <Route path="/news/:date" component={NewsDetail} />
         <Route path="/gallery" component={Gallery} />
         <Route component={NotFound} />

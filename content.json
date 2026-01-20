@@ -239,48 +239,117 @@
   "technologies": [
     {
       "id": "1",
-      "name": "MS Office",
-      "icon": "/uploads/excel.png"
+      "name": "Python",
+      "icon": "python",
+      "category": "Development"
     },
     {
       "id": "2",
-      "name": "Wolfram",
-      "icon": "wolfram"
+      "name": "JavaScript",
+      "icon": "javascript",
+      "category": "Development"
     },
     {
       "id": "3",
       "name": "SQL",
-      "icon": "sql"
+      "icon": "sql",
+      "category": "Development"
     },
     {
       "id": "4",
-      "name": "Python",
-      "icon": "python"
+      "name": "NumPy",
+      "icon": "numpy",
+      "category": "Development"
     },
     {
       "id": "5",
-      "name": "JavaScript",
-      "icon": "javascript"
+      "name": "Pandas",
+      "icon": "pandas",
+      "category": "Development"
     },
     {
       "id": "6",
-      "name": "Git",
-      "icon": "git"
+      "name": "Matplotlib",
+      "icon": "/uploads/matplotlib.svg",
+      "category": "Development"
     },
     {
       "id": "7",
-      "name": "NumPy",
-      "icon": "numpy"
+      "name": "Sage 300",
+      "icon": "/uploads/Sage.png",
+      "category": "Data Skills"
     },
     {
       "id": "8",
-      "name": "Pandas",
-      "icon": "pandas"
+      "name": "Microsoft Dynamics 365",
+      "icon": "/uploads/msdynamics.png",
+      "category": "Data Skills"
     },
     {
       "id": "9",
-      "name": "Matplotlib",
-      "icon": "/uploads/matplotlib.svg"
+      "name": "Advanced Excel (Pivot Tables, Vlookup)",
+      "icon": "/uploads/excel.png",
+      "category": "Data Skills"
+    },
+    {
+      "id": "10",
+      "name": "Variance Analysis",
+      "icon": "/uploads/excel.png",
+      "category": "Data Skills"
+    },
+    {
+      "id": "11",
+      "name": "Wolfram Mathematica",
+      "icon": "wolfram",
+      "category": "Data Skills"
+    },
+    {
+      "id": "12",
+      "name": "Flowcharting",
+      "icon": "/uploads/excel.png",
+      "category": "Data Skills"
+    },
+    {
+      "id": "13",
+      "name": "Canva",
+      "icon": "canva",
+      "category": "Data Skills"
+    },
+    {
+      "id": "14",
+      "name": "PowerPoint",
+      "icon": "/uploads/powerpoint.png",
+      "category": "Data Skills"
+    },
+    {
+      "id": "15",
+      "name": "Git",
+      "icon": "git",
+      "category": "Collaboration"
+    },
+    {
+      "id": "16",
+      "name": "GitHub",
+      "icon": "github",
+      "category": "Collaboration"
+    },
+    {
+      "id": "17",
+      "name": "Team Work & Collaboration",
+      "icon": "teamwork",
+      "category": "Soft Skills"
+    },
+    {
+      "id": "18",
+      "name": "Problem Solving",
+      "icon": "problemsolving",
+      "category": "Soft Skills"
+    },
+    {
+      "id": "19",
+      "name": "Cross-Functional Communication",
+      "icon": "communication",
+      "category": "Soft Skills"
     }
   ],
   "posts": [

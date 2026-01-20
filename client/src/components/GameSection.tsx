@@ -1,522 +1,365 @@
-import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Play, RotateCcw } from "lucide-react";
 
-// --- PIXEL ART ASSETS (Bitmaps) ---
-// 1 = Pixel drawn, 0 = Empty
-const SPRITES = {
-  DINO_RUN_1: [
-    [0,0,0,0,0,1,1,1,1,0],
-    [0,0,0,0,1,1,1,1,1,1],
-    [0,0,0,0,1,1,1,1,1,1],
-    [0,0,0,0,1,1,1,1,0,0],
-    [0,0,0,0,1,1,1,1,0,0],
-    [0,0,0,0,1,1,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,1,0,0,1,0,0,0,0],
-    [0,0,1,0,0,1,0,0,0,0],
-  ],
-  DINO_RUN_2: [
-    [0,0,0,0,0,1,1,1,1,0],
-    [0,0,0,0,1,1,1,1,1,1],
-    [0,0,0,0,1,1,1,1,1,1],
-    [0,0,0,0,1,1,1,1,0,0],
-    [0,0,0,0,1,1,1,1,0,0],
-    [0,0,0,0,1,1,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,0,1,0,0,1,0,0],
-    [0,0,0,0,1,0,0,1,0,0],
-  ],
-  CACTUS_SMALL: [
-    [0,0,1,0,0,1,0],
-    [0,1,1,0,1,1,0],
-    [1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1],
-    [0,0,1,1,1,0,0],
-    [0,0,1,1,1,0,0],
-    [0,0,1,1,1,0,0],
-    [0,0,1,1,1,0,0],
-  ],
-  CACTUS_LARGE: [
-    [0,0,0,1,1,0,0,0],
-    [0,1,0,1,1,0,0,0],
-    [1,1,1,1,1,0,0,0],
-    [1,1,1,1,1,0,1,1],
-    [0,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,1,1,1,1,0,0],
-  ],
-  CACTUS_WIDE: [
-    [0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,1],
-    [0,1,1,1,0,0,0,0,1,1,1,0,0,1,1,1,0,0,1,1],
-    [1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
-  ],
-  CACTUS_TALL: [
-    [0,0,1,1,0,0],
-    [0,1,1,1,0,0],
-    [1,1,1,1,0,0],
-    [1,1,1,1,1,1],
-    [0,1,1,1,1,1],
-    [0,1,1,1,1,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-    [0,0,1,1,0,0],
-  ],
-  GRASS: [
-    [0,1,0,0,1,0,1,0],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,0],
-  ]
-};
+// Game constants - tuned to match Chrome Dino
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 200;
+const GROUND_Y = 160;
+const GRAVITY = 0.6;
+const JUMP_VELOCITY = -12;
+const INITIAL_SPEED = 6;
+const MAX_SPEED = 13;
+const ACCELERATION = 0.001;
+
+// Dino dimensions
+const DINO_WIDTH = 44;
+const DINO_HEIGHT = 47;
+const DINO_X = 50;
+
+// Cactus types with proper sizing
+const CACTUS_TYPES = [
+  { w: 17, h: 35, y: GROUND_Y - 35 },   // Small single
+  { w: 34, h: 35, y: GROUND_Y - 35 },   // Small double
+  { w: 51, h: 35, y: GROUND_Y - 35 },   // Small triple
+  { w: 25, h: 50, y: GROUND_Y - 50 },   // Large single
+  { w: 50, h: 50, y: GROUND_Y - 50 },   // Large double
+];
+
+interface Obstacle {
+  x: number;
+  type: typeof CACTUS_TYPES[number];
+}
+
+type GameState = "waiting" | "playing" | "gameover";
 
 export default function GameSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Game Logic State
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameState, setGameState] = useState<GameState>("waiting");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
 
-  // Handle jump from anywhere
-  const handleJump = () => {
-    if (gameOver) {
-      setGameOver(false);
-      setIsPlaying(true);
-      return;
-    }
+  // Game state ref
+  const gameRef = useRef({
+    dino: { y: GROUND_Y - DINO_HEIGHT, vy: 0, jumping: false },
+    obstacles: [] as Obstacle[],
+    speed: INITIAL_SPEED,
+    score: 0,
+    groundX: 0,
+    frameCount: 0,
+    nextObstacleDistance: 0,
+  });
 
-    if (!isPlaying) {
-      setIsPlaying(true);
-    }
-
-    // Trigger jump by dispatching spacebar event
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' }));
-  };
-
+  // Load high score
   useEffect(() => {
-    // Load High Score
-    const saved = localStorage.getItem("pixelRunnerHighScore");
+    const saved = localStorage.getItem("chromeDinoHighScore");
     if (saved) setHighScore(parseInt(saved));
   }, []);
 
+  const resetGame = useCallback(() => {
+    const game = gameRef.current;
+    game.dino = { y: GROUND_Y - DINO_HEIGHT, vy: 0, jumping: false };
+    game.obstacles = [];
+    game.speed = INITIAL_SPEED;
+    game.score = 0;
+    game.groundX = 0;
+    game.frameCount = 0;
+    game.nextObstacleDistance = 300;
+    setScore(0);
+  }, []);
+
+  const jump = useCallback(() => {
+    const game = gameRef.current;
+    if (!game.dino.jumping) {
+      game.dino.vy = JUMP_VELOCITY;
+      game.dino.jumping = true;
+    }
+  }, []);
+
+  const handleInput = useCallback(() => {
+    if (gameState === "waiting") {
+      resetGame();
+      setGameState("playing");
+      jump();
+    } else if (gameState === "gameover") {
+      resetGame();
+      setGameState("playing");
+    } else if (gameState === "playing") {
+      jump();
+    }
+  }, [gameState, resetGame, jump]);
+
+  // Keyboard handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+
+      if (e.code === "Space" || e.code === "ArrowUp") {
+        e.preventDefault();
+        handleInput();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleInput]);
+
+  // Main game loop
   useEffect(() => {
     const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
 
     let animationId: number;
-    let frame = 0;
-    let lastTime = performance.now();
+    const game = gameRef.current;
 
-    // --- CONFIG ---
-    const SCALE = 4; // Size of each "pixel"
-    const GROUND_Y = 160;
+    const gameLoop = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      const fgColor = isDark ? "#e5e5e5" : "#535353";
+      const bgColor = isDark ? "#171717" : "#ffffff";
 
-    // Physics (converted to per-second values)
-    const GRAVITY = 1800; // pixels per second squared
-    const JUMP_FORCE = -600; // pixels per second
-    const BASE_SPEED = 300; // pixels per second (slower base speed)
+      // Clear
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    const state = {
-      gameActive: false,
-      speed: BASE_SPEED,
-      score: 0,
-      theme: { text: '#535353', bg: '#ffffff' }, // Chrome Dino colors
-      player: {
-        x: 40,
-        y: 0,
-        vy: 0,
-        width: 10 * SCALE,
-        height: 10 * SCALE,
-        isGrounded: true,
-        runFrame: 0,
-      },
-      obstacles: [] as Array<{
-        x: number;
-        y: number;
-        type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS';
-        width: number;
-        height: number;
-        passed: boolean;
-      }>
-    };
+      if (gameState === "playing") {
+        // Update dino physics
+        game.dino.vy += GRAVITY;
+        game.dino.y += game.dino.vy;
 
-    // Game only runs when user is playing
-    state.gameActive = isPlaying;
+        // Ground collision
+        if (game.dino.y >= GROUND_Y - DINO_HEIGHT) {
+          game.dino.y = GROUND_Y - DINO_HEIGHT;
+          game.dino.vy = 0;
+          game.dino.jumping = false;
+        }
 
-    // --- HELPER: Draw 2D Binary Arrays ---
-    const drawSprite = (
-      sprite: number[][],
-      x: number,
-      y: number,
-      color: string
-    ) => {
-      ctx.fillStyle = color;
-      sprite.forEach((row, rowIndex) => {
-        row.forEach((pixel, colIndex) => {
-          if (pixel === 1) {
-            ctx.fillRect(
-              x + colIndex * SCALE,
-              y + rowIndex * SCALE,
-              SCALE,
-              SCALE
-            );
-          }
+        // Update speed
+        if (game.speed < MAX_SPEED) {
+          game.speed += ACCELERATION;
+        }
+
+        // Update score
+        game.frameCount++;
+        if (game.frameCount % 6 === 0) {
+          game.score++;
+          setScore(game.score);
+        }
+
+        // Move ground
+        game.groundX -= game.speed;
+        if (game.groundX <= -CANVAS_WIDTH) {
+          game.groundX = 0;
+        }
+
+        // Spawn obstacles
+        game.nextObstacleDistance -= game.speed;
+        if (game.nextObstacleDistance <= 0) {
+          const type = CACTUS_TYPES[Math.floor(Math.random() * CACTUS_TYPES.length)];
+          game.obstacles.push({ x: CANVAS_WIDTH, type });
+          // Random gap between 300-600 pixels, scales with speed
+          game.nextObstacleDistance = 300 + Math.random() * 300;
+        }
+
+        // Update obstacles
+        game.obstacles = game.obstacles.filter((obs) => {
+          obs.x -= game.speed;
+          return obs.x > -100;
         });
-      });
-    };
 
-    const resetGame = () => {
-      state.score = 0;
-      state.speed = BASE_SPEED;
-      state.obstacles = [];
-      state.gameActive = true;
-      state.player.y = GROUND_Y - state.player.height;
-      state.player.vy = 0;
-      frame = 0; // Reset frame counter so obstacles spawn immediately
-      lastTime = performance.now(); // Reset delta time
-      setScore(0);
+        // Collision detection
+        const dinoBox = {
+          x: DINO_X + 5,
+          y: game.dino.y + 5,
+          w: DINO_WIDTH - 10,
+          h: DINO_HEIGHT - 5,
+        };
 
-      // Spawn first obstacle on screen - visible in 1 second
-      const canvas = canvasRef.current;
-      if (canvas) {
-        // At base speed (540 px/sec), spawn at edge of screen
-        state.obstacles.push({
-          x: canvas.width - 50, // Just offscreen on the right
-          y: GROUND_Y - (SPRITES.CACTUS_SMALL.length * SCALE),
-          type: 'SMALL',
-          width: SPRITES.CACTUS_SMALL[0].length * SCALE,
-          height: SPRITES.CACTUS_SMALL.length * SCALE,
-          passed: false
-        });
-      }
-    };
+        for (const obs of game.obstacles) {
+          const obsBox = {
+            x: obs.x + 2,
+            y: obs.type.y + 2,
+            w: obs.type.w - 4,
+            h: obs.type.h - 4,
+          };
 
-    const jump = () => {
-      if (state.player.isGrounded) {
-        state.player.vy = JUMP_FORCE;
-        state.player.isGrounded = false;
-      }
-    };
-
-    // --- MAIN LOOP ---
-    const render = (currentTime: number) => {
-      // Calculate delta time in seconds
-      const deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1); // Cap at 0.1s to prevent huge jumps
-      lastTime = currentTime;
-
-      // 1. Theme Detection - Google Chrome Dino style
-      const isDarkClass = document.documentElement.classList.contains('dark');
-
-      if (isDarkClass) {
-        // Dark mode: White dino on dark background (inverted)
-        state.theme = { text: '#ffffff', bg: '#0a0a0a' };
-      } else {
-        // Light mode: Dark gray dino on white background (original Chrome)
-        state.theme = { text: '#535353', bg: '#ffffff' };
-      }
-
-      // 2. Clear Canvas
-      ctx.fillStyle = state.theme.bg;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      if (!state.gameActive) {
-        // Static render if game over
-        animationId = requestAnimationFrame(render);
-        return;
-      }
-
-      // 3. Update Player Physics (using delta time)
-      state.player.vy += GRAVITY * deltaTime;
-      state.player.y += state.player.vy * deltaTime;
-
-      // Ground Collision
-      const floorY = GROUND_Y - state.player.height;
-      if (state.player.y >= floorY) {
-        state.player.y = floorY;
-        state.player.vy = 0;
-        state.player.isGrounded = true;
-      }
-
-      // No AI logic - user controls only
-
-      // 5. Spawn Obstacles - MORE FREQUENT
-      frame++;
-      // Spawn first obstacle at 15 frames (~0.25 seconds), then every 90-120 frames
-      const isFirstObstacle = state.obstacles.length === 0 && frame >= 15;
-      const currentSpawnRate = Math.max(90, 120 - Math.floor(state.speed * 2));
-
-      if (isFirstObstacle || frame % currentSpawnRate === 0) {
-        // Always spawn (100% chance)
-        if (true) {
-          const types: Array<{ type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS'; sprite: number[][]; weight: number }> = [
-            { type: 'SMALL', sprite: SPRITES.CACTUS_SMALL, weight: 25 },
-            { type: 'LARGE', sprite: SPRITES.CACTUS_LARGE, weight: 20 },
-            { type: 'WIDE', sprite: SPRITES.CACTUS_WIDE, weight: 15 },
-            { type: 'TALL', sprite: SPRITES.CACTUS_TALL, weight: 15 },
-            { type: 'GRASS', sprite: SPRITES.GRASS, weight: 25 },
-          ];
-
-          // Weighted random selection
-          const totalWeight = types.reduce((sum, t) => sum + t.weight, 0);
-          let random = Math.random() * totalWeight;
-          let selectedType = types[0];
-
-          for (const obstacleType of types) {
-            random -= obstacleType.weight;
-            if (random <= 0) {
-              selectedType = obstacleType;
-              break;
+          if (
+            dinoBox.x < obsBox.x + obsBox.w &&
+            dinoBox.x + dinoBox.w > obsBox.x &&
+            dinoBox.y < obsBox.y + obsBox.h &&
+            dinoBox.y + dinoBox.h > obsBox.y
+          ) {
+            setGameState("gameover");
+            if (game.score > highScore) {
+              setHighScore(game.score);
+              localStorage.setItem("chromeDinoHighScore", game.score.toString());
             }
-          }
-
-          state.obstacles.push({
-            x: canvas.width,
-            y: GROUND_Y - (selectedType.sprite.length * SCALE),
-            type: selectedType.type,
-            width: selectedType.sprite[0].length * SCALE,
-            height: selectedType.sprite.length * SCALE,
-            passed: false
-          });
-        }
-      }
-
-      // 6. Update & Draw Obstacles (using delta time)
-      // Clean up off-screen
-      state.obstacles = state.obstacles.filter(obs => obs.x + obs.width > -50);
-
-      state.obstacles.forEach(obs => {
-        obs.x -= state.speed * deltaTime;
-
-        // Draw obstacle based on type
-        let sprite: number[][];
-        switch (obs.type) {
-          case 'LARGE':
-            sprite = SPRITES.CACTUS_LARGE;
             break;
-          case 'WIDE':
-            sprite = SPRITES.CACTUS_WIDE;
-            break;
-          case 'TALL':
-            sprite = SPRITES.CACTUS_TALL;
-            break;
-          case 'GRASS':
-            sprite = SPRITES.GRASS;
-            break;
-          default:
-            sprite = SPRITES.CACTUS_SMALL;
-        }
-        drawSprite(sprite, obs.x, obs.y, state.theme.text);
-
-        // Collision Check
-        const hitboxPadding = 6; // Slightly tighter for more challenge
-        if (
-          state.player.x < obs.x + obs.width - hitboxPadding &&
-          state.player.x + state.player.width > obs.x + hitboxPadding &&
-          state.player.y < obs.y + obs.height - hitboxPadding &&
-          state.player.y + state.player.height > obs.y + hitboxPadding
-        ) {
-          state.gameActive = false;
-          setGameOver(true);
-          if (state.score > highScore) {
-            setHighScore(Math.floor(state.score));
-            localStorage.setItem("pixelRunnerHighScore", Math.floor(state.score).toString());
           }
         }
+      }
 
-        // Score
-        if (!obs.passed && obs.x + obs.width < state.player.x) {
-          obs.passed = true;
-          state.score += 1;
-          setScore(Math.floor(state.score));
+      // Draw ground
+      ctx.fillStyle = fgColor;
+      ctx.fillRect(0, GROUND_Y, CANVAS_WIDTH, 1);
+
+      // Draw ground texture
+      for (let i = 0; i < 3; i++) {
+        const x = game.groundX + i * CANVAS_WIDTH;
+        for (let j = 0; j < 20; j++) {
+          const dotX = x + j * 50 + (i % 2) * 25;
+          if (dotX > -10 && dotX < CANVAS_WIDTH + 10) {
+            ctx.fillRect(dotX, GROUND_Y + 5, 2, 1);
+            ctx.fillRect(dotX + 20, GROUND_Y + 10, 3, 1);
+          }
         }
-      });
-
-      // 7. Draw Player (Animation Cycle)
-      const isRun1 = Math.floor(frame / 8) % 2 === 0;
-      const playerSprite = state.player.isGrounded
-        ? (isRun1 ? SPRITES.DINO_RUN_1 : SPRITES.DINO_RUN_2)
-        : SPRITES.DINO_RUN_1;
-
-      drawSprite(playerSprite, state.player.x, state.player.y, state.theme.text);
-
-      // 8. Draw Ground Line
-      ctx.fillStyle = state.theme.text;
-      ctx.fillRect(0, GROUND_Y, canvas.width, 2);
-
-      // Speed up progressively - SLOWER ACCELERATION (using delta time)
-      if (state.gameActive) {
-        state.speed += 150 * deltaTime; // 150 pixels/sec² acceleration
-        // Cap at reasonable max
-        if (state.speed > 600) state.speed = 600; // 600 pixels/sec max
       }
 
-      animationId = requestAnimationFrame(render);
-    };
+      // Draw dino (simple rectangle representation)
+      ctx.fillStyle = fgColor;
+      const dinoY = game.dino.y;
 
-    // --- INIT ---
-    // Handle High DPI
-    const handleResize = () => {
-      const rect = container.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = 200 * dpr; // Fixed height
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `200px`;
-      ctx.scale(dpr, dpr);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
+      // Body
+      ctx.fillRect(DINO_X + 10, dinoY + 5, 25, 30);
+      // Head
+      ctx.fillRect(DINO_X + 20, dinoY, 24, 20);
+      // Eye (inverted)
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(DINO_X + 36, dinoY + 5, 4, 4);
+      ctx.fillStyle = fgColor;
+      // Legs (animated)
+      if (gameState === "playing" && !game.dino.jumping) {
+        if (Math.floor(game.frameCount / 5) % 2 === 0) {
+          ctx.fillRect(DINO_X + 15, dinoY + 35, 6, 12);
+          ctx.fillRect(DINO_X + 25, dinoY + 38, 6, 9);
+        } else {
+          ctx.fillRect(DINO_X + 15, dinoY + 38, 6, 9);
+          ctx.fillRect(DINO_X + 25, dinoY + 35, 6, 12);
+        }
+      } else {
+        ctx.fillRect(DINO_X + 15, dinoY + 35, 6, 12);
+        ctx.fillRect(DINO_X + 25, dinoY + 35, 6, 12);
+      }
+      // Tail
+      ctx.fillRect(DINO_X, dinoY + 15, 15, 10);
+      ctx.fillRect(DINO_X - 5, dinoY + 10, 10, 8);
 
-    // Spawn initial obstacle visible on screen (random type)
-    state.player.y = GROUND_Y - state.player.height;
-    const types: Array<{ type: 'SMALL' | 'LARGE' | 'WIDE' | 'TALL' | 'GRASS'; sprite: number[][] }> = [
-      { type: 'SMALL', sprite: SPRITES.CACTUS_SMALL },
-      { type: 'LARGE', sprite: SPRITES.CACTUS_LARGE },
-      { type: 'WIDE', sprite: SPRITES.CACTUS_WIDE },
-      { type: 'TALL', sprite: SPRITES.CACTUS_TALL },
-      { type: 'GRASS', sprite: SPRITES.GRASS },
-    ];
-    const randomType = types[Math.floor(Math.random() * types.length)];
+      // Draw obstacles (cacti)
+      ctx.fillStyle = fgColor;
+      for (const obs of game.obstacles) {
+        // Simple cactus shape
+        const cx = obs.x;
+        const cy = obs.type.y;
+        const cw = obs.type.w;
+        const ch = obs.type.h;
 
-    state.obstacles.push({
-      x: canvas.width * 0.6,  // 60% across screen - visible but gives space
-      y: GROUND_Y - (randomType.sprite.length * SCALE),
-      type: randomType.type,
-      width: randomType.sprite[0].length * SCALE,
-      height: randomType.sprite.length * SCALE,
-      passed: false
-    });
+        // Main stem
+        ctx.fillRect(cx + cw / 2 - 4, cy, 8, ch);
 
-    // Start the render loop with initial timestamp
-    animationId = requestAnimationFrame(render);
-
-    // --- INPUT HANDLERS ---
-    const handleInput = (e?: KeyboardEvent) => {
-      e?.preventDefault();
-
-      if (gameOver) {
-        setGameOver(false);
-        setIsPlaying(true);
-        resetGame();
-        return;
+        // Arms for larger cacti
+        if (ch > 40) {
+          ctx.fillRect(cx, cy + 10, cw / 2 - 4, 6);
+          ctx.fillRect(cx, cy + 10, 6, 20);
+          ctx.fillRect(cx + cw / 2 + 4, cy + 20, cw / 2 - 4, 6);
+          ctx.fillRect(cx + cw - 6, cy + 15, 6, 15);
+        } else if (cw > 20) {
+          // Multiple small cacti
+          for (let i = 0; i < Math.floor(cw / 17); i++) {
+            ctx.fillRect(cx + i * 17 + 5, cy, 8, ch);
+            ctx.fillRect(cx + i * 17, cy + 8, 6, 4);
+            ctx.fillRect(cx + i * 17 + 12, cy + 12, 6, 4);
+          }
+        } else {
+          // Single small cactus with arms
+          ctx.fillRect(cx, cy + 8, 6, 4);
+          ctx.fillRect(cx, cy + 8, 4, 12);
+          ctx.fillRect(cx + cw - 6, cy + 12, 6, 4);
+          ctx.fillRect(cx + cw - 4, cy + 12, 4, 10);
+        }
       }
 
-      if (!isPlaying) {
-        setIsPlaying(true);
-        return;
+      // Draw score
+      ctx.fillStyle = fgColor;
+      ctx.font = "bold 16px monospace";
+      ctx.textAlign = "right";
+
+      if (highScore > 0) {
+        ctx.fillText(`HI ${highScore.toString().padStart(5, "0")}`, CANVAS_WIDTH - 100, 25);
+      }
+      ctx.fillText(game.score.toString().padStart(5, "0"), CANVAS_WIDTH - 20, 25);
+
+      // Game over text
+      if (gameState === "gameover") {
+        ctx.textAlign = "center";
+        ctx.font = "bold 24px monospace";
+        ctx.fillText("GAME OVER", CANVAS_WIDTH / 2, 80);
+        ctx.font = "14px monospace";
+        ctx.fillText("Press Space to restart", CANVAS_WIDTH / 2, 105);
       }
 
-      jump();
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger game if user is typing in an input/textarea
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-        return;
+      // Waiting state
+      if (gameState === "waiting") {
+        ctx.textAlign = "center";
+        ctx.font = "14px monospace";
+        ctx.fillText("Press Space to start", CANVAS_WIDTH / 2, 100);
       }
 
-      if (e.code === "Space" || e.code === "ArrowUp") handleInput(e);
+      animationId = requestAnimationFrame(gameLoop);
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener('keydown', handleKeyDown);
-      cancelAnimationFrame(animationId);
-    };
-  }, [isPlaying, gameOver, highScore]);
+    animationId = requestAnimationFrame(gameLoop);
+    return () => cancelAnimationFrame(animationId);
+  }, [gameState, highScore]);
 
   return (
-    <section className="py-8">
-      <div className="max-w-4xl mx-auto px-6">
+    <section className="mt-10 sm:mt-14" data-section="game">
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="mb-3 font-medium text-gray-800 dark:text-neutral-200">
+          Take a Break
+        </h2>
 
-        {/* Minimal Header */}
-        <div className="mb-4 flex items-center gap-3">
-          <p className="text-sm text-foreground/80">Want to play? Press spacebar or tap to jump</p>
-          {!isPlaying && !gameOver && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setIsPlaying(true)}
-              className="gap-2"
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-sm text-gray-600 dark:text-neutral-400">
+            Press spacebar or tap to jump
+          </p>
+          {gameState === "waiting" && (
+            <button
+              onClick={handleInput}
+              className="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
             >
-              <Play className="h-3 w-3" />
+              <Play className="size-3" />
               Start
-            </Button>
+            </button>
+          )}
+          {gameState === "gameover" && (
+            <button
+              onClick={handleInput}
+              className="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
+            >
+              <RotateCcw className="size-3" />
+              Retry
+            </button>
           )}
         </div>
 
-        {/* Game Container */}
         <div
-          ref={containerRef}
-          onClick={handleJump}
-          className="relative w-full overflow-hidden rounded-lg border border-border bg-background cursor-pointer"
-          style={{ height: '200px' }}
+          onClick={handleInput}
+          className="relative w-full overflow-hidden rounded-lg border border-gray-200 bg-white cursor-pointer dark:border-neutral-700 dark:bg-neutral-900"
         >
-          <canvas ref={canvasRef} className="block h-full w-full" />
-
-          {/* Overlay: Game Over */}
-          {gameOver && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/95">
-              <h3 className="mb-2 text-2xl font-bold text-foreground">Game Over</h3>
-              <p className="mb-4 text-muted-foreground">Score: {score}</p>
-              {score === highScore && score > 0 && (
-                <p className="mb-4 text-sm text-primary">New High Score!</p>
-              )}
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setGameOver(false);
-                  setIsPlaying(true);
-                }}
-                size="sm"
-              >
-                Try Again
-              </Button>
-            </div>
-          )}
-
-          {/* Score HUD - Minimal */}
-          {isPlaying && !gameOver && (
-            <div className="absolute right-4 top-4 text-lg font-mono text-foreground/30 select-none">
-              {score.toString().padStart(5, '0')}
-            </div>
-          )}
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_WIDTH}
+            height={CANVAS_HEIGHT}
+            className="block w-full"
+            style={{ imageRendering: "pixelated" }}
+          />
         </div>
 
-        {/* High Score - Minimal */}
         {highScore > 0 && (
-          <div className="mt-2 text-right text-xs text-muted-foreground font-mono">
-            HI {highScore.toString().padStart(5, '0')}
+          <div className="mt-2 text-right text-xs text-gray-400 dark:text-neutral-600 font-mono">
+            HI {highScore.toString().padStart(5, "0")}
           </div>
         )}
-
       </div>
     </section>
   );

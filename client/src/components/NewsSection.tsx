@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CalendarDays, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, RefreshCw, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 interface NewsItem {
   ticker: string;
@@ -53,7 +50,6 @@ export function NewsSection() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      // Just reload news data from the server (fast)
       await loadNews();
     } catch (e) {
       console.error("Refresh failed:", e);
@@ -72,7 +68,7 @@ export function NewsSection() {
 
   const scroll = (direction: "left" | "right") => {
     if (sliderRef.current) {
-      const cardWidth = 320;
+      const cardWidth = 280;
       const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
       sliderRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
@@ -95,103 +91,93 @@ export function NewsSection() {
     }
   }, [news]);
 
-  // Hide if loading, error, not visible, or no news
   if (loading || error || !isVisible || news.length === 0) {
     return null;
   }
 
-  // Show up to 7 days of news
   const displayedNews = news.slice(0, 7);
 
   return (
-    <section className="py-16">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
-              TECH NEWS
-            </span>
-            <p className="text-foreground/80">
-              Follow the news while you're here
-            </p>
-          </div>
-          <Button
+    <section className="mt-10 sm:mt-14" data-section="news">
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-medium text-gray-800 dark:text-neutral-200">
+            Tech News
+          </h2>
+          <button
             onClick={handleRefresh}
             disabled={refreshing}
-            size="sm"
-            variant="outline"
-            className="gap-2"
+            className="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 focus:outline-none disabled:opacity-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
           >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className={`size-3 ${refreshing ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">
               {refreshing ? "Syncing..." : "Sync"}
             </span>
-          </Button>
+          </button>
         </div>
 
-        {/* Slider container with space for arrows */}
-        <div className="flex items-center gap-2">
+        {/* Slider container */}
+        <div className="relative">
           {/* Left scroll button */}
-          <Button
-            variant="outline"
-            size="icon"
-            className={`flex-shrink-0 bg-background shadow-sm hidden sm:flex ${!canScrollLeft ? "invisible" : ""}`}
+          <button
+            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 size-8 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-neutral-800 hidden sm:flex ${!canScrollLeft ? "invisible" : ""}`}
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
           >
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
+            <ChevronLeft className="size-4 text-gray-600 dark:text-neutral-400" />
+          </button>
 
           {/* Scrollable news cards */}
           <div
             ref={sliderRef}
-            className="flex gap-3 overflow-x-auto scrollbar-hide scroll-smooth pb-2 flex-1"
+            className="flex gap-3 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
             style={{ scrollSnapType: "x mandatory" }}
           >
             {displayedNews.map((day) => (
               <Link key={day.date} href={`/news/${day.date}`}>
-                <a
-                  className="block group flex-shrink-0"
+                <div
+                  className="group flex-shrink-0 w-[220px] sm:w-[260px] p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-pointer dark:border-neutral-700 dark:hover:border-neutral-600"
                   style={{ scrollSnapAlign: "start" }}
                 >
-                  <Card className="w-[240px] sm:w-[260px] h-full transition-all hover:border-primary/50 hover:shadow-md bg-card">
-                    <CardHeader className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <CalendarDays className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        <Badge variant="outline" className="text-xs">
-                          {new Date(day.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </Badge>
-                      </div>
-                      <CardTitle className="text-base group-hover:text-primary transition-colors line-clamp-2">
-                        {new Date(day.date).toLocaleDateString("en-US", {
-                          weekday: "long",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-2 text-sm mt-1">
-                        {day.content.briefing}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                </a>
+                  <div className="flex items-center justify-between mb-3">
+                    <CalendarDays className="size-4 text-gray-400 group-hover:text-gray-600 dark:text-neutral-500 dark:group-hover:text-neutral-400" />
+                    <span className="text-xs text-gray-500 dark:text-neutral-500">
+                      {new Date(day.date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-neutral-200 mb-2">
+                    {new Date(day.date).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </h3>
+
+                  <p className="text-xs text-gray-600 dark:text-neutral-400 line-clamp-3 mb-3">
+                    {day.content.briefing}
+                  </p>
+
+                  <span className="inline-flex items-center gap-x-1 text-xs text-gray-500 group-hover:text-gray-800 dark:text-neutral-500 dark:group-hover:text-neutral-200">
+                    Read more
+                    <ArrowRight className="size-3" />
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
 
           {/* Right scroll button */}
-          <Button
-            variant="outline"
-            size="icon"
-            className={`flex-shrink-0 bg-background shadow-sm hidden sm:flex ${!canScrollRight ? "invisible" : ""}`}
+          <button
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 size-8 flex items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:hover:bg-neutral-800 hidden sm:flex ${!canScrollRight ? "invisible" : ""}`}
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
           >
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+            <ChevronRight className="size-4 text-gray-600 dark:text-neutral-400" />
+          </button>
         </div>
 
         {/* Scroll indicators for mobile */}
@@ -199,7 +185,7 @@ export function NewsSection() {
           {displayedNews.map((day) => (
             <div
               key={day.date}
-              className="w-2 h-2 rounded-full bg-muted-foreground/30"
+              className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-neutral-600"
             />
           ))}
         </div>

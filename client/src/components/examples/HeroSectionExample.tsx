@@ -10,7 +10,10 @@ export default function HeroSectionExample() {
       email="hello@portfolio.com"
       avatarUrl={avatarUrl}
       avatarFallback="BS"
-      isVerified={true}
+      socialLinks={{
+        github: "https://github.com/BasilSuhail",
+        linkedin: "https://linkedin.com/in/basilsuhail",
+      }}
     />
   );
 }

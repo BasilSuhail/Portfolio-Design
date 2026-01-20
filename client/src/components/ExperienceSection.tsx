@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Circle, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export interface Experience {
   id: string;
@@ -25,11 +25,54 @@ interface ExperienceSectionProps {
 
 export default function ExperienceSection({
   experiences,
-  intro = "Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces. Here's a brief overview.",
+  intro,
 }: ExperienceSectionProps) {
-  // Track expanded state for each experience (all collapsed by default)
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [wasExpandedByNav, setWasExpandedByNav] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
+  // Listen for nav click to expand all items
+  useEffect(() => {
+    const handleNavScroll = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail === "experience") {
+        // Expand all items when nav link is clicked
+        const allIds = new Set(experiences.map((exp) => exp.id));
+        setExpandedItems(allIds);
+        setWasExpandedByNav(true);
+      }
+    };
+
+    window.addEventListener("nav-scroll", handleNavScroll);
+    return () => window.removeEventListener("nav-scroll", handleNavScroll);
+  }, [experiences]);
+
+  // Collapse when scrolling away (only if was expanded by nav)
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting && wasExpandedByNav) {
+            // Collapse all when scrolling away
+            setExpandedItems(new Set());
+            setWasExpandedByNav(false);
+          }
+        });
+      },
+      {
+        threshold: 0,
+        rootMargin: "-100px 0px -100px 0px",
+      }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [wasExpandedByNav]);
+
+  // Toggle individual item
   const toggleExpand = (id: string) => {
     setExpandedItems((prev) => {
       const newSet = new Set(prev);
@@ -43,104 +86,106 @@ export default function ExperienceSection({
   };
 
   return (
-    <section className="py-16 pb-4" data-testid="section-experience">
-      <div className="max-w-2xl mx-auto px-6">
-        <div className="mb-8">
-          <span className="text-xs uppercase tracking-widest text-muted-foreground mb-4 block">
-            EXPERIENCE
-          </span>
-          <p className="text-foreground/80 leading-relaxed">{intro}</p>
-        </div>
+    <section ref={sectionRef} className="mt-10 sm:mt-14" data-testid="section-experience" data-section="experience">
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="mb-5 font-medium text-gray-800 dark:text-neutral-200">
+          Work experience
+        </h2>
 
-        <div className="space-y-4">
-          {experiences.map((exp) => {
+        {intro && (
+          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-5">
+            {intro}
+          </p>
+        )}
+
+        {/* Timeline - Preline Style */}
+        <div>
+          {experiences.map((exp, index) => {
             const isExpanded = expandedItems.has(exp.id);
+            const isLast = index === experiences.length - 1;
+
             return (
-              <div
-                key={exp.id}
-                className="group relative"
-                data-testid={`experience-item-${exp.id}`}
-              >
-                {/* Clickable Header Area */}
-                <div
-                  onClick={() => toggleExpand(exp.id)}
-                  className="cursor-pointer hover:bg-muted/30 -mx-3 px-3 py-3 rounded-lg transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    {/* Left: Date (smaller, subtle) */}
-                    <div className="text-xs text-muted-foreground font-mono shrink-0 mt-0.5">
-                      {exp.dateRange}
-                    </div>
-
-                    {/* Right: Chevron */}
-                    <div className="shrink-0">
-                      {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground transition-transform" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Role and Company */}
-                  <div className="flex flex-col gap-1">
-                    <h3 className="font-semibold text-lg text-foreground">{exp.role}</h3>
-                    <div className="flex items-center gap-2">
-                      {exp.companyLogoUrl ? (
-                        <img
-                          src={exp.companyLogoUrl}
-                          alt={`${exp.company} logo`}
-                          className="w-5 h-5 object-contain rounded"
-                        />
-                      ) : (
-                        <Circle
-                          className="w-4 h-4"
-                          style={{ fill: exp.companyColor || "#666", color: exp.companyColor || "#666" }}
-                        />
-                      )}
-                      <span className="text-sm text-muted-foreground font-medium">{exp.company}</span>
-                    </div>
+              <div key={exp.id} className="group relative flex gap-x-5" data-testid={`experience-item-${exp.id}`}>
+                {/* Timeline Line & Icon */}
+                <div className={`relative ${isLast ? "" : "after:absolute after:top-8 after:bottom-2 after:start-3 after:w-px after:-translate-x-[0.5px] after:bg-gray-200 dark:after:bg-neutral-700"}`}>
+                  <div className="relative z-10 size-6 flex justify-center items-center">
+                    {exp.companyLogoUrl ? (
+                      <img
+                        src={exp.companyLogoUrl}
+                        alt={`${exp.company} logo`}
+                        className="shrink-0 size-6 rounded-full object-contain bg-white dark:bg-neutral-800 ring-1 ring-gray-200 dark:ring-neutral-700"
+                      />
+                    ) : (
+                      <div
+                        className="size-6 rounded-full"
+                        style={{ backgroundColor: exp.companyColor || '#6b7280' }}
+                      />
+                    )}
                   </div>
                 </div>
 
-                {/* Expanded Content - Full Width */}
-                {isExpanded && (
-                  <div className="mt-3 px-3 pb-2">
-                    <p className="text-foreground/90 text-sm leading-relaxed whitespace-pre-line mb-4">
-                      {exp.description}
+                {/* Content */}
+                <div className="grow pb-8">
+                  <button
+                    onClick={() => toggleExpand(exp.id)}
+                    className="w-full text-left group/item"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-gray-800 dark:text-neutral-200">
+                        {exp.role}
+                      </h3>
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4 text-gray-400 group-hover/item:text-gray-600 dark:group-hover/item:text-neutral-300" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-gray-400 group-hover/item:text-gray-600 dark:group-hover/item:text-neutral-300" />
+                      )}
+                    </div>
+
+                    <p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
+                      {exp.company}
                     </p>
 
-                    {exp.customSections && exp.customSections.map((section, sectionIdx) => (
-                      <div key={sectionIdx} className="mt-3">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                          {section.label}
-                        </p>
-                        <ul className="space-y-1.5">
-                          {section.items.map((item, itemIdx) => (
-                            <li key={itemIdx} className="text-sm flex items-start">
-                              <span className="text-muted-foreground mr-2">•</span>
-                              {item.url ? (
-                                <a
-                                  href={item.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-foreground/80 hover:text-primary transition-colors underline"
-                                >
-                                  {item.name}
-                                </a>
-                              ) : (
-                                <span className="text-foreground/80">{item.name}</span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                    <p className="mt-1 text-xs text-gray-400 dark:text-neutral-600">
+                      {exp.dateRange}
+                    </p>
+                  </button>
 
-                {/* Bottom Border */}
-                {!isExpanded && <div className="h-px bg-border mt-3" />}
+                  {/* Expanded Content */}
+                  {isExpanded && (
+                    <div className="mt-3">
+                      <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">
+                        {exp.description}
+                      </p>
+
+                      {exp.customSections && exp.customSections.map((section, sectionIdx) => (
+                        <div key={sectionIdx} className="mt-3">
+                          <p className="text-xs font-semibold text-gray-500 dark:text-neutral-500 uppercase tracking-wide mb-2">
+                            {section.label}
+                          </p>
+                          <ul className="space-y-1">
+                            {section.items.map((item, itemIdx) => (
+                              <li key={itemIdx} className="text-sm text-gray-600 dark:text-neutral-400 flex items-start">
+                                <span className="text-gray-400 mr-2">•</span>
+                                {item.url ? (
+                                  <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline hover:text-gray-800 dark:hover:text-neutral-200"
+                                  >
+                                    {item.name}
+                                  </a>
+                                ) : (
+                                  <span>{item.name}</span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}

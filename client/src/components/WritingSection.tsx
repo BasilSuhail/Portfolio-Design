@@ -1,4 +1,4 @@
-import { Clock, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 
@@ -37,7 +37,6 @@ export default function WritingSection({ intro }: WritingSectionProps) {
     try {
       const response = await fetch("/api/blogs");
       const data = await response.json();
-      // Get only blogs marked as featured, or show latest 5 if none featured
       const featured = data.filter((b: Blog) => b.featuredInWriting);
       setBlogs(featured.length > 0 ? featured : data.slice(0, 5));
     } catch (error) {
@@ -47,68 +46,59 @@ export default function WritingSection({ intro }: WritingSectionProps) {
     }
   };
 
-  const calculateReadTime = (excerpt?: string) => {
-    // Estimate 200 words per minute, assume average blog is 800-1000 words
-    return excerpt ? Math.ceil(excerpt.split(" ").length / 40) : 5;
-  };
-
-  if (isLoading) {
-    return null; // Don't show section while loading
-  }
-
-  if (blogs.length === 0) {
-    return null; // Don't show section if no blogs
+  if (isLoading || blogs.length === 0) {
+    return null;
   }
 
   return (
-    <section className="py-16" data-testid="section-writing">
-      <div className="max-w-2xl mx-auto px-6">
-        <div className="mb-8">
-          <span className="text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
-            WRITING
-          </span>
-          {intro && (
-            <p className="text-foreground/80">
-              {intro}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-1">
-          {blogs.map((blog) => (
-            <Link
-              key={blog.id}
-              href={`/blog/${blog.slug}`}
-            >
-              <a
-                className="grid grid-cols-[100px_1fr_auto] gap-4 items-center py-3 px-3 -mx-3 rounded-lg hover-elevate active-elevate-2 transition-colors cursor-pointer"
-                data-testid={`link-post-${blog.id}`}
-              >
-                <span className="text-sm text-muted-foreground font-mono">
-                  {new Date(blog.customDate || blog.createdAt).toLocaleDateString("en-US", {
-                    month: "2-digit",
-                    day: "2-digit",
-                    year: "numeric",
-                  })}
-                </span>
-                <span className="font-medium truncate">{blog.title}</span>
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Clock className="w-4 h-4" />
-                  <span>{calculateReadTime(blog.excerpt)} m</span>
-                </div>
-              </a>
-            </Link>
-          ))}
-        </div>
-
-        <div className="mt-6 text-center">
+    <section className="mt-10 sm:mt-14" data-testid="section-writing" data-section="writing">
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-medium text-gray-800 dark:text-neutral-200">
+            Writing
+          </h2>
           <Link href="/blog">
-            <a className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
-              View all posts
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            <span className="inline-flex items-center gap-x-1 text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 cursor-pointer">
+              View all
+              <ArrowRight className="size-3" />
+            </span>
           </Link>
         </div>
+
+        {intro && (
+          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-5">
+            {intro}
+          </p>
+        )}
+
+        {/* Articles List - Preline Style */}
+        <ul className="space-y-3">
+          {blogs.map((blog) => (
+            <li key={blog.id}>
+              <Link href={`/blog/${blog.slug}`}>
+                <div
+                  className="group flex justify-between items-center gap-x-3 py-2 px-3 -mx-3 rounded-lg hover:bg-gray-100 cursor-pointer dark:hover:bg-neutral-800 transition-colors"
+                  data-testid={`link-post-${blog.id}`}
+                >
+                  <div className="grow">
+                    <p className="text-sm text-gray-800 dark:text-neutral-200 group-hover:text-gray-600 dark:group-hover:text-neutral-400">
+                      {blog.title}
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <span className="text-xs text-gray-400 dark:text-neutral-600">
+                      {new Date(blog.customDate || blog.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
