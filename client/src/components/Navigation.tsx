@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link } from "wouter";
+import { LiquidGlassButton } from "./ui/liquid-glass";
 
 interface NavigationProps {
   name?: string;
@@ -31,10 +32,17 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
   return (
     <header className="sticky top-0 inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
       <nav
-        className={`mt-4 relative max-w-3xl w-full bg-white/80 backdrop-blur-md border border-gray-200 rounded-[24px] mx-2 flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 sm:mx-auto transition-shadow duration-300 dark:bg-neutral-900/80 dark:border-neutral-700 ${
-          isScrolled ? "shadow-lg" : ""
-        }`}
+        className={`mt-4 relative max-w-3xl w-full rounded-[24px] mx-2 flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 sm:mx-auto transition-all duration-300 overflow-hidden
+          bg-black/[0.03] border border-black/20 backdrop-blur-md
+          shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.08),0_3px_8px_rgba(0,0,0,0.1)]
+          dark:bg-white/[0.025] dark:border-white/50
+          dark:shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)]
+          ${isScrolled ? "shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_12px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_12px_rgba(0,0,0,0.25),0_4px_12px_rgba(0,0,0,0.2)]" : ""}
+        `}
       >
+        {/* Liquid glass gradient overlays */}
+        <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-black/10 via-transparent to-transparent opacity-70 pointer-events-none dark:from-white/60" />
+        <div className="absolute inset-0 rounded-[24px] bg-gradient-to-tl from-black/5 via-transparent to-transparent opacity-50 pointer-events-none dark:from-white/30" />
         <div className="flex items-center">
           <Link href="/">
             <span
@@ -47,16 +55,14 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
         </div>
 
         <div className="flex items-center gap-1 md:order-4 md:ms-4">
-          {/* Metal Contact Button */}
-          <button
+          {/* Liquid Glass Contact Button */}
+          <LiquidGlassButton
             onClick={() => scrollToSection("contact")}
-            className="relative inline-flex transform-gpu rounded-full p-[1px] will-change-transform bg-gradient-to-b from-[#000] to-[#A0A0A0] dark:from-[#333] dark:to-[#666] hover:shadow-md transition-shadow"
+            size="sm"
+            className="rounded-full"
           >
-            <span className="absolute inset-[1px] transform-gpu rounded-full will-change-transform bg-gradient-to-b from-[#FAFAFA] via-[#3E3E3E] to-[#E5E5E5]" />
-            <span className="relative z-10 m-[2px] inline-flex transform-gpu cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#B9B9B9] to-[#969696] text-white px-4 py-1.5 text-sm font-medium">
-              Contact
-            </span>
-          </button>
+            Contact
+          </LiquidGlassButton>
 
           <div className="md:hidden">
             <button

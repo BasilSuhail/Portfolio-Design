@@ -4,6 +4,7 @@ import { CalendarDays, RefreshCw, ArrowLeft, ArrowRight } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/use-content";
+import { LiquidGlassButton } from "@/components/ui/liquid-glass";
 
 interface NewsItem {
   ticker: string;
@@ -100,14 +101,14 @@ export default function News() {
                 Daily briefings on AI, fintech, semiconductors, and cybersecurity
               </p>
             </div>
-            <button
+            <LiquidGlassButton
               onClick={handleRefresh}
               disabled={refreshing}
-              className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 focus:outline-none disabled:opacity-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
+              size="sm"
             >
               <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
               {refreshing ? "Syncing..." : "Sync"}
-            </button>
+            </LiquidGlassButton>
           </div>
 
           {/* Error State */}

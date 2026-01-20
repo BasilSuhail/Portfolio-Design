@@ -130,7 +130,10 @@ export default function Home() {
         })}
 
         {/* Contact Section */}
-        <ContactSection email={content.profile.email} />
+        <ContactSection
+          email={content.profile.email}
+          calendarLinks={content.contactSettings?.calendarLinks}
+        />
       </main>
 
       {/* Footer */}

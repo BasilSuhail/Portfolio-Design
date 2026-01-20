@@ -1,6 +1,7 @@
 import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import { Moon, Sun, Contrast } from "lucide-react";
 import { useEffect, useState } from "react";
+import { LiquidGlassButton } from "./ui/liquid-glass";
 
 interface FooterProps {
   name?: string;
@@ -90,44 +91,28 @@ export function Footer({ name = "Portfolio", socialLinks }: FooterProps) {
               {/* Divider */}
               <div className="w-px h-4 bg-gray-300 dark:bg-neutral-600" />
 
-              {/* Theme Toggle Buttons - Small Metal Style */}
-              <button
+              {/* Theme Toggle Buttons - Liquid Glass Style */}
+              <LiquidGlassButton
                 onClick={toggleTheme}
-                className="relative inline-flex transform-gpu rounded-full p-[1px] will-change-transform bg-gradient-to-b from-[#000] to-[#A0A0A0] dark:from-[#333] dark:to-[#666] hover:shadow-md transition-shadow"
+                size="icon"
+                className="rounded-full size-8"
                 aria-label="Toggle theme"
               >
-                <span className="absolute inset-[1px] transform-gpu rounded-full will-change-transform bg-gradient-to-b from-[#FAFAFA] via-[#3E3E3E] to-[#E5E5E5]" />
-                <span className="relative z-10 m-[2px] inline-flex size-7 transform-gpu cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#B9B9B9] to-[#969696] text-white">
-                  {theme === "light" ? (
-                    <Moon className="size-3.5" />
-                  ) : (
-                    <Sun className="size-3.5" />
-                  )}
-                </span>
-              </button>
+                {theme === "light" ? (
+                  <Moon className="size-3.5" />
+                ) : (
+                  <Sun className="size-3.5" />
+                )}
+              </LiquidGlassButton>
 
-              <button
+              <LiquidGlassButton
                 onClick={toggleHighContrast}
-                className={`relative inline-flex transform-gpu rounded-full p-[1px] will-change-transform hover:shadow-md transition-shadow ${
-                  highContrast
-                    ? "bg-gradient-to-b from-[#000] to-[#333]"
-                    : "bg-gradient-to-b from-[#000] to-[#A0A0A0] dark:from-[#333] dark:to-[#666]"
-                }`}
+                size="icon"
+                className={`rounded-full size-8 ${highContrast ? "bg-white/40" : ""}`}
                 aria-label="Toggle high contrast"
               >
-                <span className={`absolute inset-[1px] transform-gpu rounded-full will-change-transform ${
-                  highContrast
-                    ? "bg-gradient-to-b from-[#333] via-[#111] to-[#222]"
-                    : "bg-gradient-to-b from-[#FAFAFA] via-[#3E3E3E] to-[#E5E5E5]"
-                }`} />
-                <span className={`relative z-10 m-[2px] inline-flex size-7 transform-gpu cursor-pointer items-center justify-center overflow-hidden rounded-full ${
-                  highContrast
-                    ? "bg-gradient-to-b from-[#222] to-[#000] text-white"
-                    : "bg-gradient-to-b from-[#B9B9B9] to-[#969696] text-white"
-                }`}>
-                  <Contrast className="size-3.5" />
-                </span>
-              </button>
+                <Contrast className="size-3.5" />
+              </LiquidGlassButton>
             </div>
           </div>
         </div>

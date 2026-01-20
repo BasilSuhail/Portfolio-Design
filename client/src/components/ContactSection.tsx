@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { Mail, Send } from "lucide-react";
+import { Send, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { MetalButton } from "@/components/ui/metal-button";
+import { LiquidGlassButton } from "@/components/ui/liquid-glass";
 
 interface ContactSectionProps {
   email?: string;
+  calendarLinks?: {
+    link15min?: string;
+    link30min?: string;
+  };
 }
 
-export function ContactSection({ email }: ContactSectionProps) {
+export function ContactSection({ email, calendarLinks }: ContactSectionProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -161,15 +165,46 @@ export function ContactSection({ email }: ContactSectionProps) {
             />
           </div>
 
-          <div className="mt-4">
-            <MetalButton
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <LiquidGlassButton
               type="submit"
               disabled={isSubmitting}
-              variant="default"
             >
-              <Send className="size-4 mr-2" />
+              <Send className="size-4" />
               {isSubmitting ? "Sending..." : "Send Message"}
-            </MetalButton>
+            </LiquidGlassButton>
+
+            {(calendarLinks?.link15min || calendarLinks?.link30min) && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 dark:text-neutral-400 hidden sm:inline">
+                  Book a quick meeting:
+                </span>
+                <span className="text-xs text-gray-500 dark:text-neutral-400 sm:hidden">
+                  <Calendar className="size-3.5 inline mr-1" />
+                  Book:
+                </span>
+                {calendarLinks?.link15min && (
+                  <LiquidGlassButton
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => window.open(calendarLinks.link15min, '_blank')}
+                  >
+                    15 min
+                  </LiquidGlassButton>
+                )}
+                {calendarLinks?.link30min && (
+                  <LiquidGlassButton
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => window.open(calendarLinks.link30min, '_blank')}
+                  >
+                    30 min
+                  </LiquidGlassButton>
+                )}
+              </div>
+            )}
           </div>
         </form>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Play, RotateCcw } from "lucide-react";
+import { LiquidGlassButton } from "./ui/liquid-glass";
 
 // Canvas dimensions - scaled for portfolio display
 const CANVAS_WIDTH = 800;
@@ -873,22 +874,22 @@ export default function GameSection() {
             Arrow keys or WASD to drive
           </p>
           {gameState === "waiting" && (
-            <button
+            <LiquidGlassButton
               onClick={handleInput}
-              className="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
+              size="sm"
             >
               <Play className="size-3" />
               Start
-            </button>
+            </LiquidGlassButton>
           )}
           {gameState === "playing" && (
-            <button
+            <LiquidGlassButton
               onClick={() => setGameState("waiting")}
-              className="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
+              size="sm"
             >
               <RotateCcw className="size-3" />
               Reset
-            </button>
+            </LiquidGlassButton>
           )}
         </div>
 
