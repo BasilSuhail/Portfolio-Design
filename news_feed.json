@@ -1,5 +1,171 @@
 [
   {
+    "date": "2026-01-20",
+    "content": {
+      "briefing": "Tech news briefing for Tuesday, January 20, 2026. Check the articles below for today's key developments across AI infrastructure, fintech, enterprise automation, semiconductors, and cybersecurity.",
+      "ai_compute_infra": [
+        {
+          "ticker": "NVDA",
+          "headline": "Bondholders Are Suing Oracle for Its AI Losses. Is There a Case to Keep Buying ORCL Stock and Waiting for AI to Pay Off?",
+          "url": "https://www.barchart.com/story/news/37110829/bondholders-are-suing-oracle-for-its-ai-losses-is-there-a-case-to-keep-buying-orcl-stock-and-waiting-for-ai-to-pay-off",
+          "source": "Barchart.com"
+        },
+        {
+          "ticker": "NVDA",
+          "headline": "Gamers love AI in game dev — they just don’t know it yet, says Razer’s CEO",
+          "url": "https://www.theverge.com/podcast/863361/razer-ceo-min-liang-tan-ces-2026-ai-gaming-project-ava-interview",
+          "source": "The Verge"
+        },
+        {
+          "ticker": "AMD",
+          "headline": "As Trump Hits AMD MI325X Chips with a 25% Tariff, How Should You Play AMD Stock?",
+          "url": "https://www.barchart.com/story/news/37110962/as-trump-hits-amd-mi325x-chips-with-a-25-tariff-how-should-you-play-amd-stock",
+          "source": "Barchart.com"
+        },
+        {
+          "ticker": "AMD",
+          "headline": "Silicon as a Platform Market Projected to Reach US$ 103.26 Billion by 2035, Supported by Investment in Photonic Technologies Says Astute Analytica",
+          "url": "https://www.globenewswire.com/news-release/2026/01/19/3220993/0/en/Silicon-as-a-Platform-Market-Projected-to-Reach-US-103-26-Billion-by-2035-Supported-by-Investment-in-Photonic-Technologies-Says-Astute-Analytica.html",
+          "source": "GlobeNewswire"
+        },
+        {
+          "ticker": "GOOGL",
+          "headline": "Strong Growth in Google Services Lifted Alphabet (GOOG)",
+          "url": "https://finance.yahoo.com/news/strong-growth-google-services-lifted-141426067.html",
+          "source": "Yahoo Entertainment"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "SQ",
+          "headline": "537,877 Americans Warned After Hackers Hit Payments Firm – Names, Transaction Histories and More at Risk",
+          "url": "https://dailyhodl.com/2026/01/18/537877-americans-warned-after-hackers-hit-payments-firm-names-transaction-histories-and-more-at-risk/",
+          "source": "The Daily Hodl"
+        },
+        {
+          "ticker": "SQ",
+          "headline": "Amazon Loses Fight To Block Saks Bankruptcy Financing, Says Report: Company Warns Of 'Drastic Remedies'",
+          "url": "https://finance.yahoo.com/news/amazon-loses-fight-block-saks-235124308.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "Polygon Open Money Stack: What It Is and How It Enables Global Stablecoin Payments",
+          "url": "https://www.c-sharpcorner.com/article/polygon-open-money-stack-what-it-is-and-how-it-enables-global-stablecoin-paymen/",
+          "source": "C-sharpcorner.com"
+        },
+        {
+          "ticker": "PYPL",
+          "headline": "North America B2C & B2B E-Commerce, Payments & AI Market Analysis Report 2026: AI Deployment Accelerates Across Commerce and Finance Despite Governance Gaps",
+          "url": "https://www.globenewswire.com/news-release/2026/01/19/3220764/28124/en/North-America-B2C-B2B-E-Commerce-Payments-AI-Market-Analysis-Report-2026-AI-Deployment-Accelerates-Across-Commerce-and-Finance-Despite-Governance-Gaps.html",
+          "source": "GlobeNewswire"
+        },
+        {
+          "ticker": "INTU",
+          "headline": "Maxey earns All-Star starter status for 1st time",
+          "url": "https://www.nbcsportsphiladelphia.com/nba/philadelphia-76ers/tyrese-maxey-nba-all-star-starters-2026/708268/?partner=yahoo",
+          "source": "Nbcsportsphiladelphia.com"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "PATH",
+          "headline": "uipath 2.5.9",
+          "url": "https://pypi.org/project/uipath/2.5.9/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "PATH",
+          "headline": "uipath-runtime 0.5.1",
+          "url": "https://pypi.org/project/uipath-runtime/0.5.1/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "⚡ Weekly Recap: Fortinet Exploits, RedLine Clipjack, NTLM Crack, Copilot Attack & More",
+          "url": "https://thehackernews.com/2026/01/weekly-recap-fortinet-exploits-redline.html",
+          "source": "Internet"
+        },
+        {
+          "ticker": "NOW",
+          "headline": "2026 data predictions: Scaling AI agents via contextual intelligence",
+          "url": "https://siliconangle.com/2026/01/18/2026-data-predictions-scaling-ai-agents-via-contextual-intelligence/",
+          "source": "SiliconANGLE News"
+        },
+        {
+          "ticker": "CRM",
+          "headline": "The GTM Crisis: Solving Capital Inefficiency, The Black Box Barrier, and Execution Latency - Vertical Agentic Marketing Agency",
+          "url": "https://matrixmarketinggroup.com/gtm-crisis-capital-inefficiency-execution-latency/",
+          "source": "Matrixmarketinggroup.com"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "TSM",
+          "headline": "Silicon as a Platform Market Projected to Reach US$ 103.26 Billion by 2035, Supported by Investment in Photonic Technologies Says Astute Analytica",
+          "url": "https://www.globenewswire.com/news-release/2026/01/19/3220993/0/en/Silicon-as-a-Platform-Market-Projected-to-Reach-US-103-26-Billion-by-2035-Supported-by-Investment-in-Photonic-Technologies-Says-Astute-Analytica.html",
+          "source": "GlobeNewswire"
+        },
+        {
+          "ticker": "TSM",
+          "headline": "Samsung To Start Test Operations Of EUV Equipment At Its Taylor Plant In March And Has 7,000 Employees Deployed On-Site To Speed Up Its 2nm GAA Goals",
+          "url": "https://wccftech.com/samsung-commencing-euv-test-operations-in-march-with-7000-employees-deployed/",
+          "source": "Wccftech"
+        },
+        {
+          "ticker": "ASML",
+          "headline": "3 Unstoppable Monopolies You Should be Buying Now",
+          "url": "https://247wallst.com/investing/2026/01/15/3-unstoppable-monopolies-you-should-be-buying-now/",
+          "source": "24/7 Wall St."
+        },
+        {
+          "ticker": "ASML",
+          "headline": "4 semiconductor stocks giving the AI boom 'more legs'",
+          "url": "https://finance.yahoo.com/news/4-semiconductor-stocks-giving-the-ai-boom-more-legs-175135867.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "MU",
+          "headline": "Memory Bottlenecks Cloud NVIDIA’s (NVDA) Latest China Export Approval",
+          "url": "https://finance.yahoo.com/news/memory-bottlenecks-cloud-nvidia-nvda-115923745.html",
+          "source": "Yahoo Entertainment"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "CRWD",
+          "headline": "BTIG Sees Strategic Value in CrowdStrike’s (CRWD) SGNL, Seraphic Acquisitions",
+          "url": "https://finance.yahoo.com/news/btig-sees-strategic-value-crowdstrike-215505035.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "CRWD",
+          "headline": "Crowdstrike’s Planned Acquisition of Seraphic Highlights Need to Address Endpoint Risks",
+          "url": "https://www.forrester.com/blogs/crowdstrikes-planned-acquisition-of-seraphic-highlights-need-to-address-endpoint-risks/",
+          "source": "Forrester.com"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "Analysts Remain Cautious on Palo Alto (PANW) Amid Growth Challenges",
+          "url": "https://finance.yahoo.com/news/analysts-remain-cautious-palo-alto-062810398.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "PANW",
+          "headline": "The Saturday Spread: Using the Markov Property to Find Mispriced Opportunities (PANW, NTES, DKS)",
+          "url": "https://www.barchart.com/story/news/37097558/the-saturday-spread-using-the-markov-property-to-find-mispriced-opportunities-panw-ntes-dks",
+          "source": "Barchart.com"
+        },
+        {
+          "ticker": "ZS",
+          "headline": "Zscaler Appoints Dr. Swamy Kocherlakota as Executive Vice President of Agentic AI Security Engineering",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217350/0/en/Zscaler-Appoints-Dr-Swamy-Kocherlakota-as-Executive-Vice-President-of-Agentic-AI-Security-Engineering.html",
+          "source": "GlobeNewswire"
+        }
+      ]
+    }
+  },
+  {
     "date": "2026-01-16",
     "content": {
       "briefing": "TSMC's strong quarterly outlook sent Nasdaq futures higher today, reinforcing the sustained demand for advanced semiconductor manufacturing as AI workloads continue scaling. Mizuho raised its price target on NVIDIA, reflecting confidence that Blackwell-based systems will drive another leg of datacenter GPU growth. The semiconductor supply chain remains the backbone of the AI infrastructure buildout, and TSMC's commentary suggests no near-term slowdown in orders from hyperscalers.\n\nCrowdStrike's CEO flagged AI agents as an emerging security concern, noting their unpredictable behavior patterns create new attack surfaces. The company is addressing this through acquisitions, snapping up cybersecurity startups to bolster its AI-native threat detection capabilities. Meanwhile, AI-driven shopping is emerging as a major 2026 theme for payment networks, with analysts pointing to Visa and Mastercard as beneficiaries of increased transaction volumes from AI-powered commerce platforms.",
@@ -859,142 +1025,6 @@
           "headline": "Tenable One Exposure Management Platform Adds AI Risk Scoring",
           "url": "https://www.tenable.com/press-releases",
           "source": "Tenable Press"
-        }
-      ]
-    }
-  },
-  {
-    "date": "2026-01-09",
-    "content": {
-      "briefing": "The supply and demand imbalance for AI chips persists. Grace Hopper shipments to hyperscalers, MI350X benchmarks showing performance gains, and ASML's record backlog all point to the same conclusion: AI chip demand isn't slowing. Anyone betting on a peak AI narrative is early at best. Custom silicon is gaining ground as Google's Axion now powers 20% of GCP workloads and AWS Graviton4 expands to all major regions. Hyperscalers are serious about reducing NVIDIA dependence.\n\nTSMC's Japan fab starting volume production adds geographic diversification to their manufacturing base, giving Sony and other Japanese customers better access while marginally decreasing Taiwan concentration risk. PayPal's PYUSD stablecoin hitting $2B market cap faster than expected suggests enterprise use cases are materializing, with cross-border payments and B2B settlement as the killer apps. Palo Alto's Unit 42 threat report shows attack sophistication increasing, meaning the cybersecurity spending cycle is far from over. Intel Foundry winning a major automotive client could be the first crack in TSMC's dominance for that segment.",
-      "ai_compute_infra": [
-        {
-          "ticker": "NVDA",
-          "headline": "NVIDIA Grace Hopper Superchips Ship to Major Cloud Providers",
-          "url": "https://nvidianews.nvidia.com/",
-          "source": "NVIDIA Newsroom"
-        },
-        {
-          "ticker": "AMD",
-          "headline": "AMD Instinct MI350X Benchmarks Show 30% Performance Gain",
-          "url": "https://www.amd.com/en/products/accelerators/instinct.html",
-          "source": "AMD"
-        },
-        {
-          "ticker": "GOOGL",
-          "headline": "Google Axion ARM Processors Power 20% of GCP Workloads",
-          "url": "https://cloud.google.com/blog/",
-          "source": "Google Cloud Blog"
-        },
-        {
-          "ticker": "AMZN",
-          "headline": "AWS Graviton4 Instances Available in All Major Regions",
-          "url": "https://aws.amazon.com/blogs/aws/",
-          "source": "AWS Blog"
-        }
-      ],
-      "fintech_regtech": [
-        {
-          "ticker": "SQ",
-          "headline": "Block Afterpay Integration Deepens with AI Insights",
-          "url": "https://block.xyz/news",
-          "source": "Block Newsroom"
-        },
-        {
-          "ticker": "PYPL",
-          "headline": "PayPal Stablecoin PYUSD Reaches $2B Market Cap",
-          "url": "https://newsroom.paypal-corp.com/",
-          "source": "PayPal Newsroom"
-        },
-        {
-          "ticker": "V",
-          "headline": "Visa+ P2P Interoperability Expands to 15 Payment Apps",
-          "url": "https://usa.visa.com/about-visa/newsroom.html",
-          "source": "Visa Newsroom"
-        },
-        {
-          "ticker": "FIS",
-          "headline": "FIS Modern Banking Platform Onboards 50 New Banks",
-          "url": "https://www.fisglobal.com/about-us/media-room",
-          "source": "FIS Media Room"
-        }
-      ],
-      "rpa_enterprise_ai": [
-        {
-          "ticker": "CRM",
-          "headline": "Salesforce Data Cloud Gets Real-Time AI Predictions",
-          "url": "https://www.salesforce.com/news/",
-          "source": "Salesforce News"
-        },
-        {
-          "ticker": "NOW",
-          "headline": "ServiceNow Workflow Studio AI Builder Reaches GA",
-          "url": "https://www.servicenow.com/company/media/press-room.html",
-          "source": "ServiceNow Press"
-        },
-        {
-          "ticker": "PATH",
-          "headline": "UiPath Test Suite AI Achieves 95% Code Coverage Detection",
-          "url": "https://www.uipath.com/newsroom",
-          "source": "UiPath Newsroom"
-        },
-        {
-          "ticker": "WDAY",
-          "headline": "Workday Peakon Employee Voice AI Insights Launch",
-          "url": "https://newsroom.workday.com/",
-          "source": "Workday Newsroom"
-        }
-      ],
-      "semi_supply_chain": [
-        {
-          "ticker": "ASML",
-          "headline": "ASML Reports Record Backlog for 2026 Delivery",
-          "url": "https://www.asml.com/en/news",
-          "source": "ASML News"
-        },
-        {
-          "ticker": "TSM",
-          "headline": "TSMC Japan Fab Begins Volume Production",
-          "url": "https://pr.tsmc.com/english/news/",
-          "source": "TSMC Press"
-        },
-        {
-          "ticker": "INTC",
-          "headline": "Intel Foundry Services Wins Major Automotive Client",
-          "url": "https://www.intel.com/content/www/us/en/newsroom.html",
-          "source": "Intel Newsroom"
-        },
-        {
-          "ticker": "AMAT",
-          "headline": "Applied Materials Centura Platform Enables Gate-All-Around",
-          "url": "https://www.appliedmaterials.com/company/news",
-          "source": "Applied Materials"
-        }
-      ],
-      "cybersecurity": [
-        {
-          "ticker": "PANW",
-          "headline": "Palo Alto Networks Unit 42 Releases Threat Report",
-          "url": "https://www.paloaltonetworks.com/company/press",
-          "source": "Palo Alto Networks"
-        },
-        {
-          "ticker": "CRWD",
-          "headline": "CrowdStrike Counter Adversary Operations Tracks 250 Groups",
-          "url": "https://www.crowdstrike.com/blog/",
-          "source": "CrowdStrike Blog"
-        },
-        {
-          "ticker": "ZS",
-          "headline": "Zscaler Digital Experience Monitoring Adds AI Analysis",
-          "url": "https://www.zscaler.com/press",
-          "source": "Zscaler Press"
-        },
-        {
-          "ticker": "FTNT",
-          "headline": "Fortinet Secure Access Service Edge Reaches 100K Customers",
-          "url": "https://www.fortinet.com/corporate/about-us/newsroom",
-          "source": "Fortinet Newsroom"
         }
       ]
     }

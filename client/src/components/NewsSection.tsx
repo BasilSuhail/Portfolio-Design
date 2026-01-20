@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { CalendarDays, RefreshCw, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { secureFetch } from "@/lib/csrf";
 
 interface NewsItem {
   ticker: string;
@@ -50,6 +51,14 @@ export function NewsSection() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
+      // Trigger news scrape on backend
+      const res = await secureFetch("/api/news/refresh", {
+        method: "POST",
+      });
+      
+      if (!res.ok) throw new Error("Failed to refresh news data");
+      
+      // Reload news after successful scrape
       await loadNews();
     } catch (e) {
       console.error("Refresh failed:", e);
