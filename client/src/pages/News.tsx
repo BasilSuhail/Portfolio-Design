@@ -50,9 +50,17 @@ export default function News() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
+      // Call the refresh API to trigger the news scraper
+      const refreshRes = await fetch("/api/news/refresh", { method: "POST" });
+      if (!refreshRes.ok) {
+        const errorData = await refreshRes.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to sync news");
+      }
+      // After refresh completes, reload the news data
       await loadNews();
     } catch (e) {
       console.error("Refresh failed:", e);
+      setError(true);
     } finally {
       setRefreshing(false);
     }

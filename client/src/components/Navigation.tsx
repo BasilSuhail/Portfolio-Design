@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { LiquidGlassButton } from "./ui/liquid-glass";
 
 interface NavigationProps {
@@ -10,6 +10,7 @@ interface NavigationProps {
 export function Navigation({ name = "Portfolio" }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,12 +20,38 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Listen for scroll requests after navigation (from hash)
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && location === "/") {
+      const sectionId = hash.replace("#", "");
+      // Small delay to ensure page is rendered
+      setTimeout(() => {
+        const element = document.querySelector(`[data-section="${sectionId}"]`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          window.dispatchEvent(new CustomEvent("nav-scroll", { detail: sectionId }));
+        }
+        // Clear the hash after scrolling
+        window.history.replaceState(null, "", "/");
+      }, 100);
+    }
+  }, [location]);
+
   const scrollToSection = (id: string) => {
-    const element = document.querySelector(`[data-section="${id}"]`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      // Dispatch custom event to notify section to expand
-      window.dispatchEvent(new CustomEvent("nav-scroll", { detail: id }));
+    // Check if we're on the home page
+    if (location !== "/") {
+      // Navigate to home with hash, the useEffect above will handle scrolling
+      setLocation(`/#${id}`);
+      // Also set the actual browser hash for the useEffect to pick up
+      window.location.hash = id;
+    } else {
+      // Already on home page, just scroll
+      const element = document.querySelector(`[data-section="${id}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        window.dispatchEvent(new CustomEvent("nav-scroll", { detail: id }));
+      }
     }
     setIsOpen(false);
   };
@@ -87,12 +114,14 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
           } overflow-hidden transition-all duration-300 basis-full grow md:block`}
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-2 md:gap-3 mt-3 md:mt-0 py-2 md:py-0 md:ps-7">
-            <button
-              onClick={() => scrollToSection("projects")}
-              className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200"
-            >
-              Work
-            </button>
+            <Link href="/gallery">
+              <span
+                className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200 cursor-pointer block"
+                onClick={() => setIsOpen(false)}
+              >
+                Gallery
+              </span>
+            </Link>
             <button
               onClick={() => scrollToSection("experience")}
               className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200"

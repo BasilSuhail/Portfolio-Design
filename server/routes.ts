@@ -6,13 +6,10 @@ import multer from "multer";
 import convert from "heic-convert";
 import { Resend } from "resend";
 import * as blogService from "./blogService";
+import * as newsService from "./newsService";
 import { body, validationResult } from "express-validator";
 import sanitizeHtml from "sanitize-html";
 import { doubleCsrfProtection } from "./index";
-import { exec } from "child_process";
-import { promisify } from "util";
-
-const execPromise = promisify(exec);
 
 // Sanitize HTML content - allows safe tags, strips scripts
 function sanitizeHTML(dirty: string): string {
@@ -457,15 +454,19 @@ export async function registerRoutes(
     }
   });
 
-  // Refresh news feed
-  app.post("/api/news/refresh", doubleCsrfProtection, async (_req: Request, res: Response) => {
+  // Refresh news feed - syncs missing days from the last 8 days
+  app.post("/api/news/refresh", async (_req: Request, res: Response) => {
     try {
-      // Run the news scraper script
-      await execPromise("node scrape-news.js");
-      res.json({ success: true, message: "News refreshed successfully" });
-    } catch (error) {
+      console.log("Starting news sync...");
+      const result = await newsService.refreshNewsFeed();
+      console.log("News sync completed:", result);
+      res.json(result);
+    } catch (error: any) {
       console.error("Failed to refresh news:", error);
-      res.status(500).json({ message: "Failed to refresh news" });
+      res.status(500).json({
+        success: false,
+        message: error.message || "Failed to refresh news"
+      });
     }
   });
 

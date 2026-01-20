@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { LiquidGlassButton } from "@/components/ui/liquid-glass";
+import { useContent } from "@/hooks/use-content";
 
 interface NewsItem {
   ticker: string;
@@ -30,6 +32,14 @@ export default function NewsDetail() {
   const [, params] = useRoute("/news/:date");
   const [newsDay, setNewsDay] = useState<NewsDay | null>(null);
   const [loading, setLoading] = useState(true);
+  const { data: content } = useContent();
+
+  // Extract social links from content
+  const socialLinks = {
+    github: content?.socialLinks?.find((l: any) => l.platform === 'github')?.url,
+    linkedin: content?.socialLinks?.find((l: any) => l.platform === 'linkedin')?.url,
+    twitter: content?.socialLinks?.find((l: any) => l.platform === 'twitter')?.url,
+  };
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -50,43 +60,6 @@ export default function NewsDetail() {
     fetchNews();
   }, [params?.date]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-20">
-          <div className="text-center space-y-4">
-            <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-muted-foreground animate-pulse">Loading news...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!newsDay) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="fixed top-6 right-6 z-50">
-          <ThemeToggle />
-        </div>
-        <div className="max-w-4xl mx-auto px-6 py-20">
-          <div className="text-center space-y-4">
-            <h2 className="text-2xl font-bold text-foreground">News Not Found</h2>
-            <p className="text-muted-foreground">
-              This news briefing does not exist or has been removed.
-            </p>
-            <Link href="/">
-              <Button variant="ghost" className="mt-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const categories = [
     { key: "ai_compute_infra", title: "AI Compute & Infra" },
     { key: "fintech_regtech", title: "FinTech & RegTech" },
@@ -95,10 +68,49 @@ export default function NewsDetail() {
     { key: "cybersecurity", title: "Cybersecurity" },
   ];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-neutral-900">
+        <Navigation name={content?.profile?.name || "Portfolio"} />
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-gray-400 rounded-full dark:text-neutral-500" role="status" aria-label="loading">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <Footer name={content?.profile?.name} socialLinks={socialLinks} />
+      </div>
+    );
+  }
+
+  if (!newsDay) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-neutral-900">
+        <Navigation name={content?.profile?.name || "Portfolio"} />
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-neutral-200">News Not Found</h2>
+            <p className="text-gray-500 dark:text-neutral-400">
+              This news briefing does not exist or has been removed.
+            </p>
+            <Link href="/news">
+              <LiquidGlassButton className="mt-4">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to News
+              </LiquidGlassButton>
+            </Link>
+          </div>
+        </div>
+        <Footer name={content?.profile?.name} socialLinks={socialLinks} />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white dark:bg-neutral-900">
       <Helmet>
-        <title>Tech Briefing: {newsDay.date} | Your Portfolio</title>
+        <title>Tech Briefing: {newsDay.date} | {content?.profile?.name || "Portfolio"}</title>
         <meta
           name="description"
           content={newsDay.content.briefing.substring(0, 160)}
@@ -112,21 +124,22 @@ export default function NewsDetail() {
         <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
       </Helmet>
 
-      <div className="fixed top-6 right-6 z-50">
-        <ThemeToggle />
-      </div>
+      <Navigation name={content?.profile?.name || "Portfolio"} />
 
-      <div className="border-b bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <Link href="/">
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-tight">
-            Tech Briefing:{" "}
-            <time dateTime={newsDay.date} className="text-primary">
+      <main className="pt-10 pb-8">
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-8">
+            <Link href="/news">
+              <span className="inline-flex items-center gap-x-1 text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 cursor-pointer mb-2">
+                <ArrowLeft className="size-3" />
+                Back to News
+              </span>
+            </Link>
+            <h1 className="text-2xl font-semibold text-gray-800 dark:text-neutral-200">
+              Tech Briefing
+            </h1>
+            <time dateTime={newsDay.date} className="text-sm text-gray-600 dark:text-neutral-400">
               {new Date(newsDay.date).toLocaleDateString("en-US", {
                 weekday: "long",
                 year: "numeric",
@@ -134,80 +147,82 @@ export default function NewsDetail() {
                 day: "numeric",
               })}
             </time>
-          </h1>
-          <div className="flex flex-wrap gap-2 mt-4">
-            {categories.map(
-              (cat) =>
-                newsDay.content[cat.key as keyof typeof newsDay.content] &&
-                (
-                  newsDay.content[cat.key as keyof typeof newsDay.content] as NewsItem[]
-                ).length > 0 && (
-                  <Badge key={cat.key} variant="secondary">
-                    {cat.title}
-                  </Badge>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {categories.map(
+                (cat) =>
+                  newsDay.content[cat.key as keyof typeof newsDay.content] &&
+                  (
+                    newsDay.content[cat.key as keyof typeof newsDay.content] as NewsItem[]
+                  ).length > 0 && (
+                    <Badge key={cat.key} variant="secondary" className="text-xs">
+                      {cat.title}
+                    </Badge>
+                  )
+              )}
+            </div>
+          </div>
+
+          {/* Summary Section */}
+          <section className="mb-8">
+            <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-3">
+              Summary
+            </h2>
+            <div className="text-sm leading-relaxed text-gray-600 dark:text-neutral-400 bg-gray-50 dark:bg-neutral-800/50 p-4 rounded-lg border border-gray-200 dark:border-neutral-700 whitespace-pre-line">
+              {newsDay.content.briefing}
+            </div>
+          </section>
+
+          {/* Category Sections */}
+          <div className="space-y-8">
+            {categories.map((cat) => {
+              const items = newsDay.content[
+                cat.key as keyof typeof newsDay.content
+              ] as NewsItem[] | undefined;
+              return (
+                items &&
+                items.length > 0 && (
+                  <section key={cat.key}>
+                    <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 border-b border-gray-200 dark:border-neutral-700 pb-2 mb-4">
+                      {cat.title}
+                    </h2>
+                    <div className="grid gap-3">
+                      {items.map((item, idx) => (
+                        <a
+                          key={idx}
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block group"
+                        >
+                          <Card className="p-4 transition-all hover:shadow-sm border border-gray-200 dark:border-neutral-700 hover:border-gray-300 dark:hover:border-neutral-600 bg-white dark:bg-neutral-800/30">
+                            <div className="flex justify-between items-start gap-3 mb-2">
+                              <h3 className="font-medium text-sm leading-tight text-gray-800 dark:text-neutral-200 group-hover:text-gray-600 dark:group-hover:text-neutral-300 transition-colors">
+                                {item.headline}
+                              </h3>
+                              <ExternalLink className="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-neutral-500">
+                              <Badge
+                                variant="outline"
+                                className="font-mono text-xs h-5 px-1.5 rounded-sm"
+                              >
+                                {item.ticker}
+                              </Badge>
+                              <span>{item.source}</span>
+                            </div>
+                          </Card>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
                 )
-            )}
+              );
+            })}
           </div>
         </div>
-      </div>
+      </main>
 
-      <article className="max-w-4xl mx-auto px-6 py-12 space-y-12">
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
-            Summary
-          </h2>
-          <div className="text-lg leading-relaxed text-foreground bg-muted/30 p-6 rounded-xl border border-border whitespace-pre-line">
-            {newsDay.content.briefing}
-          </div>
-        </section>
-
-        <div className="space-y-12">
-          {categories.map((cat) => {
-            const items = newsDay.content[
-              cat.key as keyof typeof newsDay.content
-            ] as NewsItem[] | undefined;
-            return (
-              items &&
-              items.length > 0 && (
-                <section key={cat.key} className="space-y-6">
-                  <h2 className="text-2xl font-bold text-foreground border-b border-border pb-2">
-                    {cat.title}
-                  </h2>
-                  <div className="grid gap-4">
-                    {items.map((item, idx) => (
-                      <a
-                        key={idx}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block group"
-                      >
-                        <Card className="p-4 transition-all hover:shadow-md hover:border-primary/50 bg-card">
-                          <div className="flex justify-between items-start gap-3 mb-2">
-                            <h3 className="font-semibold text-lg leading-tight text-foreground group-hover:text-primary transition-colors">
-                              {item.headline}
-                            </h3>
-                            <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
-                          </div>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <Badge
-                              variant="outline"
-                              className="font-mono text-xs h-5 px-1.5 rounded-sm"
-                            >
-                              {item.ticker}
-                            </Badge>
-                            <span>{item.source}</span>
-                          </div>
-                        </Card>
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              )
-            );
-          })}
-        </div>
-      </article>
+      <Footer name={content?.profile?.name} socialLinks={socialLinks} />
     </div>
   );
 }

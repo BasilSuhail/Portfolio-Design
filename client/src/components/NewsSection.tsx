@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { CalendarDays, RefreshCw, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { secureFetch } from "@/lib/csrf";
+import { useToast } from "@/hooks/use-toast";
 
 interface NewsItem {
   ticker: string;
@@ -23,6 +24,7 @@ interface NewsDay {
 }
 
 export function NewsSection() {
+  const { toast } = useToast();
   const [news, setNews] = useState<NewsDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,18 +52,37 @@ export function NewsSection() {
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    toast({
+      title: "Syncing news...",
+      description: "Fetching the latest updates. This may take a moment.",
+    });
+
     try {
       // Trigger news scrape on backend
-      const res = await secureFetch("/api/news/refresh", {
+      // Using standard fetch since we disabled CSRF for this specific endpoint to ensure reliability
+      const res = await fetch("/api/news/refresh", {
         method: "POST",
       });
       
-      if (!res.ok) throw new Error("Failed to refresh news data");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to refresh news data");
+      }
       
       // Reload news after successful scrape
       await loadNews();
-    } catch (e) {
+      
+      toast({
+        title: "News synced!",
+        description: "Latest headlines have been loaded.",
+      });
+    } catch (e: any) {
       console.error("Refresh failed:", e);
+      toast({
+        title: "Sync failed",
+        description: e.message || "Could not update news feed. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setRefreshing(false);
     }

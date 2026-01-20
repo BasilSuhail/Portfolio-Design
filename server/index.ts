@@ -25,8 +25,29 @@ declare module "http" {
 
 // Security middleware - helmet adds various HTTP headers
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable CSP for now (can enable later with proper config)
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      connectSrc: ["'self'", "https://formspree.io", "https://www.google-analytics.com", "https://generativelanguage.googleapis.com", "https://newsapi.org"],
+      frameSrc: ["'self'", "https://cal.com"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'", "https://formspree.io"],
+      frameAncestors: ["'self'"],
+      upgradeInsecureRequests: [],
+    },
+  },
   crossOriginEmbedderPolicy: false,
+  // Enable HSTS with preload for production
+  strictTransportSecurity: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true,
+  },
 }));
 
 // Cookie parser for CSRF tokens

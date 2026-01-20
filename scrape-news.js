@@ -75,7 +75,18 @@ const CATEGORY_NAMES = {
   cybersecurity: 'Cybersecurity'
 };
 
-async function fetchNewsForStock(stock) {
+// Get the last N days as date strings (YYYY-MM-DD)
+function getLastNDays(n) {
+  const dates = [];
+  for (let i = 0; i < n; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    dates.push(date.toISOString().split('T')[0]);
+  }
+  return dates;
+}
+
+async function fetchNewsForStock(stock, fromDate, toDate) {
   if (!NEWS_API_KEY) {
     console.warn('NEWS_API_KEY not set. Using placeholder data.');
     return [];
@@ -85,7 +96,7 @@ async function fetchNewsForStock(stock) {
 
   try {
     const encodedQuery = encodeURIComponent(query);
-    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&pageSize=5&apiKey=${NEWS_API_KEY}`;
+    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=5&apiKey=${NEWS_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
 
@@ -106,10 +117,9 @@ async function fetchNewsForStock(stock) {
   }
 }
 
-async function generateDailyNews() {
-  const today = new Date().toISOString().split('T')[0];
+async function generateNewsForDate(targetDate) {
   const newsDay = {
-    date: today,
+    date: targetDate,
     content: {
       briefing: '',
       ai_compute_infra: [],
@@ -120,18 +130,22 @@ async function generateDailyNews() {
     }
   };
 
-  console.log(`Fetching news for ${today}...`);
+  console.log(`Fetching news for ${targetDate}...`);
+
+  // For NewsAPI, we need to set the date range for that specific day
+  const fromDate = targetDate;
+  const toDate = targetDate;
 
   // Fetch news for each category
   for (const [category, stocks] of Object.entries(CATEGORIES)) {
-    console.log(`Fetching ${CATEGORY_NAMES[category]}...`);
+    console.log(`  Fetching ${CATEGORY_NAMES[category]}...`);
 
     for (const stock of stocks) {
-      const articles = await fetchNewsForStock(stock);
+      const articles = await fetchNewsForStock(stock, fromDate, toDate);
       newsDay.content[category].push(...articles.slice(0, 2)); // Max 2 per ticker
 
-      // Rate limiting - wait 1 second between requests
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Rate limiting - wait 200ms between requests
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     // Limit to 5 articles per category
@@ -139,16 +153,16 @@ async function generateDailyNews() {
   }
 
   // Generate AI briefing summary using Gemini
-  console.log('Generating AI briefing with Gemini...');
-  newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content);
+  console.log(`  Generating AI briefing with Gemini...`);
+  newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content, targetDate);
 
   return newsDay;
 }
 
-async function generateBriefingWithGemini(content) {
+async function generateBriefingWithGemini(content, targetDate) {
   if (!GEMINI_API_KEY) {
     console.warn('GEMINI_API_KEY not set. Using fallback briefing.');
-    return generateFallbackBriefing();
+    return generateFallbackBriefing(targetDate);
   }
 
   // Collect all headlines for the prompt
@@ -170,16 +184,21 @@ async function generateBriefingWithGemini(content) {
     allHeadlines.push('Cybersecurity:', ...content.cybersecurity.map(a => `- ${a.ticker}: ${a.headline}`));
   }
 
+  // If no headlines were found, return a fallback
+  if (allHeadlines.length === 0) {
+    return generateFallbackBriefing(targetDate);
+  }
+
   const prompt = `You are a senior tech and finance analyst writing a daily briefing for investors tracking AI infrastructure, semiconductors, fintech, enterprise software, and cybersecurity stocks.
 
-Based on today's headlines below, write a 2-paragraph summary (around 150-200 words total) that:
+Based on the headlines from ${targetDate} below, write a 2-paragraph summary (around 150-200 words total) that:
 1. Sounds like an experienced analyst, not generic AI text
 2. Connects the dots between stories and explains what they mean for the sector
 3. Highlights the most important developments and their implications
 4. Uses specific details from the headlines (company names, numbers, products)
 5. Avoids buzzwords and generic phrases like "exciting developments" or "stay tuned"
 
-Today's Headlines:
+Headlines from ${targetDate}:
 ${allHeadlines.join('\n')}
 
 Write two paragraphs of analysis. First paragraph should cover the biggest themes. Second paragraph should highlight secondary developments and what to watch. Do not use bullet points, markdown formatting, or headers. Just write natural flowing prose.`;
@@ -207,20 +226,20 @@ Write two paragraphs of analysis. First paragraph should cover the biggest theme
 
     if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
       const briefing = data.candidates[0].content.parts[0].text.trim();
-      console.log('Generated AI briefing successfully');
+      console.log(`  Generated AI briefing successfully`);
       return briefing;
     } else {
       console.error('Unexpected Gemini response:', JSON.stringify(data, null, 2));
-      return generateFallbackBriefing();
+      return generateFallbackBriefing(targetDate);
     }
   } catch (error) {
     console.error('Failed to generate briefing with Gemini:', error.message);
-    return generateFallbackBriefing();
+    return generateFallbackBriefing(targetDate);
   }
 }
 
-function generateFallbackBriefing() {
-  const date = new Date().toLocaleDateString('en-US', {
+function generateFallbackBriefing(targetDate) {
+  const date = new Date(targetDate).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -231,6 +250,7 @@ function generateFallbackBriefing() {
 
 async function updateNewsFeed() {
   const newsFeedPath = path.join(__dirname, 'news_feed.json');
+  const DAYS_TO_KEEP = 8;
 
   // Read existing news feed
   let newsFeed = [];
@@ -239,27 +259,59 @@ async function updateNewsFeed() {
     newsFeed = JSON.parse(content);
   }
 
-  // Generate today's news
-  const todayNews = await generateDailyNews();
+  // Get the last 8 days
+  const last8Days = getLastNDays(DAYS_TO_KEEP);
+  console.log(`Checking last ${DAYS_TO_KEEP} days: ${last8Days.join(', ')}`);
 
-  // Check if today's news already exists
-  const today = todayNews.date;
-  const existingIndex = newsFeed.findIndex(item => item.date === today);
+  // Find existing dates in the feed
+  const existingDates = new Set(newsFeed.map(item => item.date));
+  console.log(`Existing dates in feed: ${[...existingDates].join(', ') || 'none'}`);
 
-  if (existingIndex >= 0) {
-    newsFeed[existingIndex] = todayNews;
-    console.log(`Updated news for ${today}`);
-  } else {
-    newsFeed.unshift(todayNews); // Add to beginning
-    console.log(`Added news for ${today}`);
+  // Find missing dates (only within the last 8 days)
+  const missingDates = last8Days.filter(date => !existingDates.has(date));
+
+  if (missingDates.length === 0) {
+    console.log('All dates are up to date. No missing days to fetch.');
+    return;
   }
 
-  // Keep only last 7 days
-  newsFeed = newsFeed.slice(0, 7);
+  console.log(`Missing dates to fetch: ${missingDates.join(', ')}`);
+
+  // Fetch news for each missing date
+  for (const date of missingDates) {
+    console.log(`\n--- Fetching news for ${date} ---`);
+    try {
+      const newsForDate = await generateNewsForDate(date);
+
+      // Check if we got any actual news content
+      const hasContent = Object.keys(CATEGORIES).some(
+        cat => newsForDate.content[cat]?.length > 0
+      );
+
+      if (hasContent) {
+        newsFeed.push(newsForDate);
+        console.log(`Added news for ${date}`);
+      } else {
+        console.log(`No news found for ${date}, skipping`);
+      }
+
+      // Rate limiting between days - wait 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } catch (error) {
+      console.error(`Failed to fetch news for ${date}:`, error.message);
+    }
+  }
+
+  // Sort by date descending (newest first)
+  newsFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Keep only the last 8 days worth of news (remove anything older)
+  const cutoffDate = last8Days[last8Days.length - 1];
+  newsFeed = newsFeed.filter(item => item.date >= cutoffDate);
 
   // Save to file
   fs.writeFileSync(newsFeedPath, JSON.stringify(newsFeed, null, 2));
-  console.log(`News feed saved to ${newsFeedPath}`);
+  console.log(`\nNews feed saved to ${newsFeedPath}`);
   console.log(`Total news days: ${newsFeed.length}`);
 }
 
