@@ -1,315 +1,865 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Play, RotateCcw } from "lucide-react";
 
-// Game constants - tuned to match Chrome Dino
+// Canvas dimensions - scaled for portfolio display
 const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 200;
-const GROUND_Y = 160;
-const GRAVITY = 0.6;
-const JUMP_VELOCITY = -12;
-const INITIAL_SPEED = 6;
-const MAX_SPEED = 13;
-const ACCELERATION = 0.001;
+const CANVAS_HEIGHT = 400;
 
-// Dino dimensions
-const DINO_WIDTH = 44;
-const DINO_HEIGHT = 47;
-const DINO_X = 50;
+// Game constants
+const FPS = 60;
+const STEP = 1 / FPS;
+const SEGMENT_LENGTH = 200;
+const RUMBLE_LENGTH = 3;
+const LANES = 3;
+const ROAD_WIDTH = 2000;
+const CAMERA_HEIGHT = 1000;
+const FIELD_OF_VIEW = 100;
+const DRAW_DISTANCE = 200;
+const FOG_DENSITY = 5;
+const CENTRIFUGAL = 0.3;
 
-// Cactus types with proper sizing
-const CACTUS_TYPES = [
-  { w: 17, h: 35, y: GROUND_Y - 35 },   // Small single
-  { w: 34, h: 35, y: GROUND_Y - 35 },   // Small double
-  { w: 51, h: 35, y: GROUND_Y - 35 },   // Small triple
-  { w: 25, h: 50, y: GROUND_Y - 50 },   // Large single
-  { w: 50, h: 50, y: GROUND_Y - 50 },   // Large double
-];
+// Speed constants
+const MAX_SPEED = SEGMENT_LENGTH / STEP;
+const ACCEL = MAX_SPEED / 5;
+const BREAKING = -MAX_SPEED;
+const DECEL = -MAX_SPEED / 5;
+const OFF_ROAD_DECEL = -MAX_SPEED / 2;
+const OFF_ROAD_LIMIT = MAX_SPEED / 4;
 
-interface Obstacle {
-  x: number;
-  type: typeof CACTUS_TYPES[number];
+// Keys
+const KEY = {
+  LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40,
+  A: 65, D: 68, S: 83, W: 87
+};
+
+// Background layers
+const BACKGROUND = {
+  HILLS: { x: 5, y: 5, w: 1280, h: 480 },
+  SKY: { x: 5, y: 495, w: 1280, h: 480 },
+  TREES: { x: 5, y: 985, w: 1280, h: 480 }
+};
+
+// Sprite definitions
+const SPRITES = {
+  PALM_TREE: { x: 5, y: 5, w: 215, h: 540 },
+  BILLBOARD08: { x: 230, y: 5, w: 385, h: 265 },
+  TREE1: { x: 625, y: 5, w: 360, h: 360 },
+  DEAD_TREE1: { x: 5, y: 555, w: 135, h: 332 },
+  BILLBOARD09: { x: 150, y: 555, w: 328, h: 282 },
+  BOULDER3: { x: 230, y: 280, w: 320, h: 220 },
+  COLUMN: { x: 995, y: 5, w: 200, h: 315 },
+  BILLBOARD01: { x: 625, y: 375, w: 300, h: 170 },
+  BILLBOARD06: { x: 488, y: 555, w: 298, h: 190 },
+  BILLBOARD05: { x: 5, y: 897, w: 298, h: 190 },
+  BILLBOARD07: { x: 313, y: 897, w: 298, h: 190 },
+  BOULDER2: { x: 621, y: 897, w: 298, h: 140 },
+  TREE2: { x: 1205, y: 5, w: 282, h: 295 },
+  BILLBOARD04: { x: 1205, y: 310, w: 268, h: 170 },
+  DEAD_TREE2: { x: 1205, y: 490, w: 150, h: 260 },
+  BOULDER1: { x: 1205, y: 760, w: 168, h: 248 },
+  BUSH1: { x: 5, y: 1097, w: 240, h: 155 },
+  CACTUS: { x: 929, y: 897, w: 235, h: 118 },
+  BUSH2: { x: 255, y: 1097, w: 232, h: 152 },
+  BILLBOARD03: { x: 5, y: 1262, w: 230, h: 220 },
+  BILLBOARD02: { x: 245, y: 1262, w: 215, h: 220 },
+  STUMP: { x: 995, y: 330, w: 195, h: 140 },
+  SEMI: { x: 1365, y: 490, w: 122, h: 144 },
+  TRUCK: { x: 1365, y: 644, w: 100, h: 78 },
+  CAR03: { x: 1383, y: 760, w: 88, h: 55 },
+  CAR02: { x: 1383, y: 825, w: 80, h: 59 },
+  CAR04: { x: 1383, y: 894, w: 80, h: 57 },
+  CAR01: { x: 1205, y: 1018, w: 80, h: 56 },
+  PLAYER_UPHILL_LEFT: { x: 1383, y: 961, w: 80, h: 45 },
+  PLAYER_UPHILL_STRAIGHT: { x: 1295, y: 1018, w: 80, h: 45 },
+  PLAYER_UPHILL_RIGHT: { x: 1385, y: 1018, w: 80, h: 45 },
+  PLAYER_LEFT: { x: 995, y: 480, w: 80, h: 41 },
+  PLAYER_STRAIGHT: { x: 1085, y: 480, w: 80, h: 41 },
+  PLAYER_RIGHT: { x: 995, y: 531, w: 80, h: 41 },
+  SCALE: 0.00375
+};
+SPRITES.SCALE = 0.3 * (1 / SPRITES.PLAYER_STRAIGHT.w);
+
+type SpriteType = { x: number; y: number; w: number; h: number };
+
+const SPRITE_BILLBOARDS: SpriteType[] = [SPRITES.BILLBOARD01, SPRITES.BILLBOARD02, SPRITES.BILLBOARD03, SPRITES.BILLBOARD04, SPRITES.BILLBOARD05, SPRITES.BILLBOARD06, SPRITES.BILLBOARD07, SPRITES.BILLBOARD08, SPRITES.BILLBOARD09];
+const SPRITE_PLANTS: SpriteType[] = [SPRITES.TREE1, SPRITES.TREE2, SPRITES.DEAD_TREE1, SPRITES.DEAD_TREE2, SPRITES.PALM_TREE, SPRITES.BUSH1, SPRITES.BUSH2, SPRITES.CACTUS, SPRITES.STUMP, SPRITES.BOULDER1, SPRITES.BOULDER2, SPRITES.BOULDER3];
+const SPRITE_CARS: SpriteType[] = [SPRITES.CAR01, SPRITES.CAR02, SPRITES.CAR03, SPRITES.CAR04, SPRITES.SEMI, SPRITES.TRUCK];
+
+// Colors - with dark mode variants
+const getColors = (isDark: boolean) => ({
+  SKY: isDark ? '#1a1a2e' : '#72D7EE',
+  TREE: isDark ? '#0a3d0a' : '#005108',
+  FOG: isDark ? '#0a3d0a' : '#005108',
+  LIGHT: { road: isDark ? '#3a3a3a' : '#6B6B6B', grass: isDark ? '#0a5a0a' : '#10AA10', rumble: isDark ? '#333333' : '#555555', lane: isDark ? '#888888' : '#CCCCCC' },
+  DARK: { road: isDark ? '#333333' : '#696969', grass: isDark ? '#085008' : '#009A00', rumble: isDark ? '#777777' : '#BBBBBB', lane: null as string | null },
+  START: { road: 'white', grass: 'white', rumble: 'white', lane: null as string | null },
+  FINISH: { road: 'black', grass: 'black', rumble: 'black', lane: null as string | null }
+});
+
+// Road building constants
+const ROAD = {
+  LENGTH: { NONE: 0, SHORT: 25, MEDIUM: 50, LONG: 100 },
+  HILL: { NONE: 0, LOW: 20, MEDIUM: 40, HIGH: 60 },
+  CURVE: { NONE: 0, EASY: 2, MEDIUM: 4, HARD: 6 }
+};
+
+// Types
+interface PointWorld {
+  y: number;
+  z: number;
+  x?: number;
+}
+
+interface PointCamera {
+  x?: number;
+  y?: number;
+  z?: number;
+}
+
+interface PointScreen {
+  x?: number;
+  y?: number;
+  w?: number;
+  scale?: number;
+}
+
+interface RoadPoint {
+  world: PointWorld;
+  camera: PointCamera;
+  screen: PointScreen;
+}
+
+interface SegmentColor {
+  road: string;
+  grass: string;
+  rumble: string;
+  lane?: string | null;
+}
+
+interface Car {
+  offset: number;
+  z: number;
+  sprite: SpriteType;
+  speed: number;
+  percent?: number;
+}
+
+interface RoadSprite {
+  source: SpriteType;
+  offset: number;
+}
+
+interface Segment {
+  index: number;
+  p1: RoadPoint;
+  p2: RoadPoint;
+  curve: number;
+  sprites: RoadSprite[];
+  cars: Car[];
+  color: SegmentColor;
+  looped?: boolean;
+  fog?: number;
+  clip?: number;
 }
 
 type GameState = "waiting" | "playing" | "gameover";
 
+// Utility functions
+function timestamp(): number {
+  return new Date().getTime();
+}
+
+function toInt(obj: unknown, def: number = 0): number {
+  if (obj !== null && obj !== undefined) {
+    const x = parseInt(String(obj), 10);
+    if (!isNaN(x)) return x;
+  }
+  return def;
+}
+
+function limit(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(value, max));
+}
+
+function randomInt(min: number, max: number): number {
+  return Math.round(interpolate(min, max, Math.random()));
+}
+
+function randomChoice<T>(options: T[]): T {
+  return options[randomInt(0, options.length - 1)];
+}
+
+function percentRemaining(n: number, total: number): number {
+  return (n % total) / total;
+}
+
+function accelerate(v: number, accel: number, dt: number): number {
+  return v + (accel * dt);
+}
+
+function interpolate(a: number, b: number, percent: number): number {
+  return a + (b - a) * percent;
+}
+
+function easeIn(a: number, b: number, percent: number): number {
+  return a + (b - a) * Math.pow(percent, 2);
+}
+
+function easeInOut(a: number, b: number, percent: number): number {
+  return a + (b - a) * ((-Math.cos(percent * Math.PI) / 2) + 0.5);
+}
+
+function exponentialFog(distance: number, density: number): number {
+  return 1 / (Math.pow(Math.E, (distance * distance * density)));
+}
+
+function increase(start: number, increment: number, max: number): number {
+  let result = start + increment;
+  while (result >= max) result -= max;
+  while (result < 0) result += max;
+  return result;
+}
+
+function project(p: RoadPoint, cameraX: number, cameraY: number, cameraZ: number, cameraDepth: number, width: number, height: number, roadWidth: number): void {
+  p.camera.x = (p.world.x || 0) - cameraX;
+  p.camera.y = (p.world.y || 0) - cameraY;
+  p.camera.z = (p.world.z || 0) - cameraZ;
+  p.screen.scale = cameraDepth / p.camera.z!;
+  p.screen.x = Math.round((width / 2) + (p.screen.scale * p.camera.x! * width / 2));
+  p.screen.y = Math.round((height / 2) - (p.screen.scale * p.camera.y! * height / 2));
+  p.screen.w = Math.round((p.screen.scale * roadWidth * width / 2));
+}
+
+function overlap(x1: number, w1: number, x2: number, w2: number, percent: number = 1): boolean {
+  const half = percent / 2;
+  const min1 = x1 - (w1 * half);
+  const max1 = x1 + (w1 * half);
+  const min2 = x2 - (w2 * half);
+  const max2 = x2 + (w2 * half);
+  return !((max1 < min2) || (min1 > max2));
+}
+
+// Render functions
+function renderPolygon(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number, color: string): void {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.lineTo(x3, y3);
+  ctx.lineTo(x4, y4);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function renderSegment(ctx: CanvasRenderingContext2D, width: number, lanes: number, x1: number, y1: number, w1: number, x2: number, y2: number, w2: number, fog: number, color: SegmentColor): void {
+  const r1 = w1 / Math.max(6, 2 * lanes);
+  const r2 = w2 / Math.max(6, 2 * lanes);
+  const l1 = w1 / Math.max(32, 8 * lanes);
+  const l2 = w2 / Math.max(32, 8 * lanes);
+
+  ctx.fillStyle = color.grass;
+  ctx.fillRect(0, y2, width, y1 - y2);
+
+  renderPolygon(ctx, x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
+  renderPolygon(ctx, x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble);
+  renderPolygon(ctx, x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road);
+
+  if (color.lane) {
+    const lanew1 = w1 * 2 / lanes;
+    const lanew2 = w2 * 2 / lanes;
+    let lanex1 = x1 - w1 + lanew1;
+    let lanex2 = x2 - w2 + lanew2;
+    for (let lane = 1; lane < lanes; lanex1 += lanew1, lanex2 += lanew2, lane++) {
+      renderPolygon(ctx, lanex1 - l1 / 2, y1, lanex1 + l1 / 2, y1, lanex2 + l2 / 2, y2, lanex2 - l2 / 2, y2, color.lane);
+    }
+  }
+
+  renderFog(ctx, 0, y1, width, y2 - y1, fog);
+}
+
+function renderBackground(ctx: CanvasRenderingContext2D, background: HTMLImageElement, width: number, height: number, layer: typeof BACKGROUND.SKY, rotation: number = 0, offset: number = 0): void {
+  const imageW = layer.w / 2;
+  const imageH = layer.h;
+  const sourceX = layer.x + Math.floor(layer.w * rotation);
+  const sourceY = layer.y;
+  const sourceW = Math.min(imageW, layer.x + layer.w - sourceX);
+  const sourceH = imageH;
+  const destX = 0;
+  const destY = offset;
+  const destW = Math.floor(width * (sourceW / imageW));
+  const destH = height;
+
+  ctx.drawImage(background, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
+  if (sourceW < imageW)
+    ctx.drawImage(background, layer.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, width - destW, destH);
+}
+
+function renderSprite(ctx: CanvasRenderingContext2D, width: number, height: number, resolution: number, roadWidth: number, sprites: HTMLImageElement, sprite: SpriteType, scale: number, destX: number, destY: number, offsetX: number = 0, offsetY: number = 0, clipY?: number): void {
+  const destW = (sprite.w * scale * width / 2) * (SPRITES.SCALE * roadWidth);
+  const destH = (sprite.h * scale * width / 2) * (SPRITES.SCALE * roadWidth);
+  destX = destX + (destW * offsetX);
+  destY = destY + (destH * offsetY);
+  const clipH = clipY ? Math.max(0, destY + destH - clipY) : 0;
+  if (clipH < destH)
+    ctx.drawImage(sprites, sprite.x, sprite.y, sprite.w, sprite.h - (sprite.h * clipH / destH), destX, destY, destW, destH - clipH);
+}
+
+function renderPlayer(ctx: CanvasRenderingContext2D, width: number, height: number, resolution: number, roadWidth: number, sprites: HTMLImageElement, speedPercent: number, scale: number, destX: number, destY: number, steer: number, updown: number): void {
+  const bounce = (1.5 * Math.random() * speedPercent * resolution) * randomChoice([-1, 1]);
+  let sprite;
+  if (steer < 0)
+    sprite = (updown > 0) ? SPRITES.PLAYER_UPHILL_LEFT : SPRITES.PLAYER_LEFT;
+  else if (steer > 0)
+    sprite = (updown > 0) ? SPRITES.PLAYER_UPHILL_RIGHT : SPRITES.PLAYER_RIGHT;
+  else
+    sprite = (updown > 0) ? SPRITES.PLAYER_UPHILL_STRAIGHT : SPRITES.PLAYER_STRAIGHT;
+
+  renderSprite(ctx, width, height, resolution, roadWidth, sprites, sprite, scale, destX, destY + bounce, -0.5, -1);
+}
+
+function renderFog(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, fog: number): void {
+  if (fog < 1) {
+    ctx.globalAlpha = (1 - fog);
+    ctx.fillRect(x, y, width, height);
+    ctx.globalAlpha = 1;
+  }
+}
+
 export default function GameSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<GameState>("waiting");
-  const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  const [currentSpeed, setCurrentSpeed] = useState(0);
+  const [currentLapTime, setCurrentLapTime] = useState(0);
+  const [lastLapTime, setLastLapTime] = useState<number | null>(null);
+  const [fastLapTime, setFastLapTime] = useState<number | null>(null);
 
   // Game state ref
   const gameRef = useRef({
-    dino: { y: GROUND_Y - DINO_HEIGHT, vy: 0, jumping: false },
-    obstacles: [] as Obstacle[],
-    speed: INITIAL_SPEED,
-    score: 0,
-    groundX: 0,
-    frameCount: 0,
-    nextObstacleDistance: 0,
+    segments: [] as Segment[],
+    cars: [] as Car[],
+    trackLength: 0,
+    position: 0,
+    speed: 0,
+    playerX: 0,
+    playerZ: 0,
+    cameraDepth: 0,
+    resolution: CANVAS_HEIGHT / 480,
+    skyOffset: 0,
+    hillOffset: 0,
+    treeOffset: 0,
+    currentLapTime: 0,
+    lastLapTime: null as number | null,
+    keyLeft: false,
+    keyRight: false,
+    keyFaster: false,
+    keySlower: false,
+    background: null as HTMLImageElement | null,
+    sprites: null as HTMLImageElement | null,
+    imagesLoaded: false
   });
 
-  // Load high score
+  // Load fastest lap time
   useEffect(() => {
-    const saved = localStorage.getItem("chromeDinoHighScore");
-    if (saved) setHighScore(parseInt(saved));
+    const saved = localStorage.getItem("racerFastLapTime");
+    if (saved) setFastLapTime(parseFloat(saved));
+  }, []);
+
+  // Load images
+  useEffect(() => {
+    const game = gameRef.current;
+    const bgImg = new Image();
+    const sprImg = new Image();
+    let loaded = 0;
+
+    const onLoad = () => {
+      loaded++;
+      if (loaded === 2) {
+        game.background = bgImg;
+        game.sprites = sprImg;
+        game.imagesLoaded = true;
+      }
+    };
+
+    bgImg.onload = onLoad;
+    sprImg.onload = onLoad;
+    bgImg.src = "/uploads/background.png";
+    sprImg.src = "/uploads/sprites.png";
+  }, []);
+
+  const buildRoad = useCallback(() => {
+    const game = gameRef.current;
+    const isDark = document.documentElement.classList.contains("dark");
+    const COLORS = getColors(isDark);
+    game.segments = [];
+
+    const lastY = () => game.segments.length === 0 ? 0 : game.segments[game.segments.length - 1].p2.world.y;
+
+    const addSegment = (curve: number, y: number) => {
+      const n = game.segments.length;
+      game.segments.push({
+        index: n,
+        p1: { world: { y: lastY(), z: n * SEGMENT_LENGTH }, camera: {}, screen: {} },
+        p2: { world: { y: y, z: (n + 1) * SEGMENT_LENGTH }, camera: {}, screen: {} },
+        curve: curve,
+        sprites: [],
+        cars: [],
+        color: Math.floor(n / RUMBLE_LENGTH) % 2 ? COLORS.DARK : COLORS.LIGHT
+      });
+    };
+
+    const addRoad = (enter: number, hold: number, leave: number, curve: number, y: number) => {
+      const startY = lastY();
+      const endY = startY + (toInt(y, 0) * SEGMENT_LENGTH);
+      const total = enter + hold + leave;
+      for (let n = 0; n < enter; n++)
+        addSegment(easeIn(0, curve, n / enter), easeInOut(startY, endY, n / total));
+      for (let n = 0; n < hold; n++)
+        addSegment(curve, easeInOut(startY, endY, (enter + n) / total));
+      for (let n = 0; n < leave; n++)
+        addSegment(easeInOut(curve, 0, n / leave), easeInOut(startY, endY, (enter + hold + n) / total));
+    };
+
+    const addStraight = (num = ROAD.LENGTH.MEDIUM) => addRoad(num, num, num, 0, 0);
+    const addHill = (num = ROAD.LENGTH.MEDIUM, height = ROAD.HILL.MEDIUM) => addRoad(num, num, num, 0, height);
+    const addCurve = (num = ROAD.LENGTH.MEDIUM, curve = ROAD.CURVE.MEDIUM, height = ROAD.HILL.NONE) => addRoad(num, num, num, curve, height);
+
+    const addLowRollingHills = (num = ROAD.LENGTH.SHORT, height = ROAD.HILL.LOW) => {
+      addRoad(num, num, num, 0, height / 2);
+      addRoad(num, num, num, 0, -height);
+      addRoad(num, num, num, ROAD.CURVE.EASY, height);
+      addRoad(num, num, num, 0, 0);
+      addRoad(num, num, num, -ROAD.CURVE.EASY, height / 2);
+      addRoad(num, num, num, 0, 0);
+    };
+
+    const addSCurves = () => {
+      addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.NONE);
+      addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+      addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY, -ROAD.HILL.LOW);
+      addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.MEDIUM);
+      addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.MEDIUM, -ROAD.HILL.MEDIUM);
+    };
+
+    const addBumps = () => {
+      addRoad(10, 10, 10, 0, 5);
+      addRoad(10, 10, 10, 0, -2);
+      addRoad(10, 10, 10, 0, -5);
+      addRoad(10, 10, 10, 0, 8);
+      addRoad(10, 10, 10, 0, 5);
+      addRoad(10, 10, 10, 0, -7);
+      addRoad(10, 10, 10, 0, 5);
+      addRoad(10, 10, 10, 0, -2);
+    };
+
+    const addDownhillToEnd = (num = 200) => {
+      addRoad(num, num, num, -ROAD.CURVE.EASY, -lastY() / SEGMENT_LENGTH);
+    };
+
+    // Build the track
+    addStraight(ROAD.LENGTH.SHORT);
+    addLowRollingHills();
+    addSCurves();
+    addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
+    addBumps();
+    addLowRollingHills();
+    addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+    addStraight();
+    addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
+    addSCurves();
+    addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
+    addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
+    addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
+    addBumps();
+    addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
+    addStraight();
+    addSCurves();
+    addDownhillToEnd();
+
+    // Add sprites
+    const addSprite = (n: number, sprite: SpriteType, offset: number) => {
+      if (n < game.segments.length) {
+        game.segments[n].sprites.push({ source: sprite, offset: offset });
+      }
+    };
+
+    // Billboards
+    addSprite(20, SPRITES.BILLBOARD07, -1);
+    addSprite(40, SPRITES.BILLBOARD06, -1);
+    addSprite(60, SPRITES.BILLBOARD08, -1);
+    addSprite(80, SPRITES.BILLBOARD09, -1);
+    addSprite(100, SPRITES.BILLBOARD01, -1);
+    addSprite(120, SPRITES.BILLBOARD02, -1);
+    addSprite(140, SPRITES.BILLBOARD03, -1);
+    addSprite(160, SPRITES.BILLBOARD04, -1);
+    addSprite(180, SPRITES.BILLBOARD05, -1);
+
+    addSprite(240, SPRITES.BILLBOARD07, -1.2);
+    addSprite(240, SPRITES.BILLBOARD06, 1.2);
+    addSprite(game.segments.length - 25, SPRITES.BILLBOARD07, -1.2);
+    addSprite(game.segments.length - 25, SPRITES.BILLBOARD06, 1.2);
+
+    // Palm trees
+    for (let n = 10; n < 200; n += 4 + Math.floor(n / 100)) {
+      addSprite(n, SPRITES.PALM_TREE, 0.5 + Math.random() * 0.5);
+      addSprite(n, SPRITES.PALM_TREE, 1 + Math.random() * 2);
+    }
+
+    // Columns and trees
+    for (let n = 250; n < 1000; n += 5) {
+      addSprite(n, SPRITES.COLUMN, 1.1);
+      addSprite(n + randomInt(0, 5), SPRITES.TREE1, -1 - (Math.random() * 2));
+      addSprite(n + randomInt(0, 5), SPRITES.TREE2, -1 - (Math.random() * 2));
+    }
+
+    // Random plants
+    for (let n = 200; n < game.segments.length; n += 3) {
+      addSprite(n, randomChoice(SPRITE_PLANTS), randomChoice([1, -1]) * (2 + Math.random() * 5));
+    }
+
+    // More billboards with surrounding plants
+    for (let n = 1000; n < (game.segments.length - 50); n += 100) {
+      const side = randomChoice([1, -1]);
+      addSprite(n + randomInt(0, 50), randomChoice(SPRITE_BILLBOARDS), -side);
+      for (let i = 0; i < 20; i++) {
+        const sprite = randomChoice(SPRITE_PLANTS);
+        const spriteOffset = side * (1.5 + Math.random());
+        addSprite(n + randomInt(0, 50), sprite, spriteOffset);
+      }
+    }
+
+    // Add cars
+    game.cars = [];
+    const totalCars = 100;
+    for (let n = 0; n < totalCars; n++) {
+      const carOffset = Math.random() * randomChoice([-0.8, 0.8]);
+      const z = Math.floor(Math.random() * game.segments.length) * SEGMENT_LENGTH;
+      const sprite = randomChoice(SPRITE_CARS);
+      const carSpeed = MAX_SPEED / 4 + Math.random() * MAX_SPEED / (sprite === SPRITES.SEMI ? 4 : 2);
+      const car: Car = { offset: carOffset, z, sprite, speed: carSpeed };
+      const segment = game.segments[Math.floor(z / SEGMENT_LENGTH) % game.segments.length];
+      segment.cars.push(car);
+      game.cars.push(car);
+    }
+
+    // Mark start/finish
+    const findSeg = (z: number) => game.segments[Math.floor(z / SEGMENT_LENGTH) % game.segments.length];
+    const startIdx = findSeg(game.playerZ).index;
+    if (startIdx + 2 < game.segments.length) game.segments[startIdx + 2].color = COLORS.START;
+    if (startIdx + 3 < game.segments.length) game.segments[startIdx + 3].color = COLORS.START;
+    for (let n = 0; n < RUMBLE_LENGTH; n++) {
+      game.segments[game.segments.length - 1 - n].color = COLORS.FINISH;
+    }
+
+    game.trackLength = game.segments.length * SEGMENT_LENGTH;
   }, []);
 
   const resetGame = useCallback(() => {
     const game = gameRef.current;
-    game.dino = { y: GROUND_Y - DINO_HEIGHT, vy: 0, jumping: false };
-    game.obstacles = [];
-    game.speed = INITIAL_SPEED;
-    game.score = 0;
-    game.groundX = 0;
-    game.frameCount = 0;
-    game.nextObstacleDistance = 300;
-    setScore(0);
-  }, []);
-
-  const jump = useCallback(() => {
-    const game = gameRef.current;
-    if (!game.dino.jumping) {
-      game.dino.vy = JUMP_VELOCITY;
-      game.dino.jumping = true;
-    }
-  }, []);
+    game.cameraDepth = 1 / Math.tan((FIELD_OF_VIEW / 2) * Math.PI / 180);
+    game.playerZ = CAMERA_HEIGHT * game.cameraDepth;
+    game.resolution = CANVAS_HEIGHT / 480;
+    game.position = 0;
+    game.speed = 0;
+    game.playerX = 0;
+    game.skyOffset = 0;
+    game.hillOffset = 0;
+    game.treeOffset = 0;
+    game.currentLapTime = 0;
+    game.lastLapTime = null;
+    game.keyLeft = false;
+    game.keyRight = false;
+    game.keyFaster = false;
+    game.keySlower = false;
+    buildRoad();
+    setCurrentSpeed(0);
+    setCurrentLapTime(0);
+    setLastLapTime(null);
+  }, [buildRoad]);
 
   const handleInput = useCallback(() => {
-    if (gameState === "waiting") {
+    if (gameState === "waiting" && gameRef.current.imagesLoaded) {
       resetGame();
       setGameState("playing");
-      jump();
     } else if (gameState === "gameover") {
       resetGame();
       setGameState("playing");
-    } else if (gameState === "playing") {
-      jump();
     }
-  }, [gameState, resetGame, jump]);
+  }, [gameState, resetGame]);
 
   // Keyboard handler
   useEffect(() => {
+    const game = gameRef.current;
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
 
-      if (e.code === "Space" || e.code === "ArrowUp") {
-        e.preventDefault();
-        handleInput();
+      if (e.keyCode === KEY.LEFT || e.keyCode === KEY.A) { game.keyLeft = true; e.preventDefault(); }
+      if (e.keyCode === KEY.RIGHT || e.keyCode === KEY.D) { game.keyRight = true; e.preventDefault(); }
+      if (e.keyCode === KEY.UP || e.keyCode === KEY.W) { game.keyFaster = true; e.preventDefault(); }
+      if (e.keyCode === KEY.DOWN || e.keyCode === KEY.S) { game.keySlower = true; e.preventDefault(); }
+
+      // Start game on any key
+      if (gameState === "waiting" && game.imagesLoaded) {
+        if ([KEY.UP, KEY.W, KEY.LEFT, KEY.RIGHT, KEY.A, KEY.D].includes(e.keyCode)) {
+          handleInput();
+        }
       }
     };
 
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.keyCode === KEY.LEFT || e.keyCode === KEY.A) game.keyLeft = false;
+      if (e.keyCode === KEY.RIGHT || e.keyCode === KEY.D) game.keyRight = false;
+      if (e.keyCode === KEY.UP || e.keyCode === KEY.W) game.keyFaster = false;
+      if (e.keyCode === KEY.DOWN || e.keyCode === KEY.S) game.keySlower = false;
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleInput]);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [gameState, handleInput]);
 
   // Main game loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-
-    let animationId: number;
     const game = gameRef.current;
 
-    const gameLoop = () => {
-      const isDark = document.documentElement.classList.contains("dark");
-      const fgColor = isDark ? "#e5e5e5" : "#535353";
-      const bgColor = isDark ? "#171717" : "#ffffff";
+    let animationId: number;
+    let lastTime = timestamp();
+    let gdt = 0;
 
-      // Clear
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    const findSegment = (z: number) => game.segments[Math.floor(z / SEGMENT_LENGTH) % game.segments.length];
 
-      if (gameState === "playing") {
-        // Update dino physics
-        game.dino.vy += GRAVITY;
-        game.dino.y += game.dino.vy;
+    const update = (dt: number) => {
+      if (game.segments.length === 0) return;
 
-        // Ground collision
-        if (game.dino.y >= GROUND_Y - DINO_HEIGHT) {
-          game.dino.y = GROUND_Y - DINO_HEIGHT;
-          game.dino.vy = 0;
-          game.dino.jumping = false;
+      const playerSegment = findSegment(game.position + game.playerZ);
+      const playerW = SPRITES.PLAYER_STRAIGHT.w * SPRITES.SCALE;
+      const speedPercent = game.speed / MAX_SPEED;
+      const dx = dt * 2 * speedPercent;
+      const startPosition = game.position;
+
+      // Update cars
+      for (const car of game.cars) {
+        const oldSegment = findSegment(car.z);
+        car.z = increase(car.z, dt * car.speed, game.trackLength);
+        car.percent = percentRemaining(car.z, SEGMENT_LENGTH);
+        const newSegment = findSegment(car.z);
+        if (oldSegment !== newSegment) {
+          const index = oldSegment.cars.indexOf(car);
+          if (index >= 0) oldSegment.cars.splice(index, 1);
+          newSegment.cars.push(car);
         }
+      }
 
-        // Update speed
-        if (game.speed < MAX_SPEED) {
-          game.speed += ACCELERATION;
-        }
+      game.position = increase(game.position, dt * game.speed, game.trackLength);
 
-        // Update score
-        game.frameCount++;
-        if (game.frameCount % 6 === 0) {
-          game.score++;
-          setScore(game.score);
-        }
+      if (game.keyLeft) game.playerX = game.playerX - dx;
+      else if (game.keyRight) game.playerX = game.playerX + dx;
 
-        // Move ground
-        game.groundX -= game.speed;
-        if (game.groundX <= -CANVAS_WIDTH) {
-          game.groundX = 0;
-        }
+      game.playerX = game.playerX - (dx * speedPercent * playerSegment.curve * CENTRIFUGAL);
 
-        // Spawn obstacles
-        game.nextObstacleDistance -= game.speed;
-        if (game.nextObstacleDistance <= 0) {
-          const type = CACTUS_TYPES[Math.floor(Math.random() * CACTUS_TYPES.length)];
-          game.obstacles.push({ x: CANVAS_WIDTH, type });
-          // Random gap between 300-600 pixels, scales with speed
-          game.nextObstacleDistance = 300 + Math.random() * 300;
-        }
+      if (game.keyFaster) game.speed = accelerate(game.speed, ACCEL, dt);
+      else if (game.keySlower) game.speed = accelerate(game.speed, BREAKING, dt);
+      else game.speed = accelerate(game.speed, DECEL, dt);
 
-        // Update obstacles
-        game.obstacles = game.obstacles.filter((obs) => {
-          obs.x -= game.speed;
-          return obs.x > -100;
-        });
+      // Off road
+      if ((game.playerX < -1) || (game.playerX > 1)) {
+        if (game.speed > OFF_ROAD_LIMIT)
+          game.speed = accelerate(game.speed, OFF_ROAD_DECEL, dt);
 
-        // Collision detection
-        const dinoBox = {
-          x: DINO_X + 5,
-          y: game.dino.y + 5,
-          w: DINO_WIDTH - 10,
-          h: DINO_HEIGHT - 5,
-        };
-
-        for (const obs of game.obstacles) {
-          const obsBox = {
-            x: obs.x + 2,
-            y: obs.type.y + 2,
-            w: obs.type.w - 4,
-            h: obs.type.h - 4,
-          };
-
-          if (
-            dinoBox.x < obsBox.x + obsBox.w &&
-            dinoBox.x + dinoBox.w > obsBox.x &&
-            dinoBox.y < obsBox.y + obsBox.h &&
-            dinoBox.y + dinoBox.h > obsBox.y
-          ) {
-            setGameState("gameover");
-            if (game.score > highScore) {
-              setHighScore(game.score);
-              localStorage.setItem("chromeDinoHighScore", game.score.toString());
-            }
+        for (const spriteObj of playerSegment.sprites) {
+          const spriteW = spriteObj.source.w * SPRITES.SCALE;
+          if (overlap(game.playerX, playerW, spriteObj.offset + spriteW / 2 * (spriteObj.offset > 0 ? 1 : -1), spriteW)) {
+            game.speed = MAX_SPEED / 5;
+            game.position = increase(playerSegment.p1.world.z, -game.playerZ, game.trackLength);
             break;
           }
         }
       }
 
-      // Draw ground
-      ctx.fillStyle = fgColor;
-      ctx.fillRect(0, GROUND_Y, CANVAS_WIDTH, 1);
-
-      // Draw ground texture
-      for (let i = 0; i < 3; i++) {
-        const x = game.groundX + i * CANVAS_WIDTH;
-        for (let j = 0; j < 20; j++) {
-          const dotX = x + j * 50 + (i % 2) * 25;
-          if (dotX > -10 && dotX < CANVAS_WIDTH + 10) {
-            ctx.fillRect(dotX, GROUND_Y + 5, 2, 1);
-            ctx.fillRect(dotX + 20, GROUND_Y + 10, 3, 1);
+      // Car collision
+      for (const car of playerSegment.cars) {
+        const carW = car.sprite.w * SPRITES.SCALE;
+        if (game.speed > car.speed) {
+          if (overlap(game.playerX, playerW, car.offset, carW, 0.8)) {
+            game.speed = car.speed * (car.speed / game.speed);
+            game.position = increase(car.z, -game.playerZ, game.trackLength);
+            break;
           }
         }
       }
 
-      // Draw dino (simple rectangle representation)
-      ctx.fillStyle = fgColor;
-      const dinoY = game.dino.y;
+      game.playerX = limit(game.playerX, -3, 3);
+      game.speed = limit(game.speed, 0, MAX_SPEED);
 
-      // Body
-      ctx.fillRect(DINO_X + 10, dinoY + 5, 25, 30);
-      // Head
-      ctx.fillRect(DINO_X + 20, dinoY, 24, 20);
-      // Eye (inverted)
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(DINO_X + 36, dinoY + 5, 4, 4);
-      ctx.fillStyle = fgColor;
-      // Legs (animated)
-      if (gameState === "playing" && !game.dino.jumping) {
-        if (Math.floor(game.frameCount / 5) % 2 === 0) {
-          ctx.fillRect(DINO_X + 15, dinoY + 35, 6, 12);
-          ctx.fillRect(DINO_X + 25, dinoY + 38, 6, 9);
+      game.skyOffset = increase(game.skyOffset, 0.001 * playerSegment.curve * (game.position - startPosition) / SEGMENT_LENGTH, 1);
+      game.hillOffset = increase(game.hillOffset, 0.002 * playerSegment.curve * (game.position - startPosition) / SEGMENT_LENGTH, 1);
+      game.treeOffset = increase(game.treeOffset, 0.003 * playerSegment.curve * (game.position - startPosition) / SEGMENT_LENGTH, 1);
+
+      // Lap timing
+      if (game.position > game.playerZ) {
+        if (game.currentLapTime && (startPosition < game.playerZ)) {
+          game.lastLapTime = game.currentLapTime;
+          game.currentLapTime = 0;
+          setLastLapTime(game.lastLapTime);
+          const savedFast = localStorage.getItem("racerFastLapTime");
+          const currentFast = savedFast ? parseFloat(savedFast) : 180;
+          if (game.lastLapTime <= currentFast) {
+            localStorage.setItem("racerFastLapTime", game.lastLapTime.toString());
+            setFastLapTime(game.lastLapTime);
+          }
         } else {
-          ctx.fillRect(DINO_X + 15, dinoY + 38, 6, 9);
-          ctx.fillRect(DINO_X + 25, dinoY + 35, 6, 12);
+          game.currentLapTime += dt;
+        }
+      }
+
+      setCurrentSpeed(Math.round(game.speed / 100));
+      setCurrentLapTime(game.currentLapTime);
+    };
+
+    const render = () => {
+      if (!game.background || !game.sprites || game.segments.length === 0) return;
+
+      const isDark = document.documentElement.classList.contains("dark");
+      const COLORS = getColors(isDark);
+
+      const baseSegment = findSegment(game.position);
+      const basePercent = percentRemaining(game.position, SEGMENT_LENGTH);
+      const playerSegment = findSegment(game.position + game.playerZ);
+      const playerPercent = percentRemaining(game.position + game.playerZ, SEGMENT_LENGTH);
+      const playerY = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+      let maxy = CANVAS_HEIGHT;
+
+      let x = 0;
+      let dx = -(baseSegment.curve * basePercent);
+
+      ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      // Draw background
+      renderBackground(ctx, game.background, CANVAS_WIDTH, CANVAS_HEIGHT, BACKGROUND.SKY, game.skyOffset, game.resolution * 0.001 * playerY);
+      renderBackground(ctx, game.background, CANVAS_WIDTH, CANVAS_HEIGHT, BACKGROUND.HILLS, game.hillOffset, game.resolution * 0.002 * playerY);
+      renderBackground(ctx, game.background, CANVAS_WIDTH, CANVAS_HEIGHT, BACKGROUND.TREES, game.treeOffset, game.resolution * 0.003 * playerY);
+
+      // Draw road segments
+      for (let n = 0; n < DRAW_DISTANCE; n++) {
+        const segment = game.segments[(baseSegment.index + n) % game.segments.length];
+        segment.looped = segment.index < baseSegment.index;
+        segment.fog = exponentialFog(n / DRAW_DISTANCE, FOG_DENSITY);
+        segment.clip = maxy;
+
+        project(segment.p1, (game.playerX * ROAD_WIDTH) - x, playerY + CAMERA_HEIGHT, game.position - (segment.looped ? game.trackLength : 0), game.cameraDepth, CANVAS_WIDTH, CANVAS_HEIGHT, ROAD_WIDTH);
+        project(segment.p2, (game.playerX * ROAD_WIDTH) - x - dx, playerY + CAMERA_HEIGHT, game.position - (segment.looped ? game.trackLength : 0), game.cameraDepth, CANVAS_WIDTH, CANVAS_HEIGHT, ROAD_WIDTH);
+
+        x = x + dx;
+        dx = dx + segment.curve;
+
+        if ((segment.p1.camera.z! <= game.cameraDepth) ||
+          (segment.p2.screen.y! >= segment.p1.screen.y!) ||
+          (segment.p2.screen.y! >= maxy))
+          continue;
+
+        // Set fog color based on theme
+        ctx.fillStyle = COLORS.FOG;
+        renderSegment(ctx, CANVAS_WIDTH, LANES,
+          segment.p1.screen.x!, segment.p1.screen.y!, segment.p1.screen.w!,
+          segment.p2.screen.x!, segment.p2.screen.y!, segment.p2.screen.w!,
+          segment.fog, segment.color);
+
+        maxy = segment.p1.screen.y!;
+      }
+
+      // Draw sprites and cars (back to front)
+      for (let n = (DRAW_DISTANCE - 1); n > 0; n--) {
+        const segment = game.segments[(baseSegment.index + n) % game.segments.length];
+
+        for (const car of segment.cars) {
+          const spriteScale = interpolate(segment.p1.screen.scale!, segment.p2.screen.scale!, car.percent || 0);
+          const spriteX = interpolate(segment.p1.screen.x!, segment.p2.screen.x!, car.percent || 0) + (spriteScale * car.offset * ROAD_WIDTH * CANVAS_WIDTH / 2);
+          const spriteY = interpolate(segment.p1.screen.y!, segment.p2.screen.y!, car.percent || 0);
+          renderSprite(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, game.resolution, ROAD_WIDTH, game.sprites, car.sprite, spriteScale, spriteX, spriteY, -0.5, -1, segment.clip);
+        }
+
+        for (const spriteObj of segment.sprites) {
+          const spriteScale = segment.p1.screen.scale!;
+          const spriteX = segment.p1.screen.x! + (spriteScale * spriteObj.offset * ROAD_WIDTH * CANVAS_WIDTH / 2);
+          const spriteY = segment.p1.screen.y!;
+          renderSprite(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, game.resolution, ROAD_WIDTH, game.sprites, spriteObj.source, spriteScale, spriteX, spriteY, (spriteObj.offset < 0 ? -1 : 0), -1, segment.clip);
+        }
+
+        // Draw player
+        if (segment === playerSegment) {
+          renderPlayer(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, game.resolution, ROAD_WIDTH, game.sprites, game.speed / MAX_SPEED,
+            game.cameraDepth / game.playerZ,
+            CANVAS_WIDTH / 2,
+            (CANVAS_HEIGHT / 2) - (game.cameraDepth / game.playerZ * interpolate(playerSegment.p1.camera.y!, playerSegment.p2.camera.y!, playerPercent) * CANVAS_HEIGHT / 2),
+            game.speed * (game.keyLeft ? -1 : game.keyRight ? 1 : 0),
+            playerSegment.p2.world.y - playerSegment.p1.world.y);
+        }
+      }
+    };
+
+    const gameLoop = () => {
+      const now = timestamp();
+      const dt = Math.min(1, (now - lastTime) / 1000);
+      gdt = gdt + dt;
+
+      if (gameState === "playing") {
+        while (gdt > STEP) {
+          gdt = gdt - STEP;
+          update(STEP);
+        }
+      }
+
+      // Always render
+      if (game.imagesLoaded) {
+        if (gameState === "waiting") {
+          // Draw waiting screen
+          const isDark = document.documentElement.classList.contains("dark");
+          ctx.fillStyle = isDark ? "#171717" : "#ffffff";
+          ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+          ctx.fillStyle = isDark ? "#e5e5e5" : "#535353";
+          ctx.font = "bold 24px monospace";
+          ctx.textAlign = "center";
+          ctx.fillText("RETRO RACER", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 30);
+          ctx.font = "14px monospace";
+          ctx.fillText("Arrow keys or WASD to drive", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 10);
+          ctx.fillText("Press UP or W to start", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 35);
+        } else {
+          render();
         }
       } else {
-        ctx.fillRect(DINO_X + 15, dinoY + 35, 6, 12);
-        ctx.fillRect(DINO_X + 25, dinoY + 35, 6, 12);
-      }
-      // Tail
-      ctx.fillRect(DINO_X, dinoY + 15, 15, 10);
-      ctx.fillRect(DINO_X - 5, dinoY + 10, 10, 8);
-
-      // Draw obstacles (cacti)
-      ctx.fillStyle = fgColor;
-      for (const obs of game.obstacles) {
-        // Simple cactus shape
-        const cx = obs.x;
-        const cy = obs.type.y;
-        const cw = obs.type.w;
-        const ch = obs.type.h;
-
-        // Main stem
-        ctx.fillRect(cx + cw / 2 - 4, cy, 8, ch);
-
-        // Arms for larger cacti
-        if (ch > 40) {
-          ctx.fillRect(cx, cy + 10, cw / 2 - 4, 6);
-          ctx.fillRect(cx, cy + 10, 6, 20);
-          ctx.fillRect(cx + cw / 2 + 4, cy + 20, cw / 2 - 4, 6);
-          ctx.fillRect(cx + cw - 6, cy + 15, 6, 15);
-        } else if (cw > 20) {
-          // Multiple small cacti
-          for (let i = 0; i < Math.floor(cw / 17); i++) {
-            ctx.fillRect(cx + i * 17 + 5, cy, 8, ch);
-            ctx.fillRect(cx + i * 17, cy + 8, 6, 4);
-            ctx.fillRect(cx + i * 17 + 12, cy + 12, 6, 4);
-          }
-        } else {
-          // Single small cactus with arms
-          ctx.fillRect(cx, cy + 8, 6, 4);
-          ctx.fillRect(cx, cy + 8, 4, 12);
-          ctx.fillRect(cx + cw - 6, cy + 12, 6, 4);
-          ctx.fillRect(cx + cw - 4, cy + 12, 4, 10);
-        }
-      }
-
-      // Draw score
-      ctx.fillStyle = fgColor;
-      ctx.font = "bold 16px monospace";
-      ctx.textAlign = "right";
-
-      if (highScore > 0) {
-        ctx.fillText(`HI ${highScore.toString().padStart(5, "0")}`, CANVAS_WIDTH - 100, 25);
-      }
-      ctx.fillText(game.score.toString().padStart(5, "0"), CANVAS_WIDTH - 20, 25);
-
-      // Game over text
-      if (gameState === "gameover") {
+        // Loading screen
+        const isDark = document.documentElement.classList.contains("dark");
+        ctx.fillStyle = isDark ? "#171717" : "#ffffff";
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.fillStyle = isDark ? "#e5e5e5" : "#535353";
+        ctx.font = "16px monospace";
         ctx.textAlign = "center";
-        ctx.font = "bold 24px monospace";
-        ctx.fillText("GAME OVER", CANVAS_WIDTH / 2, 80);
-        ctx.font = "14px monospace";
-        ctx.fillText("Press Space to restart", CANVAS_WIDTH / 2, 105);
+        ctx.fillText("Loading...", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
       }
 
-      // Waiting state
-      if (gameState === "waiting") {
-        ctx.textAlign = "center";
-        ctx.font = "14px monospace";
-        ctx.fillText("Press Space to start", CANVAS_WIDTH / 2, 100);
-      }
-
+      lastTime = now;
       animationId = requestAnimationFrame(gameLoop);
     };
 
     animationId = requestAnimationFrame(gameLoop);
     return () => cancelAnimationFrame(animationId);
-  }, [gameState, highScore]);
+  }, [gameState]);
+
+  const formatTime = (dt: number) => {
+    const minutes = Math.floor(dt / 60);
+    const seconds = Math.floor(dt - (minutes * 60));
+    const tenths = Math.floor(10 * (dt - Math.floor(dt)));
+    if (minutes > 0)
+      return `${minutes}.${seconds < 10 ? "0" : ""}${seconds}.${tenths}`;
+    else
+      return `${seconds}.${tenths}`;
+  };
 
   return (
     <section className="mt-10 sm:mt-14" data-section="game">
@@ -320,7 +870,7 @@ export default function GameSection() {
 
         <div className="mb-4 flex items-center justify-between">
           <p className="text-sm text-gray-600 dark:text-neutral-400">
-            Press spacebar or tap to jump
+            Arrow keys or WASD to drive
           </p>
           {gameState === "waiting" && (
             <button
@@ -331,13 +881,13 @@ export default function GameSection() {
               Start
             </button>
           )}
-          {gameState === "gameover" && (
+          {gameState === "playing" && (
             <button
-              onClick={handleInput}
+              onClick={() => setGameState("waiting")}
               className="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200"
             >
               <RotateCcw className="size-3" />
-              Retry
+              Reset
             </button>
           )}
         </div>
@@ -351,13 +901,35 @@ export default function GameSection() {
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
             className="block w-full"
-            style={{ imageRendering: "pixelated" }}
           />
+
+          {gameState === "playing" && (
+            <div className="absolute top-2 left-2 right-2 flex justify-between items-start text-xs font-mono">
+              <div className="bg-black/50 text-white px-2 py-1 rounded">
+                {currentSpeed} mph
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <div className="bg-black/50 text-white px-2 py-1 rounded">
+                  Time: {formatTime(currentLapTime)}
+                </div>
+                {lastLapTime !== null && (
+                  <div className="bg-black/50 text-white px-2 py-1 rounded">
+                    Last: {formatTime(lastLapTime)}
+                  </div>
+                )}
+                {fastLapTime !== null && (
+                  <div className="bg-black/50 text-green-400 px-2 py-1 rounded">
+                    Best: {formatTime(fastLapTime)}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
-        {highScore > 0 && (
+        {fastLapTime !== null && gameState !== "playing" && (
           <div className="mt-2 text-right text-xs text-gray-400 dark:text-neutral-600 font-mono">
-            HI {highScore.toString().padStart(5, "0")}
+            Best Lap: {formatTime(fastLapTime)}
           </div>
         )}
       </div>

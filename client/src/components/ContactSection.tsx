@@ -106,18 +106,6 @@ export function ContactSection({ email }: ContactSectionProps) {
           Contact Me
         </h2>
 
-        {email && (
-          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-5 flex items-center gap-2">
-            <Mail className="size-4" />
-            <a
-              href={`mailto:${email}`}
-              className="underline hover:text-gray-800 dark:hover:text-neutral-200"
-            >
-              {email}
-            </a>
-          </p>
-        )}
-
         {/* Contact Form - Preline Style */}
         <form onSubmit={handleSubmit}>
           {/* Honeypot field */}
