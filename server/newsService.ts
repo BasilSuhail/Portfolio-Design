@@ -1,6 +1,8 @@
 import fs from "fs/promises";
 import fsSync from "fs";
 import path from "path";
+import { runMarketIntelligence, getHistoricalAnalysis, getSentimentHistory, type DailyAnalysis } from "./marketIntelligence";
+import { callGemini } from "./geminiPool";
 
 // Load environment variables from .env file
 function loadEnv() {
@@ -34,44 +36,36 @@ const NEWS_API_KEY = process.env.NEWS_API_KEY || "";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const DAYS_TO_KEEP = 8;
 
+// Flag to enable/disable full market intelligence analysis
+const ENABLE_MARKET_INTELLIGENCE = true;
+
 // Log API key status (not the actual keys for security)
 console.log(`NEWS_API_KEY configured: ${NEWS_API_KEY ? "Yes" : "No"}`);
 console.log(`GEMINI_API_KEY configured: ${GEMINI_API_KEY ? "Yes" : "No"}`);
 
 const newsFeedPath = path.join(process.cwd(), "news_feed.json");
 
-// Stock tickers and company names for each category
+// Consolidated queries - ONE API call per category to stay within rate limits
+// NewsAPI free tier: 100 requests/day (50 every 12 hours)
+// With 7 categories = 7 requests per day, we can sync ~7 days of news within limits
 const CATEGORIES: Record<string, Array<{ ticker: string; query: string }>> = {
   ai_compute_infra: [
-    { ticker: "NVDA", query: "NVIDIA stock OR NVIDIA GPU" },
-    { ticker: "AMD", query: "AMD stock OR AMD chips" },
-    { ticker: "GOOGL", query: "Google AI OR Alphabet stock" },
-    { ticker: "MSFT", query: "Microsoft AI OR Microsoft Azure" },
-    { ticker: "META", query: "Meta AI OR Meta stock" },
+    { ticker: "AI", query: "NVIDIA OR AMD OR Google AI OR Microsoft AI OR Meta AI" },
   ],
   fintech_regtech: [
-    { ticker: "SQ", query: "Block Inc stock OR Square payments" },
-    { ticker: "PYPL", query: "PayPal stock OR PayPal payments" },
-    { ticker: "INTU", query: "Intuit stock OR TurboTax" },
-    { ticker: "V", query: "Visa stock OR Visa payments" },
-    { ticker: "MA", query: "Mastercard stock OR Mastercard payments" },
+    { ticker: "FIN", query: "PayPal OR Visa payments OR Mastercard OR fintech" },
   ],
   rpa_enterprise_ai: [
-    { ticker: "PATH", query: "UiPath stock OR UiPath automation" },
-    { ticker: "NOW", query: "ServiceNow stock OR ServiceNow platform" },
-    { ticker: "CRM", query: "Salesforce stock OR Salesforce CRM" },
+    { ticker: "ENT", query: "ServiceNow OR Salesforce OR UiPath OR enterprise AI" },
   ],
   semi_supply_chain: [
-    { ticker: "TSM", query: "TSMC stock OR Taiwan Semiconductor" },
-    { ticker: "ASML", query: "ASML stock OR ASML lithography" },
-    { ticker: "MU", query: "Micron stock OR Micron memory" },
-    { ticker: "AMAT", query: "Applied Materials stock" },
+    { ticker: "SEMI", query: "TSMC OR ASML OR semiconductor shortage OR chip manufacturing" },
   ],
   cybersecurity: [
-    { ticker: "CRWD", query: "CrowdStrike stock OR CrowdStrike security" },
-    { ticker: "PANW", query: "Palo Alto Networks stock" },
-    { ticker: "ZS", query: "Zscaler stock OR Zscaler security" },
-    { ticker: "FTNT", query: "Fortinet stock OR Fortinet security" },
+    { ticker: "SEC", query: "CrowdStrike OR Palo Alto Networks OR cybersecurity breach" },
+  ],
+  geopolitics: [
+    { ticker: "GEO", query: "US China tech OR Taiwan semiconductor OR tech sanctions" },
   ],
 };
 
@@ -81,6 +75,7 @@ const CATEGORY_NAMES: Record<string, string> = {
   rpa_enterprise_ai: "RPA & Enterprise AI",
   semi_supply_chain: "Semiconductor Supply Chain",
   cybersecurity: "Cybersecurity",
+  geopolitics: "Geopolitics",
 };
 
 interface NewsArticle {
@@ -99,6 +94,7 @@ interface NewsDay {
     rpa_enterprise_ai: NewsArticle[];
     semi_supply_chain: NewsArticle[];
     cybersecurity: NewsArticle[];
+    geopolitics: NewsArticle[];
   };
 }
 
@@ -118,7 +114,7 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchNewsForStock(
+async function fetchNewsForCategory(
   stock: { ticker: string; query: string },
   fromDate: string,
   toDate: string
@@ -132,7 +128,8 @@ async function fetchNewsForStock(
 
   try {
     const encodedQuery = encodeURIComponent(query);
-    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=5&apiKey=${NEWS_API_KEY}`;
+    // Fetch more articles per category (10 instead of 5) since we're making fewer API calls
+    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${NEWS_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
 
@@ -200,6 +197,13 @@ async function generateBriefingWithGemini(
       ...content.cybersecurity.map((a) => `  - ${a.ticker}: ${a.headline}`)
     );
     totalArticles += content.cybersecurity.length;
+  }
+  if (content.geopolitics && content.geopolitics.length > 0) {
+    allHeadlines.push(
+      "\nGeopolitics:",
+      ...content.geopolitics.map((a) => `  - ${a.ticker}: ${a.headline}`)
+    );
+    totalArticles += content.geopolitics.length;
   }
 
   // If no actual articles were found, return a fallback
@@ -290,8 +294,8 @@ function generateFallbackBriefing(targetDate: string): string {
   return `Tech news briefing for ${date}. Check the articles below for today's key developments across AI infrastructure, fintech, enterprise automation, semiconductors, and cybersecurity.`;
 }
 
-async function generateNewsForDate(targetDate: string): Promise<NewsDay> {
-  const newsDay: NewsDay = {
+async function generateNewsForDate(targetDate: string): Promise<NewsDay & { analysis?: DailyAnalysis }> {
+  const newsDay: NewsDay & { analysis?: DailyAnalysis } = {
     date: targetDate,
     content: {
       briefing: "",
@@ -300,6 +304,7 @@ async function generateNewsForDate(targetDate: string): Promise<NewsDay> {
       rpa_enterprise_ai: [],
       semi_supply_chain: [],
       cybersecurity: [],
+      geopolitics: [],
     },
   };
 
@@ -309,25 +314,48 @@ async function generateNewsForDate(targetDate: string): Promise<NewsDay> {
   const fromDate = targetDate;
   const toDate = targetDate;
 
-  // Fetch news for each category
-  for (const [category, stocks] of Object.entries(CATEGORIES)) {
+  // Fetch news for each category - ONE API call per category (optimized for free tier)
+  for (const [category, queries] of Object.entries(CATEGORIES)) {
     console.log(`  Fetching ${CATEGORY_NAMES[category]}...`);
 
-    for (const stock of stocks) {
-      const articles = await fetchNewsForStock(stock, fromDate, toDate);
-      (newsDay.content as any)[category].push(...articles.slice(0, 2)); // Max 2 per ticker
+    // Only one query per category now
+    const articles = await fetchNewsForCategory(queries[0], fromDate, toDate);
+    (newsDay.content as any)[category] = articles.slice(0, 5); // Max 5 per category
 
-      // Rate limiting - wait 200ms between requests
-      await delay(200);
-    }
-
-    // Limit to 5 articles per category
-    (newsDay.content as any)[category] = (newsDay.content as any)[category].slice(0, 5);
+    // Rate limiting - wait 500ms between category requests
+    await delay(500);
   }
 
-  // Generate AI briefing summary using Gemini
-  console.log(`  Generating AI briefing with Gemini...`);
-  newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content, targetDate);
+  // Check if we have any articles
+  const allArticles: NewsArticle[] = [];
+  const categories: Record<string, NewsArticle[]> = {};
+  Object.keys(CATEGORIES).forEach(cat => {
+    const catArticles = (newsDay.content as any)[cat] as NewsArticle[];
+    if (catArticles.length > 0) {
+      categories[cat] = catArticles;
+      allArticles.push(...catArticles);
+    }
+  });
+
+  // Run Market Intelligence analysis if enabled and we have articles
+  if (ENABLE_MARKET_INTELLIGENCE && allArticles.length > 0) {
+    console.log(`  Running Market Intelligence analysis...`);
+    try {
+      const analysis = await runMarketIntelligence(allArticles, categories, targetDate);
+      newsDay.content.briefing = analysis.briefing;
+      newsDay.analysis = analysis;
+      console.log(`  Market Intelligence complete - ${analysis.trendReport.trends.length} trends, ${analysis.strategistReport.opportunities.length} opportunities`);
+    } catch (error: any) {
+      console.error(`  Market Intelligence failed:`, error.message);
+      // Fallback to simple briefing
+      console.log(`  Generating simple briefing as fallback...`);
+      newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content, targetDate);
+    }
+  } else {
+    // Generate simple AI briefing if Market Intelligence is disabled
+    console.log(`  Generating AI briefing with Gemini...`);
+    newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content, targetDate);
+  }
 
   return newsDay;
 }
@@ -353,7 +381,7 @@ export async function refreshNewsFeed(): Promise<{
 
   // Find existing dates in the feed
   const existingDates = new Set(newsFeed.map((item) => item.date));
-  console.log(`Existing dates in feed: ${[...existingDates].join(", ") || "none"}`);
+  console.log(`Existing dates in feed: ${Array.from(existingDates).join(", ") || "none"}`);
 
   // Find missing dates (only within the last 8 days)
   const missingDates = last8Days.filter((date) => !existingDates.has(date));
@@ -413,4 +441,84 @@ export async function refreshNewsFeed(): Promise<{
     message: `Synced ${fetchedDates.length} missing day(s)`,
     fetchedDates,
   };
+}
+
+// Export Market Intelligence functions for API routes
+export { getHistoricalAnalysis, getSentimentHistory };
+
+// Get the latest market intelligence analysis
+export async function getLatestMarketIntelligence(): Promise<{
+  analysis: Awaited<ReturnType<typeof getHistoricalAnalysis>>[0] | null;
+  sentimentHistory: Awaited<ReturnType<typeof getSentimentHistory>>;
+}> {
+  const [analyses, sentimentHistory] = await Promise.all([
+    getHistoricalAnalysis(1),
+    getSentimentHistory(30),
+  ]);
+
+  return {
+    analysis: analyses[0] || null,
+    sentimentHistory,
+  };
+}
+
+// Get full market terminal data
+export async function getMarketTerminalData(days: number = 7): Promise<{
+  analyses: Awaited<ReturnType<typeof getHistoricalAnalysis>>;
+  sentimentHistory: Awaited<ReturnType<typeof getSentimentHistory>>;
+  categoryNames: typeof CATEGORY_NAMES;
+}> {
+  // Try Supabase first
+  const [analyses, sentimentHistory] = await Promise.all([
+    getHistoricalAnalysis(days),
+    getSentimentHistory(days * 6), // ~6 categories per day
+  ]);
+
+  // If Supabase has data, return it
+  if (analyses.length > 0) {
+    return {
+      analyses,
+      sentimentHistory,
+      categoryNames: CATEGORY_NAMES,
+    };
+  }
+
+  // Fallback: Read from local news_feed.json and extract analysis data
+  console.log("[Market Terminal] No Supabase data, falling back to local news_feed.json");
+  try {
+    const newsContent = await fs.readFile(newsFeedPath, "utf-8");
+    const newsFeed = JSON.parse(newsContent) as Array<NewsDay & { analysis?: DailyAnalysis }>;
+
+    // Convert news feed to analysis format
+    const localAnalyses = newsFeed.slice(0, days).map(day => {
+      if (day.analysis) {
+        return {
+          date: day.date,
+          briefing: day.analysis.briefing || day.content.briefing,
+          trendReport: day.analysis.trendReport,
+          strategistReport: day.analysis.strategistReport,
+        };
+      }
+      // If no analysis, create a basic one from the briefing
+      return {
+        date: day.date,
+        briefing: day.content.briefing || `News briefing for ${day.date}`,
+        trendReport: null,
+        strategistReport: null,
+      };
+    });
+
+    return {
+      analyses: localAnalyses,
+      sentimentHistory: [],
+      categoryNames: CATEGORY_NAMES,
+    };
+  } catch (error) {
+    console.error("[Market Terminal] Failed to read local news feed:", error);
+    return {
+      analyses: [],
+      sentimentHistory: [],
+      categoryNames: CATEGORY_NAMES,
+    };
+  }
 }

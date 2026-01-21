@@ -25,6 +25,7 @@ interface NewsDay {
     rpa_enterprise_ai?: NewsItem[];
     semi_supply_chain?: NewsItem[];
     cybersecurity?: NewsItem[];
+    geopolitics?: NewsItem[];
   };
 }
 
@@ -66,6 +67,7 @@ export default function NewsDetail() {
     { key: "rpa_enterprise_ai", title: "RPA & Enterprise AI" },
     { key: "semi_supply_chain", title: "Semiconductor Supply Chain" },
     { key: "cybersecurity", title: "Cybersecurity" },
+    { key: "geopolitics", title: "Geopolitics" },
   ];
 
   if (loading) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { CalendarDays, RefreshCw, ArrowLeft, ArrowRight } from "lucide-react";
+import { CalendarDays, RefreshCw, ArrowLeft, ArrowRight, Activity } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/use-content";
@@ -22,6 +22,7 @@ interface NewsDay {
     rpa_enterprise_ai?: NewsItem[];
     semi_supply_chain?: NewsItem[];
     cybersecurity?: NewsItem[];
+    geopolitics?: NewsItem[];
   };
 }
 
@@ -109,14 +110,22 @@ export default function News() {
                 Daily briefings on AI, fintech, semiconductors, and cybersecurity
               </p>
             </div>
-            <LiquidGlassButton
-              onClick={handleRefresh}
-              disabled={refreshing}
-              size="sm"
-            >
-              <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-              {refreshing ? "Syncing..." : "Sync"}
-            </LiquidGlassButton>
+            <div className="flex items-center gap-2">
+              <Link href="/market-terminal">
+                <LiquidGlassButton size="sm">
+                  <Activity className="size-4" />
+                  Intelligence
+                </LiquidGlassButton>
+              </Link>
+              <LiquidGlassButton
+                onClick={handleRefresh}
+                disabled={refreshing}
+                size="sm"
+              >
+                <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+                {refreshing ? "Syncing..." : "Sync"}
+              </LiquidGlassButton>
+            </div>
           </div>
 
           {/* Error State */}

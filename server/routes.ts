@@ -470,6 +470,57 @@ export async function registerRoutes(
     }
   });
 
+  // ========================================
+  // MARKET INTELLIGENCE / TERMINAL ROUTES
+  // ========================================
+
+  // Get Market Terminal data (analyses, sentiment history, trends)
+  app.get("/api/market-terminal", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 7;
+      const data = await newsService.getMarketTerminalData(Math.min(days, 30));
+      res.json(data);
+    } catch (error: any) {
+      console.error("Failed to fetch market terminal data:", error);
+      res.status(500).json({ message: "Failed to fetch market terminal data" });
+    }
+  });
+
+  // Get latest market intelligence (single day analysis)
+  app.get("/api/market-terminal/latest", async (_req: Request, res: Response) => {
+    try {
+      const data = await newsService.getLatestMarketIntelligence();
+      res.json(data);
+    } catch (error: any) {
+      console.error("Failed to fetch latest market intelligence:", error);
+      res.status(500).json({ message: "Failed to fetch latest market intelligence" });
+    }
+  });
+
+  // Get sentiment history for charts
+  app.get("/api/market-terminal/sentiment", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const sentimentHistory = await newsService.getSentimentHistory(Math.min(days, 90));
+      res.json({ sentimentHistory });
+    } catch (error: any) {
+      console.error("Failed to fetch sentiment history:", error);
+      res.status(500).json({ message: "Failed to fetch sentiment history" });
+    }
+  });
+
+  // Get historical analyses
+  app.get("/api/market-terminal/history", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 7;
+      const analyses = await newsService.getHistoricalAnalysis(Math.min(days, 30));
+      res.json({ analyses });
+    } catch (error: any) {
+      console.error("Failed to fetch historical analyses:", error);
+      res.status(500).json({ message: "Failed to fetch historical analyses" });
+    }
+  });
+
   // Update news settings (admin)
   app.post("/api/admin/news/settings", doubleCsrfProtection, async (req: Request, res: Response) => {
     try {

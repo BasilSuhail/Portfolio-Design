@@ -261,28 +261,30 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 
-  // Start auto-refresh news service
-  if (process.env.NODE_ENV === "production") {
-    const { exec } = await import("child_process");
-    const { promisify } = await import("util");
-    const execPromise = promisify(exec);
+  // Start auto-refresh news service (works in both dev and production)
+  const newsService = await import("./newsService");
 
-    // Check every minute if it's noon to refresh news
-    setInterval(async () => {
-      const now = new Date();
-      if (now.getHours() === 12 && now.getMinutes() === 0) {
-        log('Auto-refreshing news at noon...');
-        try {
-          await execPromise('node scrape-news.js');
-          log('News auto-refresh completed');
-        } catch (error) {
-          log(`Failed to auto-refresh news: ${error}`);
-        }
-      }
-    }, 60000); // Check every minute
-
-    log('Auto-refresh news service started (daily at 12:00 PM)');
+  // Run initial sync on startup to catch any missing days
+  log('Running initial news sync on startup...');
+  try {
+    const result = await newsService.refreshNewsFeed();
+    log(`Initial news sync: ${result.message}`);
+  } catch (error) {
+    log(`Initial news sync failed: ${error}`);
   }
+
+  // Schedule periodic refresh - every 6 hours
+  setInterval(async () => {
+    log('Running scheduled news sync...');
+    try {
+      const result = await newsService.refreshNewsFeed();
+      log(`Scheduled news sync: ${result.message}`);
+    } catch (error) {
+      log(`Scheduled news sync failed: ${error}`);
+    }
+  }, 6 * 60 * 60 * 1000); // Every 6 hours
+
+  log('Auto-refresh news service started (every 6 hours)');
 })();
 
 // Export for Vercel serverless
