@@ -34,11 +34,13 @@ RUN npm ci --production
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/content.json ./content.json
-COPY --from=builder /app/gallery.json ./gallery.json
-COPY --from=builder /app/gallery_settings.json ./gallery_settings.json
 
-# Create uploads directory
-RUN mkdir -p /app/client/public/uploads
+# Create directories for persistent data (will be volume mounted)
+RUN mkdir -p /app/client/public/uploads /app/gallery-data
+
+# Copy default gallery files to gallery-data (will be overridden by volume mount)
+COPY --from=builder /app/gallery.json ./gallery-data/gallery.json
+COPY --from=builder /app/gallery_settings.json ./gallery-data/gallery_settings.json
 
 # Expose port
 EXPOSE 5000

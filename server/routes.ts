@@ -554,8 +554,10 @@ export async function registerRoutes(
   });
 
   // Gallery API endpoints
-  const galleryDataPath = path.join(process.cwd(), "gallery.json");
-  const gallerySettingsPath = path.join(process.cwd(), "gallery_settings.json");
+  // Use GALLERY_DATA_DIR env var if set (for Docker volume mounts), otherwise use current directory
+  const galleryDataDir = process.env.GALLERY_DATA_DIR || process.cwd();
+  const galleryDataPath = path.join(galleryDataDir, "gallery.json");
+  const gallerySettingsPath = path.join(galleryDataDir, "gallery_settings.json");
 
   // Get gallery
   app.get("/api/gallery", async (_req: Request, res: Response) => {

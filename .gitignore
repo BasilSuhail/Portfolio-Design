@@ -10,3 +10,6 @@ dist
 
 # Don't track gallery data (persisted via Docker volumes)
 gallery.json
+gallery_settings.json
+gallery-data/*.json
+!gallery-data/.gitkeep
