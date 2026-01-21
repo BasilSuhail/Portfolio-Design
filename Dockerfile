@@ -34,6 +34,8 @@ RUN npm ci --production
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/content.json ./content.json
+COPY --from=builder /app/gallery.json ./gallery.json
+COPY --from=builder /app/gallery_settings.json ./gallery_settings.json
 
 # Create uploads directory
 RUN mkdir -p /app/client/public/uploads

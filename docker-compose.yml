@@ -19,6 +19,9 @@ services:
       - ./uploads:/app/client/public/uploads
       # Persist content.json
       - ./content.json:/app/content.json
+      # Persist gallery data
+      - ./gallery.json:/app/gallery.json
+      - ./gallery_settings.json:/app/gallery_settings.json
     networks:
       - portfolio-network
     healthcheck:

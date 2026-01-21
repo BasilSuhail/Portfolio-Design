@@ -7,3 +7,6 @@ vite.config.ts.*
 .env.local
 .env.production
 dist
+
+# Don't track gallery data (persisted via Docker volumes)
+gallery.json
