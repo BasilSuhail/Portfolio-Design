@@ -1707,5 +1707,2499 @@
         }
       ]
     }
+  },
+  {
+    "date": "2026-01-16",
+    "content": {
+      "briefing": "Market intelligence briefing for 2026-01-16. Check the detailed analysis below for today's key developments.",
+      "ai_compute_infra": [
+        {
+          "ticker": "AI",
+          "headline": "EPA Rules Against xAI in Memphis Natural Gas Their Case as Residents Push Back Over Turbine Usage in Southaven, Mississippi",
+          "url": "https://512pixels.net/2026/01/xai-epa-memphis-southaven/",
+          "source": "512pixels.net"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Show HN: Super AI Markets – Testing Ground for AI Shopping Agent Security",
+          "url": "https://superaimarkets.com/",
+          "source": "Superaimarkets.com"
+        },
+        {
+          "ticker": "AI",
+          "headline": "OpenAI to start testing ChatGPT ads across free, Go tiers",
+          "url": "https://siliconangle.com/2026/01/16/openai-start-testing-chatgpt-ads-across-free-go-tiers/",
+          "source": "SiliconANGLE News"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Timing: See Your Work, Not Just Your Schedule (Sponsor)",
+          "url": "https://www.macsparky.com/blog/2026/01/timing-see-your-work-not-just-your-schedule-sponsor/",
+          "source": "Macsparky.com"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Electric Rate Shock Triggers White House Crackdown on Data Centers",
+          "url": "https://www.pymnts.com/news/artificial-intelligence/2026/electric-rate-shock-triggers-white-house-crackdown-on-data-centers/",
+          "source": "pymnts.com"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "FIN",
+          "headline": "Introducing the new and confusing Bilt 2.0 | Frequent Miler on the Air Ep341 | 1-16-26",
+          "url": "https://frequentmiler.com/introducing-the-new-and-confusing-bilt-2-0-frequent-miler-on-the-air-ep341-1-16-26/",
+          "source": "Frequentmiler.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Iran’s Three-Body Problem",
+          "url": "https://www.nplusonemag.com/online-only/online-only/irans-three-body-problem/",
+          "source": "Nplusonemag.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "US judge says visa warranted for ‘mistake’ of deporting college student",
+          "url": "https://www.internazionale.it/ultime-notizie-reuters/2026/01/17/us-judge-says-visa-warranted-for-mistake-of-deporting-college-student",
+          "source": "Internazionale.it"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "New Charges For a Political Survivor: Timoshenko Entangled in Vote-Buying Probe Amid Kyiv Crisis",
+          "url": "https://www.shtfplan.com/headline-news/new-charges-for-a-political-survivor-timoshenko-entangled-in-vote-buying-probe-amid-kyiv-crisis",
+          "source": "Shtfplan.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Wages won't be garnished for student loan borrowers in default, Trump administration says in policy reversal",
+          "url": "https://www.pbs.org/newshour/education/wages-wont-be-garnished-for-student-loan-borrowers-in-default-trump-administration-says-in-policy-reversal",
+          "source": "PBS"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "ENT",
+          "headline": "EPA Rules Against xAI in Memphis Natural Gas Their Case as Residents Push Back Over Turbine Usage in Southaven, Mississippi",
+          "url": "https://512pixels.net/2026/01/xai-epa-memphis-southaven/",
+          "source": "512pixels.net"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Show HN: Super AI Markets – Testing Ground for AI Shopping Agent Security",
+          "url": "https://superaimarkets.com/",
+          "source": "Superaimarkets.com"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "OpenAI to start testing ChatGPT ads across free, Go tiers",
+          "url": "https://siliconangle.com/2026/01/16/openai-start-testing-chatgpt-ads-across-free-go-tiers/",
+          "source": "SiliconANGLE News"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Timing: See Your Work, Not Just Your Schedule (Sponsor)",
+          "url": "https://www.macsparky.com/blog/2026/01/timing-see-your-work-not-just-your-schedule-sponsor/",
+          "source": "Macsparky.com"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Electric Rate Shock Triggers White House Crackdown on Data Centers",
+          "url": "https://www.pymnts.com/news/artificial-intelligence/2026/electric-rate-shock-triggers-white-house-crackdown-on-data-centers/",
+          "source": "pymnts.com"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "SEMI",
+          "headline": "Electric Rate Shock Triggers White House Crackdown on Data Centers",
+          "url": "https://www.pymnts.com/news/artificial-intelligence/2026/electric-rate-shock-triggers-white-house-crackdown-on-data-centers/",
+          "source": "pymnts.com"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Canon eyes 2027 inkjet wafer planarization launch",
+          "url": "https://www.digitimes.com/news/a20260115PD228/canon-wafer-nanoimprint-technology-2027.html",
+          "source": "Digitimes"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Packaging and testing cluster expected to emerge as TSMC Arizona GigaFab expands",
+          "url": "https://www.digitimes.com/news/a20260116PD206/tsmc-testing-packaging-arizona-gigafab.html",
+          "source": "Digitimes"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Toward strategic self-reliance: Israel beyond US military aid - analysis",
+          "url": "https://freerepublic.com/focus/f-news/4362513/posts",
+          "source": "Freerepublic.com"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Iran’s Three-Body Problem",
+          "url": "https://www.nplusonemag.com/online-only/online-only/irans-three-body-problem/",
+          "source": "Nplusonemag.com"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "SEC",
+          "headline": "Grubhub says hackers stole company data in recent breach - here's what we know",
+          "url": "https://www.techradar.com/pro/security/grubhub-says-hackers-stole-company-data-in-recent-breach-heres-what-we-know",
+          "source": "TechRadar"
+        }
+      ],
+      "geopolitics": [
+        {
+          "ticker": "GEO",
+          "headline": "Iran’s regime may have one chance to save itself",
+          "url": "https://www.vox.com/politics/475497/iran-regime-reform-khamenei",
+          "source": "Vox"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Dmitry Trenin: Russia and the EU drift toward an undeclared war",
+          "url": "https://www.rt.com/news/631057-dmitry-trenin-russia-and-eu-2026/",
+          "source": "RT"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "The Irish Times view on Donald Trump’s foreign policy: Washington goes rogue",
+          "url": "https://www.irishtimes.com/opinion/editorials/2026/01/16/the-irish-times-view-on-donald-trumps-foreign-policy-washington-goes-rogue/",
+          "source": "The Irish Times"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "What next for Iran's Supreme Leader?",
+          "url": "https://www.bbc.com/news/articles/cx2ygl4lpl1o",
+          "source": "BBC News"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "India works to protect Chabahar Port after waiver ends",
+          "url": "https://economictimes.indiatimes.com/news/economy/foreign-trade/india-works-to-protect-chabahar-port-after-waiver-ends/articleshow/126589372.cms",
+          "source": "The Times of India"
+        }
+      ]
+    },
+    "analysis": {
+      "date": "2026-01-16",
+      "briefing": "Market intelligence briefing for 2026-01-16. Check the detailed analysis below for today's key developments.",
+      "trendReport": {
+        "trends": [
+          {
+            "name": "Market Activity",
+            "sectors": [
+              "ai_compute_infra",
+              "fintech_regtech",
+              "rpa_enterprise_ai",
+              "semi_supply_chain",
+              "cybersecurity",
+              "geopolitics"
+            ],
+            "momentum": "stable",
+            "analysis": "Analysis temporarily unavailable. Review individual category headlines for insights.",
+            "confidence": 50
+          }
+        ],
+        "crossCategoryInsights": "Market intelligence briefing for 2026-01-16. Check the detailed analysis below for today's key developments."
+      },
+      "strategistReport": {
+        "opportunities": [],
+        "risks": [],
+        "marketSentiment": {
+          "overall": 0,
+          "byCategory": {
+            "ai_compute_infra": 0,
+            "fintech_regtech": 0,
+            "rpa_enterprise_ai": 0,
+            "semi_supply_chain": 0,
+            "cybersecurity": 0,
+            "geopolitics": 0
+          }
+        }
+      },
+      "enrichedArticles": [
+        {
+          "ticker": "AI",
+          "headline": "EPA Rules Against xAI in Memphis Natural Gas Their Case as Residents Push Back Over Turbine Usage in Southaven, Mississippi",
+          "url": "https://512pixels.net/2026/01/xai-epa-memphis-southaven/",
+          "source": "512pixels.net",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Show HN: Super AI Markets – Testing Ground for AI Shopping Agent Security",
+          "url": "https://superaimarkets.com/",
+          "source": "Superaimarkets.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "OpenAI to start testing ChatGPT ads across free, Go tiers",
+          "url": "https://siliconangle.com/2026/01/16/openai-start-testing-chatgpt-ads-across-free-go-tiers/",
+          "source": "SiliconANGLE News",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Timing: See Your Work, Not Just Your Schedule (Sponsor)",
+          "url": "https://www.macsparky.com/blog/2026/01/timing-see-your-work-not-just-your-schedule-sponsor/",
+          "source": "Macsparky.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Electric Rate Shock Triggers White House Crackdown on Data Centers",
+          "url": "https://www.pymnts.com/news/artificial-intelligence/2026/electric-rate-shock-triggers-white-house-crackdown-on-data-centers/",
+          "source": "pymnts.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Introducing the new and confusing Bilt 2.0 | Frequent Miler on the Air Ep341 | 1-16-26",
+          "url": "https://frequentmiler.com/introducing-the-new-and-confusing-bilt-2-0-frequent-miler-on-the-air-ep341-1-16-26/",
+          "source": "Frequentmiler.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Iran’s Three-Body Problem",
+          "url": "https://www.nplusonemag.com/online-only/online-only/irans-three-body-problem/",
+          "source": "Nplusonemag.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "US judge says visa warranted for ‘mistake’ of deporting college student",
+          "url": "https://www.internazionale.it/ultime-notizie-reuters/2026/01/17/us-judge-says-visa-warranted-for-mistake-of-deporting-college-student",
+          "source": "Internazionale.it",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "New Charges For a Political Survivor: Timoshenko Entangled in Vote-Buying Probe Amid Kyiv Crisis",
+          "url": "https://www.shtfplan.com/headline-news/new-charges-for-a-political-survivor-timoshenko-entangled-in-vote-buying-probe-amid-kyiv-crisis",
+          "source": "Shtfplan.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Wages won't be garnished for student loan borrowers in default, Trump administration says in policy reversal",
+          "url": "https://www.pbs.org/newshour/education/wages-wont-be-garnished-for-student-loan-borrowers-in-default-trump-administration-says-in-policy-reversal",
+          "source": "PBS",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "EPA Rules Against xAI in Memphis Natural Gas Their Case as Residents Push Back Over Turbine Usage in Southaven, Mississippi",
+          "url": "https://512pixels.net/2026/01/xai-epa-memphis-southaven/",
+          "source": "512pixels.net",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Show HN: Super AI Markets – Testing Ground for AI Shopping Agent Security",
+          "url": "https://superaimarkets.com/",
+          "source": "Superaimarkets.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "OpenAI to start testing ChatGPT ads across free, Go tiers",
+          "url": "https://siliconangle.com/2026/01/16/openai-start-testing-chatgpt-ads-across-free-go-tiers/",
+          "source": "SiliconANGLE News",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Timing: See Your Work, Not Just Your Schedule (Sponsor)",
+          "url": "https://www.macsparky.com/blog/2026/01/timing-see-your-work-not-just-your-schedule-sponsor/",
+          "source": "Macsparky.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Electric Rate Shock Triggers White House Crackdown on Data Centers",
+          "url": "https://www.pymnts.com/news/artificial-intelligence/2026/electric-rate-shock-triggers-white-house-crackdown-on-data-centers/",
+          "source": "pymnts.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Electric Rate Shock Triggers White House Crackdown on Data Centers",
+          "url": "https://www.pymnts.com/news/artificial-intelligence/2026/electric-rate-shock-triggers-white-house-crackdown-on-data-centers/",
+          "source": "pymnts.com",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Canon eyes 2027 inkjet wafer planarization launch",
+          "url": "https://www.digitimes.com/news/a20260115PD228/canon-wafer-nanoimprint-technology-2027.html",
+          "source": "Digitimes",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Packaging and testing cluster expected to emerge as TSMC Arizona GigaFab expands",
+          "url": "https://www.digitimes.com/news/a20260116PD206/tsmc-testing-packaging-arizona-gigafab.html",
+          "source": "Digitimes",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Toward strategic self-reliance: Israel beyond US military aid - analysis",
+          "url": "https://freerepublic.com/focus/f-news/4362513/posts",
+          "source": "Freerepublic.com",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Iran’s Three-Body Problem",
+          "url": "https://www.nplusonemag.com/online-only/online-only/irans-three-body-problem/",
+          "source": "Nplusonemag.com",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Grubhub says hackers stole company data in recent breach - here's what we know",
+          "url": "https://www.techradar.com/pro/security/grubhub-says-hackers-stole-company-data-in-recent-breach-heres-what-we-know",
+          "source": "TechRadar",
+          "category": "cybersecurity",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Iran’s regime may have one chance to save itself",
+          "url": "https://www.vox.com/politics/475497/iran-regime-reform-khamenei",
+          "source": "Vox",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Dmitry Trenin: Russia and the EU drift toward an undeclared war",
+          "url": "https://www.rt.com/news/631057-dmitry-trenin-russia-and-eu-2026/",
+          "source": "RT",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "The Irish Times view on Donald Trump’s foreign policy: Washington goes rogue",
+          "url": "https://www.irishtimes.com/opinion/editorials/2026/01/16/the-irish-times-view-on-donald-trumps-foreign-policy-washington-goes-rogue/",
+          "source": "The Irish Times",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "What next for Iran's Supreme Leader?",
+          "url": "https://www.bbc.com/news/articles/cx2ygl4lpl1o",
+          "source": "BBC News",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "India works to protect Chabahar Port after waiver ends",
+          "url": "https://economictimes.indiatimes.com/news/economy/foreign-trade/india-works-to-protect-chabahar-port-after-waiver-ends/articleshow/126589372.cms",
+          "source": "The Times of India",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-15",
+    "content": {
+      "briefing": "Market intelligence briefing for 2026-01-15. Check the detailed analysis below for today's key developments.",
+      "ai_compute_infra": [
+        {
+          "ticker": "AI",
+          "headline": "Predictive AI Bridges the Security Response Gap in Automated Attacks",
+          "url": "https://www.pymnts.com/artificial-intelligence-2/2026/predictive-ai-bridges-the-security-response-gap-in-automated-attacks/",
+          "source": "pymnts.com"
+        },
+        {
+          "ticker": "AI",
+          "headline": "wyrmx-cli 1.0.116",
+          "url": "https://pypi.org/project/wyrmx-cli/1.0.116/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "AI",
+          "headline": "OpenAI tells investors to brace for 'deliberately outlandish' claims from Musk ahead of trial",
+          "url": "https://www.cnbc.com/2026/01/15/openai-to-investors-expect-deliberately-outlandish-claims-from-musk.html",
+          "source": "CNBC"
+        },
+        {
+          "ticker": "AI",
+          "headline": "AI's next bottleneck: Power infrastructure in Taiwan",
+          "url": "https://www.digitimes.com/news/a20260114PD253/infrastructure-ces-taiwan-2026-data-center.html",
+          "source": "Digitimes"
+        },
+        {
+          "ticker": "AI",
+          "headline": "US, Taiwan reach trade deal focused on semiconductors, US Commerce Department says",
+          "url": "https://finance.yahoo.com/news/us-taiwan-reach-trade-deal-192420940.html",
+          "source": "Yahoo Entertainment"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "FIN",
+          "headline": "Crypto card payments overtake P2P stablecoin transfers: Artemis report",
+          "url": "https://ambcrypto.com/?p=562103",
+          "source": "Ambcrypto.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Best Sportsbook Promos for the NFL Divisional Round",
+          "url": "https://www.foxsports.com/stories/betting/best-sportsbook-promos-nfl-divisional-round",
+          "source": "Fox Sports"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "VAT on bank services not newly introduced – FG",
+          "url": "https://punchng.com/vat-on-bank-services-not-newly-introduced-fg/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "US names major sporting events other than World Cup, Olympics exempt from Trump visa ban",
+          "url": "https://www.bostonherald.com/2026/01/15/trump-visas-sports-events/",
+          "source": "Boston Herald"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Trump, Infantino and World Cup 2026",
+          "url": "https://punchng.com/trump-infantino-and-world-cup-2026/",
+          "source": "The Punch"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "ENT",
+          "headline": "Predictive AI Bridges the Security Response Gap in Automated Attacks",
+          "url": "https://www.pymnts.com/artificial-intelligence-2/2026/predictive-ai-bridges-the-security-response-gap-in-automated-attacks/",
+          "source": "pymnts.com"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "wyrmx-cli 1.0.116",
+          "url": "https://pypi.org/project/wyrmx-cli/1.0.116/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "AI's next bottleneck: Power infrastructure in Taiwan",
+          "url": "https://www.digitimes.com/news/a20260114PD253/infrastructure-ces-taiwan-2026-data-center.html",
+          "source": "Digitimes"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "OpenAI tells investors to brace for 'deliberately outlandish' claims from Musk ahead of trial",
+          "url": "https://www.cnbc.com/2026/01/15/openai-to-investors-expect-deliberately-outlandish-claims-from-musk.html",
+          "source": "CNBC"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "US, Taiwan reach trade deal focused on semiconductors, US Commerce Department says",
+          "url": "https://finance.yahoo.com/news/us-taiwan-reach-trade-deal-192420940.html",
+          "source": "Yahoo Entertainment"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "SEMI",
+          "headline": "US, Taiwan reach trade deal focused on semiconductors, US Commerce Department says",
+          "url": "https://finance.yahoo.com/news/us-taiwan-reach-trade-deal-192420940.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "White House says 25% semiconductor tariffs a 'phase one' action",
+          "url": "https://www.channelnewsasia.com/business/white-house-says-25-semiconductor-tariffs-phase-one-action-5862656",
+          "source": "CNA"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Eddie Bauer Clearance Sale on Select Apparel & Gear: 50% Off + Free S/H on $75+",
+          "url": "https://slickdeals.net/f/19093870-eddie-bauer-clearance-sale-on-select-apparel-gear-50-off-free-s-h-on-75",
+          "source": "Slickdeals.net"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "US and Taiwan sign $250B trade deal, cutting tariffs on Taiwanese goods",
+          "url": "https://www.bostonherald.com/2026/01/15/taiwan-tsmc/",
+          "source": "Boston Herald"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Acme United Corporation Acquires the Assets of My Medic",
+          "url": "https://www.globenewswire.com/news-release/2026/01/15/3220054/0/en/Acme-United-Corporation-Acquires-the-Assets-of-My-Medic.html",
+          "source": "GlobeNewswire"
+        }
+      ],
+      "cybersecurity": [],
+      "geopolitics": [
+        {
+          "ticker": "GEO",
+          "headline": "Is the Iran Crisis Over?",
+          "url": "http://foreignpolicy.com/2026/01/15/iran-crisis-protest-trump-middle-east-greenland-gaza/",
+          "source": "Foreign Policy"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "US sending military assets to Middle East as Trump weighs Iran strike: sources",
+          "url": "https://www.foxnews.com/world/us-sending-military-assets-middle-east-trump-weighs-iran-strike-sources-say",
+          "source": "Fox News"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Oil Tanker Rates Jump as US Push Into Venezuela Shifts Flows",
+          "url": "https://gcaptain.com/oil-tanker-rates-jump-as-us-push-into-venezuela-shifts-flows/",
+          "source": "gcaptain.com"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why China Is Unlikely to Rush to Iran’s Defense",
+          "url": "https://oilprice.com/Geopolitics/Middle-East/Why-China-Is-Unlikely-to-Rush-to-Irans-Defense.html",
+          "source": "OilPrice.com"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Russia Oil and Gas Revenue Dives to Five-Year Low in Budget Hit",
+          "url": "https://financialpost.com/pmn/business-pmn/russia-oil-and-gas-revenue-dives-to-five-year-low-in-budget-hit",
+          "source": "Financial Post"
+        }
+      ]
+    },
+    "analysis": {
+      "date": "2026-01-15",
+      "briefing": "Market intelligence briefing for 2026-01-15. Check the detailed analysis below for today's key developments.",
+      "trendReport": {
+        "trends": [
+          {
+            "name": "Market Activity",
+            "sectors": [
+              "ai_compute_infra",
+              "fintech_regtech",
+              "rpa_enterprise_ai",
+              "semi_supply_chain",
+              "geopolitics"
+            ],
+            "momentum": "stable",
+            "analysis": "Analysis temporarily unavailable. Review individual category headlines for insights.",
+            "confidence": 50
+          }
+        ],
+        "crossCategoryInsights": "Market intelligence briefing for 2026-01-15. Check the detailed analysis below for today's key developments."
+      },
+      "strategistReport": {
+        "opportunities": [],
+        "risks": [],
+        "marketSentiment": {
+          "overall": 0,
+          "byCategory": {
+            "ai_compute_infra": 0,
+            "fintech_regtech": 0,
+            "rpa_enterprise_ai": 0,
+            "semi_supply_chain": 0,
+            "geopolitics": 0
+          }
+        }
+      },
+      "enrichedArticles": [
+        {
+          "ticker": "AI",
+          "headline": "Predictive AI Bridges the Security Response Gap in Automated Attacks",
+          "url": "https://www.pymnts.com/artificial-intelligence-2/2026/predictive-ai-bridges-the-security-response-gap-in-automated-attacks/",
+          "source": "pymnts.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "wyrmx-cli 1.0.116",
+          "url": "https://pypi.org/project/wyrmx-cli/1.0.116/",
+          "source": "Pypi.org",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "OpenAI tells investors to brace for 'deliberately outlandish' claims from Musk ahead of trial",
+          "url": "https://www.cnbc.com/2026/01/15/openai-to-investors-expect-deliberately-outlandish-claims-from-musk.html",
+          "source": "CNBC",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "AI's next bottleneck: Power infrastructure in Taiwan",
+          "url": "https://www.digitimes.com/news/a20260114PD253/infrastructure-ces-taiwan-2026-data-center.html",
+          "source": "Digitimes",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "US, Taiwan reach trade deal focused on semiconductors, US Commerce Department says",
+          "url": "https://finance.yahoo.com/news/us-taiwan-reach-trade-deal-192420940.html",
+          "source": "Yahoo Entertainment",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Crypto card payments overtake P2P stablecoin transfers: Artemis report",
+          "url": "https://ambcrypto.com/?p=562103",
+          "source": "Ambcrypto.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Best Sportsbook Promos for the NFL Divisional Round",
+          "url": "https://www.foxsports.com/stories/betting/best-sportsbook-promos-nfl-divisional-round",
+          "source": "Fox Sports",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "VAT on bank services not newly introduced – FG",
+          "url": "https://punchng.com/vat-on-bank-services-not-newly-introduced-fg/",
+          "source": "The Punch",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "US names major sporting events other than World Cup, Olympics exempt from Trump visa ban",
+          "url": "https://www.bostonherald.com/2026/01/15/trump-visas-sports-events/",
+          "source": "Boston Herald",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Trump, Infantino and World Cup 2026",
+          "url": "https://punchng.com/trump-infantino-and-world-cup-2026/",
+          "source": "The Punch",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Predictive AI Bridges the Security Response Gap in Automated Attacks",
+          "url": "https://www.pymnts.com/artificial-intelligence-2/2026/predictive-ai-bridges-the-security-response-gap-in-automated-attacks/",
+          "source": "pymnts.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "wyrmx-cli 1.0.116",
+          "url": "https://pypi.org/project/wyrmx-cli/1.0.116/",
+          "source": "Pypi.org",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "AI's next bottleneck: Power infrastructure in Taiwan",
+          "url": "https://www.digitimes.com/news/a20260114PD253/infrastructure-ces-taiwan-2026-data-center.html",
+          "source": "Digitimes",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "OpenAI tells investors to brace for 'deliberately outlandish' claims from Musk ahead of trial",
+          "url": "https://www.cnbc.com/2026/01/15/openai-to-investors-expect-deliberately-outlandish-claims-from-musk.html",
+          "source": "CNBC",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "US, Taiwan reach trade deal focused on semiconductors, US Commerce Department says",
+          "url": "https://finance.yahoo.com/news/us-taiwan-reach-trade-deal-192420940.html",
+          "source": "Yahoo Entertainment",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "US, Taiwan reach trade deal focused on semiconductors, US Commerce Department says",
+          "url": "https://finance.yahoo.com/news/us-taiwan-reach-trade-deal-192420940.html",
+          "source": "Yahoo Entertainment",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "White House says 25% semiconductor tariffs a 'phase one' action",
+          "url": "https://www.channelnewsasia.com/business/white-house-says-25-semiconductor-tariffs-phase-one-action-5862656",
+          "source": "CNA",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Eddie Bauer Clearance Sale on Select Apparel & Gear: 50% Off + Free S/H on $75+",
+          "url": "https://slickdeals.net/f/19093870-eddie-bauer-clearance-sale-on-select-apparel-gear-50-off-free-s-h-on-75",
+          "source": "Slickdeals.net",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "US and Taiwan sign $250B trade deal, cutting tariffs on Taiwanese goods",
+          "url": "https://www.bostonherald.com/2026/01/15/taiwan-tsmc/",
+          "source": "Boston Herald",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Acme United Corporation Acquires the Assets of My Medic",
+          "url": "https://www.globenewswire.com/news-release/2026/01/15/3220054/0/en/Acme-United-Corporation-Acquires-the-Assets-of-My-Medic.html",
+          "source": "GlobeNewswire",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Is the Iran Crisis Over?",
+          "url": "http://foreignpolicy.com/2026/01/15/iran-crisis-protest-trump-middle-east-greenland-gaza/",
+          "source": "Foreign Policy",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "US sending military assets to Middle East as Trump weighs Iran strike: sources",
+          "url": "https://www.foxnews.com/world/us-sending-military-assets-middle-east-trump-weighs-iran-strike-sources-say",
+          "source": "Fox News",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Oil Tanker Rates Jump as US Push Into Venezuela Shifts Flows",
+          "url": "https://gcaptain.com/oil-tanker-rates-jump-as-us-push-into-venezuela-shifts-flows/",
+          "source": "gcaptain.com",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why China Is Unlikely to Rush to Iran’s Defense",
+          "url": "https://oilprice.com/Geopolitics/Middle-East/Why-China-Is-Unlikely-to-Rush-to-Irans-Defense.html",
+          "source": "OilPrice.com",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Russia Oil and Gas Revenue Dives to Five-Year Low in Budget Hit",
+          "url": "https://financialpost.com/pmn/business-pmn/russia-oil-and-gas-revenue-dives-to-five-year-low-in-budget-hit",
+          "source": "Financial Post",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-14",
+    "content": {
+      "briefing": "Market intelligence briefing for 2026-01-14. Check the detailed analysis below for today's key developments.",
+      "ai_compute_infra": [
+        {
+          "ticker": "AI",
+          "headline": "Elon Musk's X to block AI tool Grok from undressing images of real people after backlash",
+          "url": "https://www.bbc.com/news/articles/ce8gz8g2qnlo",
+          "source": "BBC News"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "AI",
+          "headline": "agent-framework-azure-ai-search 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-azure-ai-search/1.0.0b260114/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "AI",
+          "headline": "agent-framework 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework/1.0.0b260114/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "AI",
+          "headline": "agent-framework-core 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-core/1.0.0b260114/",
+          "source": "Pypi.org"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "FIN",
+          "headline": "New DHS rule aims to shorten visa wait times abroad for religious workers serving US congregations",
+          "url": "https://www.bostonherald.com/2026/01/14/religious-workers-visa/",
+          "source": "Boston Herald"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "EFCC witness links suspect to global crypto scam syndicate",
+          "url": "https://punchng.com/efcc-witness-links-suspect-to-global-crypto-scam-syndicate/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "PalmPay, Premier Cool unveil N100m nationwide consumer promo",
+          "url": "https://punchng.com/palmpay-premier-cool-unveil-n100m-nationwide-consumer-promo/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Fees squeeze: When university education becomes a luxury",
+          "url": "https://punchng.com/fees-squeeze-when-university-education-becomes-a-luxury/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Legal Tax Defense Announces Strategies to Protect Social Security Benefits From Garnishment",
+          "url": "https://www.globenewswire.com/news-release/2026/01/14/3219187/0/en/Legal-Tax-Defense-Announces-Strategies-to-Protect-Social-Security-Benefits-From-Garnishment.html",
+          "source": "GlobeNewswire"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "ENT",
+          "headline": "Elon Musk's X to block AI tool Grok from undressing images of real people after backlash",
+          "url": "https://www.bbc.com/news/articles/ce8gz8g2qnlo",
+          "source": "BBC News"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "agent-framework-azure-ai-search 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-azure-ai-search/1.0.0b260114/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "agent-framework 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework/1.0.0b260114/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "agent-framework-core 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-core/1.0.0b260114/",
+          "source": "Pypi.org"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "SEMI",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Rocket Lab shares surge to all-time high after $1.4b US military contract and Secretary of Defence visit",
+          "url": "https://www.nzherald.co.nz/business/rocket-lab-shares-surge-to-all-time-high-after-14b-us-military-contract-and-secretary-of-defence-visit/premium/AJ4OKH4F7BHWPNE76JN672KBYY/",
+          "source": "New Zealand Herald"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "RCCG LP35 2026 Economic Summit charts tax, investment roadmap",
+          "url": "https://punchng.com/rccg-lp35-2026-economic-summit-charts-tax-investment-roadmap/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Make local goods cheaper",
+          "url": "https://punchng.com/make-local-goods-cheaper/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "AI transforms biomedical industry with new gene therapies and robotic manufacturing",
+          "url": "https://www.digitimes.com/news/a20260114PD227/biomedical-manufacturing-development-ceo-nvidia.html",
+          "source": "Digitimes"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "SEC",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq futures slip amid upbeat bank earnings, Iran fears",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-slip-amid-upbeat-bank-earnings-iran-fears-000622380.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq slide amid upbeat bank earnings, Iran fears",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-resume-slide-as-more-bank-earnings-fresh-economic-data-roll-in-000622793.html",
+          "source": "Yahoo Entertainment"
+        }
+      ],
+      "geopolitics": [
+        {
+          "ticker": "GEO",
+          "headline": "From behind bars, Aung San Suu Kyi casts a long shadow over Myanmar",
+          "url": "https://www.bbc.com/news/articles/c3r197we875o",
+          "source": "BBC News"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Venezuela’s dark fleet of oil tankers emerges after Maduro’s capture",
+          "url": "https://financialpost.com/commodities/energy/oil-gas/venezuelas-dark-fleet-oil-tankers-emerges",
+          "source": "Financial Post"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Trump is “Crashing the American Economy” Sharp Decline in Trade Volume from China",
+          "url": "https://www.globalresearch.ca/us-economy-faltering-trump-organization-profits/5912216",
+          "source": "Globalresearch.ca"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why Iran's fate means more to oil markets than Venezuela's",
+          "url": "https://www.dw.com/en/why-irans-fate-means-more-to-oil-markets-than-venezuelas/a-75507250",
+          "source": "DW (English)"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why Is Putin Silent on Venezuela?",
+          "url": "https://www.project-syndicate.org/commentary/what-putin-thinks-of-the-us-operation-in-venezuela-by-nina-l-khrushcheva-2026-01",
+          "source": "Project Syndicate"
+        }
+      ]
+    },
+    "analysis": {
+      "date": "2026-01-14",
+      "briefing": "Market intelligence briefing for 2026-01-14. Check the detailed analysis below for today's key developments.",
+      "trendReport": {
+        "trends": [
+          {
+            "name": "Market Activity",
+            "sectors": [
+              "ai_compute_infra",
+              "fintech_regtech",
+              "rpa_enterprise_ai",
+              "semi_supply_chain",
+              "cybersecurity",
+              "geopolitics"
+            ],
+            "momentum": "stable",
+            "analysis": "Analysis temporarily unavailable. Review individual category headlines for insights.",
+            "confidence": 50
+          }
+        ],
+        "crossCategoryInsights": "Market intelligence briefing for 2026-01-14. Check the detailed analysis below for today's key developments."
+      },
+      "strategistReport": {
+        "opportunities": [],
+        "risks": [],
+        "marketSentiment": {
+          "overall": 0,
+          "byCategory": {
+            "ai_compute_infra": 0,
+            "fintech_regtech": 0,
+            "rpa_enterprise_ai": 0,
+            "semi_supply_chain": 0,
+            "cybersecurity": 0,
+            "geopolitics": 0
+          }
+        }
+      },
+      "enrichedArticles": [
+        {
+          "ticker": "AI",
+          "headline": "Elon Musk's X to block AI tool Grok from undressing images of real people after backlash",
+          "url": "https://www.bbc.com/news/articles/ce8gz8g2qnlo",
+          "source": "BBC News",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "agent-framework-azure-ai-search 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-azure-ai-search/1.0.0b260114/",
+          "source": "Pypi.org",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "agent-framework 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework/1.0.0b260114/",
+          "source": "Pypi.org",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "agent-framework-core 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-core/1.0.0b260114/",
+          "source": "Pypi.org",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "New DHS rule aims to shorten visa wait times abroad for religious workers serving US congregations",
+          "url": "https://www.bostonherald.com/2026/01/14/religious-workers-visa/",
+          "source": "Boston Herald",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "EFCC witness links suspect to global crypto scam syndicate",
+          "url": "https://punchng.com/efcc-witness-links-suspect-to-global-crypto-scam-syndicate/",
+          "source": "The Punch",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "PalmPay, Premier Cool unveil N100m nationwide consumer promo",
+          "url": "https://punchng.com/palmpay-premier-cool-unveil-n100m-nationwide-consumer-promo/",
+          "source": "The Punch",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Fees squeeze: When university education becomes a luxury",
+          "url": "https://punchng.com/fees-squeeze-when-university-education-becomes-a-luxury/",
+          "source": "The Punch",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Legal Tax Defense Announces Strategies to Protect Social Security Benefits From Garnishment",
+          "url": "https://www.globenewswire.com/news-release/2026/01/14/3219187/0/en/Legal-Tax-Defense-Announces-Strategies-to-Protect-Social-Security-Benefits-From-Garnishment.html",
+          "source": "GlobeNewswire",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Elon Musk's X to block AI tool Grok from undressing images of real people after backlash",
+          "url": "https://www.bbc.com/news/articles/ce8gz8g2qnlo",
+          "source": "BBC News",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "agent-framework-azure-ai-search 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-azure-ai-search/1.0.0b260114/",
+          "source": "Pypi.org",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "agent-framework 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework/1.0.0b260114/",
+          "source": "Pypi.org",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "agent-framework-core 1.0.0b260114",
+          "url": "https://pypi.org/project/agent-framework-core/1.0.0b260114/",
+          "source": "Pypi.org",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Stock market today: Nasdaq futures lead Dow, S&P 500 higher as TSMC's strong outlook buoys AI hopes",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-futures-lead-dow-sp-500-higher-as-tsmcs-strong-outlook-buoys-ai-hopes-235521821.html",
+          "source": "Yahoo Entertainment",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Rocket Lab shares surge to all-time high after $1.4b US military contract and Secretary of Defence visit",
+          "url": "https://www.nzherald.co.nz/business/rocket-lab-shares-surge-to-all-time-high-after-14b-us-military-contract-and-secretary-of-defence-visit/premium/AJ4OKH4F7BHWPNE76JN672KBYY/",
+          "source": "New Zealand Herald",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "RCCG LP35 2026 Economic Summit charts tax, investment roadmap",
+          "url": "https://punchng.com/rccg-lp35-2026-economic-summit-charts-tax-investment-roadmap/",
+          "source": "The Punch",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Make local goods cheaper",
+          "url": "https://punchng.com/make-local-goods-cheaper/",
+          "source": "The Punch",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "AI transforms biomedical industry with new gene therapies and robotic manufacturing",
+          "url": "https://www.digitimes.com/news/a20260114PD227/biomedical-manufacturing-development-ceo-nvidia.html",
+          "source": "Digitimes",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq futures slip amid upbeat bank earnings, Iran fears",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-slip-amid-upbeat-bank-earnings-iran-fears-000622380.html",
+          "source": "Yahoo Entertainment",
+          "category": "cybersecurity",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq slide amid upbeat bank earnings, Iran fears",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-resume-slide-as-more-bank-earnings-fresh-economic-data-roll-in-000622793.html",
+          "source": "Yahoo Entertainment",
+          "category": "cybersecurity",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "From behind bars, Aung San Suu Kyi casts a long shadow over Myanmar",
+          "url": "https://www.bbc.com/news/articles/c3r197we875o",
+          "source": "BBC News",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Venezuela’s dark fleet of oil tankers emerges after Maduro’s capture",
+          "url": "https://financialpost.com/commodities/energy/oil-gas/venezuelas-dark-fleet-oil-tankers-emerges",
+          "source": "Financial Post",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Trump is “Crashing the American Economy” Sharp Decline in Trade Volume from China",
+          "url": "https://www.globalresearch.ca/us-economy-faltering-trump-organization-profits/5912216",
+          "source": "Globalresearch.ca",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why Iran's fate means more to oil markets than Venezuela's",
+          "url": "https://www.dw.com/en/why-irans-fate-means-more-to-oil-markets-than-venezuelas/a-75507250",
+          "source": "DW (English)",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why Is Putin Silent on Venezuela?",
+          "url": "https://www.project-syndicate.org/commentary/what-putin-thinks-of-the-us-operation-in-venezuela-by-nina-l-khrushcheva-2026-01",
+          "source": "Project Syndicate",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-13",
+    "content": {
+      "briefing": "Market intelligence briefing for 2026-01-13. Check the detailed analysis below for today's key developments.",
+      "ai_compute_infra": [
+        {
+          "ticker": "AI",
+          "headline": "Nvidia H200 chip exports to China gets nod from Donald Trump administration but NVDA's 2nd most powerful AI chips require special review",
+          "url": "https://economictimes.indiatimes.com/news/international/us/nvidia-h200-chip-exports-to-china-gets-nod-from-donald-trump-administrations-but-nvdas-2nd-most-powerful-ai-chips-require-special-review/articleshow/126515253.cms",
+          "source": "The Times of India"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Now available for purchase: the world’s first Sirui Astra 50mm/75mm/100mm 1.33X full-frame autofocus anamorphic cine lenses (E/Z/L)",
+          "url": "https://photorumors.com/2026/01/13/now-available-for-purchase-the-worlds-first-sirui-astra-50mm-75mm-100mm-1-33x-full-frame-autofocus-anamorphic-cine-lenses-e-z-l/",
+          "source": "Photorumors.com"
+        },
+        {
+          "ticker": "AI",
+          "headline": "stkai 0.2.1",
+          "url": "https://pypi.org/project/stkai/0.2.1/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?aid=",
+          "source": "Stacksocial.com"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?utm_medium=dealfeed&amp;utm_source=&amp;utm_campaign=mymanu-orb-open-ear-ai-translation-earbuds&amp;utm_content=",
+          "source": "Stacksocial.com"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "FIN",
+          "headline": "Lawmakers meet Danish officials to rebuke Trump’s Greenland grab",
+          "url": "https://freerepublic.com/focus/f-news/4361964/posts",
+          "source": "Freerepublic.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "BACOLOD: Bacolod BOSS collections jump 44% in 2026",
+          "url": "https://rpnradio.com/bacolod-bacolod-boss-collections-jump-44-in-2026/",
+          "source": "Rpnradio.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "NYC Council employee’s arrest sparks protests and a dispute over his immigration status",
+          "url": "https://abcnews.go.com/US/wireStory/nyc-council-employees-arrest-sparks-protests-dispute-immigration-129175062",
+          "source": "ABC News"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "The ‘peace dividend’ engineering layoffs – and why they still matter",
+          "url": "https://www.wnd.com/2026/01/peace-dividend-engineering-layoffs-why-they-still-matter/",
+          "source": "Wnd.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Singapore to Try Growing Crops Across Border in Bid to Cut Costs",
+          "url": "https://financialpost.com/pmn/business-pmn/singapore-to-try-growing-crops-across-border-in-bid-to-cut-costs",
+          "source": "Financial Post"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "ENT",
+          "headline": "Nvidia H200 chip exports to China gets nod from Donald Trump administration but NVDA's 2nd most powerful AI chips require special review",
+          "url": "https://economictimes.indiatimes.com/news/international/us/nvidia-h200-chip-exports-to-china-gets-nod-from-donald-trump-administrations-but-nvdas-2nd-most-powerful-ai-chips-require-special-review/articleshow/126515253.cms",
+          "source": "The Times of India"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Now available for purchase: the world’s first Sirui Astra 50mm/75mm/100mm 1.33X full-frame autofocus anamorphic cine lenses (E/Z/L)",
+          "url": "https://photorumors.com/2026/01/13/now-available-for-purchase-the-worlds-first-sirui-astra-50mm-75mm-100mm-1-33x-full-frame-autofocus-anamorphic-cine-lenses-e-z-l/",
+          "source": "Photorumors.com"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "stkai 0.2.1",
+          "url": "https://pypi.org/project/stkai/0.2.1/",
+          "source": "Pypi.org"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?aid=",
+          "source": "Stacksocial.com"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?utm_medium=dealfeed&amp;utm_source=&amp;utm_campaign=mymanu-orb-open-ear-ai-translation-earbuds&amp;utm_content=",
+          "source": "Stacksocial.com"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "SEMI",
+          "headline": "The ‘peace dividend’ engineering layoffs – and why they still matter",
+          "url": "https://www.wnd.com/2026/01/peace-dividend-engineering-layoffs-why-they-still-matter/",
+          "source": "Wnd.com"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Midway Indianapolis 500 Pinball Machine at No Reserve",
+          "url": "https://bringatrailer.com/listing/pinball-machine-69/",
+          "source": "Bringatrailer.com"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Trump Blasts Fed in Speech on Economy",
+          "url": "https://www.newser.com/story/381886/trump-blasts-fed-in-speech-on-economy.html",
+          "source": "Newser"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "From hype to value: The AI trends set to shape 2026",
+          "url": "https://www.itnews.com.au/feature/from-hype-to-value-the-ai-trends-set-to-shape-2026-622452",
+          "source": "iTnews"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "The Bob Cesca Podcast: Spin The Wheel of War",
+          "url": "https://littlegreenfootballs.com/article/55206_The_Bob_Cesca_Podcast-_Spin_Th",
+          "source": "Littlegreenfootballs.com"
+        }
+      ],
+      "cybersecurity": [],
+      "geopolitics": [
+        {
+          "ticker": "GEO",
+          "headline": "Nicaraguan researcher urges religious freedom commission to refocus attention on abuses",
+          "url": "https://www.catholicnewsagency.com/news/269063/nicaraguan-researcher-urges-uscirf-to-refocus-attention-on-abuses",
+          "source": "Catholicnewsagency.com"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "The World Trade Organization is on life support. Will Trump’s new rules finish it off?",
+          "url": "https://theconversation.com/the-world-trade-organization-is-on-life-support-will-trumps-new-rules-finish-it-off-273216",
+          "source": "The Conversation Africa"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "India unfazed as US slaps 25% tariff on countries trading with Iran, sees minimal impact due to limited trade with Tehran since 2019",
+          "url": "https://economictimes.indiatimes.com/news/economy/foreign-trade/india-unfazed-as-us-slaps-25-tariff-on-countries-trading-with-iran-sees-minimal-impact-due-to-limited-trade-with-tehran-since-2019/articleshow/126511966.cms",
+          "source": "The Times of India"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "US seizes more tankers, courts oil companies as post-Maduro Venezuela takes shape",
+          "url": "https://www.longwarjournal.org/archives/2026/01/us-seizes-more-tankers-courts-oil-companies-as-post-maduro-venezuela-takes-shape.php",
+          "source": "Longwarjournal.org"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why Is Brazil Allowing Itself to Be “Contained by the US”? A Vacuum of Political Authority",
+          "url": "https://www.globalresearch.ca/why-brazil-allowing-itself-contained-us/5912124",
+          "source": "Globalresearch.ca"
+        }
+      ]
+    },
+    "analysis": {
+      "date": "2026-01-13",
+      "briefing": "Market intelligence briefing for 2026-01-13. Check the detailed analysis below for today's key developments.",
+      "trendReport": {
+        "trends": [
+          {
+            "name": "Market Activity",
+            "sectors": [
+              "ai_compute_infra",
+              "fintech_regtech",
+              "rpa_enterprise_ai",
+              "semi_supply_chain",
+              "geopolitics"
+            ],
+            "momentum": "stable",
+            "analysis": "Analysis temporarily unavailable. Review individual category headlines for insights.",
+            "confidence": 50
+          }
+        ],
+        "crossCategoryInsights": "Market intelligence briefing for 2026-01-13. Check the detailed analysis below for today's key developments."
+      },
+      "strategistReport": {
+        "opportunities": [],
+        "risks": [],
+        "marketSentiment": {
+          "overall": 0,
+          "byCategory": {
+            "ai_compute_infra": 0,
+            "fintech_regtech": 0,
+            "rpa_enterprise_ai": 0,
+            "semi_supply_chain": 0,
+            "geopolitics": 0
+          }
+        }
+      },
+      "enrichedArticles": [
+        {
+          "ticker": "AI",
+          "headline": "Nvidia H200 chip exports to China gets nod from Donald Trump administration but NVDA's 2nd most powerful AI chips require special review",
+          "url": "https://economictimes.indiatimes.com/news/international/us/nvidia-h200-chip-exports-to-china-gets-nod-from-donald-trump-administrations-but-nvdas-2nd-most-powerful-ai-chips-require-special-review/articleshow/126515253.cms",
+          "source": "The Times of India",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Now available for purchase: the world’s first Sirui Astra 50mm/75mm/100mm 1.33X full-frame autofocus anamorphic cine lenses (E/Z/L)",
+          "url": "https://photorumors.com/2026/01/13/now-available-for-purchase-the-worlds-first-sirui-astra-50mm-75mm-100mm-1-33x-full-frame-autofocus-anamorphic-cine-lenses-e-z-l/",
+          "source": "Photorumors.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "stkai 0.2.1",
+          "url": "https://pypi.org/project/stkai/0.2.1/",
+          "source": "Pypi.org",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?aid=",
+          "source": "Stacksocial.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?utm_medium=dealfeed&amp;utm_source=&amp;utm_campaign=mymanu-orb-open-ear-ai-translation-earbuds&amp;utm_content=",
+          "source": "Stacksocial.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Lawmakers meet Danish officials to rebuke Trump’s Greenland grab",
+          "url": "https://freerepublic.com/focus/f-news/4361964/posts",
+          "source": "Freerepublic.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "BACOLOD: Bacolod BOSS collections jump 44% in 2026",
+          "url": "https://rpnradio.com/bacolod-bacolod-boss-collections-jump-44-in-2026/",
+          "source": "Rpnradio.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "NYC Council employee’s arrest sparks protests and a dispute over his immigration status",
+          "url": "https://abcnews.go.com/US/wireStory/nyc-council-employees-arrest-sparks-protests-dispute-immigration-129175062",
+          "source": "ABC News",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "The ‘peace dividend’ engineering layoffs – and why they still matter",
+          "url": "https://www.wnd.com/2026/01/peace-dividend-engineering-layoffs-why-they-still-matter/",
+          "source": "Wnd.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Singapore to Try Growing Crops Across Border in Bid to Cut Costs",
+          "url": "https://financialpost.com/pmn/business-pmn/singapore-to-try-growing-crops-across-border-in-bid-to-cut-costs",
+          "source": "Financial Post",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Nvidia H200 chip exports to China gets nod from Donald Trump administration but NVDA's 2nd most powerful AI chips require special review",
+          "url": "https://economictimes.indiatimes.com/news/international/us/nvidia-h200-chip-exports-to-china-gets-nod-from-donald-trump-administrations-but-nvdas-2nd-most-powerful-ai-chips-require-special-review/articleshow/126515253.cms",
+          "source": "The Times of India",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Now available for purchase: the world’s first Sirui Astra 50mm/75mm/100mm 1.33X full-frame autofocus anamorphic cine lenses (E/Z/L)",
+          "url": "https://photorumors.com/2026/01/13/now-available-for-purchase-the-worlds-first-sirui-astra-50mm-75mm-100mm-1-33x-full-frame-autofocus-anamorphic-cine-lenses-e-z-l/",
+          "source": "Photorumors.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "stkai 0.2.1",
+          "url": "https://pypi.org/project/stkai/0.2.1/",
+          "source": "Pypi.org",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?aid=",
+          "source": "Stacksocial.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Mymanu Orb Open-Ear AI Translation Earbuds for $139",
+          "url": "https://www.stacksocial.com/sales/mymanu-orb-open-ear-ai-translation-earbuds?utm_medium=dealfeed&amp;utm_source=&amp;utm_campaign=mymanu-orb-open-ear-ai-translation-earbuds&amp;utm_content=",
+          "source": "Stacksocial.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "The ‘peace dividend’ engineering layoffs – and why they still matter",
+          "url": "https://www.wnd.com/2026/01/peace-dividend-engineering-layoffs-why-they-still-matter/",
+          "source": "Wnd.com",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Midway Indianapolis 500 Pinball Machine at No Reserve",
+          "url": "https://bringatrailer.com/listing/pinball-machine-69/",
+          "source": "Bringatrailer.com",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Trump Blasts Fed in Speech on Economy",
+          "url": "https://www.newser.com/story/381886/trump-blasts-fed-in-speech-on-economy.html",
+          "source": "Newser",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "From hype to value: The AI trends set to shape 2026",
+          "url": "https://www.itnews.com.au/feature/from-hype-to-value-the-ai-trends-set-to-shape-2026-622452",
+          "source": "iTnews",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "The Bob Cesca Podcast: Spin The Wheel of War",
+          "url": "https://littlegreenfootballs.com/article/55206_The_Bob_Cesca_Podcast-_Spin_Th",
+          "source": "Littlegreenfootballs.com",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Nicaraguan researcher urges religious freedom commission to refocus attention on abuses",
+          "url": "https://www.catholicnewsagency.com/news/269063/nicaraguan-researcher-urges-uscirf-to-refocus-attention-on-abuses",
+          "source": "Catholicnewsagency.com",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "The World Trade Organization is on life support. Will Trump’s new rules finish it off?",
+          "url": "https://theconversation.com/the-world-trade-organization-is-on-life-support-will-trumps-new-rules-finish-it-off-273216",
+          "source": "The Conversation Africa",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "India unfazed as US slaps 25% tariff on countries trading with Iran, sees minimal impact due to limited trade with Tehran since 2019",
+          "url": "https://economictimes.indiatimes.com/news/economy/foreign-trade/india-unfazed-as-us-slaps-25-tariff-on-countries-trading-with-iran-sees-minimal-impact-due-to-limited-trade-with-tehran-since-2019/articleshow/126511966.cms",
+          "source": "The Times of India",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "US seizes more tankers, courts oil companies as post-Maduro Venezuela takes shape",
+          "url": "https://www.longwarjournal.org/archives/2026/01/us-seizes-more-tankers-courts-oil-companies-as-post-maduro-venezuela-takes-shape.php",
+          "source": "Longwarjournal.org",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Why Is Brazil Allowing Itself to Be “Contained by the US”? A Vacuum of Political Authority",
+          "url": "https://www.globalresearch.ca/why-brazil-allowing-itself-contained-us/5912124",
+          "source": "Globalresearch.ca",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        }
+      ]
+    }
+  },
+  {
+    "date": "2026-01-12",
+    "content": {
+      "briefing": "Market intelligence briefing for 2026-01-12. Check the detailed analysis below for today's key developments.",
+      "ai_compute_infra": [
+        {
+          "ticker": "AI",
+          "headline": "Illinois Launches Lawsuit Over Trump Admin’s ‘Dangerous Use Of Force’",
+          "url": "https://www.huffpost.com/entry/violence-and-intimidation-illinois-sues-trump-over-immigration-enforcement_n_69655dcce4b0365ff4dfc706",
+          "source": "HuffPost"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Meta plans to cut about 10% of employees in Reality Labs business as focus shifts to AI",
+          "url": "https://www.straitstimes.com/business/companies-markets/meta-plans-to-cut-about-10-of-employees-in-reality-labs-business-as-focus-shifts-to-ai",
+          "source": "The Straits Times"
+        },
+        {
+          "ticker": "AI",
+          "headline": "NUAI Announcement: If You Have Suffered Losses in New Era Energy & Digital, Inc. (NASDAQ: NUAI), You Are Encouraged to Contact The Rosen Law Firm About Your Rights",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217415/673/en/NUAI-Announcement-If-You-Have-Suffered-Losses-in-New-Era-Energy-Digital-Inc-NASDAQ-NUAI-You-Are-Encouraged-to-Contact-The-Rosen-Law-Firm-About-Your-Rights.html",
+          "source": "GlobeNewswire"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Show HN: AI Elements Vue – A Port of Vercel's AI Elements UI Library",
+          "url": "https://github.com/vuepont/ai-elements-vue",
+          "source": "Github.com"
+        },
+        {
+          "ticker": "AI",
+          "headline": "GigaDevice Set for Hong Kong Debut After $600 Million Offering",
+          "url": "https://financialpost.com/pmn/business-pmn/gigadevice-set-for-hong-kong-debut-after-600-million-offering",
+          "source": "Financial Post"
+        }
+      ],
+      "fintech_regtech": [
+        {
+          "ticker": "FIN",
+          "headline": "Visa-free transit announced for Indians travelling to and from UK via Germany",
+          "url": "https://timesofindia.indiatimes.com/india/visa-free-transit-announced-for-indians-travelling-to-and-from-uk-via-germany/articleshow/126494637.cms",
+          "source": "The Times of India"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Present US Involvement in Venezuela",
+          "url": "https://freerepublic.com/focus/f-news/4361774/posts",
+          "source": "Freerepublic.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "B2B Payments Make the Leap to Real Time in Latin America",
+          "url": "https://www.pymnts.com/news/b2b-payments/2026/b2b-payments-make-the-leap-to-real-time-in-latin-america/",
+          "source": "pymnts.com"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Thousands of nurses go on strike in New York City",
+          "url": "https://www.aljazeera.com/economy/2026/1/12/thousands-of-nurses-go-on-strike-in-new-york-city",
+          "source": "Al Jazeera English"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "The enormous stakes of Donald Trump’s fight with Jerome Powell",
+          "url": "https://www.vox.com/policy/474960/donald-trump-jerome-powell-fed-economic-stakes",
+          "source": "Vox"
+        }
+      ],
+      "rpa_enterprise_ai": [
+        {
+          "ticker": "ENT",
+          "headline": "Illinois Launches Lawsuit Over Trump Admin’s ‘Dangerous Use Of Force’",
+          "url": "https://www.huffpost.com/entry/violence-and-intimidation-illinois-sues-trump-over-immigration-enforcement_n_69655dcce4b0365ff4dfc706",
+          "source": "HuffPost"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Meta plans to cut about 10% of employees in Reality Labs business as focus shifts to AI",
+          "url": "https://www.straitstimes.com/business/companies-markets/meta-plans-to-cut-about-10-of-employees-in-reality-labs-business-as-focus-shifts-to-ai",
+          "source": "The Straits Times"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "NUAI Announcement: If You Have Suffered Losses in New Era Energy & Digital, Inc. (NASDAQ: NUAI), You Are Encouraged to Contact The Rosen Law Firm About Your Rights",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217415/673/en/NUAI-Announcement-If-You-Have-Suffered-Losses-in-New-Era-Energy-Digital-Inc-NASDAQ-NUAI-You-Are-Encouraged-to-Contact-The-Rosen-Law-Firm-About-Your-Rights.html",
+          "source": "GlobeNewswire"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Show HN: AI Elements Vue – A Port of Vercel's AI Elements UI Library",
+          "url": "https://github.com/vuepont/ai-elements-vue",
+          "source": "Github.com"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "GigaDevice Set for Hong Kong Debut After $600 Million Offering",
+          "url": "https://financialpost.com/pmn/business-pmn/gigadevice-set-for-hong-kong-debut-after-600-million-offering",
+          "source": "Financial Post"
+        }
+      ],
+      "semi_supply_chain": [
+        {
+          "ticker": "SEMI",
+          "headline": "Illinois Launches Lawsuit Over Trump Admin’s ‘Dangerous Use Of Force’",
+          "url": "https://www.huffpost.com/entry/violence-and-intimidation-illinois-sues-trump-over-immigration-enforcement_n_69655dcce4b0365ff4dfc706",
+          "source": "HuffPost"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Stock market today: S&P 500, Dow, Nasdaq mixed as CPI inflation eases, JPMorgan kicks off earnings",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-sp-500-dow-nasdaq-mixed-as-cpi-inflation-eases-jpmorgan-kicks-off-earnings-234952160.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq futures waver as CPI inflation eases, JPMorgan kicks off earnings",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-waver-as-cpi-inflation-eases-jpmorgan-kicks-off-earnings-234952642.html",
+          "source": "Yahoo Entertainment"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "PSN seeks integration of pharmacists in PHCs",
+          "url": "https://punchng.com/psn-seeks-integration-of-pharmacists-in-phcs/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Best Electrolyte Supplement Analysis 2026: Seaonic Challenges Top Hydration Packets With Ocean-Sourced Minerals",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217413/0/en/Best-Electrolyte-Supplement-Analysis-2026-Seaonic-Challenges-Top-Hydration-Packets-With-Ocean-Sourced-Minerals.html",
+          "source": "GlobeNewswire"
+        }
+      ],
+      "cybersecurity": [
+        {
+          "ticker": "SEC",
+          "headline": "Endpoint Security Market Projected to Reach US$ 65.04 Billion by 2035 Amid Rising Cyber Threat Activity | Astute Analytica",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217156/0/en/Endpoint-Security-Market-Projected-to-Reach-US-65-04-Billion-by-2035-Amid-Rising-Cyber-Threat-Activity-Astute-Analytica.html",
+          "source": "GlobeNewswire"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Zero Trust Security Global Market Intelligence Report 2025-2035: Increasing Need for Cloud and Data Security Driving Revenues to Over $190 Billion by 2035",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217054/28124/en/Zero-Trust-Security-Global-Market-Intelligence-Report-2025-2035-Increasing-Need-for-Cloud-and-Data-Security-Driving-Revenues-to-Over-190-Billion-by-2035.html",
+          "source": "GlobeNewswire"
+        }
+      ],
+      "geopolitics": [
+        {
+          "ticker": "GEO",
+          "headline": "Lessons from Venezuela, Greenland",
+          "url": "https://punchng.com/lessons-from-venezuela-greenland/",
+          "source": "The Punch"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Iran Escalates Protest Crackdown but Says Open to U.S. Talks",
+          "url": "http://foreignpolicy.com/2026/01/12/iran-protests-currency-economy-us-military-intervention-trump/",
+          "source": "Foreign Policy"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "With Venezuela raid, U.S. tells China to keep away from the Americas",
+          "url": "https://japantoday.com/category/features/opinions/analysis-with-venezuela-raid-us-tells-china-to-keep-away-from-the-americas",
+          "source": "Japan Today"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Tether Freezes $182 Million in Stablecoins as Reports Point to Heavy Crypto Use by Venezuela",
+          "url": "https://gizmodo.com/tether-freezes-182-million-in-stablecoins-as-reports-point-to-heavy-crypto-use-by-venezuela-2000709276",
+          "source": "Gizmodo.com"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Global trade matrix: India mustn't remain a lone ranger while arenas are being carved out",
+          "url": "https://economictimes.indiatimes.com/opinion/et-commentary/global-trade-matrix-india-mustnt-remain-a-lone-ranger-while-arenas-are-being-carved-out/articleshow/126489852.cms",
+          "source": "The Times of India"
+        }
+      ]
+    },
+    "analysis": {
+      "date": "2026-01-12",
+      "briefing": "Market intelligence briefing for 2026-01-12. Check the detailed analysis below for today's key developments.",
+      "trendReport": {
+        "trends": [
+          {
+            "name": "Market Activity",
+            "sectors": [
+              "ai_compute_infra",
+              "fintech_regtech",
+              "rpa_enterprise_ai",
+              "semi_supply_chain",
+              "cybersecurity",
+              "geopolitics"
+            ],
+            "momentum": "stable",
+            "analysis": "Analysis temporarily unavailable. Review individual category headlines for insights.",
+            "confidence": 50
+          }
+        ],
+        "crossCategoryInsights": "Market intelligence briefing for 2026-01-12. Check the detailed analysis below for today's key developments."
+      },
+      "strategistReport": {
+        "opportunities": [],
+        "risks": [],
+        "marketSentiment": {
+          "overall": 0,
+          "byCategory": {
+            "ai_compute_infra": 0,
+            "fintech_regtech": 0,
+            "rpa_enterprise_ai": 0,
+            "semi_supply_chain": 0,
+            "cybersecurity": 0,
+            "geopolitics": 0
+          }
+        }
+      },
+      "enrichedArticles": [
+        {
+          "ticker": "AI",
+          "headline": "Illinois Launches Lawsuit Over Trump Admin’s ‘Dangerous Use Of Force’",
+          "url": "https://www.huffpost.com/entry/violence-and-intimidation-illinois-sues-trump-over-immigration-enforcement_n_69655dcce4b0365ff4dfc706",
+          "source": "HuffPost",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Meta plans to cut about 10% of employees in Reality Labs business as focus shifts to AI",
+          "url": "https://www.straitstimes.com/business/companies-markets/meta-plans-to-cut-about-10-of-employees-in-reality-labs-business-as-focus-shifts-to-ai",
+          "source": "The Straits Times",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "NUAI Announcement: If You Have Suffered Losses in New Era Energy & Digital, Inc. (NASDAQ: NUAI), You Are Encouraged to Contact The Rosen Law Firm About Your Rights",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217415/673/en/NUAI-Announcement-If-You-Have-Suffered-Losses-in-New-Era-Energy-Digital-Inc-NASDAQ-NUAI-You-Are-Encouraged-to-Contact-The-Rosen-Law-Firm-About-Your-Rights.html",
+          "source": "GlobeNewswire",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "Show HN: AI Elements Vue – A Port of Vercel's AI Elements UI Library",
+          "url": "https://github.com/vuepont/ai-elements-vue",
+          "source": "Github.com",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "AI",
+          "headline": "GigaDevice Set for Hong Kong Debut After $600 Million Offering",
+          "url": "https://financialpost.com/pmn/business-pmn/gigadevice-set-for-hong-kong-debut-after-600-million-offering",
+          "source": "Financial Post",
+          "category": "ai_compute_infra",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Visa-free transit announced for Indians travelling to and from UK via Germany",
+          "url": "https://timesofindia.indiatimes.com/india/visa-free-transit-announced-for-indians-travelling-to-and-from-uk-via-germany/articleshow/126494637.cms",
+          "source": "The Times of India",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Present US Involvement in Venezuela",
+          "url": "https://freerepublic.com/focus/f-news/4361774/posts",
+          "source": "Freerepublic.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "B2B Payments Make the Leap to Real Time in Latin America",
+          "url": "https://www.pymnts.com/news/b2b-payments/2026/b2b-payments-make-the-leap-to-real-time-in-latin-america/",
+          "source": "pymnts.com",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "Thousands of nurses go on strike in New York City",
+          "url": "https://www.aljazeera.com/economy/2026/1/12/thousands-of-nurses-go-on-strike-in-new-york-city",
+          "source": "Al Jazeera English",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "FIN",
+          "headline": "The enormous stakes of Donald Trump’s fight with Jerome Powell",
+          "url": "https://www.vox.com/policy/474960/donald-trump-jerome-powell-fed-economic-stakes",
+          "source": "Vox",
+          "category": "fintech_regtech",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Illinois Launches Lawsuit Over Trump Admin’s ‘Dangerous Use Of Force’",
+          "url": "https://www.huffpost.com/entry/violence-and-intimidation-illinois-sues-trump-over-immigration-enforcement_n_69655dcce4b0365ff4dfc706",
+          "source": "HuffPost",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Meta plans to cut about 10% of employees in Reality Labs business as focus shifts to AI",
+          "url": "https://www.straitstimes.com/business/companies-markets/meta-plans-to-cut-about-10-of-employees-in-reality-labs-business-as-focus-shifts-to-ai",
+          "source": "The Straits Times",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "NUAI Announcement: If You Have Suffered Losses in New Era Energy & Digital, Inc. (NASDAQ: NUAI), You Are Encouraged to Contact The Rosen Law Firm About Your Rights",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217415/673/en/NUAI-Announcement-If-You-Have-Suffered-Losses-in-New-Era-Energy-Digital-Inc-NASDAQ-NUAI-You-Are-Encouraged-to-Contact-The-Rosen-Law-Firm-About-Your-Rights.html",
+          "source": "GlobeNewswire",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "Show HN: AI Elements Vue – A Port of Vercel's AI Elements UI Library",
+          "url": "https://github.com/vuepont/ai-elements-vue",
+          "source": "Github.com",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "ENT",
+          "headline": "GigaDevice Set for Hong Kong Debut After $600 Million Offering",
+          "url": "https://financialpost.com/pmn/business-pmn/gigadevice-set-for-hong-kong-debut-after-600-million-offering",
+          "source": "Financial Post",
+          "category": "rpa_enterprise_ai",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Illinois Launches Lawsuit Over Trump Admin’s ‘Dangerous Use Of Force’",
+          "url": "https://www.huffpost.com/entry/violence-and-intimidation-illinois-sues-trump-over-immigration-enforcement_n_69655dcce4b0365ff4dfc706",
+          "source": "HuffPost",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Stock market today: S&P 500, Dow, Nasdaq mixed as CPI inflation eases, JPMorgan kicks off earnings",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-sp-500-dow-nasdaq-mixed-as-cpi-inflation-eases-jpmorgan-kicks-off-earnings-234952160.html",
+          "source": "Yahoo Entertainment",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Stock market today: Dow, S&P 500, Nasdaq futures waver as CPI inflation eases, JPMorgan kicks off earnings",
+          "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-waver-as-cpi-inflation-eases-jpmorgan-kicks-off-earnings-234952642.html",
+          "source": "Yahoo Entertainment",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "PSN seeks integration of pharmacists in PHCs",
+          "url": "https://punchng.com/psn-seeks-integration-of-pharmacists-in-phcs/",
+          "source": "The Punch",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEMI",
+          "headline": "Best Electrolyte Supplement Analysis 2026: Seaonic Challenges Top Hydration Packets With Ocean-Sourced Minerals",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217413/0/en/Best-Electrolyte-Supplement-Analysis-2026-Seaonic-Challenges-Top-Hydration-Packets-With-Ocean-Sourced-Minerals.html",
+          "source": "GlobeNewswire",
+          "category": "semi_supply_chain",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Endpoint Security Market Projected to Reach US$ 65.04 Billion by 2035 Amid Rising Cyber Threat Activity | Astute Analytica",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217156/0/en/Endpoint-Security-Market-Projected-to-Reach-US-65-04-Billion-by-2035-Amid-Rising-Cyber-Threat-Activity-Astute-Analytica.html",
+          "source": "GlobeNewswire",
+          "category": "cybersecurity",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "SEC",
+          "headline": "Zero Trust Security Global Market Intelligence Report 2025-2035: Increasing Need for Cloud and Data Security Driving Revenues to Over $190 Billion by 2035",
+          "url": "https://www.globenewswire.com/news-release/2026/01/12/3217054/28124/en/Zero-Trust-Security-Global-Market-Intelligence-Report-2025-2035-Increasing-Need-for-Cloud-and-Data-Security-Driving-Revenues-to-Over-190-Billion-by-2035.html",
+          "source": "GlobeNewswire",
+          "category": "cybersecurity",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Lessons from Venezuela, Greenland",
+          "url": "https://punchng.com/lessons-from-venezuela-greenland/",
+          "source": "The Punch",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Iran Escalates Protest Crackdown but Says Open to U.S. Talks",
+          "url": "http://foreignpolicy.com/2026/01/12/iran-protests-currency-economy-us-military-intervention-trump/",
+          "source": "Foreign Policy",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "With Venezuela raid, U.S. tells China to keep away from the Americas",
+          "url": "https://japantoday.com/category/features/opinions/analysis-with-venezuela-raid-us-tells-china-to-keep-away-from-the-americas",
+          "source": "Japan Today",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Tether Freezes $182 Million in Stablecoins as Reports Point to Heavy Crypto Use by Venezuela",
+          "url": "https://gizmodo.com/tether-freezes-182-million-in-stablecoins-as-reports-point-to-heavy-crypto-use-by-venezuela-2000709276",
+          "source": "Gizmodo.com",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        },
+        {
+          "ticker": "GEO",
+          "headline": "Global trade matrix: India mustn't remain a lone ranger while arenas are being carved out",
+          "url": "https://economictimes.indiatimes.com/opinion/et-commentary/global-trade-matrix-india-mustnt-remain-a-lone-ranger-while-arenas-are-being-carved-out/articleshow/126489852.cms",
+          "source": "The Times of India",
+          "category": "geopolitics",
+          "sentiment_score": 0,
+          "impact_score": 50,
+          "key_entities": [],
+          "trend_direction": "neutral"
+        }
+      ]
+    }
   }
 ]

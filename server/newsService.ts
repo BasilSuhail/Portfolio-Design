@@ -32,15 +32,67 @@ function loadEnv() {
 }
 loadEnv();
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY || "";
+// ============================================
+// NewsAPI Key Pool - Multiple keys for higher limits
+// ============================================
+function loadNewsApiKeys(): string[] {
+  const keys: string[] = [];
+
+  // Check for NEWS_API_KEY, NEWS_API_KEY_2, NEWS_API_KEY_3, etc.
+  if (process.env.NEWS_API_KEY) keys.push(process.env.NEWS_API_KEY);
+  if (process.env.NEWS_API_KEY_2) keys.push(process.env.NEWS_API_KEY_2);
+  if (process.env.NEWS_API_KEY_3) keys.push(process.env.NEWS_API_KEY_3);
+
+  return keys.filter(k => k && !k.includes("YOUR_"));
+}
+
+const NEWS_API_KEYS = loadNewsApiKeys();
+let currentNewsKeyIndex = 0;
+
+// Track which keys have hit rate limits
+const rateLimitedKeys = new Set<string>();
+
+function getNextNewsApiKey(): string | null {
+  if (NEWS_API_KEYS.length === 0) return null;
+
+  // Find a key that isn't rate limited
+  for (let i = 0; i < NEWS_API_KEYS.length; i++) {
+    const keyIndex = (currentNewsKeyIndex + i) % NEWS_API_KEYS.length;
+    const key = NEWS_API_KEYS[keyIndex];
+
+    if (!rateLimitedKeys.has(key)) {
+      currentNewsKeyIndex = (keyIndex + 1) % NEWS_API_KEYS.length;
+      return key;
+    }
+  }
+
+  // All keys are rate limited
+  console.warn("[NewsAPI] All API keys are rate limited");
+  return null;
+}
+
+function markKeyAsRateLimited(key: string): void {
+  rateLimitedKeys.add(key);
+  console.warn(`[NewsAPI] Key ${NEWS_API_KEYS.indexOf(key) + 1}/${NEWS_API_KEYS.length} hit rate limit`);
+}
+
+// Reset rate limits periodically (every 12 hours they partially reset)
+function resetRateLimits(): void {
+  rateLimitedKeys.clear();
+  console.log("[NewsAPI] Rate limit tracking reset");
+}
+
+// Reset rate limits every 12 hours
+setInterval(resetRateLimits, 12 * 60 * 60 * 1000);
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const DAYS_TO_KEEP = 8;
+const DAYS_TO_KEEP = 10; // Increased to 10 days with multiple API keys
 
 // Flag to enable/disable full market intelligence analysis
 const ENABLE_MARKET_INTELLIGENCE = true;
 
 // Log API key status (not the actual keys for security)
-console.log(`NEWS_API_KEY configured: ${NEWS_API_KEY ? "Yes" : "No"}`);
+console.log(`[NewsAPI] Initialized with ${NEWS_API_KEYS.length} API key(s)`);
 console.log(`GEMINI_API_KEY configured: ${GEMINI_API_KEY ? "Yes" : "No"}`);
 
 const newsFeedPath = path.join(process.cwd(), "news_feed.json");
@@ -119,8 +171,9 @@ async function fetchNewsForCategory(
   fromDate: string,
   toDate: string
 ): Promise<NewsArticle[]> {
-  if (!NEWS_API_KEY) {
-    console.warn("NEWS_API_KEY not set. Skipping news fetch.");
+  const apiKey = getNextNewsApiKey();
+  if (!apiKey) {
+    console.warn("[NewsAPI] No available API keys. Skipping news fetch.");
     return [];
   }
 
@@ -129,12 +182,37 @@ async function fetchNewsForCategory(
   try {
     const encodedQuery = encodeURIComponent(query);
     // Fetch more articles per category (10 instead of 5) since we're making fewer API calls
-    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${NEWS_API_KEY}`;
+    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${apiKey}`;
     const response = await fetch(url);
     const data = await response.json();
 
     if (data.status !== "ok") {
-      console.error(`Error fetching news for ${ticker}:`, data.message);
+      // Check if it's a rate limit error
+      if (data.message?.includes("rate limit") || data.message?.includes("too many requests")) {
+        markKeyAsRateLimited(apiKey);
+        // Try again with a different key
+        const nextKey = getNextNewsApiKey();
+        if (nextKey) {
+          console.log(`[NewsAPI] Retrying with different key...`);
+          const retryUrl = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${nextKey}`;
+          const retryResponse = await fetch(retryUrl);
+          const retryData = await retryResponse.json();
+
+          if (retryData.status === "ok") {
+            return (retryData.articles || []).map((article: any) => ({
+              ticker,
+              headline: article.title,
+              url: article.url,
+              source: article.source.name,
+            }));
+          }
+
+          if (retryData.message?.includes("rate limit") || retryData.message?.includes("too many requests")) {
+            markKeyAsRateLimited(nextKey);
+          }
+        }
+      }
+      console.error(`[NewsAPI] Error fetching news for ${ticker}:`, data.message);
       return [];
     }
 
@@ -145,7 +223,7 @@ async function fetchNewsForCategory(
       source: article.source.name,
     }));
   } catch (error: any) {
-    console.error(`Failed to fetch news for ${ticker}:`, error.message);
+    console.error(`[NewsAPI] Failed to fetch news for ${ticker}:`, error.message);
     return [];
   }
 }
