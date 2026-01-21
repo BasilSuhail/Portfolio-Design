@@ -1,4 +1,5 @@
 # Multi-stage build for optimized production image
+# Build: v2.1 - Gallery persistence fix
 FROM node:20-alpine AS builder
 
 # Set working directory
