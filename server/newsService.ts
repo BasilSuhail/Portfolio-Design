@@ -3,6 +3,7 @@ import fsSync from "fs";
 import path from "path";
 import { runMarketIntelligence, getHistoricalAnalysis, getSentimentHistory, type DailyAnalysis } from "./marketIntelligence";
 import { callGemini } from "./geminiPool";
+import { fetchRSSForCategory, type RSSNewsArticle } from "./rssService";
 
 // Load environment variables from .env file
 function loadEnv() {
@@ -172,11 +173,23 @@ function delay(ms: number): Promise<void> {
 async function fetchNewsForCategory(
   stock: { ticker: string; query: string },
   fromDate: string,
-  toDate: string
+  toDate: string,
+  category?: string
 ): Promise<NewsArticle[]> {
   const apiKey = getNextNewsApiKey();
+
+  // If no API key available, try RSS feeds directly
   if (!apiKey) {
-    console.warn("[NewsAPI] No available API keys. Skipping news fetch.");
+    console.warn("[NewsAPI] No available API keys. Falling back to RSS feeds.");
+    if (category) {
+      const rssArticles = await fetchRSSForCategory(category);
+      return rssArticles.map(a => ({
+        ticker: a.ticker,
+        headline: a.headline,
+        url: a.url,
+        source: a.source,
+      }));
+    }
     return [];
   }
 
@@ -214,19 +227,77 @@ async function fetchNewsForCategory(
             markKeyAsRateLimited(nextKey);
           }
         }
+
+        // All API keys exhausted, fall back to RSS
+        console.log(`[NewsAPI] All keys exhausted. Falling back to RSS for ${category || 'unknown'}...`);
+        if (category) {
+          const rssArticles = await fetchRSSForCategory(category);
+          return rssArticles.map(a => ({
+            ticker: a.ticker,
+            headline: a.headline,
+            url: a.url,
+            source: a.source,
+          }));
+        }
       }
       console.error(`[NewsAPI] Error fetching news for ${ticker}:`, data.message);
+
+      // Fall back to RSS on any API error
+      if (category) {
+        console.log(`[NewsAPI] Falling back to RSS for ${category}...`);
+        const rssArticles = await fetchRSSForCategory(category);
+        return rssArticles.map(a => ({
+          ticker: a.ticker,
+          headline: a.headline,
+          url: a.url,
+          source: a.source,
+        }));
+      }
       return [];
     }
 
-    return (data.articles || []).map((article: any) => ({
+    const apiArticles = (data.articles || []).map((article: any) => ({
       ticker,
       headline: article.title,
       url: article.url,
       source: article.source.name,
     }));
+
+    // If API returned few results, supplement with RSS
+    if (apiArticles.length < 5 && category) {
+      console.log(`[NewsAPI] Only ${apiArticles.length} articles. Supplementing with RSS...`);
+      const rssArticles = await fetchRSSForCategory(category);
+      const rssFormatted = rssArticles.map(a => ({
+        ticker: a.ticker,
+        headline: a.headline,
+        url: a.url,
+        source: a.source,
+      }));
+      // Merge and dedupe by URL
+      const allUrls = new Set(apiArticles.map((a: NewsArticle) => a.url));
+      for (const rss of rssFormatted) {
+        if (!allUrls.has(rss.url)) {
+          apiArticles.push(rss);
+          allUrls.add(rss.url);
+        }
+      }
+    }
+
+    return apiArticles;
   } catch (error: any) {
     console.error(`[NewsAPI] Failed to fetch news for ${ticker}:`, error.message);
+
+    // Fall back to RSS on fetch error
+    if (category) {
+      console.log(`[NewsAPI] Network error. Falling back to RSS for ${category}...`);
+      const rssArticles = await fetchRSSForCategory(category);
+      return rssArticles.map(a => ({
+        ticker: a.ticker,
+        headline: a.headline,
+        url: a.url,
+        source: a.source,
+      }));
+    }
     return [];
   }
 }
