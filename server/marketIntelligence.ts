@@ -75,6 +75,118 @@ const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
   macro_finance: "Macro Finance",
 };
 
+// ============================================
+// API OPTIMIZATION: Caching & Rate Limiting
+// ============================================
+
+// In-memory cache for analysis results (24-hour TTL)
+const analysisCache = new Map<string, { data: DailyAnalysis; timestamp: number }>();
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+// Rate limiting with exponential backoff
+let consecutiveFailures = 0;
+let lastApiCallTime = 0;
+const MIN_DELAY_MS = 2000; // Minimum 2 seconds between API calls
+const MAX_BACKOFF_MS = 60000; // Maximum 1 minute backoff
+
+function getBackoffDelay(): number {
+  if (consecutiveFailures === 0) return MIN_DELAY_MS;
+  const backoff = Math.min(MIN_DELAY_MS * Math.pow(2, consecutiveFailures), MAX_BACKOFF_MS);
+  console.log(`[Rate Limit] Backoff delay: ${backoff}ms after ${consecutiveFailures} failures`);
+  return backoff;
+}
+
+async function waitForRateLimit(): Promise<void> {
+  const now = Date.now();
+  const timeSinceLastCall = now - lastApiCallTime;
+  const requiredDelay = getBackoffDelay();
+
+  if (timeSinceLastCall < requiredDelay) {
+    const waitTime = requiredDelay - timeSinceLastCall;
+    console.log(`[Rate Limit] Waiting ${waitTime}ms before next API call...`);
+    await new Promise(resolve => setTimeout(resolve, waitTime));
+  }
+  lastApiCallTime = Date.now();
+}
+
+function recordApiSuccess(): void {
+  consecutiveFailures = 0;
+}
+
+function recordApiFailure(): void {
+  consecutiveFailures++;
+  console.warn(`[Rate Limit] API failure #${consecutiveFailures}`);
+}
+
+// ============================================
+// LOW-IMPACT ARTICLE FILTERING
+// ============================================
+
+// Patterns for articles that don't need AI analysis
+const LOW_IMPACT_PATTERNS = [
+  /^\d+\.\d+\.\d+$/,                    // Version numbers like "2.5.19"
+  /added to PyPI/i,                      // PyPI package additions
+  /pypi\.org/i,                          // PyPI links in source
+  /uipath \d+/i,                         // UiPath version releases
+  /wyrmx-cli/i,                          // CLI tool releases
+  /agent-framework/i,                    // Framework releases
+  /\$\d+.*replies\)/i,                   // Slickdeals posts
+  /NBA.*All-Star/i,                      // Sports news
+  /LeBron/i,                             // Sports news
+  /Luka Doncic/i,                        // Sports news
+  /Peso Pluma/i,                         // Entertainment
+  /Tour.*\d{4}/i,                        // Concert tours
+  /Clearance Sale/i,                     // Sales/deals
+  /Free Spins/i,                         // Gambling
+  /Sportsbook Promos/i,                  // Sports betting
+];
+
+function isLowImpactArticle(headline: string, source: string): boolean {
+  // Check if headline matches any low-impact pattern
+  for (const pattern of LOW_IMPACT_PATTERNS) {
+    if (pattern.test(headline) || pattern.test(source)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function filterHighImpactArticles(articles: NewsArticle[]): { highImpact: NewsArticle[]; lowImpact: NewsArticle[] } {
+  const highImpact: NewsArticle[] = [];
+  const lowImpact: NewsArticle[] = [];
+
+  for (const article of articles) {
+    if (isLowImpactArticle(article.headline, article.source)) {
+      lowImpact.push(article);
+    } else {
+      highImpact.push(article);
+    }
+  }
+
+  console.log(`[Filter] High-impact: ${highImpact.length}, Low-impact (skipped): ${lowImpact.length}`);
+  return { highImpact, lowImpact };
+}
+
+// Check if we have cached analysis for a date
+function getCachedAnalysis(date: string): DailyAnalysis | null {
+  const cached = analysisCache.get(date);
+  if (!cached) return null;
+
+  const age = Date.now() - cached.timestamp;
+  if (age > CACHE_TTL_MS) {
+    analysisCache.delete(date);
+    return null;
+  }
+
+  console.log(`[Cache] Using cached analysis for ${date} (age: ${Math.round(age / 60000)}min)`);
+  return cached.data;
+}
+
+function cacheAnalysis(date: string, analysis: DailyAnalysis): void {
+  analysisCache.set(date, { data: analysis, timestamp: Date.now() });
+  console.log(`[Cache] Cached analysis for ${date}`);
+}
+
 /**
  * AGENT 1: The Reader
  * Analyzes individual articles and extracts structured data
@@ -84,8 +196,8 @@ async function runReaderAgent(articles: NewsArticle[]): Promise<EnrichedArticle[
 
   console.log(`[Reader Agent] Analyzing ${articles.length} articles...`);
 
-  // Batch articles for efficient processing
-  const batchSize = 10;
+  // Larger batches = fewer API calls
+  const batchSize = 15;
   const enrichedArticles: EnrichedArticle[] = [];
 
   for (let i = 0; i < articles.length; i += batchSize) {
@@ -116,11 +228,17 @@ Respond with a JSON array matching this structure:
 Be objective and data-driven. High impact scores (>70) should be reserved for major announcements, earnings surprises, or regulatory changes.`;
 
     try {
+      // Wait for rate limit before making API call
+      await waitForRateLimit();
+
       const response = await callGemini(prompt, {
         agent: "reader",
         temperature: 0.3,
         maxOutputTokens: 1500,
       });
+
+      // Record successful API call
+      recordApiSuccess();
 
       const parsed = parseGeminiJSON<Array<{
         index: number;
@@ -154,7 +272,11 @@ Be objective and data-driven. High impact scores (>70) should be reserved for ma
         });
       }
     } catch (error: any) {
-      console.error(`[Reader Agent] Batch ${i / batchSize + 1} failed:`, error.message);
+      console.error(`[Reader Agent] Batch ${Math.floor(i / batchSize) + 1} failed:`, error.message);
+
+      // Record API failure for backoff calculation
+      recordApiFailure();
+
       // Add articles with defaults on error
       batch.forEach(article => {
         enrichedArticles.push({
@@ -165,11 +287,22 @@ Be objective and data-driven. High impact scores (>70) should be reserved for ma
           trend_direction: "neutral",
         });
       });
-    }
 
-    // Small delay between batches
-    if (i + batchSize < articles.length) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // If we're hitting rate limits, stop making more calls
+      if (error.message?.includes("429") || error.message?.includes("quota")) {
+        console.warn("[Reader Agent] Rate limit detected, stopping further API calls for this batch");
+        // Add remaining articles with defaults
+        for (let j = i + batchSize; j < articles.length; j++) {
+          enrichedArticles.push({
+            ...articles[j],
+            sentiment_score: 0,
+            impact_score: 50,
+            key_entities: [],
+            trend_direction: "neutral",
+          });
+        }
+        break;
+      }
     }
   }
 
@@ -213,12 +346,12 @@ ${briefing}
 
 Sector data:
 ${Object.entries(byCategory).map(([cat, articles]) => {
-  const displayName = CATEGORY_DISPLAY_NAMES[cat] || cat;
-  const sentiment = categorySentiments[cat];
-  const topHeadlines = articles.slice(0, 3).map(a => `  - ${a.headline}`).join("\n");
-  return `${displayName} (Sentiment: ${(sentiment.avg * 100).toFixed(0)}%, ${sentiment.count} articles):
+    const displayName = CATEGORY_DISPLAY_NAMES[cat] || cat;
+    const sentiment = categorySentiments[cat];
+    const topHeadlines = articles.slice(0, 3).map(a => `  - ${a.headline}`).join("\n");
+    return `${displayName} (Sentiment: ${(sentiment.avg * 100).toFixed(0)}%, ${sentiment.count} articles):
 ${topHeadlines}`;
-}).join("\n\n")}
+  }).join("\n\n")}
 
 Identify 3-5 interconnected macro trends. Look for:
 - Cause-and-effect chains across sectors (e.g., "AI chip demand → Taiwan tensions → Supply chain risk")
@@ -314,8 +447,8 @@ ${trendReport.trends.map(t => `- ${t.name} (${t.momentum}): ${t.analysis}`).join
 
 Category Metrics:
 ${categoryMetrics.map(m =>
-  `${m.displayName}: Sentiment ${(m.avgSentiment * 100).toFixed(0)}%, Impact ${m.avgImpact.toFixed(0)}, Bullish/Bearish ${m.bullishCount}/${m.bearishCount}, Tickers: ${m.topTickers.join(", ")}`
-).join("\n")}
+    `${m.displayName}: Sentiment ${(m.avgSentiment * 100).toFixed(0)}%, Impact ${m.avgImpact.toFixed(0)}, Bullish/Bearish ${m.bullishCount}/${m.bearishCount}, Tickers: ${m.topTickers.join(", ")}`
+  ).join("\n")}
 
 Cross-category insights: ${trendReport.crossCategoryInsights}
 
@@ -570,6 +703,13 @@ export async function runMarketIntelligence(
   console.log(`[Market Intelligence] Starting analysis for ${date}`);
   console.log(`========================================\n`);
 
+  // Check cache first - reuse analysis from the last 24 hours
+  const cachedAnalysis = getCachedAnalysis(date);
+  if (cachedAnalysis) {
+    console.log(`[Market Intelligence] Using cached analysis for ${date}`);
+    return cachedAnalysis;
+  }
+
   // Flatten articles with category info
   const allArticles: NewsArticle[] = [];
   Object.entries(categories).forEach(([category, articles]) => {
@@ -578,23 +718,42 @@ export async function runMarketIntelligence(
     });
   });
 
-  console.log(`[Market Intelligence] Total articles to analyze: ${allArticles.length}`);
+  console.log(`[Market Intelligence] Total articles received: ${allArticles.length}`);
 
-  // Step 1: Generate daily briefing
+  // Filter out low-impact articles to reduce API calls
+  const { highImpact, lowImpact } = filterHighImpactArticles(allArticles);
+
+  // Only analyze high-impact articles with AI
+  console.log(`[Market Intelligence] Analyzing ${highImpact.length} high-impact articles (skipping ${lowImpact.length} low-impact)`);
+
+  // Step 1: Generate daily briefing (uses high-impact articles only)
   console.log(`\n--- Step 1: Generating Daily Briefing ---`);
-  const briefing = await generateDailyBriefing(allArticles, date);
+  const briefing = await generateDailyBriefing(highImpact, date);
 
-  // Step 2: Run Reader Agent (enrich articles with sentiment/entities)
+  // Step 2: Run Reader Agent on high-impact articles only
   console.log(`\n--- Step 2: Running Reader Agent ---`);
-  const enrichedArticles = await runReaderAgent(allArticles);
+  const enrichedHighImpact = await runReaderAgent(highImpact);
+
+  // Add low-impact articles with default values (no AI needed)
+  const enrichedLowImpact: EnrichedArticle[] = lowImpact.map(article => ({
+    ...article,
+    sentiment_score: 0,
+    impact_score: 20, // Mark as low impact
+    key_entities: [],
+    trend_direction: "neutral" as const,
+  }));
+
+  const enrichedArticles = [...enrichedHighImpact, ...enrichedLowImpact];
 
   // Step 3: Run Analyst Agent (detect trends)
   console.log(`\n--- Step 3: Running Analyst Agent ---`);
-  const trendReport = await runAnalystAgent(enrichedArticles, briefing);
+  await waitForRateLimit();
+  const trendReport = await runAnalystAgent(enrichedHighImpact, briefing);
 
   // Step 4: Run Strategist Agent (opportunities/risks)
   console.log(`\n--- Step 4: Running Strategist Agent ---`);
-  const strategistReport = await runStrategistAgent(enrichedArticles, trendReport);
+  await waitForRateLimit();
+  const strategistReport = await runStrategistAgent(enrichedHighImpact, trendReport);
 
   // Compile final analysis
   const analysis: DailyAnalysis = {
@@ -604,6 +763,9 @@ export async function runMarketIntelligence(
     strategistReport,
     enrichedArticles,
   };
+
+  // Cache the analysis for 24 hours
+  cacheAnalysis(date, analysis);
 
   // Step 5: Store in Supabase
   console.log(`\n--- Step 5: Storing Results ---`);

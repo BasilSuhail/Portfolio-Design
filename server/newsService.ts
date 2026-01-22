@@ -18,7 +18,7 @@ function loadEnv() {
           let value = trimmed.substring(eqIndex + 1).trim();
           // Remove quotes if present
           if ((value.startsWith('"') && value.endsWith('"')) ||
-              (value.startsWith("'") && value.endsWith("'"))) {
+            (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
           }
           if (!process.env[key]) {
@@ -86,7 +86,7 @@ function resetRateLimits(): void {
 setInterval(resetRateLimits, 12 * 60 * 60 * 1000);
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const DAYS_TO_KEEP = 10; // Increased to 10 days with multiple API keys
+const DAYS_TO_KEEP = 365; // 1 year of news for comprehensive trend analysis
 
 // Flag to enable/disable full market intelligence analysis
 const ENABLE_MARKET_INTELLIGENCE = true;
@@ -94,8 +94,11 @@ const ENABLE_MARKET_INTELLIGENCE = true;
 // Log API key status (not the actual keys for security)
 console.log(`[NewsAPI] Initialized with ${NEWS_API_KEYS.length} API key(s)`);
 console.log(`GEMINI_API_KEY configured: ${GEMINI_API_KEY ? "Yes" : "No"}`);
+console.log(`[NewsAPI] Keeping ${DAYS_TO_KEEP} days of news history`);
 
-const newsFeedPath = path.join(process.cwd(), "news_feed.json");
+// Use NEWS_FEED_DIR env var if set (for Docker volume mounts), otherwise use current directory
+const newsFeedDir = process.env.NEWS_FEED_DIR || process.cwd();
+const newsFeedPath = path.join(newsFeedDir, "news_feed.json");
 
 // Consolidated queries - ONE API call per category to stay within rate limits
 // NewsAPI free tier: 100 requests/day (50 every 12 hours)

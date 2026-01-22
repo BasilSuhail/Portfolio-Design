@@ -16,6 +16,8 @@ services:
       - RESEND_API_KEY=${RESEND_API_KEY}
       # Gallery data directory for volume mount
       - GALLERY_DATA_DIR=/app/gallery-data
+      # News feed directory for volume mount (365 days / 1 year of history)
+      - NEWS_FEED_DIR=/app/news-data
     volumes:
       # Persist uploads across container restarts
       - ./uploads:/app/client/public/uploads
@@ -23,6 +25,8 @@ services:
       - ./content.json:/app/content.json
       # Persist gallery data (directory mount - works with Docker Swarm)
       - ./gallery-data:/app/gallery-data
+      # Persist news feed (365 days / 1 year of market intelligence)
+      - ./news-data:/app/news-data
     networks:
       - portfolio-network
     healthcheck:
