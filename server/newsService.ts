@@ -470,8 +470,8 @@ async function generateNewsForDate(targetDate: string): Promise<NewsDay & { anal
   for (const [category, queries] of Object.entries(CATEGORIES)) {
     console.log(`  Fetching ${CATEGORY_NAMES[category]}...`);
 
-    // Only one query per category now
-    const articles = await fetchNewsForCategory(queries[0], fromDate, toDate);
+    // Only one query per category now - pass category for RSS fallback
+    const articles = await fetchNewsForCategory(queries[0], fromDate, toDate, category);
     (newsDay.content as any)[category] = articles.slice(0, 5); // Max 5 per category
 
     // Rate limiting - wait 500ms between category requests
