@@ -177,28 +177,59 @@ async function fetchNewsForCategory(
   toDate: string,
   category?: string
 ): Promise<NewsArticle[]> {
-  const apiKey = getNextNewsApiKey();
+  const { ticker, query } = stock;
 
-  // If no API key available, try RSS feeds directly
-  if (!apiKey) {
-    console.warn("[NewsAPI] No available API keys. Falling back to RSS feeds.");
-    if (category) {
+  // ============================================
+  // STEP 1: TRY RSS FIRST (FREE, NO LIMITS)
+  // ============================================
+  if (category) {
+    console.log(`[News] Trying RSS first for ${category}...`);
+    try {
       const rssArticles = await fetchRSSForCategory(category);
-      return rssArticles.map(a => ({
-        ticker: a.ticker,
-        headline: a.headline,
-        url: a.url,
-        source: a.source,
-      }));
+
+      // If RSS returns enough articles, use them
+      if (rssArticles.length >= 5) {
+        console.log(`[News] RSS provided ${rssArticles.length} articles for ${category}`);
+        return rssArticles.map(a => ({
+          ticker: a.ticker,
+          headline: a.headline,
+          url: a.url,
+          source: a.source,
+        }));
+      }
+
+      console.log(`[News] RSS only got ${rssArticles.length} articles, will supplement with NewsAPI...`);
+    } catch (rssError: any) {
+      console.error(`[News] RSS failed for ${category}:`, rssError.message);
+    }
+  }
+
+  // ============================================
+  // STEP 2: FALLBACK TO NEWSAPI (IF RSS INSUFFICIENT)
+  // ============================================
+  const apiKey = getNextNewsApiKey();
+  if (!apiKey) {
+    console.warn("[NewsAPI] No available API keys and RSS was insufficient.");
+    // Return whatever RSS got, even if it's empty
+    if (category) {
+      try {
+        const rssArticles = await fetchRSSForCategory(category);
+        return rssArticles.map(a => ({
+          ticker: a.ticker,
+          headline: a.headline,
+          url: a.url,
+          source: a.source,
+        }));
+      } catch {
+        return [];
+      }
     }
     return [];
   }
 
-  const { ticker, query } = stock;
-
   try {
+    console.log(`[NewsAPI] Fetching from API for ${ticker}...`);
     const encodedQuery = encodeURIComponent(query);
-    // Fetch more articles per category (10 instead of 5) since we're making fewer API calls
     const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${apiKey}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -207,45 +238,13 @@ async function fetchNewsForCategory(
       // Check if it's a rate limit error
       if (data.message?.includes("rate limit") || data.message?.includes("too many requests")) {
         markKeyAsRateLimited(apiKey);
-        // Try again with a different key
-        const nextKey = getNextNewsApiKey();
-        if (nextKey) {
-          console.log(`[NewsAPI] Retrying with different key...`);
-          const retryUrl = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${nextKey}`;
-          const retryResponse = await fetch(retryUrl);
-          const retryData = await retryResponse.json();
-
-          if (retryData.status === "ok") {
-            return (retryData.articles || []).map((article: any) => ({
-              ticker,
-              headline: article.title,
-              url: article.url,
-              source: article.source.name,
-            }));
-          }
-
-          if (retryData.message?.includes("rate limit") || retryData.message?.includes("too many requests")) {
-            markKeyAsRateLimited(nextKey);
-          }
-        }
-
-        // All API keys exhausted, fall back to RSS
-        console.log(`[NewsAPI] All keys exhausted. Falling back to RSS for ${category || 'unknown'}...`);
-        if (category) {
-          const rssArticles = await fetchRSSForCategory(category);
-          return rssArticles.map(a => ({
-            ticker: a.ticker,
-            headline: a.headline,
-            url: a.url,
-            source: a.source,
-          }));
-        }
+        console.log(`[NewsAPI] Rate limited. Using RSS only for ${category || 'unknown'}...`);
+      } else {
+        console.error(`[NewsAPI] Error for ${ticker}:`, data.message);
       }
-      console.error(`[NewsAPI] Error fetching news for ${ticker}:`, data.message);
 
-      // Fall back to RSS on any API error
+      // Return RSS articles as fallback
       if (category) {
-        console.log(`[NewsAPI] Falling back to RSS for ${category}...`);
         const rssArticles = await fetchRSSForCategory(category);
         return rssArticles.map(a => ({
           ticker: a.ticker,
@@ -264,33 +263,32 @@ async function fetchNewsForCategory(
       source: article.source.name,
     }));
 
-    // If API returned few results, supplement with RSS
-    if (apiArticles.length < 5 && category) {
-      console.log(`[NewsAPI] Only ${apiArticles.length} articles. Supplementing with RSS...`);
+    console.log(`[NewsAPI] Got ${apiArticles.length} articles from API`);
+
+    // Merge with RSS for comprehensive coverage
+    if (category) {
       const rssArticles = await fetchRSSForCategory(category);
-      const rssFormatted = rssArticles.map(a => ({
-        ticker: a.ticker,
-        headline: a.headline,
-        url: a.url,
-        source: a.source,
-      }));
-      // Merge and dedupe by URL
       const allUrls = new Set(apiArticles.map((a: NewsArticle) => a.url));
-      for (const rss of rssFormatted) {
+      for (const rss of rssArticles) {
         if (!allUrls.has(rss.url)) {
-          apiArticles.push(rss);
+          apiArticles.push({
+            ticker: rss.ticker,
+            headline: rss.headline,
+            url: rss.url,
+            source: rss.source,
+          });
           allUrls.add(rss.url);
         }
       }
+      console.log(`[News] Combined total: ${apiArticles.length} articles`);
     }
 
     return apiArticles;
   } catch (error: any) {
-    console.error(`[NewsAPI] Failed to fetch news for ${ticker}:`, error.message);
+    console.error(`[NewsAPI] Network error for ${ticker}:`, error.message);
 
     // Fall back to RSS on fetch error
     if (category) {
-      console.log(`[NewsAPI] Network error. Falling back to RSS for ${category}...`);
       const rssArticles = await fetchRSSForCategory(category);
       return rssArticles.map(a => ({
         ticker: a.ticker,
@@ -490,24 +488,23 @@ async function generateNewsForDate(targetDate: string): Promise<NewsDay & { anal
     }
   });
 
-  // Run Market Intelligence analysis if enabled and we have articles
+  // Generate a simple LOCAL briefing (no API) - this always works
+  const topHeadlines = allArticles.slice(0, 5).map(a => a.headline).join(". ");
+  newsDay.content.briefing = `Market intelligence briefing for ${targetDate}. Today's top stories: ${topHeadlines}. Check the detailed analysis below for more insights.`;
+
+  // Run Market Intelligence in BACKGROUND (non-blocking)
+  // This allows news to save immediately while AI enhancement happens later
   if (ENABLE_MARKET_INTELLIGENCE && allArticles.length > 0) {
-    console.log(`  Running Market Intelligence analysis...`);
-    try {
-      const analysis = await runMarketIntelligence(allArticles, categories, targetDate);
-      newsDay.content.briefing = analysis.briefing;
-      newsDay.analysis = analysis;
-      console.log(`  Market Intelligence complete - ${analysis.trendReport.trends.length} trends, ${analysis.strategistReport.opportunities.length} opportunities`);
-    } catch (error: any) {
-      console.error(`  Market Intelligence failed:`, error.message);
-      // Fallback to simple briefing
-      console.log(`  Generating simple briefing as fallback...`);
-      newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content, targetDate);
-    }
-  } else {
-    // Generate simple AI briefing if Market Intelligence is disabled
-    console.log(`  Generating AI briefing with Gemini...`);
-    newsDay.content.briefing = await generateBriefingWithGemini(newsDay.content, targetDate);
+    console.log(`  Starting Market Intelligence in background...`);
+    runMarketIntelligence(allArticles, categories, targetDate)
+      .then(analysis => {
+        console.log(`  [Background] Market Intelligence complete for ${targetDate}`);
+        // Note: Analysis is saved to Supabase by runMarketIntelligence itself
+      })
+      .catch(error => {
+        console.error(`  [Background] Market Intelligence failed for ${targetDate}:`, error.message);
+        // That's okay - we have the local briefing already
+      });
   }
 
   return newsDay;
