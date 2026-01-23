@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-# Build: v2.1 - Gallery persistence fix
+# Build: v2.2 - News persistence fix with startup script
 FROM node:20-alpine AS builder
 
 # Set working directory
@@ -43,9 +43,15 @@ RUN mkdir -p /app/client/public/uploads /app/gallery-data /app/news-data
 COPY --from=builder /app/gallery.json ./gallery-data/gallery.json
 COPY --from=builder /app/gallery_settings.json ./gallery-data/gallery_settings.json
 
-# Create symlink for news_feed.json to point to persistent volume
-# This ensures the app always reads from the mounted volume
-RUN ln -sf /app/news-data/news_feed.json /app/news_feed.json
+# Create startup script that ensures symlink exists AFTER volume mount
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo '# Create symlink for news_feed.json to point to persistent volume' >> /app/start.sh && \
+    echo '# This runs AFTER the volume is mounted, ensuring correct binding' >> /app/start.sh && \
+    echo 'rm -f /app/news_feed.json 2>/dev/null' >> /app/start.sh && \
+    echo 'ln -sf /app/news-data/news_feed.json /app/news_feed.json' >> /app/start.sh && \
+    echo 'echo "[Startup] News symlink created: $(ls -la /app/news_feed.json)"' >> /app/start.sh && \
+    echo 'exec npm start' >> /app/start.sh && \
+    chmod +x /app/start.sh
 
 # Expose port
 EXPOSE 5000
@@ -58,5 +64,5 @@ ENV PORT=5000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:5000/api/content', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start the application
-CMD ["npm", "start"]
+# Use startup script instead of npm start directly
+CMD ["/app/start.sh"]
