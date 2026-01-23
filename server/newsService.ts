@@ -528,19 +528,21 @@ export async function refreshNewsFeed(): Promise<{
     newsFeed = [];
   }
 
-  // Get the last 8 days
-  const last8Days = getLastNDays(DAYS_TO_KEEP);
-  console.log(`Checking last ${DAYS_TO_KEEP} days: ${last8Days.join(", ")}`);
+  // IMPORTANT: Only try to fetch the last 7 days (to avoid API overload)
+  // But we'll KEEP all historical data up to DAYS_TO_KEEP (365 days)
+  const DAYS_TO_FETCH = 7;
+  const recentDays = getLastNDays(DAYS_TO_FETCH);
+  console.log(`Checking last ${DAYS_TO_FETCH} days for sync: ${recentDays.join(", ")}`);
 
   // Find existing dates in the feed
   const existingDates = new Set(newsFeed.map((item) => item.date));
-  console.log(`Existing dates in feed: ${Array.from(existingDates).join(", ") || "none"}`);
+  console.log(`Existing dates in feed: ${newsFeed.length} total days`);
 
-  // Find missing dates (only within the last 8 days)
-  const missingDates = last8Days.filter((date) => !existingDates.has(date));
+  // Find missing dates (only within the last 7 days - not all 365!)
+  const missingDates = recentDays.filter((date) => !existingDates.has(date));
 
   if (missingDates.length === 0) {
-    console.log("All dates are up to date. No missing days to fetch.");
+    console.log("All recent dates are up to date. No missing days to fetch.");
     return {
       success: true,
       message: "News is already up to date",
@@ -580,9 +582,11 @@ export async function refreshNewsFeed(): Promise<{
   // Sort by date descending (newest first)
   newsFeed.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  // Keep only the last 8 days worth of news (remove anything older)
-  const cutoffDate = last8Days[last8Days.length - 1];
+  // Keep 365 days of historical data (not just 7!)
+  const cutoffDate = getLastNDays(DAYS_TO_KEEP)[DAYS_TO_KEEP - 1];
+  const originalCount = newsFeed.length;
   newsFeed = newsFeed.filter((item) => item.date >= cutoffDate);
+  console.log(`Retention: kept ${newsFeed.length} days (removed ${originalCount - newsFeed.length} older than ${cutoffDate})`);
 
   // Save to file
   await fs.writeFile(newsFeedPath, JSON.stringify(newsFeed, null, 2));
