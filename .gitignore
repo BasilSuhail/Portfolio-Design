@@ -13,3 +13,8 @@ gallery.json
 gallery_settings.json
 gallery-data/*.json
 !gallery-data/.gitkeep
+
+# Don't track news data (persisted via Docker volumes)
+news_feed.json
+news-data/*.json
+!news-data/.gitkeep
