@@ -37,11 +37,15 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/content.json ./content.json
 
 # Create directories for persistent data (will be volume mounted)
-RUN mkdir -p /app/client/public/uploads /app/gallery-data
+RUN mkdir -p /app/client/public/uploads /app/gallery-data /app/news-data
 
 # Copy default gallery files to gallery-data (will be overridden by volume mount)
 COPY --from=builder /app/gallery.json ./gallery-data/gallery.json
 COPY --from=builder /app/gallery_settings.json ./gallery-data/gallery_settings.json
+
+# Create symlink for news_feed.json to point to persistent volume
+# This ensures the app always reads from the mounted volume
+RUN ln -sf /app/news-data/news_feed.json /app/news_feed.json
 
 # Expose port
 EXPOSE 5000

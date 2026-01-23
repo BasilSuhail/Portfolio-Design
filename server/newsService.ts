@@ -100,6 +100,7 @@ console.log(`[NewsAPI] Keeping ${DAYS_TO_KEEP} days of news history`);
 // Use NEWS_FEED_DIR env var if set (for Docker volume mounts), otherwise use current directory
 const newsFeedDir = process.env.NEWS_FEED_DIR || process.cwd();
 const newsFeedPath = path.join(newsFeedDir, "news_feed.json");
+console.log(`[NewsAPI] Using news feed path: ${newsFeedPath}`);
 
 // Consolidated queries - ONE API call per category to stay within rate limits
 // NewsAPI free tier: 100 requests/day (50 every 12 hours)

@@ -8,6 +8,14 @@
 
 import { callGemini, parseGeminiJSON } from "./geminiPool";
 import { supabase, isSupabaseConfigured } from "./supabase";
+import {
+  analyzeHeadline,
+  analyzeCategoryNews,
+  generateLocalBriefing,
+  detectTrendingTopics,
+  runPhase1Analysis,
+  type Phase1Result
+} from "./sentimentService";
 
 // Types for the analysis pipeline
 export interface NewsArticle {
@@ -260,14 +268,17 @@ Be objective and data-driven. High impact scores (>70) should be reserved for ma
           });
         });
       } else {
-        // Fallback: add articles with default values
+        // Fallback: use LOCAL sentiment analysis (no AI needed)
+        console.log(`[Reader Agent] Using local sentiment analysis for batch`);
         batch.forEach(article => {
+          const localSentiment = analyzeHeadline(article.headline);
           enrichedArticles.push({
             ...article,
-            sentiment_score: 0,
-            impact_score: 50,
+            sentiment_score: localSentiment.normalizedScore,
+            impact_score: localSentiment.confidence,
             key_entities: [],
-            trend_direction: "neutral",
+            trend_direction: localSentiment.sentiment === "positive" ? "bullish" :
+              localSentiment.sentiment === "negative" ? "bearish" : "neutral",
           });
         });
       }
@@ -277,14 +288,17 @@ Be objective and data-driven. High impact scores (>70) should be reserved for ma
       // Record API failure for backoff calculation
       recordApiFailure();
 
-      // Add articles with defaults on error
+      // Use LOCAL sentiment analysis on error (always works!)
+      console.log(`[Reader Agent] Falling back to local sentiment analysis`);
       batch.forEach(article => {
+        const localSentiment = analyzeHeadline(article.headline);
         enrichedArticles.push({
           ...article,
-          sentiment_score: 0,
-          impact_score: 50,
+          sentiment_score: localSentiment.normalizedScore,
+          impact_score: localSentiment.confidence,
           key_entities: [],
-          trend_direction: "neutral",
+          trend_direction: localSentiment.sentiment === "positive" ? "bullish" :
+            localSentiment.sentiment === "negative" ? "bearish" : "neutral",
         });
       });
 
@@ -700,7 +714,7 @@ export async function runMarketIntelligence(
   date: string
 ): Promise<DailyAnalysis> {
   console.log(`\n========================================`);
-  console.log(`[Market Intelligence] Starting analysis for ${date}`);
+  console.log(`[Market Intelligence] Starting TWO-PHASE analysis for ${date}`);
   console.log(`========================================\n`);
 
   // Check cache first - reuse analysis from the last 24 hours
@@ -720,40 +734,134 @@ export async function runMarketIntelligence(
 
   console.log(`[Market Intelligence] Total articles received: ${allArticles.length}`);
 
+  // ============================================
+  // PHASE 1: LOCAL SENTIMENT ANALYSIS (Always runs, no API needed)
+  // ============================================
+  console.log(`\n--- PHASE 1: Local Sentiment Analysis (No API) ---`);
+
+  // Run Phase 1 - this ALWAYS succeeds
+  const phase1Result = runPhase1Analysis(categories, date);
+
+  console.log(`[Phase 1] Baseline sentiment: ${phase1Result.overallSentiment}`);
+  console.log(`[Phase 1] Trending topics: ${phase1Result.trendingTopics.slice(0, 3).map(t => t.topic).join(", ")}`);
+
   // Filter out low-impact articles to reduce API calls
   const { highImpact, lowImpact } = filterHighImpactArticles(allArticles);
+  console.log(`[Market Intelligence] High-impact: ${highImpact.length}, Low-impact: ${lowImpact.length}`);
 
-  // Only analyze high-impact articles with AI
-  console.log(`[Market Intelligence] Analyzing ${highImpact.length} high-impact articles (skipping ${lowImpact.length} low-impact)`);
+  // ============================================
+  // PHASE 2: AI ENHANCEMENT (Uses Gemini to improve Phase 1)
+  // ============================================
+  console.log(`\n--- PHASE 2: AI Enhancement (Gemini API) ---`);
 
-  // Step 1: Generate daily briefing (uses high-impact articles only)
-  console.log(`\n--- Step 1: Generating Daily Briefing ---`);
-  const briefing = await generateDailyBriefing(highImpact, date);
+  let briefing: string;
+  let enrichedArticles: EnrichedArticle[];
+  let trendReport: TrendReport;
+  let strategistReport: StrategistReport;
+  let aiEnhanced = false;
 
-  // Step 2: Run Reader Agent on high-impact articles only
-  console.log(`\n--- Step 2: Running Reader Agent ---`);
-  const enrichedHighImpact = await runReaderAgent(highImpact);
+  try {
+    // Step 2.1: Generate AI briefing (pass Phase 1 context)
+    console.log(`\n[Phase 2.1] Generating AI-enhanced briefing...`);
+    briefing = await generateDailyBriefing(highImpact, date);
 
-  // Add low-impact articles with default values (no AI needed)
-  const enrichedLowImpact: EnrichedArticle[] = lowImpact.map(article => ({
-    ...article,
-    sentiment_score: 0,
-    impact_score: 20, // Mark as low impact
-    key_entities: [],
-    trend_direction: "neutral" as const,
-  }));
+    // Step 2.2: Run Reader Agent with local sentiment as baseline
+    console.log(`\n[Phase 2.2] Running Reader Agent (AI enhancement)...`);
+    const enrichedHighImpact = await runReaderAgent(highImpact);
 
-  const enrichedArticles = [...enrichedHighImpact, ...enrichedLowImpact];
+    // Add low-impact articles with LOCAL sentiment values
+    const enrichedLowImpact: EnrichedArticle[] = lowImpact.map(article => {
+      const localSentiment = analyzeHeadline(article.headline);
+      return {
+        ...article,
+        sentiment_score: localSentiment.normalizedScore,
+        impact_score: 20,
+        key_entities: [],
+        trend_direction: localSentiment.sentiment === "positive" ? "bullish" as const :
+          localSentiment.sentiment === "negative" ? "bearish" as const : "neutral" as const,
+      };
+    });
 
-  // Step 3: Run Analyst Agent (detect trends)
-  console.log(`\n--- Step 3: Running Analyst Agent ---`);
-  await waitForRateLimit();
-  const trendReport = await runAnalystAgent(enrichedHighImpact, briefing);
+    enrichedArticles = [...enrichedHighImpact, ...enrichedLowImpact];
 
-  // Step 4: Run Strategist Agent (opportunities/risks)
-  console.log(`\n--- Step 4: Running Strategist Agent ---`);
-  await waitForRateLimit();
-  const strategistReport = await runStrategistAgent(enrichedHighImpact, trendReport);
+    // Step 2.3: Run Analyst Agent
+    console.log(`\n[Phase 2.3] Running Analyst Agent...`);
+    await waitForRateLimit();
+    trendReport = await runAnalystAgent(enrichedHighImpact, briefing);
+
+    // Step 2.4: Run Strategist Agent
+    console.log(`\n[Phase 2.4] Running Strategist Agent...`);
+    await waitForRateLimit();
+    strategistReport = await runStrategistAgent(enrichedHighImpact, trendReport);
+
+    aiEnhanced = true;
+    console.log(`\n[Phase 2] AI enhancement complete!`);
+
+  } catch (error: any) {
+    // PHASE 2 FAILED - Use Phase 1 results instead
+    console.warn(`\n[Phase 2] AI enhancement failed: ${error.message}`);
+    console.log(`[Phase 2] Falling back to Phase 1 local analysis results`);
+
+    // Use Phase 1 briefing
+    briefing = phase1Result.briefing;
+
+    // Build enriched articles from Phase 1 sentiment
+    enrichedArticles = allArticles.map(article => {
+      const localSentiment = analyzeHeadline(article.headline);
+      return {
+        ...article,
+        sentiment_score: localSentiment.normalizedScore,
+        impact_score: localSentiment.confidence,
+        key_entities: [],
+        trend_direction: localSentiment.sentiment === "positive" ? "bullish" as const :
+          localSentiment.sentiment === "negative" ? "bearish" as const : "neutral" as const,
+      };
+    });
+
+    // Build trend report from Phase 1
+    trendReport = {
+      trends: Object.entries(phase1Result.categorySentiments).map(([cat, data]) => ({
+        name: CATEGORY_DISPLAY_NAMES[cat] || cat,
+        sectors: [cat],
+        momentum: data.momentum,
+        analysis: `Local analysis: ${data.articleCount} articles with ${data.score > 0 ? "positive" : data.score < 0 ? "negative" : "neutral"} sentiment.`,
+        confidence: 60,
+      })),
+      crossCategoryInsights: `Based on local sentiment analysis. Overall market sentiment: ${phase1Result.overallSentiment > 0 ? "positive" : phase1Result.overallSentiment < 0 ? "cautious" : "neutral"}.`,
+    };
+
+    // Build strategist report from Phase 1
+    strategistReport = {
+      opportunities: Object.entries(phase1Result.categorySentiments)
+        .filter(([_, data]) => data.score > 20)
+        .map(([cat, data]) => ({
+          category: cat,
+          score: Math.min(100, 50 + data.score),
+          insight: `Positive sentiment detected in ${data.articleCount} articles.`,
+          tickers: [],
+          timeHorizon: "short" as const,
+        })),
+      risks: Object.entries(phase1Result.categorySentiments)
+        .filter(([_, data]) => data.score < -20)
+        .map(([cat, data]) => ({
+          factor: `Negative sentiment in ${CATEGORY_DISPLAY_NAMES[cat] || cat}`,
+          severity: data.score < -50 ? "high" as const : "medium" as const,
+          affectedSectors: [cat],
+          mitigation: "Monitor headlines for developing risks.",
+        })),
+      marketSentiment: {
+        overall: phase1Result.overallSentiment,
+        byCategory: Object.fromEntries(
+          Object.entries(phase1Result.categorySentiments).map(([cat, data]) => [cat, data.score])
+        ),
+      },
+    };
+  }
+
+  // Log enhancement status
+  console.log(`\n[Market Intelligence] Analysis mode: ${aiEnhanced ? "AI Enhanced ✨" : "Local Baseline 📊"}`);
+
+  // All analysis steps have been completed in the Phase 2 try/catch above
 
   // Compile final analysis
   const analysis: DailyAnalysis = {

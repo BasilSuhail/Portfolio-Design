@@ -22,7 +22,7 @@ function loadEnvKeys(): string[] {
           let value = trimmed.substring(eqIndex + 1).trim();
           // Remove quotes if present
           if ((value.startsWith('"') && value.endsWith('"')) ||
-              (value.startsWith("'") && value.endsWith("'"))) {
+            (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
           }
           // Collect all GEMINI_API_KEY variants
@@ -34,15 +34,13 @@ function loadEnvKeys(): string[] {
     });
   }
 
-  // Also check process.env
-  if (process.env.GEMINI_API_KEY && !keys.includes(process.env.GEMINI_API_KEY)) {
-    keys.unshift(process.env.GEMINI_API_KEY);
-  }
-  if (process.env.GEMINI_API_KEY_2 && !keys.includes(process.env.GEMINI_API_KEY_2)) {
-    keys.push(process.env.GEMINI_API_KEY_2);
-  }
-  if (process.env.GEMINI_API_KEY_3 && !keys.includes(process.env.GEMINI_API_KEY_3)) {
-    keys.push(process.env.GEMINI_API_KEY_3);
+  // Also check process.env for keys 1-6
+  for (let i = 1; i <= 6; i++) {
+    const keyName = i === 1 ? "GEMINI_API_KEY" : `GEMINI_API_KEY_${i}`;
+    const keyValue = process.env[keyName];
+    if (keyValue && !keys.includes(keyValue)) {
+      keys.push(keyValue);
+    }
   }
 
   return keys;
