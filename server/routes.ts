@@ -15,8 +15,8 @@ import { doubleCsrfProtection } from "./index";
 function sanitizeHTML(dirty: string): string {
   return sanitizeHtml(dirty, {
     allowedTags: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                  'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead',
-                  'tbody', 'tr', 'th', 'td', 'span', 'div'],
+      'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead',
+      'tbody', 'tr', 'th', 'td', 'span', 'div'],
     allowedAttributes: {
       a: ['href', 'target', 'rel'],
       img: ['src', 'alt', 'class', 'style'],
@@ -455,19 +455,25 @@ export async function registerRoutes(
   });
 
   // Refresh news feed - syncs missing days from the last 8 days
+  // This is non-blocking - returns immediately while sync continues in background
   app.post("/api/news/refresh", async (_req: Request, res: Response) => {
-    try {
-      console.log("Starting news sync...");
-      const result = await newsService.refreshNewsFeed();
-      console.log("News sync completed:", result);
-      res.json(result);
-    } catch (error: any) {
-      console.error("Failed to refresh news:", error);
-      res.status(500).json({
-        success: false,
-        message: error.message || "Failed to refresh news"
+    console.log("Starting news sync (background mode)...");
+
+    // Start sync in background - don't await
+    newsService.refreshNewsFeed()
+      .then(result => {
+        console.log("News sync completed:", result);
+      })
+      .catch(error => {
+        console.error("Background news sync failed:", error);
       });
-    }
+
+    // Return immediately to prevent timeout
+    res.json({
+      success: true,
+      message: "News sync started in background. Refresh page in 30-60 seconds to see new data.",
+      fetchedDates: []
+    });
   });
 
   // ========================================
