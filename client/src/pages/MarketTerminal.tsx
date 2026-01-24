@@ -5,15 +5,7 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
-  AlertTriangle,
-  Target,
-  BarChart3,
-  Activity,
-  Zap,
-  Shield,
-  Clock,
   ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -26,9 +18,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
-  AreaChart,
-  Area,
 } from "recharts";
 
 // Types for Market Intelligence data
@@ -86,73 +75,19 @@ interface MarketTerminalData {
 
 // Category colors for charts
 const CATEGORY_COLORS: Record<string, string> = {
-  ai_compute_infra: "#8b5cf6",
-  fintech_regtech: "#10b981",
-  rpa_enterprise_ai: "#f59e0b",
-  semi_supply_chain: "#3b82f6",
+  ai_compute_infra: "#6366f1",
+  fintech_regtech: "#22c55e",
+  rpa_enterprise_ai: "#f97316",
+  semi_supply_chain: "#06b6d4",
   cybersecurity: "#ef4444",
   geopolitics: "#ec4899",
-};
-
-// Severity colors
-const SEVERITY_COLORS: Record<string, string> = {
-  low: "text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30",
-  medium: "text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30",
-  high: "text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-900/30",
-  critical: "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/30",
-};
-
-// Momentum icons
-const MomentumIcon = ({ momentum }: { momentum: string }) => {
-  switch (momentum) {
-    case "accelerating":
-      return <TrendingUp className="size-4 text-green-500" />;
-    case "decelerating":
-      return <TrendingDown className="size-4 text-red-500" />;
-    default:
-      return <Minus className="size-4 text-gray-400" />;
-  }
-};
-
-// Sentiment gauge component
-const SentimentGauge = ({ value, label }: { value: number; label: string }) => {
-  const getColor = (v: number) => {
-    if (v >= 50) return "text-green-500";
-    if (v >= 20) return "text-emerald-400";
-    if (v >= -20) return "text-gray-400";
-    if (v >= -50) return "text-orange-400";
-    return "text-red-500";
-  };
-
-  const getLabel = (v: number) => {
-    if (v >= 50) return "Bullish";
-    if (v >= 20) return "Optimistic";
-    if (v >= -20) return "Neutral";
-    if (v >= -50) return "Cautious";
-    return "Bearish";
-  };
-
-  return (
-    <div className="text-center">
-      <div className={`text-3xl font-bold ${getColor(value)}`}>
-        {value > 0 ? "+" : ""}{value}
-      </div>
-      <div className="text-xs text-gray-500 dark:text-neutral-500 mt-1">
-        {getLabel(value)}
-      </div>
-      <div className="text-xs text-gray-400 dark:text-neutral-600">
-        {label}
-      </div>
-    </div>
-  );
 };
 
 export default function MarketTerminal() {
   const [data, setData] = useState<MarketTerminalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [expandedTrend, setExpandedTrend] = useState<number | null>(null);
-  const [expandedOpp, setExpandedOpp] = useState<number | null>(null);
+  const [expandedTrend, setExpandedTrend] = useState<number | null>(0);
   const { data: content } = useContent();
 
   useEffect(() => {
@@ -205,6 +140,28 @@ export default function MarketTerminal() {
       .reverse(); // Oldest first for chart
   })();
 
+  const getTrendIcon = (momentum: string) => {
+    if (momentum === "accelerating") return <TrendingUp className="w-3.5 h-3.5" />;
+    if (momentum === "decelerating") return <TrendingDown className="w-3.5 h-3.5" />;
+    return <Minus className="w-3.5 h-3.5" />;
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score > 50) return "text-emerald-600 dark:text-emerald-400";
+    if (score > 0) return "text-emerald-500 dark:text-emerald-400";
+    if (score < -50) return "text-red-600 dark:text-red-400";
+    if (score < 0) return "text-red-500 dark:text-red-400";
+    return "text-gray-500 dark:text-neutral-500";
+  };
+
+  const getScoreLabel = (score: number) => {
+    if (score >= 50) return "Bullish";
+    if (score >= 20) return "Optimistic";
+    if (score >= -20) return "Neutral";
+    if (score >= -50) return "Cautious";
+    return "Bearish";
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white dark:bg-neutral-900 flex items-center justify-center">
@@ -220,400 +177,297 @@ export default function MarketTerminal() {
     <div className="min-h-screen bg-white dark:bg-neutral-900">
       <Navigation name={content?.profile?.name || "Portfolio"} />
 
-      <main className="pt-10 pb-8">
-        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="mb-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
+        {/* Back Link */}
+        <Link href="/news">
+          <span className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 transition-colors mb-6 cursor-pointer">
+            <ArrowLeft className="w-4 h-4" />
+            Back to News
+          </span>
+        </Link>
+
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-200 mb-2">
+            Market Intelligence
+          </h1>
+          <p className="text-gray-600 dark:text-neutral-400">
+            AI-powered analysis of tech, finance, and geopolitics
+          </p>
+        </div>
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-10 border border-red-200 rounded-xl bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+            <p className="text-gray-700 dark:text-neutral-300">Failed to load market data.</p>
+            <p className="text-sm text-gray-500 dark:text-neutral-500 mt-1">
+              Make sure Supabase is configured and the database tables are created.
+            </p>
+          </div>
+        )}
+
+        {/* No Data State */}
+        {!error && !latestAnalysis && (
+          <div className="text-center py-10">
+            <p className="text-gray-600 dark:text-neutral-400">No market intelligence data yet.</p>
+            <p className="text-sm text-gray-500 dark:text-neutral-500 mt-1">
+              Run a news sync to generate AI-powered market analysis.
+            </p>
             <Link href="/news">
-              <span className="inline-flex items-center gap-x-1 text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 cursor-pointer mb-2">
-                <ArrowLeft className="size-3" />
-                Back to News
+              <span className="inline-flex items-center gap-x-1 mt-4 text-sm text-violet-600 hover:text-violet-700 dark:text-violet-400 cursor-pointer">
+                Go to News to Sync
               </span>
             </Link>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg">
-                <Activity className="size-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-semibold text-gray-800 dark:text-neutral-200">
-                  Market Intelligence Terminal
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-neutral-400">
-                  AI-powered analysis of tech, finance, and geopolitics
-                </p>
-              </div>
-            </div>
           </div>
+        )}
 
-          {/* Error State */}
-          {error && (
-            <div className="text-center py-10 border border-red-200 rounded-xl bg-red-50 dark:border-red-800 dark:bg-red-900/20">
-              <AlertTriangle className="size-8 text-red-500 mx-auto mb-2" />
-              <p className="text-gray-700 dark:text-neutral-300">Failed to load market data.</p>
-              <p className="text-sm text-gray-500 dark:text-neutral-500 mt-1">
-                Make sure Supabase is configured and the database tables are created.
-              </p>
-            </div>
-          )}
-
-          {/* No Data State */}
-          {!error && !latestAnalysis && (
-            <div className="text-center py-10 border border-gray-200 rounded-xl dark:border-neutral-700">
-              <BarChart3 className="size-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-600 dark:text-neutral-400">No market intelligence data yet.</p>
-              <p className="text-sm text-gray-500 dark:text-neutral-500 mt-1">
-                Run a news sync to generate AI-powered market analysis.
-              </p>
-              <Link href="/news">
-                <span className="inline-flex items-center gap-x-1 mt-4 text-sm text-violet-600 hover:text-violet-700 dark:text-violet-400 cursor-pointer">
-                  Go to News to Sync
+        {/* Main Content */}
+        {!error && latestAnalysis && (
+          <>
+            {/* Market Sentiment - Simplified Layout */}
+            <section className="mb-12">
+              <div className="flex items-baseline justify-between mb-6">
+                <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200">Market Sentiment</h2>
+                <span className="text-sm text-gray-500 dark:text-neutral-500">
+                  {latestAnalysis.date ? new Date(latestAnalysis.date).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                  }) : "Latest"}
                 </span>
-              </Link>
-            </div>
-          )}
+              </div>
 
-          {/* Main Content */}
-          {!error && latestAnalysis && (
-            <div className="space-y-8">
-              {/* Market Sentiment Overview */}
-              <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                <div className="flex items-center gap-2 mb-6">
-                  <Zap className="size-5 text-violet-500" />
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                    Market Sentiment
-                  </h2>
-                  <span className="text-xs text-gray-500 dark:text-neutral-500 ml-auto">
-                    {latestAnalysis.date ? new Date(latestAnalysis.date).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                    }) : "Latest"}
-                  </span>
+              {/* Overall Sentiment */}
+              <div className="flex items-center gap-4 pb-6 mb-6 border-b border-gray-200 dark:border-neutral-700">
+                <span className={`text-4xl font-light tabular-nums ${getScoreColor(strategistReport?.marketSentiment?.overall ?? 0)}`}>
+                  {(strategistReport?.marketSentiment?.overall ?? 0) > 0 ? "+" : ""}{strategistReport?.marketSentiment?.overall ?? 0}
+                </span>
+                <div>
+                  <p className="text-sm font-medium text-gray-800 dark:text-neutral-200">
+                    {getScoreLabel(strategistReport?.marketSentiment?.overall ?? 0)}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-neutral-500">Overall market sentiment</p>
+                </div>
+              </div>
+
+              {/* Category Breakdown - Simple List */}
+              <div className="space-y-3">
+                {Object.entries(strategistReport?.marketSentiment?.byCategory || {}).map(([cat, value]) => (
+                  <div key={cat} className="flex items-center justify-between py-2">
+                    <span className="text-sm text-gray-500 dark:text-neutral-500">
+                      {data?.categoryNames?.[cat] || cat}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-gray-500 dark:text-neutral-500">{getScoreLabel(value)}</span>
+                      <span className={`text-sm font-medium tabular-nums ${getScoreColor(value)}`}>
+                        {value > 0 ? "+" : ""}{value}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Today's Briefing */}
+            <section className="mb-12">
+              <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-4">Today's Briefing</h2>
+              <p className="text-gray-600 dark:text-neutral-400 leading-relaxed">
+                {latestAnalysis.briefing || "No briefing available."}
+              </p>
+            </section>
+
+            {/* Sentiment Trends Chart */}
+            {sentimentChartData.length > 0 && (
+              <section className="mb-12">
+                <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-6">Sentiment Trends</h2>
+
+                <div className="h-64 mb-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={sentimentChartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 11, fill: "#6b7280" }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: "#6b7280" }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(17, 24, 39, 0.9)",
+                          border: "1px solid #374151",
+                          borderRadius: "6px",
+                          fontSize: "12px"
+                        }}
+                      />
+                      {Object.keys(CATEGORY_COLORS).map((cat) => (
+                        <Line
+                          key={cat}
+                          type="monotone"
+                          dataKey={cat}
+                          name={data?.categoryNames?.[cat] || cat}
+                          stroke={CATEGORY_COLORS[cat]}
+                          strokeWidth={1.5}
+                          dot={false}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {/* Overall Sentiment */}
-                  <div className="p-3 bg-gray-50 rounded-lg dark:bg-neutral-800">
-                    <SentimentGauge
-                      value={strategistReport?.marketSentiment?.overall ?? 0}
-                      label="Overall"
-                    />
-                  </div>
-
-                  {/* Category Sentiments */}
-                  {Object.entries(strategistReport?.marketSentiment?.byCategory || {}).slice(0, 5).map(([cat, value]) => (
-                    <div key={cat} className="p-3 bg-gray-50 rounded-lg dark:bg-neutral-800">
-                      <SentimentGauge
-                        value={value}
-                        label={data?.categoryNames?.[cat] || cat}
+                {/* Chart Legend */}
+                <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
+                  {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
+                    <div key={cat} className="flex items-center gap-1.5">
+                      <div
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: color }}
                       />
+                      <span className="text-xs text-gray-500 dark:text-neutral-500">
+                        {data?.categoryNames?.[cat] || cat}
+                      </span>
                     </div>
                   ))}
                 </div>
               </section>
+            )}
 
-              {/* Daily Briefing */}
-              <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                <div className="flex items-center gap-2 mb-4">
-                  <BarChart3 className="size-5 text-blue-500" />
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                    Today's Briefing
-                  </h2>
-                </div>
-                <p className="text-gray-600 dark:text-neutral-400 leading-relaxed">
-                  {latestAnalysis.briefing || "No briefing available."}
-                </p>
-              </section>
+            {/* Market Trends */}
+            <section className="mb-12">
+              <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-6">Market Trends</h2>
 
-              {/* Sentiment Chart */}
-              {sentimentChartData.length > 0 && (
-                <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                  <div className="flex items-center gap-2 mb-6">
-                    <Activity className="size-5 text-emerald-500" />
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                      Sentiment Trends
-                    </h2>
-                  </div>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={sentimentChartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
-                        <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="#6b7280" />
-                        <YAxis tick={{ fontSize: 12 }} stroke="#6b7280" domain={[-100, 100]} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "rgba(17, 24, 39, 0.9)",
-                            border: "1px solid #374151",
-                            borderRadius: "8px",
-                          }}
-                          labelStyle={{ color: "#e5e7eb" }}
-                        />
-                        <Legend />
-                        {Object.keys(CATEGORY_COLORS).map((cat) => (
-                          <Area
-                            key={cat}
-                            type="monotone"
-                            dataKey={cat}
-                            name={data?.categoryNames?.[cat] || cat}
-                            stroke={CATEGORY_COLORS[cat]}
-                            fill={CATEGORY_COLORS[cat]}
-                            fillOpacity={0.1}
-                            strokeWidth={2}
-                          />
-                        ))}
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </section>
-              )}
-
-              {/* Trends & Opportunities - Stacked on narrow layout */}
-              <div className="space-y-6">
-                {/* Trends */}
-                <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                  <div className="flex items-center gap-2 mb-4">
-                    <TrendingUp className="size-5 text-orange-500" />
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                      Market Trends
-                    </h2>
-                  </div>
-
-                  {trendReport?.trends && trendReport.trends.length > 0 ? (
-                    <div className="space-y-3">
-                      {trendReport.trends.map((trend, idx) => (
-                        <div
-                          key={idx}
-                          className="border border-gray-100 rounded-lg p-4 dark:border-neutral-700 hover:border-gray-200 dark:hover:border-neutral-600 transition-colors"
-                        >
-                          <button
-                            onClick={() => setExpandedTrend(expandedTrend === idx ? null : idx)}
-                            className="w-full text-left"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <MomentumIcon momentum={trend.momentum} />
-                                <span className="font-medium text-gray-800 dark:text-neutral-200">
-                                  {trend.name}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs px-2 py-0.5 bg-violet-100 text-violet-700 rounded-full dark:bg-violet-900/30 dark:text-violet-400">
-                                  {trend.confidence}% confidence
-                                </span>
-                                {expandedTrend === idx ? (
-                                  <ChevronUp className="size-4 text-gray-400" />
-                                ) : (
-                                  <ChevronDown className="size-4 text-gray-400" />
-                                )}
-                              </div>
-                            </div>
-                          </button>
-
-                          {expandedTrend === idx && (
-                            <div className="mt-3 pt-3 border-t border-gray-100 dark:border-neutral-700">
-                              <p className="text-sm text-gray-600 dark:text-neutral-400 mb-2">
-                                {trend.analysis}
-                              </p>
-                              <div className="flex flex-wrap gap-1">
-                                {trend.sectors.map((sector) => (
-                                  <span
-                                    key={sector}
-                                    className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded dark:bg-neutral-800 dark:text-neutral-400"
-                                  >
-                                    {data?.categoryNames?.[sector] || sector}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500 dark:text-neutral-500">
-                      No trend data available.
-                    </p>
-                  )}
-
-                  {/* Cross-category insights */}
-                  {trendReport?.crossCategoryInsights && (
-                    <div className="mt-4 p-4 bg-gradient-to-r from-violet-50 to-purple-50 rounded-lg dark:from-violet-900/20 dark:to-purple-900/20">
-                      <h3 className="text-sm font-medium text-violet-700 dark:text-violet-400 mb-2">
-                        Cross-Category Insight
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-neutral-400">
-                        {trendReport.crossCategoryInsights}
-                      </p>
-                    </div>
-                  )}
-                </section>
-
-                {/* Opportunities */}
-                <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Target className="size-5 text-green-500" />
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                      Investment Opportunities
-                    </h2>
-                  </div>
-
-                  {strategistReport?.opportunities && strategistReport.opportunities.length > 0 ? (
-                    <div className="space-y-3">
-                      {strategistReport.opportunities.map((opp, idx) => (
-                        <div
-                          key={idx}
-                          className="border border-gray-100 rounded-lg p-4 dark:border-neutral-700 hover:border-gray-200 dark:hover:border-neutral-600 transition-colors"
-                        >
-                          <button
-                            onClick={() => setExpandedOpp(expandedOpp === idx ? null : idx)}
-                            className="w-full text-left"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <div
-                                  className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                                  style={{
-                                    backgroundColor:
-                                      opp.score >= 70
-                                        ? "#10b981"
-                                        : opp.score >= 50
-                                        ? "#f59e0b"
-                                        : "#6b7280",
-                                  }}
-                                >
-                                  {opp.score}
-                                </div>
-                                <div>
-                                  <span className="font-medium text-gray-800 dark:text-neutral-200">
-                                    {data?.categoryNames?.[opp.category] || opp.category}
-                                  </span>
-                                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                                    <Clock className="size-3" />
-                                    {opp.timeHorizon}-term
-                                  </div>
-                                </div>
-                              </div>
-                              {expandedOpp === idx ? (
-                                <ChevronUp className="size-4 text-gray-400" />
-                              ) : (
-                                <ChevronDown className="size-4 text-gray-400" />
-                              )}
-                            </div>
-                          </button>
-
-                          {expandedOpp === idx && (
-                            <div className="mt-3 pt-3 border-t border-gray-100 dark:border-neutral-700">
-                              <p className="text-sm text-gray-600 dark:text-neutral-400 mb-2">
-                                {opp.insight}
-                              </p>
-                              {opp.tickers && opp.tickers.length > 0 && (
-                                <div className="flex flex-wrap gap-1">
-                                  {opp.tickers.map((ticker) => (
-                                    <span
-                                      key={ticker}
-                                      className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded font-mono dark:bg-green-900/30 dark:text-green-400"
-                                    >
-                                      ${ticker}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500 dark:text-neutral-500">
-                      No opportunities identified.
-                    </p>
-                  )}
-                </section>
-              </div>
-
-              {/* Risk Factors */}
-              {strategistReport?.risks && strategistReport.risks.length > 0 && (
-                <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Shield className="size-5 text-red-500" />
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                      Risk Factors
-                    </h2>
-                  </div>
-
-                  <div className="space-y-3">
-                    {strategistReport.risks.map((risk, idx) => (
-                      <div
-                        key={idx}
-                        className="border border-gray-100 rounded-lg p-4 dark:border-neutral-700"
+              {trendReport?.trends && trendReport.trends.length > 0 ? (
+                <div className="space-y-3">
+                  {trendReport.trends.map((trend, index) => (
+                    <div key={index} className="border-b border-gray-200 dark:border-neutral-700 pb-4">
+                      <button
+                        onClick={() => setExpandedTrend(expandedTrend === index ? null : index)}
+                        className="flex items-center justify-between w-full text-left py-2"
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <span className="font-medium text-gray-800 dark:text-neutral-200">
-                            {risk.factor}
-                          </span>
-                          <span
-                            className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                              SEVERITY_COLORS[risk.severity]
-                            }`}
-                          >
-                            {risk.severity.toUpperCase()}
-                          </span>
+                        <div className="flex items-center gap-2">
+                          {getTrendIcon(trend.momentum)}
+                          <span className="text-sm font-medium text-gray-800 dark:text-neutral-200">{trend.name}</span>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-neutral-400 mb-2">
-                          {risk.mitigation}
-                        </p>
-                        {risk.affectedSectors && risk.affectedSectors.length > 0 && (
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-gray-500 dark:text-neutral-500">{trend.confidence}% confidence</span>
+                          <ChevronDown
+                            className={`w-4 h-4 text-gray-500 dark:text-neutral-500 transition-transform ${expandedTrend === index ? "rotate-180" : ""
+                              }`}
+                          />
+                        </div>
+                      </button>
+                      {expandedTrend === index && (
+                        <div className="pt-2">
+                          <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed mb-2">
+                            {trend.analysis}
+                          </p>
                           <div className="flex flex-wrap gap-1">
-                            {risk.affectedSectors.map((sector) => (
+                            {trend.sectors.map((sector) => (
                               <span
                                 key={sector}
-                                className="text-xs px-2 py-0.5 bg-red-50 text-red-600 rounded dark:bg-red-900/20 dark:text-red-400"
+                                className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded dark:bg-neutral-800 dark:text-neutral-400"
                               >
                                 {data?.categoryNames?.[sector] || sector}
                               </span>
                             ))}
                           </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Historical Briefings */}
-              {data?.analyses && data.analyses.length > 1 && (
-                <section className="border border-gray-200 rounded-xl p-6 dark:border-neutral-700">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Clock className="size-5 text-gray-500" />
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                      Historical Briefings
-                    </h2>
-                  </div>
-
-                  <div className="space-y-4">
-                    {data.analyses.slice(1, 4).map((analysis) => (
-                      <div
-                        key={analysis.date}
-                        className="border-l-2 border-gray-200 pl-4 dark:border-neutral-700"
-                      >
-                        <div className="text-sm font-medium text-gray-500 dark:text-neutral-500 mb-1">
-                          {new Date(analysis.date).toLocaleDateString("en-US", {
-                            weekday: "long",
-                            month: "long",
-                            day: "numeric",
-                          })}
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-neutral-400 line-clamp-2">
-                          {analysis.briefing || "No briefing available."}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </section>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-neutral-500">
+                  No trend data available.
+                </p>
               )}
-            </div>
-          )}
-        </div>
+
+              {/* Cross-category insights */}
+              {trendReport?.crossCategoryInsights && (
+                <div className="mt-6 p-4 bg-gray-50 dark:bg-neutral-800 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">
+                    Cross-Category Insight
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">
+                    {trendReport.crossCategoryInsights}
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {/* Investment Opportunities */}
+            <section className="mb-12">
+              <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-4">Investment Opportunities</h2>
+              {strategistReport?.opportunities && strategistReport.opportunities.length > 0 ? (
+                <div className="space-y-4">
+                  {strategistReport.opportunities.map((opp, idx) => (
+                    <div key={idx} className="py-4 border-b border-gray-200 dark:border-neutral-700 last:border-b-0">
+                      <div className="flex items-start justify-between gap-4 mb-2">
+                        <div>
+                          <span className="text-sm font-medium text-gray-800 dark:text-neutral-200">
+                            {data?.categoryNames?.[opp.category] || opp.category}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-neutral-500 ml-2">
+                            {opp.timeHorizon}-term
+                          </span>
+                        </div>
+                        <span className={`text-sm font-medium ${opp.score >= 70 ? "text-emerald-600 dark:text-emerald-400" : opp.score >= 50 ? "text-amber-600 dark:text-amber-400" : "text-gray-600 dark:text-neutral-400"}`}>
+                          Score: {opp.score}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-neutral-400 mb-2">{opp.insight}</p>
+                      {opp.tickers && opp.tickers.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {opp.tickers.map((ticker) => (
+                            <span
+                              key={ticker}
+                              className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-mono dark:bg-emerald-900/30 dark:text-emerald-400"
+                            >
+                              ${ticker}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-neutral-500">No opportunities identified.</p>
+              )}
+            </section>
+
+            {/* Historical Briefings */}
+            {data?.analyses && data.analyses.length > 1 && (
+              <section className="mb-12">
+                <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-6">Historical Briefings</h2>
+
+                <div className="space-y-0">
+                  {data.analyses.slice(1, 4).map((analysis, index) => (
+                    <article
+                      key={analysis.date}
+                      className={`py-4 ${index !== Math.min(data.analyses.length - 2, 2) ? "border-b border-gray-200 dark:border-neutral-700" : ""}`}
+                    >
+                      <p className="text-sm text-gray-500 dark:text-neutral-500 mb-1.5">
+                        {new Date(analysis.date).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                      <p className="text-sm text-gray-800 dark:text-neutral-200 leading-relaxed line-clamp-2">
+                        {analysis.briefing || "No briefing available."}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
+          </>
+        )}
       </main>
 
       <Footer name={content?.profile?.name} socialLinks={socialLinks} />
