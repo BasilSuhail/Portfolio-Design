@@ -40,7 +40,9 @@ export class IntelligencePipeline {
 
             // 4. GPR Index Calculation
             const gprData = gprCalculator.calculateDaily(enrichedArticles, date);
-            const gprIndex = gprCalculator.getIndex([gprData]); // Simple version, would load history in production
+            storage.saveGPRPoint(gprData); // Persist GPR data
+            const gprHistory = storage.getGPRHistory(14); // Load history for trend analysis
+            const gprIndex = gprCalculator.getIndex(gprHistory.length > 0 ? gprHistory : [gprData]);
 
             // 5. Market Sentiment Calculation
             const marketSentiment = this.calculateMarketSentiment(enrichedArticles);

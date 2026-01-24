@@ -67,6 +67,10 @@ export class BriefingGenerator {
                 source: 'local-fallback'
             };
 
+            // Save fallback briefing to storage and cache (was missing!)
+            storage.saveBriefing(briefing);
+            briefingCache.storeBriefing(date, briefing, inputHash);
+
             return briefing;
         }
     }
