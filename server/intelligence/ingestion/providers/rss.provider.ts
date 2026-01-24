@@ -87,15 +87,34 @@ export class RSSProvider extends BaseProvider {
                         })
                         .slice(0, 10);
 
+                    console.log(`[RSS] Processing ${filteredItems.length} items from ${config.source}`);
+
                     for (const item of filteredItems) {
                         const title = item.title?.trim();
                         const sourceLower = config.source.toLowerCase();
 
-                        // Validate title is real content, not just source name or domain
-                        if (!title || title.length < 10 || !item.link) continue;
-                        if (title.toLowerCase() === sourceLower) continue;
-                        if (/^[a-zA-Z0-9-]+\.(com|org|net|io|co|uk)$/i.test(title)) continue;
+                        // Debug: Log what we're getting from RSS
+                        console.log(`[RSS] Item: title="${title?.substring(0, 50)}..." link=${item.link ? 'yes' : 'no'}`);
 
+                        // Validate title is real content, not just source name or domain
+                        if (!title || title.length < 20 || !item.link) {
+                            console.log(`[RSS] SKIP: too short or no link`);
+                            continue;
+                        }
+                        if (title.toLowerCase() === sourceLower || title.toLowerCase().includes(sourceLower)) {
+                            console.log(`[RSS] SKIP: matches source name`);
+                            continue;
+                        }
+                        if (/\.(com|org|net|io|co|uk|ie|in)$/i.test(title)) {
+                            console.log(`[RSS] SKIP: looks like domain`);
+                            continue;
+                        }
+                        if (title.split(/\s+/).length < 4) {
+                            console.log(`[RSS] SKIP: too few words`);
+                            continue;
+                        }
+
+                        console.log(`[RSS] ACCEPTED: "${title.substring(0, 50)}..."`);
                         allArticles.push({
                             id: this.generateId(item.link),
                             title,

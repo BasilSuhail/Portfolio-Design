@@ -458,9 +458,10 @@ export async function registerRoutes(
   });
 
   // Refresh news feed - runs full intelligence pipeline
-  // Awaits result and returns actual status to user
+  // VERSION: 2026-01-24-v3 (with strict filtering and diagnostics)
   app.post("/api/news/refresh", async (_req: Request, res: Response) => {
-    console.log("[News Sync] Starting intelligence pipeline...");
+    const VERSION = "2026-01-24-v3";
+    console.log(`[News Sync] VERSION ${VERSION} - Starting intelligence pipeline...`);
 
     try {
       const result = await newsService.refreshNewsFeed();
@@ -469,14 +470,47 @@ export async function registerRoutes(
       res.json({
         success: result.success,
         message: result.message,
-        fetchedDates: result.fetchedDates
+        fetchedDates: result.fetchedDates,
+        version: VERSION  // Add version to verify deployment
       });
     } catch (error: any) {
       console.error("[News Sync] Pipeline failed:", error);
       res.status(500).json({
         success: false,
         message: `Sync failed: ${error.message}`,
-        fetchedDates: []
+        fetchedDates: [],
+        version: VERSION
+      });
+    }
+  });
+
+  // Diagnostic endpoint to verify code version and check data
+  app.get("/api/debug/version", async (_req: Request, res: Response) => {
+    const version = "2026-01-24-v3";
+    try {
+      // Read current news_feed.json to show what's there
+      const newsContent = await fs.readFile(path.join(process.cwd(), "news_feed.json"), "utf-8");
+      const newsData = JSON.parse(newsContent);
+      const latestDay = newsData[0];
+
+      res.json({
+        version,
+        timestamp: new Date().toISOString(),
+        latestDate: latestDay?.date,
+        latestCategories: latestDay ? {
+          ai: latestDay.content.ai_compute_infra?.length || 0,
+          fintech: latestDay.content.fintech_regtech?.length || 0,
+          rpa: latestDay.content.rpa_enterprise_ai?.length || 0,
+          semi: latestDay.content.semi_supply_chain?.length || 0,
+          cyber: latestDay.content.cybersecurity?.length || 0,
+          geo: latestDay.content.geopolitics?.length || 0
+        } : null,
+        sampleHeadlines: latestDay?.content.ai_compute_infra?.slice(0, 2).map((a: any) => a.headline) || []
+      });
+    } catch (error: any) {
+      res.json({
+        version,
+        error: error.message
       });
     }
   });

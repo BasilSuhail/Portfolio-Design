@@ -96,22 +96,48 @@ export class NewsAPIProvider extends BaseProvider {
                 // Filter out articles with invalid/missing titles
                 // NewsAPI returns "[Removed]" for unavailable articles, and sometimes returns
                 // articles where the title is just the source/domain name
+                console.log(`[NewsAPI] Got ${data.articles?.length || 0} articles for ${category}`);
+
                 const validArticles = (data.articles || []).filter((article: any) => {
                     const title = article.title?.trim();
                     const sourceName = article.source?.name?.toLowerCase();
 
-                    if (!title || title.length < 10 || !article.url) return false;
-                    if (title.includes('[Removed]')) return false;
+                    // Debug: Log each article
+                    console.log(`[NewsAPI] Checking: "${title?.substring(0, 50)}..." from ${sourceName}`);
+
+                    if (!title || title.length < 20 || !article.url) {
+                        console.log(`[NewsAPI] SKIP: too short or no URL`);
+                        return false;
+                    }
+                    if (title.includes('[Removed]')) {
+                        console.log(`[NewsAPI] SKIP: [Removed]`);
+                        return false;
+                    }
 
                     // Check if title is just the source name
                     const titleLower = title.toLowerCase();
-                    if (sourceName && (titleLower === sourceName || titleLower.startsWith(sourceName))) return false;
+                    if (sourceName && (titleLower === sourceName || titleLower.includes(sourceName))) {
+                        console.log(`[NewsAPI] SKIP: matches source`);
+                        return false;
+                    }
 
-                    // Check if title looks like a domain (e.g., "JoBlo.com", "Pypi.org")
-                    if (/^[a-zA-Z0-9-]+\.(com|org|net|io|co|uk|de|fr|news|tech)$/i.test(title)) return false;
+                    // Check if title looks like a domain
+                    if (/\.(com|org|net|io|co|uk|de|fr|news|tech|ie|in)$/i.test(title)) {
+                        console.log(`[NewsAPI] SKIP: looks like domain`);
+                        return false;
+                    }
 
+                    // Must have at least 4 words
+                    if (title.split(/\s+/).length < 4) {
+                        console.log(`[NewsAPI] SKIP: too few words`);
+                        return false;
+                    }
+
+                    console.log(`[NewsAPI] ACCEPTED: "${title.substring(0, 50)}..."`);
                     return true;
                 });
+
+                console.log(`[NewsAPI] ${validArticles.length} valid articles after filtering`);
 
                 const newsapiArticles = validArticles.map((article: any) => ({
                     id: this.generateId(article.url),

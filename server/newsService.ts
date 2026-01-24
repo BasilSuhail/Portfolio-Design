@@ -46,8 +46,12 @@ export async function refreshNewsFeed(): Promise<{
 
 /**
  * Updates the legacy news_feed.json file to keep old UI working
+ * VERSION: 2026-01-24-v2 (with strict filtering)
  */
 async function updateLegacyFeed(analysis: DailyAnalysis) {
+  console.log("[NewsService] updateLegacyFeed VERSION 2026-01-24-v2");
+  console.log(`[NewsService] Processing ${analysis.enrichedArticles.length} enriched articles`);
+
   try {
     let feed: any[] = [];
     try {
@@ -65,28 +69,48 @@ async function updateLegacyFeed(analysis: DailyAnalysis) {
       source: a.source
     });
 
-    // Filter out articles with invalid titles:
-    // - Empty or too short
-    // - Contains "[Removed]"
-    // - Title is just the source/domain name
-    // - Title looks like a URL or domain
+    // STRICT Filter - reject any article that looks like a source/domain name
     const isValidArticle = (a: any) => {
       const title = a.title?.trim();
-      const source = a.source?.trim()?.toLowerCase();
+      const source = a.source?.trim();
 
-      if (!title || title.length < 10) return false;
-      if (title.includes('[Removed]')) return false;
+      // Debug: Log every article being checked
+      console.log(`[Filter] Checking: "${title}" from "${source}"`);
 
-      // Check if title is just the source name
+      // Must have title with substantial length (at least 20 chars for a real headline)
+      if (!title || title.length < 20) {
+        console.log(`[Filter] REJECTED (too short): "${title}"`);
+        return false;
+      }
+
+      // Reject [Removed] articles
+      if (title.includes('[Removed]')) {
+        console.log(`[Filter] REJECTED ([Removed]): "${title}"`);
+        return false;
+      }
+
       const titleLower = title.toLowerCase();
-      if (source && (titleLower === source || titleLower.includes(source))) return false;
+      const sourceLower = source?.toLowerCase() || '';
 
-      // Check if title looks like a domain (e.g., "JoBlo.com", "Pypi.org")
-      if (/^[a-zA-Z0-9-]+\.(com|org|net|io|co|uk|de|fr|news|tech)$/i.test(title)) return false;
+      // Reject if title equals or contains source name
+      if (sourceLower && (titleLower === sourceLower || titleLower.includes(sourceLower))) {
+        console.log(`[Filter] REJECTED (matches source): "${title}"`);
+        return false;
+      }
 
-      // Check if title is too generic or just a website name pattern
-      if (/^(www\.|http|\.com|\.org|\.net)/i.test(title)) return false;
+      // Reject if title looks like a domain (any .com, .org, .net, etc.)
+      if (/\.(com|org|net|io|co|uk|de|fr|news|tech|ie|in)$/i.test(title)) {
+        console.log(`[Filter] REJECTED (looks like domain): "${title}"`);
+        return false;
+      }
 
+      // Reject if title is too short to be a real headline
+      if (title.split(/\s+/).length < 3) {
+        console.log(`[Filter] REJECTED (too few words): "${title}"`);
+        return false;
+      }
+
+      console.log(`[Filter] ACCEPTED: "${title}"`);
       return true;
     };
 
