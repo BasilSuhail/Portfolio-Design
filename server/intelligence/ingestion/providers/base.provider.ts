@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import {
     DataProviderInterface,
     DataProvider,
@@ -31,7 +32,6 @@ export abstract class BaseProvider implements DataProviderInterface {
      * Helper to generate a unique ID for an article based on its URL
      */
     protected generateId(url: string): string {
-        const crypto = require('crypto');
         return crypto.createHash('sha256').update(url).digest('hex').slice(0, 16);
     }
 }

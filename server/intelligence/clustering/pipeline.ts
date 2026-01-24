@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import {
     EnrichedArticle,
     ArticleCluster,
@@ -56,7 +57,6 @@ export class ClusteringPipeline {
     }
 
     private generateCacheKey(articleIds: string[]): string {
-        const crypto = require('crypto');
         const serialized = JSON.stringify(articleIds);
         return crypto.createHash('sha256').update(serialized).digest('hex').slice(0, 16);
     }
