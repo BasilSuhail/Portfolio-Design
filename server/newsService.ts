@@ -57,17 +57,31 @@ async function updateLegacyFeed(analysis: DailyAnalysis) {
       feed = [];
     }
 
+    // Helper to map article to legacy format with fallbacks
+    const mapArticle = (a: any) => ({
+      ticker: a.ticker,
+      headline: a.title || a.description?.slice(0, 100) || 'Article from ' + a.source,
+      url: a.url,
+      source: a.source
+    });
+
+    // Filter out articles with no valid headline (title is empty, "[Removed]", etc.)
+    const isValidArticle = (a: any) => {
+      const title = a.title?.trim();
+      return title && title.length > 5 && !title.includes('[Removed]');
+    };
+
     // Convert new analysis format to old NewsDay format
     const legacyDay = {
       date: analysis.date,
       content: {
         briefing: analysis.briefing.executiveSummary,
-        ai_compute_infra: analysis.enrichedArticles.filter(a => a.category === 'ai_compute_infra').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
-        fintech_regtech: analysis.enrichedArticles.filter(a => a.category === 'fintech_regtech').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
-        rpa_enterprise_ai: analysis.enrichedArticles.filter(a => a.category === 'rpa_enterprise_ai').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
-        semi_supply_chain: analysis.enrichedArticles.filter(a => a.category === 'semiconductor').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
-        cybersecurity: analysis.enrichedArticles.filter(a => a.category === 'cybersecurity').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
-        geopolitics: analysis.enrichedArticles.filter(a => a.category === 'geopolitics').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
+        ai_compute_infra: analysis.enrichedArticles.filter(a => a.category === 'ai_compute_infra' && isValidArticle(a)).slice(0, 5).map(mapArticle),
+        fintech_regtech: analysis.enrichedArticles.filter(a => a.category === 'fintech_regtech' && isValidArticle(a)).slice(0, 5).map(mapArticle),
+        rpa_enterprise_ai: analysis.enrichedArticles.filter(a => a.category === 'rpa_enterprise_ai' && isValidArticle(a)).slice(0, 5).map(mapArticle),
+        semi_supply_chain: analysis.enrichedArticles.filter(a => a.category === 'semiconductor' && isValidArticle(a)).slice(0, 5).map(mapArticle),
+        cybersecurity: analysis.enrichedArticles.filter(a => a.category === 'cybersecurity' && isValidArticle(a)).slice(0, 5).map(mapArticle),
+        geopolitics: analysis.enrichedArticles.filter(a => a.category === 'geopolitics' && isValidArticle(a)).slice(0, 5).map(mapArticle),
       }
     };
 

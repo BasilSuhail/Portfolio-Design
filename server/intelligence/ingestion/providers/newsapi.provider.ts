@@ -93,7 +93,13 @@ export class NewsAPIProvider extends BaseProvider {
                     continue;
                 }
 
-                const newsapiArticles = (data.articles || []).map((article: any) => ({
+                // Filter out articles with invalid/missing titles (NewsAPI returns "[Removed]" for unavailable articles)
+                const validArticles = (data.articles || []).filter((article: any) => {
+                    const title = article.title?.trim();
+                    return title && title.length > 5 && !title.includes('[Removed]') && article.url;
+                });
+
+                const newsapiArticles = validArticles.map((article: any) => ({
                     id: this.generateId(article.url),
                     title: article.title,
                     description: article.description,
