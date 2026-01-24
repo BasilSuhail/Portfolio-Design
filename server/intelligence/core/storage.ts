@@ -119,6 +119,44 @@ class IntelligenceStorage {
       CREATE INDEX IF NOT EXISTS idx_enriched_impact ON enriched_articles(impact_score);
       CREATE INDEX IF NOT EXISTS idx_enriched_cluster ON enriched_articles(cluster_id);
     `);
+
+    // Run migrations for existing databases that might be missing columns
+    this.runMigrations();
+  }
+
+  /**
+   * Run schema migrations for existing databases
+   * SQLite doesn't update tables with CREATE TABLE IF NOT EXISTS,
+   * so we need to manually add missing columns
+   */
+  private runMigrations() {
+    console.log('[Storage] Checking for schema migrations...');
+
+    // Get existing columns in raw_articles
+    const columns = this.db.prepare("PRAGMA table_info(raw_articles)").all() as any[];
+    const columnNames = new Set(columns.map((c: any) => c.name));
+
+    // Add missing columns to raw_articles
+    const requiredColumns = [
+      { name: 'ticker', type: 'TEXT' },
+      { name: 'provider', type: 'TEXT' },
+      { name: 'image_url', type: 'TEXT' },
+      { name: 'source_id', type: 'TEXT' }
+    ];
+
+    for (const col of requiredColumns) {
+      if (!columnNames.has(col.name)) {
+        console.log(`[Storage] Adding missing column: raw_articles.${col.name}`);
+        try {
+          this.db.exec(`ALTER TABLE raw_articles ADD COLUMN ${col.name} ${col.type}`);
+        } catch (e) {
+          // Column might already exist, ignore error
+          console.log(`[Storage] Column ${col.name} already exists or error:`, e);
+        }
+      }
+    }
+
+    console.log('[Storage] Schema migrations complete');
   }
 
   // ===========================================================================

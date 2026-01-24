@@ -458,9 +458,9 @@ export async function registerRoutes(
   });
 
   // Refresh news feed - runs full intelligence pipeline
-  // VERSION: 2026-01-24-v4 (trusted sources + improved queries)
+  // VERSION: 2026-01-24-v5 (database schema migration fix)
   app.post("/api/news/refresh", async (_req: Request, res: Response) => {
-    const VERSION = "2026-01-24-v4";
+    const VERSION = "2026-01-24-v5";
     console.log(`[News Sync] VERSION ${VERSION} - Starting intelligence pipeline...`);
 
     try {
@@ -486,7 +486,7 @@ export async function registerRoutes(
 
   // Diagnostic endpoint to verify code version and check data
   app.get("/api/debug/version", async (_req: Request, res: Response) => {
-    const version = "2026-01-24-v4";
+    const version = "2026-01-24-v5";
     try {
       // Read current news_feed.json to show what's there
       const newsContent = await fs.readFile(path.join(process.cwd(), "news_feed.json"), "utf-8");
