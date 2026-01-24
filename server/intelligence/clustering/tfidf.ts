@@ -1,15 +1,25 @@
-import { TfIdf, PorterStemmer } from 'natural';
-import { kmeans } from 'ml-kmeans';
-import nlp from 'compromise';
+import { TfIdf } from 'natural';
 import {
     EnrichedArticle,
-    ArticleCluster,
-    ArticleCategory
+    ArticleCluster
 } from '../core/types';
+
+// Dynamic import for ESM-only modules
+let kmeansModule: any = null;
+let nlpModule: any = null;
+
+async function loadESMModules() {
+    if (!kmeansModule) {
+        kmeansModule = await import('ml-kmeans');
+    }
+    if (!nlpModule) {
+        nlpModule = await import('compromise');
+    }
+}
 
 /**
  * Market Intelligence - Clustering Engine
- * 
+ *
  * Groups similar news articles using TF-IDF vectorization and K-Means.
  * Extracts topic keywords using term frequency analysis.
  */
@@ -23,6 +33,9 @@ export class ClusteringEngine {
             return [];
         }
 
+        // Load ESM modules dynamically
+        await loadESMModules();
+
         console.log(`[Clustering] Vectorizing ${articles.length} articles...`);
 
         // 1. Vectorize headlines
@@ -34,11 +47,11 @@ export class ClusteringEngine {
         const k = Math.min(15, Math.max(2, Math.ceil(articles.length / 10)));
         console.log(`[Clustering] Running K-Means with k=${k}...`);
 
-        const result = kmeans(vectors, k, {});
+        const result = kmeansModule.kmeans(vectors, k, {});
 
         // 3. Group articles by cluster
         const clusterMap: Map<number, EnrichedArticle[]> = new Map();
-        result.clusters.forEach((clusterIdx, articleIdx) => {
+        result.clusters.forEach((clusterIdx: number, articleIdx: number) => {
             if (!clusterMap.has(clusterIdx)) clusterMap.set(clusterIdx, []);
             clusterMap.get(clusterIdx)!.push(articles[articleIdx]);
         });
@@ -106,8 +119,16 @@ export class ClusteringEngine {
     }
 
     private extractKeywords(text: string): string[] {
-        // Use compromise to get nouns/topics
-        const doc = (nlp as any)(text);
+        // Use compromise to get nouns/topics (loaded dynamically)
+        if (!nlpModule) {
+            // Fallback: simple keyword extraction without NLP
+            return text.toLowerCase()
+                .split(/\s+/)
+                .filter(w => w.length > 4)
+                .slice(0, 10);
+        }
+        const nlp = nlpModule.default || nlpModule;
+        const doc = nlp(text);
         const keywords = doc.topics().out('array')
             .concat(doc.nouns().out('array'))
             .filter((w: string) => w.length > 3)
