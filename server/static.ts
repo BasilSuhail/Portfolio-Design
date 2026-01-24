@@ -21,6 +21,19 @@ export function serveStatic(app: Express) {
     }));
   }
 
+  // Serve gallery images from gallery-data directory (Docker volume mount)
+  // Uses GALLERY_DATA_DIR env var if set, otherwise defaults to ./gallery-data
+  const galleryDataPath = process.env.GALLERY_DATA_DIR || path.resolve(process.cwd(), "gallery-data");
+  if (fs.existsSync(galleryDataPath)) {
+    app.use('/gallery-images', express.static(galleryDataPath, {
+      maxAge: '1w',
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'public, max-age=604800');
+      }
+    }));
+    console.log(`[Static] Serving gallery images from: ${galleryDataPath}`);
+  }
+
   // Serve static files with aggressive caching
   app.use(express.static(distPath, {
     maxAge: '1y', // Cache static assets for 1 year

@@ -59,6 +59,7 @@ EXPOSE 5000
 # Set environment to production
 ENV NODE_ENV=production
 ENV PORT=5000
+ENV GALLERY_DATA_DIR=/app/gallery-data
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
