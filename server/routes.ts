@@ -573,6 +573,21 @@ export async function registerRoutes(
       try {
         const galleryContent = await fs.readFile(galleryDataPath, "utf-8");
         photos = JSON.parse(galleryContent);
+
+        // Migration: Update existing photo paths from /uploads/ to /gallery-images/
+        let migrated = false;
+        photos = photos.map((photo: any) => {
+          if (photo.src && photo.src.startsWith("/uploads/")) {
+            migrated = true;
+            return { ...photo, src: photo.src.replace("/uploads/", "/gallery-images/") };
+          }
+          return photo;
+        });
+
+        if (migrated) {
+          console.log("🔄 Migrated gallery photo paths to /gallery-images/");
+          await fs.writeFile(galleryDataPath, JSON.stringify(photos, null, 2));
+        }
       } catch (err) {
         photos = [];
       }
@@ -649,6 +664,23 @@ export async function registerRoutes(
     }
   });
 
+  // Helper function to get file sizes of existing gallery images for duplicate detection
+  async function getExistingFileSizes(): Promise<Set<number>> {
+    const sizes = new Set<number>();
+    try {
+      const files = await fs.readdir(galleryDataDir);
+      for (const file of files) {
+        if (file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.webp')) {
+          try {
+            const stats = await fs.stat(path.join(galleryDataDir, file));
+            sizes.add(stats.size);
+          } catch {}
+        }
+      }
+    } catch {}
+    return sizes;
+  }
+
   // Bulk upload photos (admin) - NEW endpoint for multiple files
   app.post("/api/admin/gallery/bulk-upload", doubleCsrfProtection, upload.array("photos", 100), async (req: Request, res: Response) => {
     try {
@@ -665,6 +697,10 @@ export async function registerRoutes(
       // Parse metadata from request body
       const metadata = JSON.parse(req.body.metadata || "[]");
 
+      // Get existing file sizes for duplicate detection
+      const existingFileSizes = await getExistingFileSizes();
+      console.log(`📊 Found ${existingFileSizes.size} existing files for duplicate check`);
+
       // Read existing gallery
       let photos = [];
       try {
@@ -678,9 +714,17 @@ export async function registerRoutes(
       const processFile = async (file: Express.Multer.File, index: number) => {
         const meta = metadata[index] || {};
 
+        // Check for duplicate by file size
+        if (existingFileSizes.has(file.size)) {
+          console.log(`⏭️ Skipping duplicate: ${file.originalname} (size: ${file.size})`);
+          // Delete the uploaded temp file
+          try { await fs.unlink(file.path); } catch {}
+          return { success: false, filename: file.originalname, error: "Duplicate file (same size already exists)", isDuplicate: true };
+        }
+
         try {
           let finalFilename = file.filename;
-          const originalPath = file.path;
+          let sourcePath = file.path; // Track actual source path (may change after HEIC conversion)
           const ext = path.extname(file.originalname).toLowerCase();
 
           // Convert HEIC to JPEG
@@ -689,7 +733,7 @@ export async function registerRoutes(
             const jpegPath = path.join(uploadsDir, jpegFilename);
 
             try {
-              const inputBuffer = await fs.readFile(originalPath);
+              const inputBuffer = await fs.readFile(sourcePath);
               const outputBuffer = await convert({
                 buffer: inputBuffer,
                 format: 'JPEG',
@@ -697,17 +741,24 @@ export async function registerRoutes(
               });
 
               await fs.writeFile(jpegPath, outputBuffer);
-              await fs.unlink(originalPath);
+              await fs.unlink(sourcePath); // Delete original HEIC
               finalFilename = jpegFilename;
+              sourcePath = jpegPath; // Update source path to converted file
             } catch (conversionError) {
               console.error(`⚠️ HEIC conversion failed for ${file.originalname}, using original`);
             }
           }
 
-          // Create photo entry
+          // Move file from temporary uploads to persistent gallery-data directory
+          // Use copyFile + unlink instead of rename (works across different Docker volumes)
+          const persistentPath = path.join(galleryDataDir, finalFilename);
+          await fs.copyFile(sourcePath, persistentPath);
+          await fs.unlink(sourcePath);
+
+          // Create photo entry with correct serving path
           const newPhoto = {
             id: Date.now() + index, // Add index to ensure unique IDs
-            src: `/uploads/${finalFilename}`,
+            src: `/gallery-images/${finalFilename}`,
             alt: sanitizeText(meta.alt || ""),
             location: sanitizeText(meta.location || ""),
             date: sanitizeText(meta.date || ""),
@@ -770,10 +821,18 @@ export async function registerRoutes(
         return res.status(400).json({ message: "No file uploaded" });
       }
 
+      // Check for duplicate by file size
+      const existingFileSizes = await getExistingFileSizes();
+      if (existingFileSizes.has(req.file.size)) {
+        console.log(`⏭️ Skipping duplicate: ${req.file.originalname} (size: ${req.file.size})`);
+        try { await fs.unlink(req.file.path); } catch {}
+        return res.status(400).json({ message: "Duplicate photo - a file with the same size already exists" });
+      }
+
       const { alt, location, date, orientation } = req.body;
 
       let finalFilename = req.file.filename;
-      const originalPath = req.file.path;
+      let sourcePath = req.file.path; // Track actual source path (may change after HEIC conversion)
       const ext = path.extname(req.file.originalname).toLowerCase();
 
       // Convert HEIC to JPEG
@@ -783,7 +842,7 @@ export async function registerRoutes(
         const jpegPath = path.join(uploadsDir, jpegFilename);
 
         try {
-          const inputBuffer = await fs.readFile(originalPath);
+          const inputBuffer = await fs.readFile(sourcePath);
           const outputBuffer = await convert({
             buffer: inputBuffer,
             format: 'JPEG',
@@ -791,8 +850,9 @@ export async function registerRoutes(
           });
 
           await fs.writeFile(jpegPath, outputBuffer);
-          await fs.unlink(originalPath);
+          await fs.unlink(sourcePath); // Delete original HEIC
           finalFilename = jpegFilename;
+          sourcePath = jpegPath; // Update source path to converted file
           console.log("✅ Converted to JPEG:", jpegFilename);
         } catch (conversionError) {
           console.error("❌ HEIC conversion failed:", conversionError);
@@ -811,10 +871,16 @@ export async function registerRoutes(
         photos = [];
       }
 
-      // Create new photo entry
+      // Move file from temporary uploads to persistent gallery-data directory
+      // Use copyFile + unlink instead of rename (works across different Docker volumes)
+      const persistentPath = path.join(galleryDataDir, finalFilename);
+      await fs.copyFile(sourcePath, persistentPath);
+      await fs.unlink(sourcePath);
+
+      // Create new photo entry with correct serving path
       const newPhoto = {
         id: Date.now(),
-        src: `/uploads/${finalFilename}`,
+        src: `/gallery-images/${finalFilename}`,
         alt: sanitizeText(alt || ""),
         location: sanitizeText(location || ""),
         date: sanitizeText(date || ""),
@@ -858,8 +924,11 @@ export async function registerRoutes(
       const photo = photos[photoIndex];
 
       // Delete image file
-      if (photo.src && photo.src.startsWith("/uploads/")) {
-        const imagePath = path.join(uploadsDir, path.basename(photo.src));
+      // Delete image file from correct directory
+      if (photo.src && (photo.src.startsWith("/uploads/") || photo.src.startsWith("/gallery-images/"))) {
+        const isGalleryImage = photo.src.startsWith("/gallery-images/");
+        const baseDir = isGalleryImage ? galleryDataDir : uploadsDir;
+        const imagePath = path.join(baseDir, path.basename(photo.src));
         try {
           await fs.unlink(imagePath);
         } catch (err) {

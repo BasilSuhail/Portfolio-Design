@@ -25,13 +25,24 @@ export function serveStatic(app: Express) {
   // Uses GALLERY_DATA_DIR env var if set, otherwise defaults to ./gallery-data
   const galleryDataPath = process.env.GALLERY_DATA_DIR || path.resolve(process.cwd(), "gallery-data");
   if (fs.existsSync(galleryDataPath)) {
+    // Serve at /gallery-images (new path)
     app.use('/gallery-images', express.static(galleryDataPath, {
       maxAge: '1w',
       setHeaders: (res) => {
         res.setHeader('Cache-Control', 'public, max-age=604800');
       }
     }));
-    console.log(`[Static] Serving gallery images from: ${galleryDataPath}`);
+
+    // ALSO serve at /uploads for backwards compatibility
+    // This allows old gallery.json entries with /uploads/ paths to still work
+    // if the actual files are in the gallery-data directory
+    app.use('/uploads', express.static(galleryDataPath, {
+      maxAge: '1w',
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'public, max-age=604800');
+      }
+    }));
+    console.log(`[Static] Serving gallery images from: ${galleryDataPath} (at both /gallery-images and /uploads)`);
   }
 
   // Serve static files with aggressive caching
