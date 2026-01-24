@@ -22,6 +22,7 @@ export interface RawArticle {
   sourceId: string;
   publishedAt: string;
   category: ArticleCategory;
+  ticker: string;
   provider: DataProvider;
   imageUrl?: string;
 }

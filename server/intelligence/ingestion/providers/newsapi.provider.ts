@@ -103,6 +103,7 @@ export class NewsAPIProvider extends BaseProvider {
                     sourceId: article.source.id || article.source.name.toLowerCase().replace(/\s+/g, '-'),
                     publishedAt: article.publishedAt,
                     category,
+                    ticker: this.getTickerForCategory(category),
                     provider: this.name,
                     imageUrl: article.urlToImage
                 }));
@@ -117,6 +118,18 @@ export class NewsAPIProvider extends BaseProvider {
         }
 
         return allArticles;
+    }
+
+    private getTickerForCategory(category: ArticleCategory): string {
+        const map: Record<ArticleCategory, string> = {
+            ai_compute_infra: "NVDA",
+            fintech_regtech: "PYPL",
+            rpa_enterprise_ai: "PATH",
+            semiconductor: "TSM",
+            cybersecurity: "CRWD",
+            geopolitics: "GEO"
+        };
+        return map[category] || "MARKET";
     }
 
     private getQueryForCategory(category: ArticleCategory): string {

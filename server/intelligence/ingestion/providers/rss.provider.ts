@@ -99,6 +99,7 @@ export class RSSProvider extends BaseProvider {
                                 sourceId: config.source.toLowerCase().replace(/\s+/g, '-'),
                                 publishedAt: item.isoDate || item.pubDate || new Date().toISOString(),
                                 category: category as ArticleCategory,
+                                ticker: config.ticker,
                                 provider: this.name,
                             });
                         }

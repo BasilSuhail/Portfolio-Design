@@ -537,11 +537,44 @@ export async function registerRoutes(
   // Get full intelligence analysis for a date
   app.get("/api/intelligence/analysis", async (req: Request, res: Response) => {
     try {
-      const date = (req.query.date as string) || new Date().toISOString().split('T')[0];
-      const analysis = intStorage.getBriefing(date);
+      const requestedDate = (req.query.date as string) || new Date().toISOString().split('T')[0];
+
+      // Try to find analysis for requested date, or fall back to recent dates
+      let analysis = intStorage.getBriefing(requestedDate);
+
+      // If no data for requested date, try the last 7 days
+      if (!analysis) {
+        for (let i = 1; i <= 7; i++) {
+          const fallbackDate = new Date();
+          fallbackDate.setDate(fallbackDate.getDate() - i);
+          const dateStr = fallbackDate.toISOString().split('T')[0];
+          analysis = intStorage.getBriefing(dateStr);
+          if (analysis) {
+            console.log(`[Intelligence] No data for ${requestedDate}, using ${dateStr}`);
+            break;
+          }
+        }
+      }
 
       if (!analysis) {
-        return res.status(404).json({ message: "Analysis not found for this date. Try refreshing." });
+        // Return an empty state response instead of 404
+        // This allows the frontend to show a friendly "no data" state
+        return res.json({
+          date: requestedDate,
+          executiveSummary: "No intelligence data available yet. Please trigger a news sync from the News page to generate the first analysis.",
+          topClusters: [],
+          gprIndex: {
+            current: 0,
+            trend: 'stable',
+            history: []
+          },
+          marketSentiment: {
+            overall: 0,
+            byCategory: {},
+            trend: 'neutral'
+          },
+          isEmpty: true
+        });
       }
 
       res.json(analysis);

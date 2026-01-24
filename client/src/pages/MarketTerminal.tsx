@@ -2,10 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import {
   ArrowLeft,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  ChevronDown,
   Info,
   ThumbsUp,
   ThumbsDown,
@@ -17,15 +13,6 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useContent } from "@/hooks/use-content";
 import { GPRGauge } from "@/components/GPRGauge";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import {
   Dialog,
   DialogContent,
@@ -81,17 +68,8 @@ interface DailyBriefing {
     byCategory: Record<string, number>;
     trend: string;
   };
+  isEmpty?: boolean;
 }
-
-// Category colors for charts
-const CATEGORY_COLORS: Record<string, string> = {
-  ai_compute_infra: "#6366f1",
-  fintech_regtech: "#22c55e",
-  rpa_enterprise_ai: "#f97316",
-  semiconductor: "#06b6d4",
-  cybersecurity: "#ef4444",
-  geopolitics: "#ec4899",
-};
 
 export default function MarketTerminal() {
   const [briefing, setBriefing] = useState<DailyBriefing | null>(null);
@@ -182,7 +160,22 @@ export default function MarketTerminal() {
           </div>
         )}
 
-        {briefing && (
+        {briefing?.isEmpty && (
+          <div className="text-center py-16 border border-amber-200 rounded-xl bg-amber-50 dark:border-amber-800/30 dark:bg-amber-900/10">
+            <div className="text-4xl mb-4">📊</div>
+            <p className="text-gray-700 dark:text-neutral-300 font-medium">No Intelligence Data Yet</p>
+            <p className="text-sm text-gray-500 dark:text-neutral-500 mt-2 max-w-md mx-auto">
+              {briefing.executiveSummary}
+            </p>
+            <Link href="/news">
+              <Button variant="outline" className="mt-6">
+                Go to News Page to Sync
+              </Button>
+            </Link>
+          </div>
+        )}
+
+        {briefing && !briefing.isEmpty && (
           <div className="space-y-12">
             {/* Top Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

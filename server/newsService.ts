@@ -62,12 +62,12 @@ async function updateLegacyFeed(analysis: DailyAnalysis) {
       date: analysis.date,
       content: {
         briefing: analysis.briefing.executiveSummary,
-        ai_compute_infra: analysis.enrichedArticles.filter(a => a.category === 'ai_compute_infra').slice(0, 5),
-        fintech_regtech: analysis.enrichedArticles.filter(a => a.category === 'fintech_regtech').slice(0, 5),
-        rpa_enterprise_ai: analysis.enrichedArticles.filter(a => a.category === 'rpa_enterprise_ai').slice(0, 5),
-        semi_supply_chain: analysis.enrichedArticles.filter(a => a.category === 'semiconductor').slice(0, 5),
-        cybersecurity: analysis.enrichedArticles.filter(a => a.category === 'cybersecurity').slice(0, 5),
-        geopolitics: analysis.enrichedArticles.filter(a => a.category === 'geopolitics').slice(0, 5),
+        ai_compute_infra: analysis.enrichedArticles.filter(a => a.category === 'ai_compute_infra').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
+        fintech_regtech: analysis.enrichedArticles.filter(a => a.category === 'fintech_regtech').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
+        rpa_enterprise_ai: analysis.enrichedArticles.filter(a => a.category === 'rpa_enterprise_ai').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
+        semi_supply_chain: analysis.enrichedArticles.filter(a => a.category === 'semiconductor').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
+        cybersecurity: analysis.enrichedArticles.filter(a => a.category === 'cybersecurity').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
+        geopolitics: analysis.enrichedArticles.filter(a => a.category === 'geopolitics').slice(0, 5).map(a => ({ ticker: a.ticker, headline: a.title, url: a.url, source: a.source })),
       }
     };
 

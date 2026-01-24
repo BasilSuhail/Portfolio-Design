@@ -53,6 +53,7 @@ class IntelligenceStorage {
         source_id TEXT,
         published_at TEXT,
         category TEXT,
+        ticker TEXT,
         provider TEXT,
         image_url TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -128,8 +129,8 @@ class IntelligenceStorage {
     const upsert = this.db.prepare(`
       INSERT INTO raw_articles (
         id, title, description, content, url, source, source_id, 
-        published_at, category, provider, image_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        published_at, category, ticker, provider, image_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(url) DO UPDATE SET
         title = excluded.title,
         description = excluded.description,
@@ -148,6 +149,7 @@ class IntelligenceStorage {
           article.sourceId,
           article.publishedAt,
           article.category,
+          article.ticker,
           article.provider,
           article.imageUrl || null
         );
@@ -216,6 +218,7 @@ class IntelligenceStorage {
       sourceId: row.source_id,
       publishedAt: row.published_at,
       category: row.category as ArticleCategory,
+      ticker: row.ticker,
       provider: row.provider as any,
       imageUrl: row.image_url
     }));
@@ -361,6 +364,7 @@ class IntelligenceStorage {
       sourceId: row.source_id,
       publishedAt: row.published_at,
       category: row.category as ArticleCategory,
+      ticker: row.ticker,
       provider: row.provider as any,
       imageUrl: row.image_url,
       sentiment: {

@@ -1,4 +1,5 @@
-import { TfIdf } from 'natural';
+import natural from 'natural';
+const { TfIdf } = natural;
 import {
     EnrichedArticle,
     ArticleCluster
