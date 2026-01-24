@@ -93,10 +93,24 @@ export class NewsAPIProvider extends BaseProvider {
                     continue;
                 }
 
-                // Filter out articles with invalid/missing titles (NewsAPI returns "[Removed]" for unavailable articles)
+                // Filter out articles with invalid/missing titles
+                // NewsAPI returns "[Removed]" for unavailable articles, and sometimes returns
+                // articles where the title is just the source/domain name
                 const validArticles = (data.articles || []).filter((article: any) => {
                     const title = article.title?.trim();
-                    return title && title.length > 5 && !title.includes('[Removed]') && article.url;
+                    const sourceName = article.source?.name?.toLowerCase();
+
+                    if (!title || title.length < 10 || !article.url) return false;
+                    if (title.includes('[Removed]')) return false;
+
+                    // Check if title is just the source name
+                    const titleLower = title.toLowerCase();
+                    if (sourceName && (titleLower === sourceName || titleLower.startsWith(sourceName))) return false;
+
+                    // Check if title looks like a domain (e.g., "JoBlo.com", "Pypi.org")
+                    if (/^[a-zA-Z0-9-]+\.(com|org|net|io|co|uk|de|fr|news|tech)$/i.test(title)) return false;
+
+                    return true;
                 });
 
                 const newsapiArticles = validArticles.map((article: any) => ({

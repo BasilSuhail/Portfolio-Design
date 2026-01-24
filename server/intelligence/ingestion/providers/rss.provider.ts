@@ -88,21 +88,27 @@ export class RSSProvider extends BaseProvider {
                         .slice(0, 10);
 
                     for (const item of filteredItems) {
-                        if (item.title && item.link) {
-                            allArticles.push({
-                                id: this.generateId(item.link),
-                                title: item.title.trim(),
-                                description: item.contentSnippet || item.content || null,
-                                content: item.content || null,
-                                url: item.link,
-                                source: config.source,
-                                sourceId: config.source.toLowerCase().replace(/\s+/g, '-'),
-                                publishedAt: item.isoDate || item.pubDate || new Date().toISOString(),
-                                category: category as ArticleCategory,
-                                ticker: config.ticker,
-                                provider: this.name,
-                            });
-                        }
+                        const title = item.title?.trim();
+                        const sourceLower = config.source.toLowerCase();
+
+                        // Validate title is real content, not just source name or domain
+                        if (!title || title.length < 10 || !item.link) continue;
+                        if (title.toLowerCase() === sourceLower) continue;
+                        if (/^[a-zA-Z0-9-]+\.(com|org|net|io|co|uk)$/i.test(title)) continue;
+
+                        allArticles.push({
+                            id: this.generateId(item.link),
+                            title,
+                            description: item.contentSnippet || item.content || null,
+                            content: item.content || null,
+                            url: item.link,
+                            source: config.source,
+                            sourceId: config.source.toLowerCase().replace(/\s+/g, '-'),
+                            publishedAt: item.isoDate || item.pubDate || new Date().toISOString(),
+                            category: category as ArticleCategory,
+                            ticker: config.ticker,
+                            provider: this.name,
+                        });
                     }
 
                     // Small delay between feeds

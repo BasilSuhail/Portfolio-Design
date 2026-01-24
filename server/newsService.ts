@@ -65,10 +65,29 @@ async function updateLegacyFeed(analysis: DailyAnalysis) {
       source: a.source
     });
 
-    // Filter out articles with no valid headline (title is empty, "[Removed]", etc.)
+    // Filter out articles with invalid titles:
+    // - Empty or too short
+    // - Contains "[Removed]"
+    // - Title is just the source/domain name
+    // - Title looks like a URL or domain
     const isValidArticle = (a: any) => {
       const title = a.title?.trim();
-      return title && title.length > 5 && !title.includes('[Removed]');
+      const source = a.source?.trim()?.toLowerCase();
+
+      if (!title || title.length < 10) return false;
+      if (title.includes('[Removed]')) return false;
+
+      // Check if title is just the source name
+      const titleLower = title.toLowerCase();
+      if (source && (titleLower === source || titleLower.includes(source))) return false;
+
+      // Check if title looks like a domain (e.g., "JoBlo.com", "Pypi.org")
+      if (/^[a-zA-Z0-9-]+\.(com|org|net|io|co|uk|de|fr|news|tech)$/i.test(title)) return false;
+
+      // Check if title is too generic or just a website name pattern
+      if (/^(www\.|http|\.com|\.org|\.net)/i.test(title)) return false;
+
+      return true;
     };
 
     // Convert new analysis format to old NewsDay format

@@ -23,18 +23,21 @@ class IntelligenceStorage {
   private cacheDir: string;
 
   constructor() {
-    this.cacheDir = process.env.NEWS_FEED_DIR || path.join(process.cwd(), 'news-data');
+    // Use same directory as newsService.ts for consistency
+    this.cacheDir = process.env.NEWS_FEED_DIR || process.cwd();
     if (!fs.existsSync(this.cacheDir)) {
       fs.mkdirSync(this.cacheDir, { recursive: true });
     }
 
     const dbPath = path.join(this.cacheDir, 'intelligence.db');
+    console.log(`[Storage] Database path: ${dbPath}`);
     this.db = new Database(dbPath);
 
     // Enable WAL mode for better performance
     this.db.pragma('journal_mode = WAL');
 
     this.initializeSchema();
+    console.log(`[Storage] Database initialized successfully`);
   }
 
   /**
@@ -267,27 +270,39 @@ class IntelligenceStorage {
   // ===========================================================================
 
   saveBriefing(briefing: DailyBriefing): void {
-    this.db.prepare(`
-      INSERT INTO daily_briefings (
-        date, executive_summary, cache_hash, source, gpr_index, market_sentiment
-      ) VALUES (?, ?, ?, ?, ?, ?)
-      ON CONFLICT(date) DO UPDATE SET
-        executive_summary = excluded.executive_summary,
-        cache_hash = excluded.cache_hash,
-        source = excluded.source
-    `).run(
-      briefing.date,
-      briefing.executiveSummary,
-      briefing.cacheHash,
-      briefing.source,
-      briefing.gprIndex.current,
-      briefing.marketSentiment.overall
-    );
+    console.log(`[Storage] Saving briefing for ${briefing.date} (source: ${briefing.source})`);
+    try {
+      this.db.prepare(`
+        INSERT INTO daily_briefings (
+          date, executive_summary, cache_hash, source, gpr_index, market_sentiment
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON CONFLICT(date) DO UPDATE SET
+          executive_summary = excluded.executive_summary,
+          cache_hash = excluded.cache_hash,
+          source = excluded.source
+      `).run(
+        briefing.date,
+        briefing.executiveSummary,
+        briefing.cacheHash,
+        briefing.source,
+        briefing.gprIndex.current,
+        briefing.marketSentiment.overall
+      );
+      console.log(`[Storage] Briefing saved successfully for ${briefing.date}`);
+    } catch (error) {
+      console.error(`[Storage] Failed to save briefing for ${briefing.date}:`, error);
+      throw error;
+    }
   }
 
   getBriefing(date: string): DailyBriefing | null {
+    console.log(`[Storage] Getting briefing for ${date}`);
     const row = this.db.prepare('SELECT * FROM daily_briefings WHERE date = ?').get(date) as any;
-    if (!row) return null;
+    if (!row) {
+      console.log(`[Storage] No briefing found for ${date}`);
+      return null;
+    }
+    console.log(`[Storage] Found briefing for ${date}`);
 
     const gprIndex = this.getGPRIndex(date);
 
