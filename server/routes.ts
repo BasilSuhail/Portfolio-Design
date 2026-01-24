@@ -457,26 +457,28 @@ export async function registerRoutes(
     }
   });
 
-  // Refresh news feed - syncs missing days from the last 8 days
-  // This is non-blocking - returns immediately while sync continues in background
+  // Refresh news feed - runs full intelligence pipeline
+  // Awaits result and returns actual status to user
   app.post("/api/news/refresh", async (_req: Request, res: Response) => {
-    console.log("Starting news sync (background mode)...");
+    console.log("[News Sync] Starting intelligence pipeline...");
 
-    // Start sync in background - don't await
-    newsService.refreshNewsFeed()
-      .then(result => {
-        console.log("News sync completed:", result);
-      })
-      .catch(error => {
-        console.error("Background news sync failed:", error);
+    try {
+      const result = await newsService.refreshNewsFeed();
+      console.log("[News Sync] Pipeline completed:", result);
+
+      res.json({
+        success: result.success,
+        message: result.message,
+        fetchedDates: result.fetchedDates
       });
-
-    // Return immediately to prevent timeout
-    res.json({
-      success: true,
-      message: "News sync started in background. Refresh page in 30-60 seconds to see new data.",
-      fetchedDates: []
-    });
+    } catch (error: any) {
+      console.error("[News Sync] Pipeline failed:", error);
+      res.status(500).json({
+        success: false,
+        message: `Sync failed: ${error.message}`,
+        fetchedDates: []
+      });
+    }
   });
 
   // ========================================
