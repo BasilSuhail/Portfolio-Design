@@ -7,6 +7,9 @@ import convert from "heic-convert";
 import { Resend } from "resend";
 import * as blogService from "./blogService";
 import * as newsService from "./newsService";
+import { storage as intStorage } from "./intelligence/core/storage";
+import { pipeline } from "./intelligence/core/pipeline";
+import { feedbackStore } from "./intelligence/metrics/feedback";
 import { body, validationResult } from "express-validator";
 import sanitizeHtml from "sanitize-html";
 import { doubleCsrfProtection } from "./index";
@@ -527,6 +530,169 @@ export async function registerRoutes(
     }
   });
 
+  // ========================================
+  // NEW MODULAR INTELLIGENCE ROUTES
+  // ========================================
+
+  // Get full intelligence analysis for a date
+  app.get("/api/intelligence/analysis", async (req: Request, res: Response) => {
+    try {
+      const date = (req.query.date as string) || new Date().toISOString().split('T')[0];
+      const analysis = intStorage.getBriefing(date);
+
+      if (!analysis) {
+        return res.status(404).json({ message: "Analysis not found for this date. Try refreshing." });
+      }
+
+      res.json(analysis);
+    } catch (error) {
+      console.error("Failed to fetch intelligence analysis:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get GPR history
+  app.get("/api/intelligence/gpr", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const history = intStorage.getGPRHistory(days);
+      res.json({ history });
+    } catch (error) {
+      console.error("Failed to fetch GPR history:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get clusters for a date
+  app.get("/api/intelligence/clusters", async (req: Request, res: Response) => {
+    try {
+      const date = (req.query.date as string) || new Date().toISOString().split('T')[0];
+      const clusters = intStorage.getClustersByDate(date);
+      res.json({ clusters });
+    } catch (error) {
+      console.error("Failed to fetch clusters:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Run the intelligence pipeline (admin)
+  app.post("/api/intelligence/run", doubleCsrfProtection, async (req: Request, res: Response) => {
+    try {
+      console.log("[Intelligence] Starting pipeline run...");
+      const analysis = await pipeline.run({
+        categories: req.body.categories,
+        dateFrom: req.body.dateFrom,
+        dateTo: req.body.dateTo,
+        maxArticles: req.body.maxArticles || 100
+      });
+
+      res.json({
+        success: true,
+        message: `Pipeline completed. Processed ${analysis.metadata.articlesProcessed} articles, found ${analysis.metadata.clustersFound} clusters.`,
+        analysis: {
+          date: analysis.date,
+          articlesProcessed: analysis.metadata.articlesProcessed,
+          clustersFound: analysis.metadata.clustersFound,
+          apiCallsMade: analysis.metadata.apiCallsMade,
+          cacheHit: analysis.metadata.cacheHit,
+          processingTimeMs: analysis.metadata.processingTimeMs
+        }
+      });
+    } catch (error: any) {
+      console.error("[Intelligence] Pipeline failed:", error);
+      res.status(500).json({ message: "Pipeline execution failed", error: error.message });
+    }
+  });
+
+  // ========================================
+  // FEEDBACK SYSTEM ROUTES
+  // ========================================
+
+  // Submit sentiment feedback
+  app.post("/api/feedback/sentiment", async (req: Request, res: Response) => {
+    try {
+      const { articleId, headline, predictedSentiment, predictedLabel, userCorrection, comment, category } = req.body;
+
+      if (!articleId || !headline || !userCorrection) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const feedback = {
+        id: `sf_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        articleId,
+        headline,
+        predictedSentiment: predictedSentiment || 0,
+        predictedLabel: predictedLabel || 'neutral',
+        userCorrection,
+        comment: comment || '',
+        category: category || 'unknown',
+        timestamp: new Date().toISOString()
+      };
+
+      await feedbackStore.saveSentimentFeedback(feedback);
+
+      res.json({ success: true, id: feedback.id });
+    } catch (error: any) {
+      console.error("[Feedback] Failed to save sentiment feedback:", error);
+      res.status(500).json({ message: "Failed to save feedback" });
+    }
+  });
+
+  // Submit impact feedback
+  app.post("/api/feedback/impact", async (req: Request, res: Response) => {
+    try {
+      const { articleId, headline, predictedImpact, userRating, suggestedImpact, reason } = req.body;
+
+      if (!articleId || !headline || !userRating) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const feedback = {
+        id: `if_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        articleId,
+        headline,
+        predictedImpact: predictedImpact || 0,
+        userRating, // 'too_high' | 'correct' | 'too_low'
+        suggestedImpact,
+        reason: reason || '',
+        timestamp: new Date().toISOString()
+      };
+
+      await feedbackStore.saveImpactFeedback(feedback);
+
+      res.json({ success: true, id: feedback.id });
+    } catch (error: any) {
+      console.error("[Feedback] Failed to save impact feedback:", error);
+      res.status(500).json({ message: "Failed to save feedback" });
+    }
+  });
+
+  // Get feedback stats
+  app.get("/api/feedback/stats", async (req: Request, res: Response) => {
+    try {
+      const stats = await feedbackStore.getStats();
+      res.json(stats);
+    } catch (error: any) {
+      console.error("[Feedback] Failed to get stats:", error);
+      res.status(500).json({ message: "Failed to get feedback stats" });
+    }
+  });
+
+  // Export feedback as CSV
+  app.get("/api/feedback/export", async (req: Request, res: Response) => {
+    try {
+      const type = (req.query.type as 'sentiment' | 'impact') || 'sentiment';
+      const csv = await feedbackStore.exportToCSV(type);
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename=${type}_feedback.csv`);
+      res.send(csv);
+    } catch (error: any) {
+      console.error("[Feedback] Failed to export:", error);
+      res.status(500).json({ message: "Failed to export feedback" });
+    }
+  });
+
   // Update news settings (admin)
   app.post("/api/admin/news/settings", doubleCsrfProtection, async (req: Request, res: Response) => {
     try {
@@ -674,10 +840,10 @@ export async function registerRoutes(
           try {
             const stats = await fs.stat(path.join(galleryDataDir, file));
             sizes.add(stats.size);
-          } catch {}
+          } catch { }
         }
       }
-    } catch {}
+    } catch { }
     return sizes;
   }
 
@@ -718,7 +884,7 @@ export async function registerRoutes(
         if (existingFileSizes.has(file.size)) {
           console.log(`⏭️ Skipping duplicate: ${file.originalname} (size: ${file.size})`);
           // Delete the uploaded temp file
-          try { await fs.unlink(file.path); } catch {}
+          try { await fs.unlink(file.path); } catch { }
           return { success: false, filename: file.originalname, error: "Duplicate file (same size already exists)", isDuplicate: true };
         }
 
@@ -825,7 +991,7 @@ export async function registerRoutes(
       const existingFileSizes = await getExistingFileSizes();
       if (existingFileSizes.has(req.file.size)) {
         console.log(`⏭️ Skipping duplicate: ${req.file.originalname} (size: ${req.file.size})`);
-        try { await fs.unlink(req.file.path); } catch {}
+        try { await fs.unlink(req.file.path); } catch { }
         return res.status(400).json({ message: "Duplicate photo - a file with the same size already exists" });
       }
 

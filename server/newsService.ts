@@ -1,678 +1,116 @@
 import fs from "fs/promises";
-import fsSync from "fs";
 import path from "path";
-import { runMarketIntelligence, getHistoricalAnalysis, getSentimentHistory, type DailyAnalysis } from "./marketIntelligence";
-import { callGemini } from "./geminiPool";
-import { fetchRSSForCategory, type RSSNewsArticle } from "./rssService";
-
-// Load environment variables from .env file
-function loadEnv() {
-  const envPath = path.join(process.cwd(), ".env");
-  if (fsSync.existsSync(envPath)) {
-    const envContent = fsSync.readFileSync(envPath, "utf-8");
-    envContent.split("\n").forEach((line) => {
-      const trimmed = line.trim();
-      if (trimmed && !trimmed.startsWith("#")) {
-        const eqIndex = trimmed.indexOf("=");
-        if (eqIndex > 0) {
-          const key = trimmed.substring(0, eqIndex).trim();
-          let value = trimmed.substring(eqIndex + 1).trim();
-          // Remove quotes if present
-          if ((value.startsWith('"') && value.endsWith('"')) ||
-            (value.startsWith("'") && value.endsWith("'"))) {
-            value = value.slice(1, -1);
-          }
-          if (!process.env[key]) {
-            process.env[key] = value;
-          }
-        }
-      }
-    });
-    console.log("Loaded environment variables from .env");
-  }
-}
-loadEnv();
+import { pipeline } from "./intelligence/core/pipeline";
+import { storage } from "./intelligence/core/storage";
+import { DailyAnalysis } from "./intelligence/core/types";
 
 // ============================================
-// NewsAPI Key Pool - Multiple keys for higher limits
+// Legacy Wrapper for newsService.ts
 // ============================================
-function loadNewsApiKeys(): string[] {
-  const keys: string[] = [];
 
-  // Check for NEWS_API_KEY, NEWS_API_KEY_2, NEWS_API_KEY_3, etc.
-  if (process.env.NEWS_API_KEY) keys.push(process.env.NEWS_API_KEY);
-  if (process.env.NEWS_API_KEY_2) keys.push(process.env.NEWS_API_KEY_2);
-  if (process.env.NEWS_API_KEY_3) keys.push(process.env.NEWS_API_KEY_3);
-
-  return keys.filter(k => k && !k.includes("YOUR_"));
-}
-
-const NEWS_API_KEYS = loadNewsApiKeys();
-let currentNewsKeyIndex = 0;
-
-// Track which keys have hit rate limits
-const rateLimitedKeys = new Set<string>();
-
-function getNextNewsApiKey(): string | null {
-  if (NEWS_API_KEYS.length === 0) return null;
-
-  // Find a key that isn't rate limited
-  for (let i = 0; i < NEWS_API_KEYS.length; i++) {
-    const keyIndex = (currentNewsKeyIndex + i) % NEWS_API_KEYS.length;
-    const key = NEWS_API_KEYS[keyIndex];
-
-    if (!rateLimitedKeys.has(key)) {
-      currentNewsKeyIndex = (keyIndex + 1) % NEWS_API_KEYS.length;
-      return key;
-    }
-  }
-
-  // All keys are rate limited
-  console.warn("[NewsAPI] All API keys are rate limited");
-  return null;
-}
-
-function markKeyAsRateLimited(key: string): void {
-  rateLimitedKeys.add(key);
-  console.warn(`[NewsAPI] Key ${NEWS_API_KEYS.indexOf(key) + 1}/${NEWS_API_KEYS.length} hit rate limit`);
-}
-
-// Reset rate limits periodically (every 12 hours they partially reset)
-function resetRateLimits(): void {
-  rateLimitedKeys.clear();
-  console.log("[NewsAPI] Rate limit tracking reset");
-}
-
-// Reset rate limits every 12 hours
-setInterval(resetRateLimits, 12 * 60 * 60 * 1000);
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const DAYS_TO_KEEP = 365; // 1 year of news for comprehensive trend analysis
-
-// Flag to enable/disable full market intelligence analysis
-const ENABLE_MARKET_INTELLIGENCE = true;
-
-// Log API key status (not the actual keys for security)
-console.log(`[NewsAPI] Initialized with ${NEWS_API_KEYS.length} API key(s)`);
-console.log(`GEMINI_API_KEY configured: ${GEMINI_API_KEY ? "Yes" : "No"}`);
-console.log(`[NewsAPI] Keeping ${DAYS_TO_KEEP} days of news history`);
-
-// Use NEWS_FEED_DIR env var if set (for Docker volume mounts), otherwise use current directory
 const newsFeedDir = process.env.NEWS_FEED_DIR || process.cwd();
 const newsFeedPath = path.join(newsFeedDir, "news_feed.json");
-console.log(`[NewsAPI] Using news feed path: ${newsFeedPath}`);
 
-// Consolidated queries - ONE API call per category to stay within rate limits
-// NewsAPI free tier: 100 requests/day (50 every 12 hours)
-// With 7 categories = 7 requests per day, we can sync ~7 days of news within limits
-const CATEGORIES: Record<string, Array<{ ticker: string; query: string }>> = {
-  ai_compute_infra: [
-    { ticker: "AI", query: "NVIDIA OR AMD OR Google AI OR Microsoft AI OR Meta AI" },
-  ],
-  fintech_regtech: [
-    { ticker: "FIN", query: "PayPal OR Visa payments OR Mastercard OR fintech" },
-  ],
-  rpa_enterprise_ai: [
-    { ticker: "ENT", query: "ServiceNow OR Salesforce OR UiPath OR enterprise AI" },
-  ],
-  semi_supply_chain: [
-    { ticker: "SEMI", query: "TSMC OR ASML OR semiconductor shortage OR chip manufacturing" },
-  ],
-  cybersecurity: [
-    { ticker: "SEC", query: "CrowdStrike OR Palo Alto Networks OR cybersecurity breach" },
-  ],
-  geopolitics: [
-    { ticker: "GEO", query: "US China tech OR Taiwan semiconductor OR tech sanctions" },
-  ],
-};
-
-const CATEGORY_NAMES: Record<string, string> = {
-  ai_compute_infra: "AI Compute & Infra",
-  fintech_regtech: "FinTech & RegTech",
-  rpa_enterprise_ai: "RPA & Enterprise AI",
-  semi_supply_chain: "Semiconductor Supply Chain",
-  cybersecurity: "Cybersecurity",
-  geopolitics: "Geopolitics",
-};
-
-interface NewsArticle {
-  ticker: string;
-  headline: string;
-  url: string;
-  source: string;
-}
-
-interface NewsDay {
-  date: string;
-  content: {
-    briefing: string;
-    ai_compute_infra: NewsArticle[];
-    fintech_regtech: NewsArticle[];
-    rpa_enterprise_ai: NewsArticle[];
-    semi_supply_chain: NewsArticle[];
-    cybersecurity: NewsArticle[];
-    geopolitics: NewsArticle[];
-  };
-}
-
-// Get the last N days as date strings (YYYY-MM-DD)
-function getLastNDays(n: number): string[] {
-  const dates: string[] = [];
-  for (let i = 0; i < n; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    dates.push(date.toISOString().split("T")[0]);
-  }
-  return dates;
-}
-
-// Delay helper
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function fetchNewsForCategory(
-  stock: { ticker: string; query: string },
-  fromDate: string,
-  toDate: string,
-  category?: string
-): Promise<NewsArticle[]> {
-  const { ticker, query } = stock;
-
-  // ============================================
-  // STEP 1: TRY RSS FIRST (FREE, NO LIMITS)
-  // ============================================
-  if (category) {
-    console.log(`[News] Trying RSS first for ${category}...`);
-    try {
-      const rssArticles = await fetchRSSForCategory(category);
-
-      // If RSS returns enough articles, use them
-      if (rssArticles.length >= 5) {
-        console.log(`[News] RSS provided ${rssArticles.length} articles for ${category}`);
-        return rssArticles.map(a => ({
-          ticker: a.ticker,
-          headline: a.headline,
-          url: a.url,
-          source: a.source,
-        }));
-      }
-
-      console.log(`[News] RSS only got ${rssArticles.length} articles, will supplement with NewsAPI...`);
-    } catch (rssError: any) {
-      console.error(`[News] RSS failed for ${category}:`, rssError.message);
-    }
-  }
-
-  // ============================================
-  // STEP 2: FALLBACK TO NEWSAPI (IF RSS INSUFFICIENT)
-  // ============================================
-  const apiKey = getNextNewsApiKey();
-  if (!apiKey) {
-    console.warn("[NewsAPI] No available API keys and RSS was insufficient.");
-    // Return whatever RSS got, even if it's empty
-    if (category) {
-      try {
-        const rssArticles = await fetchRSSForCategory(category);
-        return rssArticles.map(a => ({
-          ticker: a.ticker,
-          headline: a.headline,
-          url: a.url,
-          source: a.source,
-        }));
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }
-
-  try {
-    console.log(`[NewsAPI] Fetching from API for ${ticker}...`);
-    const encodedQuery = encodeURIComponent(query);
-    const url = `https://newsapi.org/v2/everything?q=${encodedQuery}&language=en&sortBy=publishedAt&from=${fromDate}&to=${toDate}&pageSize=10&apiKey=${apiKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.status !== "ok") {
-      // Check if it's a rate limit error
-      if (data.message?.includes("rate limit") || data.message?.includes("too many requests")) {
-        markKeyAsRateLimited(apiKey);
-        console.log(`[NewsAPI] Rate limited. Using RSS only for ${category || 'unknown'}...`);
-      } else {
-        console.error(`[NewsAPI] Error for ${ticker}:`, data.message);
-      }
-
-      // Return RSS articles as fallback
-      if (category) {
-        const rssArticles = await fetchRSSForCategory(category);
-        return rssArticles.map(a => ({
-          ticker: a.ticker,
-          headline: a.headline,
-          url: a.url,
-          source: a.source,
-        }));
-      }
-      return [];
-    }
-
-    const apiArticles = (data.articles || []).map((article: any) => ({
-      ticker,
-      headline: article.title,
-      url: article.url,
-      source: article.source.name,
-    }));
-
-    console.log(`[NewsAPI] Got ${apiArticles.length} articles from API`);
-
-    // Merge with RSS for comprehensive coverage
-    if (category) {
-      const rssArticles = await fetchRSSForCategory(category);
-      const allUrls = new Set(apiArticles.map((a: NewsArticle) => a.url));
-      for (const rss of rssArticles) {
-        if (!allUrls.has(rss.url)) {
-          apiArticles.push({
-            ticker: rss.ticker,
-            headline: rss.headline,
-            url: rss.url,
-            source: rss.source,
-          });
-          allUrls.add(rss.url);
-        }
-      }
-      console.log(`[News] Combined total: ${apiArticles.length} articles`);
-    }
-
-    return apiArticles;
-  } catch (error: any) {
-    console.error(`[NewsAPI] Network error for ${ticker}:`, error.message);
-
-    // Fall back to RSS on fetch error
-    if (category) {
-      const rssArticles = await fetchRSSForCategory(category);
-      return rssArticles.map(a => ({
-        ticker: a.ticker,
-        headline: a.headline,
-        url: a.url,
-        source: a.source,
-      }));
-    }
-    return [];
-  }
-}
-
-async function generateBriefingWithGemini(
-  content: NewsDay["content"],
-  targetDate: string
-): Promise<string> {
-  if (!GEMINI_API_KEY) {
-    console.warn("GEMINI_API_KEY not set. Using fallback briefing.");
-    return generateFallbackBriefing(targetDate);
-  }
-
-  // Collect all headlines for the prompt
-  const allHeadlines: string[] = [];
-  let totalArticles = 0;
-
-  if (content.ai_compute_infra && content.ai_compute_infra.length > 0) {
-    allHeadlines.push(
-      "\nAI & Compute Infrastructure:",
-      ...content.ai_compute_infra.map((a) => `  - ${a.ticker}: ${a.headline}`)
-    );
-    totalArticles += content.ai_compute_infra.length;
-  }
-  if (content.fintech_regtech && content.fintech_regtech.length > 0) {
-    allHeadlines.push(
-      "\nFinTech & Payments:",
-      ...content.fintech_regtech.map((a) => `  - ${a.ticker}: ${a.headline}`)
-    );
-    totalArticles += content.fintech_regtech.length;
-  }
-  if (content.rpa_enterprise_ai && content.rpa_enterprise_ai.length > 0) {
-    allHeadlines.push(
-      "\nEnterprise AI & Automation:",
-      ...content.rpa_enterprise_ai.map((a) => `  - ${a.ticker}: ${a.headline}`)
-    );
-    totalArticles += content.rpa_enterprise_ai.length;
-  }
-  if (content.semi_supply_chain && content.semi_supply_chain.length > 0) {
-    allHeadlines.push(
-      "\nSemiconductor Supply Chain:",
-      ...content.semi_supply_chain.map((a) => `  - ${a.ticker}: ${a.headline}`)
-    );
-    totalArticles += content.semi_supply_chain.length;
-  }
-  if (content.cybersecurity && content.cybersecurity.length > 0) {
-    allHeadlines.push(
-      "\nCybersecurity:",
-      ...content.cybersecurity.map((a) => `  - ${a.ticker}: ${a.headline}`)
-    );
-    totalArticles += content.cybersecurity.length;
-  }
-  if (content.geopolitics && content.geopolitics.length > 0) {
-    allHeadlines.push(
-      "\nGeopolitics:",
-      ...content.geopolitics.map((a) => `  - ${a.ticker}: ${a.headline}`)
-    );
-    totalArticles += content.geopolitics.length;
-  }
-
-  // If no actual articles were found, return a fallback
-  if (totalArticles === 0) {
-    console.log(`  No articles found for ${targetDate}, using fallback briefing`);
-    return generateFallbackBriefing(targetDate);
-  }
-
-  console.log(`  Found ${totalArticles} articles for Gemini analysis`);
-
-  const prompt = `You are a sharp, experienced Wall Street tech analyst writing your morning briefing. Your readers are sophisticated investors who track AI infrastructure, semiconductors, fintech, enterprise software, and cybersecurity.
-
-Today is ${targetDate}. Based on today's headlines below, write a compelling 2-3 paragraph analysis (250-350 words) that:
-
-1. Opens with the day's most significant market-moving story and why it matters
-2. Draws connections between seemingly unrelated news items to reveal sector trends
-3. Provides specific price targets, market cap impacts, or competitive implications where relevant
-4. Names specific companies, products, and executives - no vague references
-5. Ends with a forward-looking statement about what to watch this week
-6. Sounds like a seasoned analyst who's seen market cycles, not an AI summary
-
-AVOID: Generic phrases like "exciting developments", "significant progress", "continue to monitor", or "stay tuned". Be direct and opinionated.
-
-TODAY'S HEADLINES:
-${allHeadlines.join("\n")}
-
-Write your analysis now. No headers, no bullet points, just sharp analytical prose that a portfolio manager would actually want to read.`;
-
-  try {
-    console.log(`  Calling Gemini API for briefing...`);
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 800,
-          },
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`  Gemini API error (${response.status}):`, errorText);
-      return generateFallbackBriefing(targetDate);
-    }
-
-    const data = await response.json();
-
-    if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-      const briefing = data.candidates[0].content.parts[0].text.trim();
-      console.log(`  Generated AI briefing successfully for ${targetDate} (${briefing.length} chars)`);
-      return briefing;
-    } else if (data.error) {
-      console.error(`  Gemini API error:`, data.error.message || JSON.stringify(data.error));
-      return generateFallbackBriefing(targetDate);
-    } else {
-      console.error("  Unexpected Gemini response structure:", JSON.stringify(data, null, 2));
-      return generateFallbackBriefing(targetDate);
-    }
-  } catch (error: any) {
-    console.error("  Failed to generate briefing with Gemini:", error.message);
-    return generateFallbackBriefing(targetDate);
-  }
-}
-
-function generateFallbackBriefing(targetDate: string): string {
-  const date = new Date(targetDate).toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  return `Tech news briefing for ${date}. Check the articles below for today's key developments across AI infrastructure, fintech, enterprise automation, semiconductors, and cybersecurity.`;
-}
-
-async function generateNewsForDate(targetDate: string): Promise<NewsDay & { analysis?: DailyAnalysis }> {
-  const newsDay: NewsDay & { analysis?: DailyAnalysis } = {
-    date: targetDate,
-    content: {
-      briefing: "",
-      ai_compute_infra: [],
-      fintech_regtech: [],
-      rpa_enterprise_ai: [],
-      semi_supply_chain: [],
-      cybersecurity: [],
-      geopolitics: [],
-    },
-  };
-
-  console.log(`Fetching news for ${targetDate}...`);
-
-  // For NewsAPI, we need to set the date range for that specific day
-  const fromDate = targetDate;
-  const toDate = targetDate;
-
-  // Fetch news for each category - ONE API call per category (optimized for free tier)
-  for (const [category, queries] of Object.entries(CATEGORIES)) {
-    console.log(`  Fetching ${CATEGORY_NAMES[category]}...`);
-
-    // Only one query per category now - pass category for RSS fallback
-    const articles = await fetchNewsForCategory(queries[0], fromDate, toDate, category);
-    (newsDay.content as any)[category] = articles.slice(0, 5); // Max 5 per category
-
-    // Rate limiting - wait 500ms between category requests
-    await delay(500);
-  }
-
-  // Check if we have any articles
-  const allArticles: NewsArticle[] = [];
-  const categories: Record<string, NewsArticle[]> = {};
-  Object.keys(CATEGORIES).forEach(cat => {
-    const catArticles = (newsDay.content as any)[cat] as NewsArticle[];
-    if (catArticles.length > 0) {
-      categories[cat] = catArticles;
-      allArticles.push(...catArticles);
-    }
-  });
-
-  // Generate a simple LOCAL briefing (no API) - this always works
-  const topHeadlines = allArticles.slice(0, 5).map(a => a.headline).join(". ");
-  newsDay.content.briefing = `Market intelligence briefing for ${targetDate}. Today's top stories: ${topHeadlines}. Check the detailed analysis below for more insights.`;
-
-  // Run Market Intelligence in BACKGROUND (non-blocking)
-  // This allows news to save immediately while AI enhancement happens later
-  if (ENABLE_MARKET_INTELLIGENCE && allArticles.length > 0) {
-    console.log(`  Starting Market Intelligence in background...`);
-    runMarketIntelligence(allArticles, categories, targetDate)
-      .then(analysis => {
-        console.log(`  [Background] Market Intelligence complete for ${targetDate}`);
-        // Note: Analysis is saved to Supabase by runMarketIntelligence itself
-      })
-      .catch(error => {
-        console.error(`  [Background] Market Intelligence failed for ${targetDate}:`, error.message);
-        // That's okay - we have the local briefing already
-      });
-  }
-
-  return newsDay;
-}
-
+/**
+ * Runs the full intelligence pipeline and returns the result.
+ * Maintains compatibility with existing refresh logic.
+ */
 export async function refreshNewsFeed(): Promise<{
   success: boolean;
   message: string;
   fetchedDates: string[];
 }> {
-  // Read existing news feed
-  let newsFeed: NewsDay[] = [];
+  console.log("[NewsService] Starting modular pipeline refresh...");
+
   try {
-    const content = await fs.readFile(newsFeedPath, "utf-8");
-    newsFeed = JSON.parse(content);
-  } catch (err) {
-    // File doesn't exist, start fresh
-    newsFeed = [];
-  }
+    const analysis = await pipeline.run();
 
-  // IMPORTANT: Only try to fetch the last 7 days (to avoid API overload)
-  // But we'll KEEP all historical data up to DAYS_TO_KEEP (365 days)
-  const DAYS_TO_FETCH = 7;
-  const recentDays = getLastNDays(DAYS_TO_FETCH);
-  console.log(`Checking last ${DAYS_TO_FETCH} days for sync: ${recentDays.join(", ")}`);
+    // Maintain news_feed.json for backward compatibility with frontend parts 
+    // that haven't been migrated yet to the new API.
+    await updateLegacyFeed(analysis);
 
-  // Find existing dates in the feed
-  const existingDates = new Set(newsFeed.map((item) => item.date));
-  console.log(`Existing dates in feed: ${newsFeed.length} total days`);
-
-  // Find missing dates (only within the last 7 days - not all 365!)
-  const missingDates = recentDays.filter((date) => !existingDates.has(date));
-
-  if (missingDates.length === 0) {
-    console.log("All recent dates are up to date. No missing days to fetch.");
     return {
       success: true,
-      message: "News is already up to date",
-      fetchedDates: [],
+      message: `Synced ${analysis.metadata.articlesProcessed} articles across ${analysis.metadata.clustersFound} topics.`,
+      fetchedDates: [analysis.date]
     };
-  }
-
-  console.log(`Missing dates to fetch: ${missingDates.join(", ")}`);
-  const fetchedDates: string[] = [];
-
-  // Fetch news for each missing date
-  for (const date of missingDates) {
-    console.log(`\n--- Fetching news for ${date} ---`);
-    try {
-      const newsForDate = await generateNewsForDate(date);
-
-      // Check if we got any actual news content
-      const hasContent = Object.keys(CATEGORIES).some(
-        (cat) => (newsForDate.content as any)[cat]?.length > 0
-      );
-
-      if (hasContent) {
-        newsFeed.push(newsForDate);
-        fetchedDates.push(date);
-        console.log(`Added news for ${date}`);
-      } else {
-        console.log(`No news found for ${date}, skipping`);
-      }
-
-      // Rate limiting between days - wait 1 second
-      await delay(1000);
-    } catch (error: any) {
-      console.error(`Failed to fetch news for ${date}:`, error.message);
-    }
-  }
-
-  // Sort by date descending (newest first)
-  newsFeed.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-  // Keep 365 days of historical data (not just 7!)
-  const cutoffDate = getLastNDays(DAYS_TO_KEEP)[DAYS_TO_KEEP - 1];
-  const originalCount = newsFeed.length;
-  newsFeed = newsFeed.filter((item) => item.date >= cutoffDate);
-  console.log(`Retention: kept ${newsFeed.length} days (removed ${originalCount - newsFeed.length} older than ${cutoffDate})`);
-
-  // Save to file
-  await fs.writeFile(newsFeedPath, JSON.stringify(newsFeed, null, 2));
-  console.log(`\nNews feed saved to ${newsFeedPath}`);
-  console.log(`Total news days: ${newsFeed.length}`);
-
-  return {
-    success: true,
-    message: `Synced ${fetchedDates.length} missing day(s)`,
-    fetchedDates,
-  };
-}
-
-// Export Market Intelligence functions for API routes
-export { getHistoricalAnalysis, getSentimentHistory };
-
-// Get the latest market intelligence analysis
-export async function getLatestMarketIntelligence(): Promise<{
-  analysis: Awaited<ReturnType<typeof getHistoricalAnalysis>>[0] | null;
-  sentimentHistory: Awaited<ReturnType<typeof getSentimentHistory>>;
-}> {
-  const [analyses, sentimentHistory] = await Promise.all([
-    getHistoricalAnalysis(1),
-    getSentimentHistory(30),
-  ]);
-
-  return {
-    analysis: analyses[0] || null,
-    sentimentHistory,
-  };
-}
-
-// Get full market terminal data
-export async function getMarketTerminalData(days: number = 7): Promise<{
-  analyses: Awaited<ReturnType<typeof getHistoricalAnalysis>>;
-  sentimentHistory: Awaited<ReturnType<typeof getSentimentHistory>>;
-  categoryNames: typeof CATEGORY_NAMES;
-}> {
-  // Try Supabase first
-  const [analyses, sentimentHistory] = await Promise.all([
-    getHistoricalAnalysis(days),
-    getSentimentHistory(days * 6), // ~6 categories per day
-  ]);
-
-  // If Supabase has data, return it
-  if (analyses.length > 0) {
+  } catch (error: any) {
+    console.error("[NewsService] Pipeline refresh failed:", error);
     return {
-      analyses,
-      sentimentHistory,
-      categoryNames: CATEGORY_NAMES,
+      success: false,
+      message: error.message,
+      fetchedDates: []
     };
   }
+}
 
-  // Fallback: Read from local news_feed.json and extract analysis data
-  console.log("[Market Terminal] No Supabase data, falling back to local news_feed.json");
+/**
+ * Updates the legacy news_feed.json file to keep old UI working
+ */
+async function updateLegacyFeed(analysis: DailyAnalysis) {
   try {
-    const newsContent = await fs.readFile(newsFeedPath, "utf-8");
-    const newsFeed = JSON.parse(newsContent) as Array<NewsDay & { analysis?: DailyAnalysis }>;
+    let feed: any[] = [];
+    try {
+      const content = await fs.readFile(newsFeedPath, "utf-8");
+      feed = JSON.parse(content);
+    } catch {
+      feed = [];
+    }
 
-    // Convert news feed to analysis format
-    const localAnalyses = newsFeed.slice(0, days).map(day => {
-      if (day.analysis) {
-        return {
-          date: day.date,
-          briefing: day.analysis.briefing || day.content.briefing,
-          trendReport: day.analysis.trendReport,
-          strategistReport: day.analysis.strategistReport,
-        };
+    // Convert new analysis format to old NewsDay format
+    const legacyDay = {
+      date: analysis.date,
+      content: {
+        briefing: analysis.briefing.executiveSummary,
+        ai_compute_infra: analysis.enrichedArticles.filter(a => a.category === 'ai_compute_infra').slice(0, 5),
+        fintech_regtech: analysis.enrichedArticles.filter(a => a.category === 'fintech_regtech').slice(0, 5),
+        rpa_enterprise_ai: analysis.enrichedArticles.filter(a => a.category === 'rpa_enterprise_ai').slice(0, 5),
+        semi_supply_chain: analysis.enrichedArticles.filter(a => a.category === 'semiconductor').slice(0, 5),
+        cybersecurity: analysis.enrichedArticles.filter(a => a.category === 'cybersecurity').slice(0, 5),
+        geopolitics: analysis.enrichedArticles.filter(a => a.category === 'geopolitics').slice(0, 5),
       }
-      // If no analysis, create a basic one from the briefing
-      return {
-        date: day.date,
-        briefing: day.content.briefing || `News briefing for ${day.date}`,
-        trendReport: null,
-        strategistReport: null,
-      };
-    });
+    };
 
-    return {
-      analyses: localAnalyses,
-      sentimentHistory: [],
-      categoryNames: CATEGORY_NAMES,
-    };
+    // Upsert by date
+    const index = feed.findIndex(d => d.date === analysis.date);
+    if (index !== -1) feed[index] = legacyDay;
+    else feed.unshift(legacyDay);
+
+    await fs.writeFile(newsFeedPath, JSON.stringify(feed.slice(0, 365), null, 2));
+    console.log("[NewsService] Legacy feed updated.");
   } catch (error) {
-    console.error("[Market Terminal] Failed to read local news feed:", error);
-    return {
-      analyses: [],
-      sentimentHistory: [],
-      categoryNames: CATEGORY_NAMES,
-    };
+    console.error("[NewsService] Failed to update legacy feed:", error);
   }
 }
+
+/**
+ * Backward compatibility exports
+ */
+export async function getLatestMarketIntelligence() {
+  const date = new Date().toISOString().split('T')[0];
+  const briefing = storage.getBriefing(date);
+  return {
+    analysis: briefing,
+    sentimentHistory: [] // To be implemented via storage lookup
+  };
+}
+
+export async function getMarketTerminalData(days: number = 7) {
+  // Logic to pull from storage
+  return {
+    analyses: [],
+    sentimentHistory: [],
+    categoryNames: {
+      ai_compute_infra: "AI Compute & Infra",
+      fintech_regtech: "FinTech & RegTech",
+      rpa_enterprise_ai: "RPA & Enterprise AI",
+      semiconductor: "Semiconductor Supply Chain",
+      cybersecurity: "Cybersecurity",
+      geopolitics: "Geopolitics",
+    }
+  };
+}
+
+// These are still used by routes.ts but will be migrated to intelligence routes
+export async function getHistoricalAnalysis(days: number) { return []; }
+export async function getSentimentHistory(days: number) { return []; }
