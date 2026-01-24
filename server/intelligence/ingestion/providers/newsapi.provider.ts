@@ -7,6 +7,65 @@ import {
 } from '../../core/types';
 
 /**
+ * Trusted tech/business news sources - only accept articles from these
+ * This prevents garbage from random sites, package registries, and entertainment sites
+ */
+const TRUSTED_SOURCES = new Set([
+    // Major Tech News
+    'techcrunch', 'the verge', 'wired', 'ars technica', 'engadget',
+    'cnet', 'zdnet', 'venturebeat', 'the next web', 'mashable',
+    'gizmodo', 'tech radar', 'tom\'s hardware', 'anandtech',
+
+    // Business & Finance
+    'bloomberg', 'reuters', 'financial times', 'wall street journal', 'wsj',
+    'cnbc', 'business insider', 'forbes', 'fortune', 'marketwatch',
+    'barron\'s', 'economist', 'yahoo finance', 'seeking alpha',
+
+    // AI & Tech Specialty
+    'siliconangle', 'the register', 'protocol', 'axios', 'the information',
+    'mit technology review', 'ieee spectrum', 'nvidia blog', 'google ai blog',
+
+    // Cybersecurity
+    'krebs on security', 'the hacker news', 'bleeping computer', 'dark reading',
+    'security week', 'threatpost', 'cyberscoop',
+
+    // Semiconductors
+    'wccftech', 'videocardz', 'tom\'s hardware', 'anandtech', 'pcmag',
+    'pc gamer', 'pc world',
+
+    // World News
+    'bbc', 'bbc news', 'associated press', 'ap news', 'npr',
+    'al jazeera', 'foreign policy', 'politico',
+
+    // FinTech
+    'pymnts', 'coindesk', 'cointelegraph', 'the block', 'decrypt',
+    'finextra', 'american banker'
+]);
+
+// Array version for iteration compatibility
+const TRUSTED_SOURCES_ARRAY = Array.from(TRUSTED_SOURCES);
+
+/**
+ * Check if a source is trusted
+ */
+function isTrustedSource(sourceName: string): boolean {
+    if (!sourceName) return false;
+    const normalized = sourceName.toLowerCase().trim();
+
+    // Direct match
+    if (TRUSTED_SOURCES.has(normalized)) return true;
+
+    // Partial match (e.g., "TechCrunch" matches "techcrunch")
+    for (let i = 0; i < TRUSTED_SOURCES_ARRAY.length; i++) {
+        const trusted = TRUSTED_SOURCES_ARRAY[i];
+        if (normalized.includes(trusted) || trusted.includes(normalized)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * NewsAPI Provider - Fetches articles from newsapi.org
  * Implements multi-key rotation and rate limit tracking.
  */
@@ -100,10 +159,16 @@ export class NewsAPIProvider extends BaseProvider {
 
                 const validArticles = (data.articles || []).filter((article: any) => {
                     const title = article.title?.trim();
-                    const sourceName = article.source?.name?.toLowerCase();
+                    const sourceName = article.source?.name;
 
                     // Debug: Log each article
                     console.log(`[NewsAPI] Checking: "${title?.substring(0, 50)}..." from ${sourceName}`);
+
+                    // FIRST: Check if source is trusted
+                    if (!isTrustedSource(sourceName)) {
+                        console.log(`[NewsAPI] SKIP: untrusted source "${sourceName}"`);
+                        return false;
+                    }
 
                     if (!title || title.length < 20 || !article.url) {
                         console.log(`[NewsAPI] SKIP: too short or no URL`);
@@ -116,7 +181,8 @@ export class NewsAPIProvider extends BaseProvider {
 
                     // Check if title is just the source name
                     const titleLower = title.toLowerCase();
-                    if (sourceName && (titleLower === sourceName || titleLower.includes(sourceName))) {
+                    const sourceNameLower = sourceName?.toLowerCase() || '';
+                    if (sourceNameLower && (titleLower === sourceNameLower || titleLower.includes(sourceNameLower))) {
                         console.log(`[NewsAPI] SKIP: matches source`);
                         return false;
                     }
@@ -133,7 +199,7 @@ export class NewsAPIProvider extends BaseProvider {
                         return false;
                     }
 
-                    console.log(`[NewsAPI] ACCEPTED: "${title.substring(0, 50)}..."`);
+                    console.log(`[NewsAPI] ACCEPTED: "${title.substring(0, 50)}..." from trusted source "${sourceName}"`);
                     return true;
                 });
 
@@ -179,13 +245,15 @@ export class NewsAPIProvider extends BaseProvider {
     }
 
     private getQueryForCategory(category: ArticleCategory): string {
+        // More specific queries to get relevant tech/business news
+        // Using quotes for exact phrases and combining terms for relevance
         const map: Record<ArticleCategory, string> = {
-            ai_compute_infra: "NVIDIA OR AMD OR Google AI OR Microsoft AI OR Meta AI",
-            fintech_regtech: "PayPal OR Visa payments OR Mastercard OR fintech",
-            rpa_enterprise_ai: "ServiceNow OR Salesforce OR UiPath OR enterprise AI",
-            semiconductor: "TSMC OR ASML OR semiconductor shortage OR chip manufacturing",
-            cybersecurity: "CrowdStrike OR Palo Alto Networks OR cybersecurity breach",
-            geopolitics: "US China tech OR Taiwan semiconductor OR tech sanctions"
+            ai_compute_infra: '("artificial intelligence" OR "machine learning" OR "GPU" OR "data center") AND (NVIDIA OR AMD OR Google OR Microsoft OR OpenAI OR Anthropic)',
+            fintech_regtech: '("fintech" OR "digital payments" OR "banking technology" OR "cryptocurrency") AND (regulation OR startup OR investment)',
+            rpa_enterprise_ai: '("enterprise software" OR "automation" OR "SaaS") AND (Salesforce OR ServiceNow OR Workday OR SAP)',
+            semiconductor: '("semiconductor" OR "chip" OR "foundry") AND (TSMC OR Intel OR Samsung OR ASML OR shortage)',
+            cybersecurity: '("cybersecurity" OR "data breach" OR "ransomware" OR "vulnerability") AND (attack OR hack OR threat)',
+            geopolitics: '("trade war" OR "sanctions" OR "export controls") AND (China OR Taiwan OR technology)'
         };
         return map[category] || category;
     }

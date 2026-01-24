@@ -458,9 +458,9 @@ export async function registerRoutes(
   });
 
   // Refresh news feed - runs full intelligence pipeline
-  // VERSION: 2026-01-24-v3 (with strict filtering and diagnostics)
+  // VERSION: 2026-01-24-v4 (trusted sources + improved queries)
   app.post("/api/news/refresh", async (_req: Request, res: Response) => {
-    const VERSION = "2026-01-24-v3";
+    const VERSION = "2026-01-24-v4";
     console.log(`[News Sync] VERSION ${VERSION} - Starting intelligence pipeline...`);
 
     try {
@@ -486,12 +486,22 @@ export async function registerRoutes(
 
   // Diagnostic endpoint to verify code version and check data
   app.get("/api/debug/version", async (_req: Request, res: Response) => {
-    const version = "2026-01-24-v3";
+    const version = "2026-01-24-v4";
     try {
       // Read current news_feed.json to show what's there
       const newsContent = await fs.readFile(path.join(process.cwd(), "news_feed.json"), "utf-8");
       const newsData = JSON.parse(newsContent);
       const latestDay = newsData[0];
+
+      // Collect sample headlines from each category
+      const sampleHeadlines: Record<string, string[]> = {};
+      if (latestDay?.content) {
+        for (const [cat, articles] of Object.entries(latestDay.content)) {
+          if (Array.isArray(articles) && articles.length > 0) {
+            sampleHeadlines[cat] = (articles as any[]).slice(0, 2).map((a: any) => a.headline || 'No headline');
+          }
+        }
+      }
 
       res.json({
         version,
@@ -505,7 +515,8 @@ export async function registerRoutes(
           cyber: latestDay.content.cybersecurity?.length || 0,
           geo: latestDay.content.geopolitics?.length || 0
         } : null,
-        sampleHeadlines: latestDay?.content.ai_compute_infra?.slice(0, 2).map((a: any) => a.headline) || []
+        sampleHeadlines,
+        briefingPreview: latestDay?.content?.briefing?.substring(0, 200) + '...' || 'No briefing'
       });
     } catch (error: any) {
       res.json({
