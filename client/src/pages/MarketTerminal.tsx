@@ -190,7 +190,7 @@ export default function MarketTerminal() {
                 </h3>
                 <div className="flex items-end gap-4 mb-4">
                   <span className={`text-5xl font-light tabular-nums ${getScoreColor(briefing.marketSentiment.overall)}`}>
-                    {briefing.marketSentiment.overall > 0 ? "+" : ""}{briefing.marketSentiment.overall}
+                    {briefing.marketSentiment.overall > 0 ? "+" : ""}{briefing.marketSentiment.overall.toFixed(2)}
                   </span>
                   <div className="pb-1.5">
                     <p className={`text-sm font-medium uppercase tracking-tight ${getScoreColor(briefing.marketSentiment.overall)}`}>
