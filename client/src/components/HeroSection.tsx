@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Mail, Copy, Check } from "lucide-react";
 import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
 import TypewriterText from "./TypewriterText";
+import confetti from "canvas-confetti";
 
 type BioPart = { type: 'text'; content: string } | { type: 'image'; content: string; alt: string };
 
@@ -54,9 +55,29 @@ export default function HeroSection({
 }: HeroSectionProps) {
   const [copied, setCopied] = useState(false);
 
-  const copyEmail = () => {
+  const copyEmail = (e?: React.MouseEvent<HTMLButtonElement>) => {
     navigator.clipboard.writeText(email);
     setCopied(true);
+
+    // Calculate origin from clicked button position, or use center if via keyboard
+    let originX = 0.5;
+    let originY = 0.5;
+    if (e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      originX = (rect.left + rect.width / 2) / window.innerWidth;
+      originY = (rect.top + rect.height / 2) / window.innerHeight;
+    }
+
+    // Random confetti burst from the email button!
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    confetti({
+      angle: randomInRange(55, 125),
+      spread: randomInRange(50, 70),
+      particleCount: Math.floor(randomInRange(50, 100)),
+      origin: { x: originX, y: originY }
+    });
+
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -146,9 +167,13 @@ export default function HeroSection({
                   <Copy className="w-3 h-3 opacity-50" />
                 )}
               </button>
-              {copied && (
+              {copied ? (
                 <span className="text-xs text-green-600 dark:text-green-400">
                   Copied!
+                </span>
+              ) : (
+                <span className="text-xs text-gray-400 dark:text-neutral-500">
+                  click to copy
                 </span>
               )}
             </li>

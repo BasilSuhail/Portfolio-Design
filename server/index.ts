@@ -38,6 +38,7 @@ app.use(helmet({
       baseUri: ["'self'"],
       formAction: ["'self'", "https://formspree.io"],
       frameAncestors: ["'self'"],
+      workerSrc: ["'self'", "blob:"], // Allow blob workers for canvas-confetti
       upgradeInsecureRequests: [],
     },
   },
