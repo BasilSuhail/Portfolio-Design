@@ -11,7 +11,7 @@ interface ContactSectionProps {
   };
 }
 
-export function ContactSection({ email, calendarLinks }: ContactSectionProps) {
+export function ContactSection({ email: _email, calendarLinks }: ContactSectionProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);

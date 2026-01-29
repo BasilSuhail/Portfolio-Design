@@ -109,9 +109,8 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
         </div>
 
         <div
-          className={`${
-            isOpen ? "block" : "hidden"
-          } overflow-hidden transition-all duration-300 basis-full grow md:block`}
+          className={`${isOpen ? "block" : "hidden"
+            } overflow-hidden transition-all duration-300 basis-full grow md:block`}
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-2 md:gap-3 mt-3 md:mt-0 py-2 md:py-0 md:ps-7">
             <Link href="/gallery">
@@ -123,10 +122,10 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
               </span>
             </Link>
             <button
-              onClick={() => scrollToSection("experience")}
+              onClick={() => scrollToSection("journey")}
               className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200"
             >
-              Experience
+              My Journey
             </button>
             <Link href="/news">
               <span

@@ -1,8 +1,7 @@
 {
   "sectionOrder": [
     "projects",
-    "experience",
-    "education",
+    "journey",
     "techStack",
     "testimonials",
     "writing",
@@ -12,6 +11,7 @@
   ],
   "sectionVisibility": {
     "projects": true,
+    "journey": true,
     "experience": true,
     "education": true,
     "techStack": true,
@@ -22,6 +22,7 @@
   },
   "sectionIntros": {
     "projects": "Below are some select projects, full walkthroughs on request",
+    "journey": "A timeline of my career and education.",
     "experience": "Here's a brief overview of my career.",
     "education": "",
     "techStack": "",
@@ -35,6 +36,12 @@
   "profile": {
     "name": "Basil Suhail",
     "title": "Data Science & Business Student",
+    "titles": [
+      "Data Science Student",
+      "Finance Enthusiast",
+      "Business Analyst",
+      "Aspiring Data Scientist"
+    ],
     "bio": "Hey, I'm Basil a student at University of Aberdeen [img:/uploads/UoA.png], Scotland [img:/uploads/Scotflag.png]. I spend most of my time integrating Data Science into the world of Accounting & Finance. I'm passionate about Business Management, accessible AI, and building the future of automated financial reporting.",
     "email": "basilsuhail3@gmail.com",
     "avatarUrl": "/uploads/headshot.png",
@@ -43,16 +50,41 @@
   "projects": [
     {
       "id": "1",
-      "title": " Budgeting Schedule Automation",
-      "description": "A comprehensive budgeting dashboard for monitoring.",
-      "longDescription": "Making master budgets manually in Excel is tedious and error-prone. You spend hours linking formulas across 13 worksheets. One mistake breaks everything downstream.\n\nThis tool automates the boring parts so you can focus on strategy and analysis. Enter your assumptions once. Get all 13 schedules instantly. Change an assumption. See the impact across all schedules immediately.",
+      "title": "Budgeting Schedule Automation",
+      "description": "Automates 13-worksheet master budgets with instant cross-schedule calculations.",
+      "category": "Finance Automation",
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
-      "additionalImages": [
-        "/uploads/image2.png",
-        "/uploads/image3.png"
-      ],
-      "imageUrl": "/uploads/1765566380949-451783012.png"
+      "imageUrl": "/uploads/1765566380949-451783012.png",
+      "tags": [
+        "React",
+        "TypeScript",
+        "Finance"
+      ]
+    },
+    {
+      "id": "2",
+      "title": "AI Investment Dashboard",
+      "description": "Real-time portfolio analytics with ML-powered market predictions.",
+      "category": "Machine Learning",
+      "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
+      "tags": [
+        "Python",
+        "Machine Learning",
+        "Finance"
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Data Science Interview Questions",
+      "description": "Curated collection of DS interview questions with detailed solutions.",
+      "category": "Education",
+      "githubUrl": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
+      "tags": [
+        "Python",
+        "Data Science",
+        "Education"
+      ]
     }
   ],
   "experiences": [
@@ -120,7 +152,7 @@
       "company": "Vinkimiya Private Limited",
       "companyLogoUrl": "",
       "companyColor": "#00ff7b",
-      "description": ""
+      "description": "Gained hands-on exposure to Warehouse Management, Supply Chain Logistics, and Financial Analysis. Assisted in tracking inventory movement and supporting the finance team with daily operational reporting."
     }
   ],
   "education": [

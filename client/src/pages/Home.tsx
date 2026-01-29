@@ -1,14 +1,13 @@
 import HeroSection from "@/components/HeroSection";
 import ProjectsSection from "@/components/ProjectsSection";
-import ExperienceSection from "@/components/ExperienceSection";
-import EducationSection from "@/components/EducationSection";
+import JourneySection from "@/components/JourneySection";
 import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
-import GameSection from "@/components/GameSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { useContent } from "@/hooks/use-content";
 
 export default function Home() {
@@ -33,15 +32,12 @@ export default function Home() {
   }
 
   const visibility = content.sectionVisibility;
-  const sectionOrder = content.sectionOrder || [
+  const sectionOrder = [
     "projects",
-    "experience",
-    "education",
+    "journey",
     "techStack",
     "testimonials",
     "writing",
-    "news",
-    "game",
   ];
 
   // Extract social links from content
@@ -59,24 +55,7 @@ export default function Home() {
           intro={content.sectionIntros?.projects}
         />
       ) : null,
-    experience:
-      visibility.experience && content.experiences.length > 0 ? (
-        <ExperienceSection
-          experiences={content.experiences}
-          intro={content.sectionIntros?.experience}
-        />
-      ) : null,
-    education:
-      visibility.education &&
-      content.education &&
-      content.education.length > 0 ? (
-        <EducationSection
-          education={content.education}
-          intro={content.sectionIntros?.education}
-          achievementsLabel={content.educationLabels?.achievementsLabel}
-          certificationsLabel={content.educationLabels?.certificationsLabel}
-        />
-      ) : null,
+    journey: <JourneySection />,
     techStack:
       visibility.techStack && content.technologies.length > 0 ? (
         <TechStackSection
@@ -99,31 +78,36 @@ export default function Home() {
         />
       ) : null,
     news: null, // News is now a separate page accessible via nav
-    game: (visibility as any).game ? <GameSection /> : null,
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
+      {/* Scroll Indicator - fixed on left side */}
+      <ScrollIndicator />
+
       {/* Navigation */}
       <Navigation name={content.profile.name} />
 
       <main id="main-content">
         {/* Hero Section */}
-        <HeroSection
-          name={content.profile.name}
-          title={content.profile.title}
-          bio={content.profile.bio}
-          email={content.profile.email}
-          avatarUrl={content.profile.avatarUrl}
-          avatarFallback={content.profile.avatarFallback}
-          socialLinks={socialLinks}
-        />
+        <div data-section="hero">
+          <HeroSection
+            name={content.profile.name}
+            title={content.profile.title}
+            titles={content.profile.titles}
+            bio={content.profile.bio}
+            email={content.profile.email}
+            avatarUrl={content.profile.avatarUrl}
+            avatarFallback={content.profile.avatarFallback}
+            socialLinks={socialLinks}
+          />
+        </div>
 
         {/* Dynamic Sections */}
         {sectionOrder.map((sectionKey: string) => {
           const section = sections[sectionKey];
           return section ? (
-            <div key={sectionKey}>
+            <div key={sectionKey} data-section={sectionKey}>
               {section}
             </div>
           ) : null;

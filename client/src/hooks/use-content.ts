@@ -26,6 +26,7 @@ export interface PortfolioContent {
   profile: {
     name: string;
     title: string;
+    titles?: string[]; // Optional array of titles for typewriter effect
     bio: string;
     email: string;
     avatarUrl: string;

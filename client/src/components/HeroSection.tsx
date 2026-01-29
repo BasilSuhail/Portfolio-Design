@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Mail, Copy, Check } from "lucide-react";
 import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
+import TypewriterText from "./TypewriterText";
 
 type BioPart = { type: 'text'; content: string } | { type: 'image'; content: string; alt: string };
 
@@ -29,6 +30,7 @@ function parseBioWithImages(bio: string): BioPart[] {
 interface HeroSectionProps {
   name: string;
   title: string;
+  titles?: string[]; // Optional array of titles for typewriter effect
   bio: string;
   email: string;
   avatarUrl: string;
@@ -43,6 +45,7 @@ interface HeroSectionProps {
 export default function HeroSection({
   name,
   title,
+  titles,
   bio,
   email,
   avatarUrl,
@@ -92,7 +95,16 @@ export default function HeroSection({
               className="text-sm text-gray-600 dark:text-neutral-400"
               data-testid="text-title"
             >
-              {title}
+              {titles && titles.length > 0 ? (
+                <TypewriterText
+                  phrases={titles}
+                  typingSpeed={80}
+                  deletingSpeed={40}
+                  pauseDuration={2000}
+                />
+              ) : (
+                title
+              )}
             </p>
           </div>
         </div>

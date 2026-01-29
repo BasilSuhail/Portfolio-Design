@@ -149,16 +149,16 @@ const educationData: Education[] = [
   }
 ]
 
-function ProjectItem({ project, isOpen, onToggle, index }: {
+function ProjectItem({ project, isOpen, onToggle, index }: { 
   project: Project
   isOpen: boolean
   onToggle: () => void
-  index: number
+  index: number 
 }) {
   return (
-    <div
+    <div 
       className="group"
-      style={{
+      style={{ 
         animationDelay: `${index * 30}ms`,
         animation: 'fadeSlideIn 0.4s ease-out forwards',
         opacity: 0
@@ -181,7 +181,7 @@ function ProjectItem({ project, isOpen, onToggle, index }: {
           {project.title}
         </span>
       </button>
-
+      
       <div className={cn(
         "overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
         isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
@@ -190,11 +190,11 @@ function ProjectItem({ project, isOpen, onToggle, index }: {
           <p className="text-sm text-muted-foreground/80 leading-relaxed">
             {project.description}
           </p>
-
+          
           {project.tags && project.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {project.tags.map((tag, idx) => (
-                <span
+                <span 
                   key={idx}
                   className="text-[11px] text-muted-foreground/60 px-2 py-0.5 rounded-full border border-border/60"
                 >
@@ -203,7 +203,7 @@ function ProjectItem({ project, isOpen, onToggle, index }: {
               ))}
             </div>
           )}
-
+          
           <div className="flex items-center gap-4 pt-1">
             {project.link && (
               <a
@@ -268,8 +268,8 @@ function EducationCard({ education, defaultOpen = false }: { education: Educatio
           <div className="flex items-start gap-4">
             {/* Logo placeholder */}
             <div className="w-11 h-11 rounded-xl bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden border border-border/30">
-              <img
-                src={education.logo || "/placeholder.svg"}
+              <img 
+                src={education.logo || "/placeholder.svg"} 
                 alt={education.institution}
                 className="w-7 h-7 object-contain"
                 onError={(e) => {
@@ -278,7 +278,7 @@ function EducationCard({ education, defaultOpen = false }: { education: Educatio
                 }}
               />
             </div>
-
+            
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -309,7 +309,7 @@ function EducationCard({ education, defaultOpen = false }: { education: Educatio
           <div className="px-5 sm:px-6 pb-6">
             {/* Subtle divider */}
             <div className="h-px bg-border/40 mb-5" />
-
+            
             {/* Skills */}
             <p className="text-sm text-muted-foreground/80 leading-relaxed">
               {education.skills.join(', ')}
@@ -359,7 +359,7 @@ function EducationCard({ education, defaultOpen = false }: { education: Educatio
 export default function EducationSection() {
   return (
     <section className="w-full min-h-screen py-16 sm:py-24 px-4" id="education">
-      <style>{`
+      <style jsx global>{`
         @keyframes fadeSlideIn {
           from {
             opacity: 0;
@@ -371,12 +371,12 @@ export default function EducationSection() {
           }
         }
       `}</style>
-
-      <div className="max-w-3xl mx-auto">
+      
+      <div className="max-w-2xl mx-auto">
         {/* Section Header */}
         <div className="mb-12">
           <h2 className="text-2xl font-medium text-foreground tracking-tight">
-            My Journey
+            Education
           </h2>
           <p className="text-muted-foreground/70 mt-2 text-sm">
             Academic background and projects
@@ -386,9 +386,9 @@ export default function EducationSection() {
         {/* Education Cards */}
         <div className="space-y-4">
           {educationData.map((edu, index) => (
-            <EducationCard
-              key={edu.id}
-              education={edu}
+            <EducationCard 
+              key={edu.id} 
+              education={edu} 
               defaultOpen={index === 0}
             />
           ))}
