@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, RefreshCw, ArrowRight, Activity, ChevronDown } from "lucide-react";
+import { RefreshCw, ArrowLeft, ArrowRight, Activity, ChevronDown } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { useContent } from "@/hooks/use-content";
 import { LiquidGlassButton } from "@/components/ui/liquid-glass";
 
@@ -34,6 +35,9 @@ const filterOptions = [
 ];
 
 const ITEMS_PER_PAGE = 10;
+
+// Static sections removed, dynamic sections generated in component
+
 
 export default function News() {
   const [news, setNews] = useState<NewsDay[]>([]);
@@ -103,6 +107,27 @@ export default function News() {
     setVisibleCount(prev => prev + ITEMS_PER_PAGE);
   };
 
+  // Generate dynamic sections for scroller
+  const newsSections = useMemo(() => {
+    const sections = [{ id: "header", label: "Top" }];
+
+    if (visibleNews.length > 0) {
+      sections.push({ id: "featured", label: "Briefing" });
+
+      // Add a section for each subsequent news item (starting from index 1)
+      visibleNews.slice(1).forEach((day) => {
+        const date = new Date(day.date);
+        const label = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        sections.push({
+          id: `news-${day.date}`,
+          label: label
+        });
+      });
+    }
+
+    return sections;
+  }, [visibleNews]);
+
   // Extract social links from content
   const socialLinks = {
     github: content?.socialLinks?.find((l: any) => l.platform === 'github')?.url,
@@ -133,6 +158,7 @@ export default function News() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <ScrollIndicator sections={newsSections} />
       <Navigation name={content?.profile?.name || "Portfolio"} />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
@@ -145,7 +171,7 @@ export default function News() {
         </Link>
 
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8" data-section="header">
           <div>
             <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-200 mb-2">Tech News</h1>
             <p className="text-gray-600 dark:text-neutral-400">
@@ -215,7 +241,7 @@ export default function News() {
         {/* Featured / Latest Article */}
         {!error && visibleNews.length > 0 && (
           <>
-            <article className="mb-10">
+            <article className="mb-10" data-section="featured">
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-xs font-medium text-gray-500 dark:text-neutral-500 uppercase tracking-wide">
                   {getCategory(visibleNews[0])}
@@ -246,6 +272,7 @@ export default function News() {
               {visibleNews.slice(1).map((day, index) => (
                 <article
                   key={day.date}
+                  data-section={`news-${day.date}`}
                   className={`py-6 ${index !== visibleNews.slice(1).length - 1 ? "border-b border-gray-200 dark:border-neutral-700" : ""
                     }`}
                 >

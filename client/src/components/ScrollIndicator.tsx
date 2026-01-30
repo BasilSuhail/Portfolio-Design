@@ -5,7 +5,7 @@ interface Section {
   label: string;
 }
 
-const allSections: Section[] = [
+const homeSections: Section[] = [
   { id: "hero", label: "Home" },
   { id: "projects", label: "Projects" },
   { id: "journey", label: "Journey" },
@@ -14,15 +14,20 @@ const allSections: Section[] = [
   { id: "contact", label: "Contact" },
 ];
 
-export function ScrollIndicator() {
-  const [activeId, setActiveId] = useState("hero");
+interface ScrollIndicatorProps {
+  sections?: Section[];
+}
+
+
+export function ScrollIndicator({ sections = homeSections }: ScrollIndicatorProps) {
+  const [activeId, setActiveId] = useState(sections[0]?.id || "hero");
   const [displaySections, setDisplaySections] = useState<Section[]>([]);
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Find which sections exist on the page
   useEffect(() => {
-    const existing = allSections.filter(s =>
+    const existing = sections.filter(s =>
       document.querySelector(`[data-section="${s.id}"]`)
     );
     setDisplaySections(existing);
@@ -71,7 +76,7 @@ export function ScrollIndicator() {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [displaySections]);
+  }, [displaySections, sections]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

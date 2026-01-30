@@ -9,6 +9,8 @@ interface Project {
   title: string
   description?: string
   link?: string
+  period?: string
+  skills?: string[]
 }
 
 interface TimelineEntry {
@@ -62,11 +64,40 @@ const timelineData: TimelineEntry[] = [
     skills: ["Business Writing", "Microsoft Office", "Sage 50", "Financial Statements", "Market Research"],
     achievements: ["Rector's Merit Award (Jul 2024)", "Dean's Merit Award (Sep 2023)"],
     projects: [
-      { title: "Fintech - Crypto Currency Wallet App Development", description: "Developed a cryptocurrency wallet application focusing on user experience and security.", link: "#" },
-      { title: "Advanced Corporate Reporting - Financial Statements & IAS Compliance", description: "Comprehensive analysis of financial reporting standards and compliance frameworks.", link: "#" },
-      { title: "Management Accounting & Budgeting - 13 Schedule Budget Analysis", description: "Created detailed budget schedules for organizational financial planning.", link: "#" },
-      { title: "Internal Control System Design - Financial Operations Optimization", description: "Designed internal controls to optimize financial operations and reduce risk.", link: "#" },
-      { title: "Audit & Assurance - Internal Control Analysis at The Best Laboratories", description: "Conducted thorough internal control analysis for a laboratory setting.", link: "#" },
+      {
+        title: "Fintech - Semester End Project",
+        period: "Oct 2023 - Feb 2024",
+        description: "Assigned by our resource person, Muhammad Mobeen Ajmal, our fintech project aimed to develop a Crypto Currency Wallet app as a pilot initiative to demonstrate the viability and advantages of using cryptocurrency over traditional forms of payment in Pakistan. The app targeted all age groups and aimed to spread awareness and trust by reaching smaller shops and businesses for safe and convenient fund transfers.",
+        skills: ["Flow Charts", "Market Research"],
+        link: "#"
+      },
+      {
+        title: "Advanced Corporate Reporting",
+        period: "Dec 2023 - Jan 2024",
+        description: "In this project, we embarked on an accounting journey, leveraging guidelines such as IAS-8, IAS-17, IAS-20, IAS-33 and real-world business scenarios. We navigated through various tasks, including adjusting asset useful life, accounting for government grants, and issuing preference shares convertible to ordinary shares. We efficiently managed over 57 general entries and disclosed contingencies.",
+        skills: ["Financial Statements", "Microsoft Excel", "Market Research"],
+        link: "#"
+      },
+      {
+        title: "Management Accounting & Budgeting - Semester End Project",
+        period: "Jan 2023 - Feb 2023",
+        description: "This project required us to create the future outlook estimated budget of a company using 13 schedules including Sales, Production, Direct-Material, and Cash Budgets. The company selected was Shahtaj Sugar Mills Limited, a public listed sugar manufacturer. We estimated budgets using inflation and growth rates, ensuring accuracy in future estimations.",
+        skills: ["Planning Budgeting & Forecasting", "Time Management", "Market Research"],
+        link: "#"
+      },
+      {
+        title: "Streamlining Financial Operations: A Comprehensive Internal Control System Design",
+        period: "Nov 2022 - Feb 2023",
+        description: "Involved a meticulous examination and documentation of an internal control framework to bolster the integrity and efficiency of financial processes. Utilizing 'Draw.io,' we mapped out procedures across crucial operational domains including cash, inventory, sales, and payroll, aiming to optimize operations and mitigate risks.",
+        skills: ["Flow Charts", "Market Research"],
+        link: "#"
+      },
+      {
+        title: "Audit and Assurance - Internal Control Analysis",
+        period: "Nov 2022 - Dec 2022",
+        description: "During our assessment of 'The Best Laboratories' at Sundar Industrial Estate, we meticulously examined their internal controls to ensure compliance with standard operating procedures (SOPs) and regulatory guidelines. We evaluated equipment cleanliness, production processes, packing procedures, and warehouse security.",
+        link: "#"
+      },
     ],
   },
   {
@@ -126,12 +157,12 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
     <div className="relative flex gap-6 pb-8 group">
       {/* Timeline line */}
       {!isLast && (
-        <div 
+        <div
           className="absolute left-[19px] top-12 w-px bg-foreground/10 transition-colors duration-500 group-hover:bg-foreground/20"
           style={{ height: "calc(100% - 24px)" }}
         />
       )}
-      
+
       {/* Timeline dot */}
       <div className="relative z-10 flex-shrink-0">
         <button
@@ -140,8 +171,8 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
           className={`
             w-10 h-10 rounded-full flex items-center justify-center
             transition-all duration-300 ease-out
-            ${entry.type === "education" 
-              ? "bg-foreground/5 text-foreground/60 hover:bg-foreground/10 hover:text-foreground" 
+            ${entry.type === "education"
+              ? "bg-foreground/5 text-foreground/60 hover:bg-foreground/10 hover:text-foreground"
               : "bg-foreground/5 text-foreground/40 hover:bg-foreground/10 hover:text-foreground/70"
             }
             ${isOpen ? "bg-foreground/10 text-foreground scale-110" : ""}
@@ -173,9 +204,9 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
             <p className="text-sm text-foreground/50 mt-0.5">{entry.organization}</p>
             <p className="text-xs text-foreground/30 mt-1 font-mono">{entry.period}</p>
           </div>
-          
+
           {hasExpandableContent && (
-            <ChevronDown 
+            <ChevronDown
               className={`
                 w-4 h-4 text-foreground/30 flex-shrink-0 mt-1
                 transition-transform duration-300 ease-out
@@ -186,7 +217,7 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
         </button>
 
         {/* Expandable content */}
-        <div 
+        <div
           className={`
             grid transition-all duration-500 ease-out
             ${isOpen ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 mt-0"}
@@ -205,7 +236,7 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
               {entry.skills && entry.skills.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {entry.skills.map((skill) => (
-                    <span 
+                    <span
                       key={skill}
                       className="text-xs px-2.5 py-1 rounded-full bg-foreground/5 text-foreground/50"
                     >
@@ -238,15 +269,15 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
                     className="flex items-center gap-2 text-xs uppercase tracking-wider text-foreground/30 hover:text-foreground/50 transition-colors"
                   >
                     <span>Projects ({entry.projects.length})</span>
-                    <ChevronDown 
+                    <ChevronDown
                       className={`
                         w-3 h-3 transition-transform duration-300
                         ${projectsOpen ? "rotate-180" : ""}
                       `}
                     />
                   </button>
-                  
-                  <div 
+
+                  <div
                     className={`
                       grid transition-all duration-400 ease-out
                       ${projectsOpen ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0 mt-0"}
@@ -272,7 +303,7 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
 
 function ProjectItem({ project }: { project: Project }) {
   const [isOpen, setIsOpen] = useState(false)
-  const hasDetails = project.description || project.link
+  const hasDetails = project.description || project.link || project.skills?.length
 
   return (
     <div className="group/project">
@@ -280,38 +311,54 @@ function ProjectItem({ project }: { project: Project }) {
         onClick={() => hasDetails && setIsOpen(!isOpen)}
         disabled={!hasDetails}
         className={`
-          w-full text-left flex items-center justify-between gap-3 py-1.5
+          w-full text-left py-2
           ${hasDetails ? "cursor-pointer" : "cursor-default"}
         `}
       >
-        <span className="text-sm text-foreground/50 group-hover/project:text-foreground/70 transition-colors">
-          {project.title}
-        </span>
-        {hasDetails && (
-          <ChevronDown 
-            className={`
-              w-3 h-3 text-foreground/20 flex-shrink-0
-              transition-transform duration-200
-              ${isOpen ? "rotate-180" : ""}
-            `}
-          />
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-sm font-medium text-foreground/60 group-hover/project:text-foreground/80 transition-colors">
+            {project.title}
+          </span>
+          {hasDetails && (
+            <ChevronDown
+              className={`
+                w-3 h-3 text-foreground/20 flex-shrink-0
+                transition-transform duration-200
+                ${isOpen ? "rotate-180" : ""}
+              `}
+            />
+          )}
+        </div>
+        {project.period && (
+          <p className="text-xs text-foreground/30 mt-0.5 font-mono">{project.period}</p>
         )}
       </button>
-      
+
       {hasDetails && (
-        <div 
+        <div
           className={`
             grid transition-all duration-300 ease-out
             ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}
           `}
         >
           <div className="overflow-hidden">
-            <div className="pl-0 pb-2 space-y-2">
+            <div className="pl-0 pb-3 space-y-3">
               {project.description && (
-                <p className="text-xs text-foreground/40 leading-relaxed">
+                <p className="text-xs text-foreground/50 leading-relaxed">
                   {project.description}
                 </p>
               )}
+
+              {project.skills && project.skills.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {project.skills.map(skill => (
+                    <span key={skill} className="text-[10px] px-1.5 py-0.5 rounded-sm bg-foreground/5 text-foreground/40 border border-foreground/5">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               {project.link && (
                 <a
                   href={project.link}
@@ -343,9 +390,9 @@ export function JourneyTimeline() {
 
       <div className="relative">
         {timelineData.map((entry, index) => (
-          <TimelineItem 
-            key={entry.id} 
-            entry={entry} 
+          <TimelineItem
+            key={entry.id}
+            entry={entry}
             isLast={index === timelineData.length - 1}
           />
         ))}

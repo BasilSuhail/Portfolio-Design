@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ScrollIndicator } from "@/components/ScrollIndicator";
 
 // =============================================================================
 // TYPES (Updated for Modular Intelligence)
@@ -70,6 +71,14 @@ interface DailyBriefing {
   };
   isEmpty?: boolean;
 }
+
+const terminalSections = [
+  { id: "header", label: "Terminal" },
+  { id: "metrics", label: "Metrics" },
+  { id: "analysis", label: "Analysis" },
+  { id: "clusters", label: "Clusters" },
+  { id: "risks", label: "Risks" },
+];
 
 export default function MarketTerminal() {
   const [briefing, setBriefing] = useState<DailyBriefing | null>(null);
@@ -127,6 +136,7 @@ export default function MarketTerminal() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <ScrollIndicator sections={terminalSections} />
       <Navigation name={content?.profile?.name || "Portfolio"} />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
@@ -139,7 +149,7 @@ export default function MarketTerminal() {
         </Link>
 
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-10" data-section="header">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-200">
               Terminal Alpha
@@ -178,7 +188,7 @@ export default function MarketTerminal() {
         {briefing && !briefing.isEmpty && (
           <div className="space-y-12">
             {/* Top Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-section="metrics">
               <GPRGauge
                 score={briefing.gprIndex.current}
                 trend={briefing.gprIndex.trend}
@@ -217,7 +227,7 @@ export default function MarketTerminal() {
             </div>
 
             {/* AI Executive Summary */}
-            <section>
+            <section data-section="analysis">
               <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-4 flex items-center gap-2">
                 Executive Briefing
                 <Badge variant="secondary" className="text-[10px] h-4 px-1">Gemini Pro</Badge>
@@ -230,7 +240,7 @@ export default function MarketTerminal() {
             </section>
 
             {/* Trending Topics (Clusters) */}
-            <section>
+            <section data-section="clusters">
               <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-6 flex items-center justify-between">
                 <span>Top Intelligence Clusters</span>
                 <span className="text-xs font-normal text-gray-500">Sorted by Impact Score</span>
@@ -243,8 +253,8 @@ export default function MarketTerminal() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1.5">
                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${cluster.aggregateSentiment > 10 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                              cluster.aggregateSentiment < -10 ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                                'bg-gray-100 text-gray-700 dark:bg-neutral-800 dark:text-neutral-400'
+                            cluster.aggregateSentiment < -10 ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                              'bg-gray-100 text-gray-700 dark:bg-neutral-800 dark:text-neutral-400'
                             }`}>
                             {cluster.aggregateSentiment > 10 ? 'Bullish' : cluster.aggregateSentiment < -10 ? 'Bearish' : 'Neutral'}
                           </span>
@@ -312,7 +322,7 @@ export default function MarketTerminal() {
             </section>
 
             {/* Opportunities & Risks (High-level Placeholders) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-gray-100 dark:border-neutral-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-gray-100 dark:border-neutral-800" data-section="risks">
               <div>
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2">
                   <Target className="w-4 h-4" /> Strategic Alpha

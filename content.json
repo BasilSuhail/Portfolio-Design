@@ -216,37 +216,36 @@
       "institutionLogoUrl": "/uploads/UMT.png",
       "institutionColor": "#1E3A8A",
       "coursework": "Business Writing, Microsoft Office, Sage 50, Microsoft Excel, Canva, Market Research, Accounting, Financial Statements, Interpersonal Communication\n",
-      "certifications": [],
+      "certifications": [
+        {
+          "name": "Fintech - Semester End Project",
+          "description": "Developed a Crypto Currency Wallet app to demonstrate the viability of cryptocurrency in Pakistan. Focused on market research, cost analysis, risk assessment, and future development planning.",
+          "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+        },
+        {
+          "name": "Advanced Corporate Reporting",
+          "description": "Leveraged IAS-8, IAS-17, IAS-20, IAS-33 guidelines with real-world scenarios. Managed 57+ general entries, prepared ledgers, trial balance, and complete financial statements using Excel.",
+          "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+        },
+        {
+          "name": "Management Accounting & Budgeting",
+          "description": "Created future outlook budgets using 13 schedules for Shahtaj Sugar Mills Limited. Estimated budgets using inflation and growth rates for authentic forecasting.",
+          "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+        },
+        {
+          "name": "Internal Control System Design",
+          "description": "Examined and documented internal control frameworks using Draw.io. Mapped procedures across cash, inventory, sales, payroll domains to optimize operations and mitigate risks.",
+          "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+        },
+        {
+          "name": "Audit & Assurance - Internal Control Analysis",
+          "description": "Assessed 'The Best Laboratories' internal controls for SOP compliance. Evaluated equipment, production, packing, and warehouse security measures.",
+          "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
+        }
+      ],
       "achievements": [
         "Rector's Merit Award (Jul 2024)",
         "Dean's Merit Award (Sep 2023)"
-      ],
-      "customSections": [
-        {
-          "label": "Projects:",
-          "items": [
-            {
-              "name": "Fintech - Crypto Currency Wallet App Development",
-              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
-            },
-            {
-              "name": "Advanced Corporate Reporting - Financial Statements & IAS Compliance",
-              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
-            },
-            {
-              "name": "Management Accounting & Budgeting - 13 Schedule Budget Analysis",
-              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
-            },
-            {
-              "name": "Internal Control System Design - Financial Operations Optimization",
-              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
-            },
-            {
-              "name": "Audit & Assurance - Internal Control Analysis at The Best Laboratories",
-              "url": "https://www.linkedin.com/in/basilsuhail/details/projects/"
-            }
-          ]
-        }
       ]
     }
   ],

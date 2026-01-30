@@ -184,7 +184,7 @@ function TimelineItem({ entry, isLast }: { entry: TimelineEntry; isLast: boolean
                     className="flex items-center gap-2 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
                   >
                     <span className="font-medium">
-                      {entry.type === "education" ? "Certifications" : "Projects"} ({entry.projects.length})
+                      {entry.type === "education" && !entry.organization.includes("UMT") ? "Certifications" : "Projects"} ({entry.projects.length})
                     </span>
                     <ChevronDown
                       className={`w-3 h-3 transition-transform duration-200 ${projectsOpen ? "rotate-180" : ""}`}
@@ -261,6 +261,7 @@ export default function JourneySection() {
               achievements: edu.achievements?.filter((a: string) => a.trim()) || undefined,
               projects: edu.certifications?.map((cert: any) => ({
                 title: cert.name,
+                description: cert.description || undefined,
                 link: cert.url || undefined,
               })) || undefined,
             })
