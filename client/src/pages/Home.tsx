@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 // import { EditorialTimeline, TimelineItem } from "@/components/EditorialTimeline"; // Reverted
 import JourneySection from "@/components/JourneySection"; // Restored
 import EnhancedJourneySection from "@/components/EnhancedJourneySection";
@@ -11,7 +10,6 @@ import WritingSection from "@/components/WritingSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Navigation } from "@/components/Navigation";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
-import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin } from "lucide-react";
 import { Footer } from "@/components/Footer";
 
 const sectionOrder = [
@@ -26,7 +24,6 @@ const sectionOrder = [
 export default function Home() {
   const { data, isLoading, error } = useContent();
   const content = data as any; // Cast to any to avoid type errors
-
 
   if (isLoading) {
     return (
@@ -111,9 +108,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-900">
-      {/* Pass name prop to Navigation if available */}
-      <Navigation name={content.hero?.name} />
+    <div className="min-h-screen bg-white dark:bg-neutral-950">
+        {/* Pass name prop to Navigation if available */}
+        <Navigation name={content.hero?.name} />
       <ScrollIndicator />
 
       <main id="main-content">

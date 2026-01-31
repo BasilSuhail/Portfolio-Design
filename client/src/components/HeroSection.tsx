@@ -154,7 +154,7 @@ export default function HeroSection({
           <ul className="mt-5 flex flex-col gap-y-3">
             {/* Email */}
             <li className="flex items-center gap-x-2.5">
-              <Mail className="shrink-0 size-3.5 text-gray-800 dark:text-neutral-200" />
+              <Mail className="shrink-0 size-3.5 text-[#EA4335]" />
               <button
                 onClick={copyEmail}
                 className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400 flex items-center gap-1.5"
@@ -195,7 +195,7 @@ export default function HeroSection({
 
             {socialLinks?.linkedin && (
               <li className="flex items-center gap-x-2.5">
-                <FaLinkedinIn className="shrink-0 size-3.5 text-gray-800 dark:text-neutral-200" />
+                <FaLinkedinIn className="shrink-0 size-3.5 text-[#0A66C2]" />
                 <a
                   className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400"
                   href={socialLinks.linkedin}
@@ -209,7 +209,7 @@ export default function HeroSection({
 
             {socialLinks?.github && (
               <li className="flex items-center gap-x-2.5">
-                <FaGithub className="shrink-0 size-3.5 text-gray-800 dark:text-neutral-200" />
+                <FaGithub className="shrink-0 size-3.5 text-[#181717] dark:text-neutral-200" />
                 <a
                   className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400"
                   href={socialLinks.github}

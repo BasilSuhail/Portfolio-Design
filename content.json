@@ -67,7 +67,7 @@
       "category": "Finance Automation",
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
-      "imageUrl": "/uploads/1765566380949-451783012.png",
+      "imageUrl": "/uploads/Budgeting.png",
       "tags": [
         "React",
         "TypeScript",
@@ -80,6 +80,7 @@
       "description": "Real-time portfolio analytics with ML-powered market predictions.",
       "category": "Machine Learning",
       "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
+      "imageUrl": "/uploads/Investment.png",
       "tags": [
         "Python",
         "Machine Learning",
@@ -92,6 +93,7 @@
       "description": "Curated collection of DS interview questions with detailed solutions.",
       "category": "Education",
       "githubUrl": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
+      "imageUrl": "/uploads/interview.png",
       "tags": [
         "Python",
         "Data Science",

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { LiquidGlassButton } from "./ui/liquid-glass";
+import GlassSurface from "./ui/GlassSurface";
 
 interface NavigationProps {
   name?: string;
@@ -58,18 +59,23 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
 
   return (
     <header className="sticky top-0 inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
-      <nav
-        className={`mt-4 relative max-w-3xl w-full rounded-[24px] mx-2 flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 sm:mx-auto transition-all duration-300 overflow-hidden
-          bg-black/[0.03] border border-black/20 backdrop-blur-md
-          shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.08),0_3px_8px_rgba(0,0,0,0.1)]
-          dark:bg-white/[0.025] dark:border-white/50
-          dark:shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)]
-          ${isScrolled ? "shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_12px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_12px_rgba(0,0,0,0.25),0_4px_12px_rgba(0,0,0,0.2)]" : ""}
-        `}
+      <GlassSurface
+        width="100%"
+        height="auto"
+        borderRadius={24}
+        brightness={70}
+        opacity={0.85}
+        blur={8}
+        displace={0}
+        distortionScale={-40}
+        redOffset={0}
+        greenOffset={2}
+        blueOffset={4}
+        backgroundOpacity={0.5}
+        saturation={1.1}
+        className={`mt-4 max-w-3xl mx-2 sm:mx-auto transition-all duration-300 ${isScrolled ? "shadow-lg" : ""}`}
       >
-        {/* Liquid glass gradient overlays */}
-        <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-black/10 via-transparent to-transparent opacity-70 pointer-events-none dark:from-white/60" />
-        <div className="absolute inset-0 rounded-[24px] bg-gradient-to-tl from-black/5 via-transparent to-transparent opacity-50 pointer-events-none dark:from-white/30" />
+        <nav className="w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 relative bg-white/80 dark:bg-neutral-900/80 rounded-[24px]">
         <div className="flex items-center">
           <Link href="/">
             <span
@@ -137,7 +143,8 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
             </Link>
           </div>
         </div>
-      </nav>
+        </nav>
+      </GlassSurface>
     </header>
   );
 }

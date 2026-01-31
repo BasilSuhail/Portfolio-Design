@@ -56,7 +56,7 @@ export function Footer({ name = "Portfolio", socialLinks }: FooterProps) {
               {/* Social Links */}
               {socialLinks?.github && (
                 <a
-                  className="inline-block text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-200"
+                  className="inline-block text-[#181717] hover:text-black focus:outline-none dark:text-neutral-300 dark:hover:text-white transition-colors"
                   href={socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -67,7 +67,7 @@ export function Footer({ name = "Portfolio", socialLinks }: FooterProps) {
               )}
               {socialLinks?.linkedin && (
                 <a
-                  className="inline-block text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-200"
+                  className="inline-block text-[#0A66C2] hover:text-[#004182] focus:outline-none dark:text-[#0A66C2] dark:hover:text-[#5eb1ff] transition-colors"
                   href={socialLinks.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
