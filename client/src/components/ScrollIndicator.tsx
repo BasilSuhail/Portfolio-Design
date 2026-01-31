@@ -6,7 +6,7 @@ interface Section {
 }
 
 const homeSections: Section[] = [
-  { id: "hero", label: "Home" },
+  { id: "hero", label: "Bio" },
   { id: "projects", label: "Projects" },
   { id: "journey", label: "Journey" },
   { id: "techStack", label: "Tech" },

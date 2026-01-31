@@ -92,7 +92,7 @@ export default function HeroSection({
   }, [email]);
 
   return (
-    <section className="pt-10 pb-8" data-testid="section-hero">
+    <section className="pt-10 pb-8" data-section="hero" data-testid="section-hero">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Profile Header */}
         <div className="flex items-center gap-x-3">

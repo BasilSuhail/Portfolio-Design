@@ -1,53 +1,69 @@
+import { useMemo } from "react";
+// import { EditorialTimeline, TimelineItem } from "@/components/EditorialTimeline"; // Reverted
+import JourneySection from "@/components/JourneySection"; // Restored
+import EnhancedJourneySection from "@/components/EnhancedJourneySection";
+import { useContent } from "@/hooks/use-content";
 import HeroSection from "@/components/HeroSection";
 import ProjectsSection from "@/components/ProjectsSection";
-import JourneySection from "@/components/JourneySection";
 import TechStackSection from "@/components/TechStackSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import WritingSection from "@/components/WritingSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
-import { useContent } from "@/hooks/use-content";
+import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin } from "lucide-react";
+import { Footer } from "@/components/Footer";
+
+const sectionOrder = [
+  "projects",
+  "journey",
+  "techStack",
+  "testimonials",
+  "writing",
+  "contact",
+];
 
 export default function Home() {
-  const { data: content, isLoading, error } = useContent();
+  const { data, isLoading, error } = useContent();
+  const content = data as any; // Cast to any to avoid type errors
+
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900 flex items-center justify-center">
-        <div className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-gray-400 rounded-full dark:text-neutral-500" role="status" aria-label="loading">
-          <span className="sr-only">Loading...</span>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
       </div>
     );
   }
 
   if (error || !content) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900 flex items-center justify-center">
-        <p className="text-red-500 dark:text-red-400">Failed to load content. Please try again.</p>
+      <div className="flex items-center justify-center min-h-screen text-red-500">
+        Failed to load content. Please try again later.
       </div>
     );
   }
 
-  const visibility = content.sectionVisibility;
-  const sectionOrder = [
-    "projects",
-    "journey",
-    "techStack",
-    "testimonials",
-    "writing",
-  ];
-
-  // Extract social links from content
-  const socialLinks = {
-    github: content.socialLinks?.find((l: any) => l.platform === 'github')?.url,
-    linkedin: content.socialLinks?.find((l: any) => l.platform === 'linkedin')?.url,
-    twitter: content.socialLinks?.find((l: any) => l.platform === 'twitter')?.url,
-  };
+  const visibility = content.sectionVisibility || {};
 
   const sections: Record<string, JSX.Element | null> = {
+    hero: (
+      <HeroSection
+        name={content.profile?.name || content.hero?.name}
+        title={content.profile?.title || content.hero?.title}
+        titles={content.profile?.titles || content.hero?.titles}
+        bio={content.profile?.bio || content.hero?.bio}
+        email={content.profile?.email}
+        avatarUrl={content.profile?.avatarUrl || content.hero?.avatarUrl}
+        avatarFallback={content.profile?.avatarFallback || content.hero?.avatarFallback}
+        socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
+          acc[link.platform] = link.url;
+          return acc;
+        }, {})}
+      />
+    ),
+    about: null,
+
     projects:
       visibility.projects && content.projects.length > 0 ? (
         <ProjectsSection
@@ -55,14 +71,19 @@ export default function Home() {
           intro={content.sectionIntros?.projects}
         />
       ) : null,
-    journey: <JourneySection />,
+
+    journey: (
+      <EnhancedJourneySection />
+    ),
+
     techStack:
       visibility.techStack && content.technologies.length > 0 ? (
         <TechStackSection
-          technologies={content.technologies as any}
+          technologies={content.technologies}
           intro={content.sectionIntros?.techStack}
         />
       ) : null,
+
     testimonials:
       visibility.testimonials && content.testimonials.length > 0 ? (
         <TestimonialsSection
@@ -70,6 +91,7 @@ export default function Home() {
           intro={content.sectionIntros?.testimonials}
         />
       ) : null,
+
     writing:
       visibility.writing && content.posts.length > 0 ? (
         <WritingSection
@@ -77,34 +99,41 @@ export default function Home() {
           intro={content.sectionIntros?.writing}
         />
       ) : null,
-    news: null, // News is now a separate page accessible via nav
+
+    contact: (
+      <ContactSection
+        email={content.profile?.email}
+        calendarLinks={content.contactSettings?.calendarLinks}
+      />
+    ),
+
+    news: null,
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
-      {/* Scroll Indicator - fixed on left side */}
+      {/* Pass name prop to Navigation if available */}
+      <Navigation name={content.hero?.name} />
       <ScrollIndicator />
 
-      {/* Navigation */}
-      <Navigation name={content.profile.name} />
-
       <main id="main-content">
-        {/* Hero Section */}
-        <div data-section="hero">
-          <HeroSection
-            name={content.profile.name}
-            title={content.profile.title}
-            titles={content.profile.titles}
-            bio={content.profile.bio}
-            email={content.profile.email}
-            avatarUrl={content.profile.avatarUrl}
-            avatarFallback={content.profile.avatarFallback}
-            socialLinks={socialLinks}
-          />
-        </div>
 
-        {/* Dynamic Sections */}
+        <HeroSection
+          name={content.profile?.name || content.hero?.name}
+          title={content.profile?.title || content.hero?.title}
+          titles={content.profile?.titles || content.hero?.titles}
+          bio={content.profile?.bio || content.hero?.bio}
+          email={content.profile?.email}
+          avatarUrl={content.profile?.avatarUrl || content.hero?.avatarUrl}
+          avatarFallback={content.profile?.avatarFallback || content.hero?.avatarFallback}
+          socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
+            acc[link.platform] = link.url;
+            return acc;
+          }, {})}
+        />
+
         {sectionOrder.map((sectionKey: string) => {
+          if (sectionKey === 'hero') return null; // Skip if in order
           const section = sections[sectionKey];
           return section ? (
             <div key={sectionKey} data-section={sectionKey}>
@@ -112,18 +141,14 @@ export default function Home() {
             </div>
           ) : null;
         })}
-
-        {/* Contact Section */}
-        <ContactSection
-          email={content.profile.email}
-          calendarLinks={content.contactSettings?.calendarLinks}
-        />
       </main>
 
-      {/* Footer */}
       <Footer
-        name={content.profile.name}
-        socialLinks={socialLinks}
+        name={content.hero?.name}
+        socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
+          acc[link.platform] = link.url;
+          return acc;
+        }, {})}
       />
     </div>
   );

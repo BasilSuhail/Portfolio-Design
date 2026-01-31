@@ -1,4 +1,16 @@
 {
+  "hero": {
+    "name": "Basil Suhail",
+    "title": "Full Stack Engineer",
+    "titles": [
+      "Full Stack Engineer",
+      "AI Enthusiast",
+      "Product Builder"
+    ],
+    "bio": "Building robust and scalable applications with modern technologies. Passionate about user experience and clean code.",
+    "avatarUrl": "",
+    "avatarFallback": "BS"
+  },
   "sectionOrder": [
     "projects",
     "journey",
@@ -105,7 +117,16 @@
           ]
         }
       ],
-      "companyLogoUrl": "/uploads/dubizzle.png"
+      "companyLogoUrl": "/uploads/dubizzle.png",
+      "tags": [
+        "Automation"
+      ],
+      "stats": {
+        "value": 1000,
+        "label": "Daily Trans",
+        "prefix": "",
+        "suffix": "+"
+      }
     },
     {
       "id": "1765560589736",
@@ -124,6 +145,9 @@
             }
           ]
         }
+      ],
+      "tags": [
+        "ERP Systems"
       ]
     },
     {
@@ -143,6 +167,15 @@
             }
           ]
         }
+      ],
+      "tags": [
+        "Finance Fundamentals"
+      ],
+      "certifications": [
+        {
+          "name": "Dynamics 365",
+          "url": ""
+        }
       ]
     },
     {
@@ -152,7 +185,16 @@
       "company": "Vinkimiya Private Limited",
       "companyLogoUrl": "",
       "companyColor": "#00ff7b",
-      "description": "Gained hands-on exposure to Warehouse Management, Supply Chain Logistics, and Financial Analysis. Assisted in tracking inventory movement and supporting the finance team with daily operational reporting."
+      "description": "Gained hands-on exposure to Warehouse Management, Supply Chain Logistics, and Financial Analysis. Assisted in tracking inventory movement and supporting the finance team with daily operational reporting.",
+      "tags": [
+        "Logistics"
+      ],
+      "stats": {
+        "value": 98,
+        "label": "Stock Accuracy",
+        "prefix": "",
+        "suffix": "%"
+      }
     }
   ],
   "education": [
@@ -206,7 +248,10 @@
           "url": "https://www.wolframcloud.com/obj/online-courses/certificates/an-elementary-introduction-to-the-wolfram-language/2060714a-658d-4f7e-91d4-19920a6d4490/0.html"
         }
       ],
-      "achievements": []
+      "achievements": [],
+      "tags": [
+        "AI Architect"
+      ]
     },
     {
       "id": "2",
@@ -246,6 +291,9 @@
       "achievements": [
         "Rector's Merit Award (Jul 2024)",
         "Dean's Merit Award (Sep 2023)"
+      ],
+      "tags": [
+        "Financial Modeling"
       ]
     }
   ],
