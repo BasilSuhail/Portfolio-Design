@@ -1,5 +1,3 @@
-import { pipeline, env } from '@xenova/transformers';
-
 /**
  * Local BERT Sentiment Analysis Engine
  * Uses transformers.js to run FinBERT/DistilBERT locally
@@ -9,11 +7,9 @@ import { pipeline, env } from '@xenova/transformers';
  * - Runs locally (privacy)
  * - Much better accuracy than dictionary-based (~90% vs ~65%)
  * - Handles context, negation, sarcasm
+ *
+ * Note: Uses dynamic import for ESM compatibility with CJS builds
  */
-
-// Configure transformers.js
-env.allowLocalModels = true;
-env.useBrowserCache = false;
 
 // Model options (in order of preference)
 const MODELS = {
@@ -38,6 +34,32 @@ class BertSentimentEngine {
   private isLoading: boolean = false;
   private loadError: Error | null = null;
   private modelName: string = MODELS.small; // Start with smallest model
+  private transformersModule: any = null;
+
+  /**
+   * Dynamically import @xenova/transformers (ESM module)
+   * This allows the code to work in CJS builds where BERT will be disabled
+   */
+  private async loadTransformersModule(): Promise<any> {
+    if (this.transformersModule) return this.transformersModule;
+
+    try {
+      // Dynamic import for ESM compatibility
+      this.transformersModule = await import('@xenova/transformers');
+
+      // Configure transformers.js
+      if (this.transformersModule.env) {
+        this.transformersModule.env.allowLocalModels = true;
+        this.transformersModule.env.useBrowserCache = false;
+      }
+
+      return this.transformersModule;
+    } catch (error) {
+      console.warn('[BERT] Failed to load @xenova/transformers (ESM module). BERT disabled in this environment.');
+      this.loadError = error as Error;
+      return null;
+    }
+  }
 
   /**
    * Initialize the BERT model (lazy loading)
@@ -55,8 +77,15 @@ class BertSentimentEngine {
     console.log(`[BERT] Loading sentiment model: ${this.modelName}...`);
 
     try {
+      // First load the transformers module dynamically
+      const transformers = await this.loadTransformersModule();
+      if (!transformers) {
+        this.isLoading = false;
+        return false;
+      }
+
       // Use sentiment-analysis pipeline
-      this.classifier = await pipeline('sentiment-analysis', this.modelName, {
+      this.classifier = await transformers.pipeline('sentiment-analysis', this.modelName, {
         quantized: true // Use quantized model for faster inference
       });
       console.log(`[BERT] Model loaded successfully: ${this.modelName}`);
