@@ -1,11 +1,11 @@
 import {
     RawArticle,
-    EnrichedArticle,
-    SentimentScore
+    EnrichedArticle
 } from '../core/types';
 import { sentimentEngine } from './sentiment';
 import { ImpactEngine } from './impact';
 import { GeoTagEngine } from './geotags';
+import { nerEngine } from './ner';
 import { storage } from '../core/storage';
 
 /**
@@ -14,16 +14,17 @@ import { storage } from '../core/storage';
  */
 export class EnrichmentPipeline {
     /**
-     * Enrich a batch of articles
+     * Enrich a batch of articles (uses BERT when available)
      */
     public async enrichBatch(articles: RawArticle[]): Promise<EnrichedArticle[]> {
         console.log(`[Enrichment] Processing ${articles.length} articles...`);
+        console.log(`[Enrichment] BERT status:`, sentimentEngine.getBertStatus());
 
         const enriched: EnrichedArticle[] = [];
 
         for (const article of articles) {
             try {
-                const enrichedArticle = this.enrichSingle(article);
+                const enrichedArticle = await this.enrichSingle(article);
                 enriched.push(enrichedArticle);
             } catch (error) {
                 console.error(`[Enrichment] Failed for article ${article.id}:`, error);
@@ -42,15 +43,18 @@ export class EnrichmentPipeline {
     /**
      * Perform all enrichment steps on a single article
      */
-    private enrichSingle(article: RawArticle): EnrichedArticle {
-        // 1. Sentiment Analysis
+    private async enrichSingle(article: RawArticle): Promise<EnrichedArticle> {
+        // 1. Sentiment Analysis (async - uses BERT when available)
         const textToAnalyze = `${article.title} ${article.description || ''}`;
-        const sentiment = sentimentEngine.analyze(textToAnalyze);
+        const sentiment = await sentimentEngine.analyzeAsync(textToAnalyze);
 
         // 2. Geopolitical Tagging
         const geoResult = GeoTagEngine.tag(textToAnalyze);
 
-        // 3. Impact Scoring
+        // 3. Named Entity Recognition (NER)
+        const entities = nerEngine.extract(textToAnalyze);
+
+        // 4. Impact Scoring
         const impactScore = ImpactEngine.calculate({
             sentimentMagnitude: Math.abs(sentiment.normalizedScore),
             clusterSize: 1, // Default for non-clustered, will be updated after clustering
@@ -58,8 +62,10 @@ export class EnrichmentPipeline {
             recency: ImpactEngine.calculateRecency(article.publishedAt)
         }, article.sourceId);
 
-        // 4. Topic Extraction (Simple keyword-based for now)
-        const topics = this.extractSimpleTopics(textToAnalyze);
+        // 5. Topic Extraction - Use NER topics if available, fallback to simple
+        const topics = entities.topics.length > 0
+            ? entities.topics
+            : this.extractSimpleTopics(textToAnalyze);
 
         return {
             ...article,
@@ -67,7 +73,9 @@ export class EnrichmentPipeline {
             impactScore,
             geoTags: geoResult.tags,
             topics,
-            clusterId: undefined
+            entities,
+            clusterId: undefined,
+            isContrarian: false
         };
     }
 

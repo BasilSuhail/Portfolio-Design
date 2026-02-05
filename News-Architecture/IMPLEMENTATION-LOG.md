@@ -114,6 +114,56 @@ This document tracks the execution of the modular intelligence pipeline, referen
 
 ---
 
+## 📊 Milestone 9: Visualization Improvements (v2)
+**Status:** ✅ Completed (2026-02-05)
+**References:** [09-VISUALIZATION-IMPROVEMENTS.md](./09-VISUALIZATION-IMPROVEMENTS.md)
+
+Replaced the confusing ReactFlow node graph with layman-friendly visualizations:
+
+- [x] **IntelligenceDashboard.tsx** - New component with Recharts
+  - Key metric cards (Articles, Overall Mood, Trending)
+  - Pie chart for sentiment distribution
+  - Bar chart for topic sentiment comparison
+  - Expandable topic breakdown with source links
+- [x] **Collapsible Clusters** - Show top 2 clusters, expand for more
+- [x] **Plain English Labels** - "Positive = Good news" instead of "Bullish > 10"
+- [x] **Data Integrity** - All news data and APIs unchanged
+
+---
+
+## 🧠 Milestone 10: Intelligence Upgrades (Analyst Recommendations)
+**Status:** ✅ Completed (2026-02-05)
+**References:** [10-ANALYST-RECOMMENDATIONS.md](./10-ANALYST-RECOMMENDATIONS.md)
+
+Implemented strategic upgrades based on external analyst audit:
+
+### Local BERT Sentiment (~90% accuracy)
+- [x] **@xenova/transformers** - Installed transformers.js for local ML
+- [x] **bert-sentiment.ts** - New BERT sentiment engine
+- [x] **Hybrid approach** - BERT primary, dictionary fallback
+- [x] Automatic model preloading at startup
+- [x] ~250MB model download (one-time)
+
+### Named Entity Recognition (NER)
+- [x] **ner.ts** - New NER engine using Compromise
+- [x] Extracts: People, Organizations, Places, Topics
+- [x] Integrated into enrichment pipeline
+- [x] Enhanced topic extraction
+
+### Accessibility Improvements
+- [x] **Shape + Color** indicators (not just colors)
+  - ⬆️ Arrow Up = Positive (Green)
+  - ⏺️ Circle = Neutral (Gray)
+  - ⬇️ Arrow Down = Negative (Red)
+- [x] Updated legend with accessible icons
+
+### Contrarian Signal Detection
+- [x] **Dissenting Opinion** detection in clusters
+- [x] Highlights opposing views in strongly positive/negative clusters
+- [x] Amber warning card in expanded topic view
+
+---
+
 ## 📁 Final File Structure
 
 ```
@@ -130,10 +180,12 @@ server/intelligence/
 │   │   └── rss.provider.ts     ✅
 │   └── collector.ts     ✅
 ├── enrichment/
-│   ├── sentiment.ts     ✅
+│   ├── sentiment.ts     ✅ Hybrid BERT/Dictionary
+│   ├── bert-sentiment.ts ✅ NEW - Local BERT engine
+│   ├── ner.ts           ✅ NEW - Entity Recognition
 │   ├── impact.ts        ✅
 │   ├── geotags.ts       ✅
-│   └── pipeline.ts      ✅
+│   └── pipeline.ts      ✅ Updated for async BERT
 ├── clustering/
 │   ├── tfidf.ts         ✅
 │   └── pipeline.ts      ✅
@@ -142,7 +194,17 @@ server/intelligence/
 │   └── briefing.ts      ✅
 └── metrics/
     ├── gpr.ts           ✅
-    └── feedback.ts      ✅ NEW
+    └── feedback.ts      ✅
+
+client/src/components/intelligence/
+├── CausalFlowGraph.tsx      ✅ (legacy)
+├── CausalIntelligence.tsx   ✅ (legacy)
+├── CustomEdges.tsx          ✅ (legacy)
+├── CustomNodes.tsx          ✅ (legacy)
+├── EntityPanel.tsx          ✅ (legacy)
+├── IntelligenceOverview.tsx ✅
+├── IntelligenceDashboard.tsx ✅ NEW (v2)
+└── index.ts                  ✅
 ```
 
 ---

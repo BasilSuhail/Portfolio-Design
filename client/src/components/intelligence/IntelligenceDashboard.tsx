@@ -9,17 +9,17 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
   Newspaper,
   Target,
   Activity,
   ChevronDown,
   ExternalLink,
+  AlertTriangle,
+  ArrowUp,
+  ArrowDown,
+  Circle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { ArticleCluster } from "@/types/intelligence";
@@ -77,10 +77,48 @@ export function IntelligenceDashboard({ clusters }: IntelligenceDashboardProps) 
     fill: c.aggregateSentiment > 10 ? COLORS.bullish : c.aggregateSentiment < -10 ? COLORS.bearish : COLORS.neutral,
   }));
 
+  // Accessibility: Use shapes + colors (not just colors)
   const getSentimentLabel = (score: number) => {
-    if (score > 10) return { text: "Positive", icon: TrendingUp, color: "text-emerald-600 dark:text-emerald-400" };
-    if (score < -10) return { text: "Negative", icon: TrendingDown, color: "text-red-600 dark:text-red-400" };
-    return { text: "Neutral", icon: Minus, color: "text-gray-600 dark:text-gray-400" };
+    if (score > 10) return {
+      text: "Positive",
+      icon: ArrowUp, // ⬆️ Up arrow for positive
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-50 dark:bg-emerald-900/20"
+    };
+    if (score < -10) return {
+      text: "Negative",
+      icon: ArrowDown, // ⬇️ Down arrow for negative
+      color: "text-red-600 dark:text-red-400",
+      bgColor: "bg-red-50 dark:bg-red-900/20"
+    };
+    return {
+      text: "Neutral",
+      icon: Circle, // ⏺️ Circle for neutral
+      color: "text-gray-600 dark:text-gray-400",
+      bgColor: "bg-gray-50 dark:bg-neutral-800/50"
+    };
+  };
+
+  // Contrarian Signal: Find dissenting opinion in predominantly positive/negative clusters
+  const findContrarianArticle = (cluster: typeof sortedClusters[0]) => {
+    if (!cluster.articles || cluster.articles.length < 3) return null;
+
+    const clusterSentiment = cluster.aggregateSentiment;
+
+    // Only flag contrarian if cluster is strongly positive or negative
+    if (Math.abs(clusterSentiment) < 15) return null;
+
+    // Find article with opposite sentiment
+    const contrarian = cluster.articles.find(article => {
+      const articleSentiment = article.sentiment?.normalizedScore || 0;
+      // If cluster is positive (>15), look for negative article (<-5)
+      // If cluster is negative (<-15), look for positive article (>5)
+      if (clusterSentiment > 15 && articleSentiment < -5) return true;
+      if (clusterSentiment < -15 && articleSentiment > 5) return true;
+      return false;
+    });
+
+    return contrarian || null;
   };
 
   const overallSentiment = getSentimentLabel(avgSentiment);
@@ -336,6 +374,33 @@ export function IntelligenceDashboard({ clusters }: IntelligenceDashboardProps) 
                 {/* Expanded Content */}
                 {isExpanded && (
                   <div className="px-5 pb-4 bg-gray-50 dark:bg-neutral-800/30">
+                    {/* Contrarian Signal */}
+                    {(() => {
+                      const contrarian = findContrarianArticle(cluster);
+                      if (!contrarian) return null;
+                      return (
+                        <div className="mb-4 p-3 rounded-lg border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            <span className="text-xs font-medium text-amber-700 dark:text-amber-300 uppercase tracking-wide">
+                              Dissenting Opinion
+                            </span>
+                          </div>
+                          <a
+                            href={contrarian.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-amber-800 dark:text-amber-200 hover:underline"
+                          >
+                            {contrarian.title}
+                          </a>
+                          <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-1">
+                            This article presents an opposing view to the overall cluster sentiment
+                          </p>
+                        </div>
+                      );
+                    })()}
+
                     {/* Keywords */}
                     <div className="mb-4">
                       <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-2">
@@ -383,13 +448,25 @@ export function IntelligenceDashboard({ clusters }: IntelligenceDashboardProps) 
         </div>
       </div>
 
-      {/* Simple Legend/Guide */}
+      {/* Accessible Legend/Guide - Uses shapes + colors */}
       <div className="text-center py-4 border-t border-gray-100 dark:border-neutral-800">
-        <p className="text-xs text-gray-400">
-          <span className="text-emerald-500">●</span> Positive = Good news &nbsp;
-          <span className="text-gray-500">●</span> Neutral = Mixed/Unclear &nbsp;
-          <span className="text-red-500">●</span> Negative = Concerning news
-        </p>
+        <div className="flex items-center justify-center gap-6 text-xs text-gray-400">
+          <span className="flex items-center gap-1">
+            <ArrowUp className="w-3 h-3 text-emerald-500" />
+            <span className="text-emerald-600 dark:text-emerald-400">Positive</span>
+            <span>= Good news</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <Circle className="w-3 h-3 text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">Neutral</span>
+            <span>= Mixed</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <ArrowDown className="w-3 h-3 text-red-500" />
+            <span className="text-red-600 dark:text-red-400">Negative</span>
+            <span>= Concerning</span>
+          </span>
+        </div>
       </div>
     </section>
   );

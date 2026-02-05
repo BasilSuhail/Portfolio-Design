@@ -28,6 +28,16 @@ export interface RawArticle {
 }
 
 /**
+ * Extracted named entities from NER
+ */
+export interface ExtractedEntities {
+  people: string[];
+  organizations: string[];
+  places: string[];
+  topics: string[];
+}
+
+/**
  * Article enriched with sentiment, impact score, and tags
  */
 export interface EnrichedArticle extends RawArticle {
@@ -35,7 +45,9 @@ export interface EnrichedArticle extends RawArticle {
   impactScore: number; // 0-100
   geoTags: string[]; // e.g., ["sanctions", "trade-war", "china"]
   topics: string[]; // Extracted key topics
+  entities?: ExtractedEntities; // NER extracted entities
   clusterId?: string; // Assigned after clustering
+  isContrarian?: boolean; // Flagged as dissenting opinion
 }
 
 /**
