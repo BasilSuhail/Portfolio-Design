@@ -7,7 +7,8 @@ import {
   ThumbsDown,
   ExternalLink,
   Target,
-  AlertTriangle
+  AlertTriangle,
+  ChevronDown
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -23,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
+import { IntelligenceDashboard } from "@/components/intelligence";
 
 // =============================================================================
 // TYPES (Updated for Modular Intelligence)
@@ -75,6 +77,7 @@ interface DailyBriefing {
 const terminalSections = [
   { id: "header", label: "Terminal" },
   { id: "metrics", label: "Metrics" },
+  { id: "causal", label: "Topics" },
   { id: "analysis", label: "Analysis" },
   { id: "clusters", label: "Clusters" },
   { id: "risks", label: "Risks" },
@@ -84,6 +87,7 @@ export default function MarketTerminal() {
   const [briefing, setBriefing] = useState<DailyBriefing | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [showAllClusters, setShowAllClusters] = useState(false);
   const { data: content } = useContent();
 
   useEffect(() => {
@@ -226,6 +230,11 @@ export default function MarketTerminal() {
               </div>
             </div>
 
+            {/* Causal Intelligence Map */}
+            {briefing.topClusters && briefing.topClusters.length > 0 && (
+              <IntelligenceDashboard clusters={briefing.topClusters} />
+            )}
+
             {/* AI Executive Summary */}
             <section data-section="analysis">
               <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-4 flex items-center gap-2">
@@ -247,7 +256,7 @@ export default function MarketTerminal() {
               </h2>
 
               <div className="space-y-4">
-                {briefing.topClusters.map((cluster) => (
+                {(showAllClusters ? briefing.topClusters : briefing.topClusters.slice(0, 2)).map((cluster) => (
                   <div key={cluster.id} className="p-5 rounded-2xl border border-gray-100 dark:border-neutral-800 hover:border-violet-500/20 transition-all bg-white dark:bg-neutral-900 shadow-sm overflow-hidden group">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -319,6 +328,17 @@ export default function MarketTerminal() {
                   </div>
                 ))}
               </div>
+
+              {/* Show More/Less Button */}
+              {briefing.topClusters.length > 2 && (
+                <button
+                  onClick={() => setShowAllClusters(!showAllClusters)}
+                  className="w-full mt-4 py-3 flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-neutral-500 dark:hover:text-neutral-300 border border-gray-200 dark:border-neutral-800 rounded-xl hover:bg-gray-50 dark:hover:bg-neutral-800/50 transition-all"
+                >
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showAllClusters ? "rotate-180" : ""}`} />
+                  {showAllClusters ? "Show Less" : `Show ${briefing.topClusters.length - 2} More Clusters`}
+                </button>
+              )}
             </section>
 
             {/* Opportunities & Risks (High-level Placeholders) */}

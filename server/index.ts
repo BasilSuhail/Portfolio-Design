@@ -24,11 +24,14 @@ declare module "http" {
 }
 
 // Security middleware - helmet adds various HTTP headers
+// Disable CSP in development to avoid issues with Vite HMR
+const isDev = process.env.NODE_ENV === 'development';
 app.use(helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: isDev ? false : {
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers for React/Framer Motion
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
@@ -44,7 +47,7 @@ app.use(helmet({
   },
   crossOriginEmbedderPolicy: false,
   // Enable HSTS with preload for production
-  strictTransportSecurity: {
+  strictTransportSecurity: isDev ? false : {
     maxAge: 31536000, // 1 year
     includeSubDomains: true,
     preload: true,
