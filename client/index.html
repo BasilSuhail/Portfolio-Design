@@ -9,21 +9,30 @@
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://basilsuhail.com/" />
     <title>Basil Suhail | Accounting & Finance Expert | Data Science & Business Management</title>
-    <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+    <link rel="icon" type="image/png" href="/uploads/optimized/favicon.webp" />
+    <link rel="apple-touch-icon" href="/uploads/headshot.png" />
+    <meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f0f0f0" media="(prefers-color-scheme: light)" />
 
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Basil Suhail | Accounting & Finance Expert | Data Science & Business Management" />
     <meta property="og:description" content="Data Science & Business Student specializing in Accounting & Finance. Building the future of automated financial reporting with AI and analytics." />
     <meta property="og:image" content="https://basilsuhail.com/uploads/headshot.png" />
+    <meta property="og:image:width" content="1453" />
+    <meta property="og:image:height" content="1453" />
+    <meta property="og:image:alt" content="Basil Suhail - Portfolio" />
     <meta property="og:url" content="https://basilsuhail.com/" />
     <meta property="og:site_name" content="Basil Suhail Portfolio" />
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@basilsuhail" />
     <meta name="twitter:title" content="Basil Suhail | Accounting & Finance Expert" />
     <meta name="twitter:description" content="Data Science & Business Student specializing in Accounting & Finance. Building the future of automated financial reporting." />
     <meta name="twitter:image" content="https://basilsuhail.com/uploads/headshot.png" />
+    <meta name="twitter:image:alt" content="Basil Suhail - Portfolio" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Load fonts asynchronously to prevent render blocking -->
@@ -38,25 +47,21 @@
       "name": "Basil Suhail",
       "url": "https://basilsuhail.com",
       "image": "https://basilsuhail.com/uploads/headshot.png",
-      "jobTitle": "Data Science & Business Student",
+      "jobTitle": "MSc Data Science & Business Management Student",
       "description": "Accounting & Finance Expert specializing in Data Science and Business Management. Building the future of automated financial reporting with AI and analytics.",
       "email": "basilsuhail3@gmail.com",
       "alumniOf": [
         {
-          "@type": "EducationalOrganization",
+          "@type": "CollegeOrUniversity",
           "name": "University of Aberdeen",
           "sameAs": "https://www.abdn.ac.uk"
         },
         {
-          "@type": "EducationalOrganization",
+          "@type": "CollegeOrUniversity",
           "name": "University of Management and Technology",
           "sameAs": "https://www.umt.edu.pk"
         }
       ],
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Dubizzle Group"
-      },
       "knowsAbout": [
         "Accounting",
         "Finance",
@@ -95,6 +100,8 @@
     {
       "@context": "https://schema.org",
       "@type": "ProfilePage",
+      "dateCreated": "2024-12-01",
+      "dateModified": "2026-02-09",
       "mainEntity": {
         "@type": "Person",
         "name": "Basil Suhail",
@@ -107,19 +114,59 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://basilsuhail.com/"
+        }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
       "@type": "ItemList",
       "name": "Basil Suhail's Projects",
       "description": "Portfolio projects in Finance and Data Science",
       "itemListElement": [
         {
-          "@type": "CreativeWork",
+          "@type": "ListItem",
           "position": 1,
-          "name": "Budgeting Schedule Automation",
-          "description": "A comprehensive budgeting dashboard for monitoring that automates master budgets across 13 schedules",
-          "url": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
-          "author": {
-            "@type": "Person",
-            "name": "Basil Suhail"
+          "item": {
+            "@type": "CreativeWork",
+            "name": "Budgeting Schedule Automation",
+            "description": "Automates 13-worksheet master budgets with instant cross-schedule calculations.",
+            "url": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
+            "image": "https://basilsuhail.com/uploads/Budgeting.png",
+            "author": { "@type": "Person", "name": "Basil Suhail" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "CreativeWork",
+            "name": "AI Investment Dashboard",
+            "description": "Real-time portfolio analytics with ML-powered market predictions.",
+            "url": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
+            "image": "https://basilsuhail.com/uploads/Investment.png",
+            "author": { "@type": "Person", "name": "Basil Suhail" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "CreativeWork",
+            "name": "Data Science Interview Questions",
+            "description": "Curated collection of DS interview questions with detailed solutions.",
+            "url": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
+            "image": "https://basilsuhail.com/uploads/interview.png",
+            "author": { "@type": "Person", "name": "Basil Suhail" }
           }
         }
       ]

@@ -64,9 +64,17 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
       <Helmet>
-        <title>{project.title} | {content?.profile?.name || "Portfolio"}</title>
+        <title>{project.title} | {content?.profile?.name || "Basil Suhail"}</title>
         <meta name="description" content={project.description || project.title} />
-        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+        <link rel="icon" type="image/png" href="/uploads/optimized/favicon.webp" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={`${project.title} | ${content?.profile?.name || "Basil Suhail"}`} />
+        <meta property="og:description" content={project.description || project.title} />
+        {project.imageUrl && <meta property="og:image" content={`https://basilsuhail.com${project.imageUrl}`} />}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={project.title} />
+        <meta name="twitter:description" content={project.description || project.title} />
+        <link rel="canonical" href={`https://basilsuhail.com/project/${project.id}`} />
       </Helmet>
 
       <Navigation name={content?.profile?.name || "Portfolio"} />

@@ -93,9 +93,10 @@ export default function Gallery() {
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
       <Helmet>
-        <title>Gallery | {content?.profile?.name || "Portfolio"}</title>
+        <title>Gallery | {content?.profile?.name || "Basil Suhail"}</title>
         <meta name="description" content="Photo gallery - moments captured through my lens" />
-        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+        <link rel="icon" type="image/png" href="/uploads/optimized/favicon.webp" />
+        <link rel="canonical" href="https://basilsuhail.com/gallery" />
       </Helmet>
 
       <Navigation name={content?.profile?.name || "Portfolio"} />

@@ -123,7 +123,7 @@ export default function NewsDetail() {
           property="og:description"
           content={newsDay.content.briefing.substring(0, 160)}
         />
-        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+        <link rel="icon" type="image/png" href="/uploads/optimized/favicon.webp" />
       </Helmet>
 
       <Navigation name={content?.profile?.name || "Portfolio"} />

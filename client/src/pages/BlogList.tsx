@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 interface Blog {
   id: string;
@@ -46,6 +47,12 @@ export default function BlogList() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Blog | Basil Suhail</title>
+        <meta name="description" content="Thoughts, insights, and stories about finance, data science, and technology by Basil Suhail." />
+        <link rel="icon" type="image/png" href="/uploads/optimized/favicon.webp" />
+        <link rel="canonical" href="https://basilsuhail.com/blog" />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-6 py-16">
         <div className="mb-12">
           <Link href="/">

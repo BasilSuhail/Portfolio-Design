@@ -1,6 +1,9 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
 
 # Sitemap location
 Sitemap: https://basilsuhail.com/sitemap.xml

@@ -87,7 +87,7 @@ export default function BlogDetail() {
     <div className="min-h-screen bg-background">
       {/* SEO Meta Tags */}
       <Helmet>
-        <title>{blog.title} | Your Portfolio</title>
+        <title>{blog.title} | Basil Suhail</title>
         <meta name="description" content={blog.excerpt || blog.content.substring(0, 160).replace(/<[^>]*>/g, '')} />
 
         {/* Open Graph / Social Media */}
@@ -103,7 +103,8 @@ export default function BlogDetail() {
         {blog.coverImage && <meta name="twitter:image" content={blog.coverImage} />}
 
         {/* Favicon */}
-        <link rel="icon" type="image/jpeg" href="/uploads/favicon.jpg" />
+        <link rel="icon" type="image/png" href="/uploads/optimized/favicon.webp" />
+        <link rel="canonical" href={`https://basilsuhail.com/blog/${blog.slug}`} />
 
         {/* Article Metadata */}
         <meta property="article:published_time" content={blog.customDate || blog.createdAt} />
