@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 export interface Experience {
   id: string;
@@ -111,9 +112,13 @@ export default function ExperienceSection({
                   <div className="relative z-10 size-6 flex justify-center items-center">
                     {exp.companyLogoUrl ? (
                       <img
-                        src={exp.companyLogoUrl}
+                        src={getOptimizedImageUrl(exp.companyLogoUrl)}
                         alt={`${exp.company} logo`}
                         className="shrink-0 size-6 rounded-full object-contain bg-white dark:bg-neutral-800 ring-1 ring-gray-200 dark:ring-neutral-700"
+                        width={24}
+                        height={24}
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <div

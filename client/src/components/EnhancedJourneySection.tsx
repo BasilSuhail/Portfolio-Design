@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ChevronDown, ExternalLink, GraduationCap, Briefcase, Heart, Trees as Tree } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { getOptimizedImageUrl } from "@/lib/imageUtils"
 
 type TimelineItemType = "education" | "work" | "volunteer" | "activity"
 
@@ -136,7 +137,7 @@ function TimelineItem({ entry, isLast, index }: { entry: TimelineEntry; isLast: 
                         `}
                     >
                         {entry.logoUrl ? (
-                            <img src={entry.logoUrl} alt={entry.organization} className="w-6 h-6 object-contain" />
+                            <img src={getOptimizedImageUrl(entry.logoUrl)} alt={entry.organization} className="w-6 h-6 object-contain" width={24} height={24} loading="lazy" decoding="async" />
                         ) : (
                             <Icon className={`w-4 h-4 ${isOpen ? "text-gray-700 dark:text-neutral-200" : "text-gray-400 dark:text-neutral-500"}`} />
                         )}

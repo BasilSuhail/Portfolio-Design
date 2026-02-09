@@ -23,6 +23,7 @@ import {
 } from "react-icons/si";
 import { VscCode } from "react-icons/vsc";
 import { Users, Lightbulb, MessageSquare } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 export interface TechItem {
   id: string;
@@ -146,9 +147,13 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                         >
                           {isImageUrl ? (
                             <img
-                              src={tech.icon}
+                              src={getOptimizedImageUrl(tech.icon)}
                               alt={tech.name}
                               className="shrink-0 size-4 me-1 object-contain"
+                              width={16}
+                              height={16}
+                              loading="lazy"
+                              decoding="async"
                             />
                           ) : Icon ? (
                             <Icon

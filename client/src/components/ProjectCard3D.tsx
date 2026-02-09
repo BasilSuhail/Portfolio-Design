@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import GlassButton from "./ui/GlassButton";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 export interface ProjectCard3DProps {
   id?: string;
@@ -105,9 +106,13 @@ const ProjectCard3D = ({
           <div className="relative aspect-[16/9] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
             {imageUrl ? (
               <img
-                src={imageUrl}
+                src={getOptimizedImageUrl(imageUrl)}
                 alt={title}
                 className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+                width={720}
+                height={405}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900">

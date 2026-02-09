@@ -3,6 +3,7 @@ import { Mail, Copy, Check } from "lucide-react";
 import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
 import TypewriterText from "./TypewriterText";
 import confetti from "canvas-confetti";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 type BioPart = { type: 'text'; content: string } | { type: 'image'; content: string; alt: string };
 
@@ -99,8 +100,10 @@ export default function HeroSection({
           <div className="shrink-0">
             <img
               className="shrink-0 size-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-neutral-700"
-              src={avatarUrl}
+              src={getOptimizedImageUrl(avatarUrl)}
               alt={name}
+              width={64}
+              height={64}
               data-testid="img-avatar"
             />
           </div>
@@ -138,9 +141,11 @@ export default function HeroSection({
                 return (
                   <img
                     key={index}
-                    src={part.content}
+                    src={getOptimizedImageUrl(part.content)}
                     alt={part.alt || 'inline image'}
                     className="inline-block w-5 h-5 mx-1 align-middle object-contain"
+                    width={20}
+                    height={20}
                     loading="lazy"
                     decoding="async"
                   />

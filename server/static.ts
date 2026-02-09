@@ -14,9 +14,9 @@ export function serveStatic(app: Express) {
   const uploadsPath = path.resolve(process.cwd(), "client", "public", "uploads");
   if (fs.existsSync(uploadsPath)) {
     app.use('/uploads', express.static(uploadsPath, {
-      maxAge: '1w',
+      maxAge: '30d',
       setHeaders: (res) => {
-        res.setHeader('Cache-Control', 'public, max-age=604800');
+        res.setHeader('Cache-Control', 'public, max-age=2592000');
       }
     }));
   }
@@ -27,9 +27,9 @@ export function serveStatic(app: Express) {
   if (fs.existsSync(galleryDataPath)) {
     // Serve at /gallery-images (new path)
     app.use('/gallery-images', express.static(galleryDataPath, {
-      maxAge: '1w',
+      maxAge: '30d',
       setHeaders: (res) => {
-        res.setHeader('Cache-Control', 'public, max-age=604800');
+        res.setHeader('Cache-Control', 'public, max-age=2592000');
       }
     }));
 
@@ -37,9 +37,9 @@ export function serveStatic(app: Express) {
     // This allows old gallery.json entries with /uploads/ paths to still work
     // if the actual files are in the gallery-data directory
     app.use('/uploads', express.static(galleryDataPath, {
-      maxAge: '1w',
+      maxAge: '30d',
       setHeaders: (res) => {
-        res.setHeader('Cache-Control', 'public, max-age=604800');
+        res.setHeader('Cache-Control', 'public, max-age=2592000');
       }
     }));
     console.log(`[Static] Serving gallery images from: ${galleryDataPath} (at both /gallery-images and /uploads)`);
@@ -60,9 +60,9 @@ export function serveStatic(app: Express) {
       else if (filePath.match(/\.(js|css)$/)) {
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       }
-      // Images can be cached for a moderate time
-      else if (filePath.match(/\.(jpg|jpeg|png|gif|svg|webp|ico)$/)) {
-        res.setHeader('Cache-Control', 'public, max-age=604800'); // 1 week
+      // Images can be cached for a longer time
+      else if (filePath.match(/\.(jpg|jpeg|png|gif|svg|webp|avif|ico)$/)) {
+        res.setHeader('Cache-Control', 'public, max-age=2592000'); // 30 days
       }
     }
   }));

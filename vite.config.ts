@@ -48,7 +48,22 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Put ALL node_modules in vendor
+            // Split heavy libraries into separate chunks for better caching
+            if (id.includes('three') || id.includes('@react-three')) {
+              return 'vendor-three';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-framer';
+            }
+            if (id.includes('recharts') || id.includes('d3-')) {
+              return 'vendor-charts';
+            }
+            if (id.includes('@radix-ui') || id.includes('@tanstack')) {
+              return 'vendor-ui';
+            }
+            if (id.includes('react-icons')) {
+              return 'vendor-icons';
+            }
             return 'vendor';
           }
         },
