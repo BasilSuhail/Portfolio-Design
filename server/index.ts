@@ -30,8 +30,8 @@ app.use(helmet({
   contentSecurityPolicy: isDev ? false : {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
-      scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers for React/Framer Motion
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
@@ -41,14 +41,13 @@ app.use(helmet({
       baseUri: ["'self'"],
       formAction: ["'self'", "https://formspree.io"],
       frameAncestors: ["'self'"],
-      workerSrc: ["'self'", "blob:"], // Allow blob workers for canvas-confetti
+      workerSrc: ["'self'", "blob:"],
       upgradeInsecureRequests: [],
     },
   },
   crossOriginEmbedderPolicy: false,
-  // Enable HSTS with preload for production
   strictTransportSecurity: isDev ? false : {
-    maxAge: 31536000, // 1 year
+    maxAge: 31536000,
     includeSubDomains: true,
     preload: true,
   },

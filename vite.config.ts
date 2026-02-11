@@ -37,6 +37,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    sourcemap: true,
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -48,7 +49,7 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Split libraries that have no circular deps with the main bundle
+            // Keep Three.js separate (used by dead-code components, tree-shaken but just in case)
             if (id.includes('three') || id.includes('@react-three')) {
               return 'vendor-three';
             }
@@ -57,6 +58,15 @@ export default defineConfig({
             }
             if (id.includes('react-icons')) {
               return 'vendor-icons';
+            }
+            // Let heavy libs used only by lazy routes split naturally with their consumers
+            if (
+              id.includes('recharts') || id.includes('d3-') ||
+              id.includes('canvas-confetti') || id.includes('victory') ||
+              id.includes('@xyflow') || id.includes('reactflow') ||
+              id.includes('elkjs') || id.includes('dagre')
+            ) {
+              return undefined;
             }
             return 'vendor';
           }

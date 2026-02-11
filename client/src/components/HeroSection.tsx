@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Mail, Copy, Check } from "lucide-react";
 import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
 import TypewriterText from "./TypewriterText";
-import confetti from "canvas-confetti";
+// canvas-confetti loaded lazily on first email copy click
 import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 type BioPart = { type: 'text'; content: string } | { type: 'image'; content: string; alt: string };
@@ -69,14 +69,16 @@ export default function HeroSection({
       originY = (rect.top + rect.height / 2) / window.innerHeight;
     }
 
-    // Random confetti burst from the email button!
+    // Random confetti burst from the email button (loaded lazily)
     const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
-    confetti({
-      angle: randomInRange(55, 125),
-      spread: randomInRange(50, 70),
-      particleCount: Math.floor(randomInRange(50, 100)),
-      origin: { x: originX, y: originY }
+    import("canvas-confetti").then(({ default: confetti }) => {
+      confetti({
+        angle: randomInRange(55, 125),
+        spread: randomInRange(50, 70),
+        particleCount: Math.floor(randomInRange(50, 100)),
+        origin: { x: originX, y: originY },
+      });
     });
 
     setTimeout(() => setCopied(false), 2000);
@@ -104,6 +106,8 @@ export default function HeroSection({
               alt={name}
               width={64}
               height={64}
+              fetchPriority="high"
+              decoding="sync"
               data-testid="img-avatar"
             />
           </div>
