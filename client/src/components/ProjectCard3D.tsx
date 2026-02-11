@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import GlassButton from "./ui/GlassButton";
-import { getOptimizedImageUrl } from "@/lib/imageUtils";
+import { getOptimizedImageUrl, getResponsiveSrcSet } from "@/lib/imageUtils";
 
 export interface ProjectCard3DProps {
   id?: string;
@@ -14,6 +14,8 @@ export interface ProjectCard3DProps {
   githubUrl?: string;
   category?: string;
   index: number;
+  /** Mark as above-the-fold to disable lazy loading and boost fetch priority */
+  priority?: boolean;
 }
 
 const springValues = {
@@ -29,6 +31,7 @@ const ProjectCard3D = ({
   liveUrl,
   githubUrl,
   index,
+  priority = false,
 }: ProjectCard3DProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -107,10 +110,13 @@ const ProjectCard3D = ({
             {imageUrl ? (
               <img
                 src={getOptimizedImageUrl(imageUrl)}
+                srcSet={getResponsiveSrcSet(imageUrl)}
+                sizes={getResponsiveSrcSet(imageUrl) ? "(max-width: 768px) 100vw, 50vw" : undefined}
                 alt={title}
                 className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
+                loading={priority ? "eager" : "lazy"}
+                decoding={priority ? "sync" : "async"}
+                fetchPriority={priority ? "high" : "auto"}
                 width={720}
                 height={405}
               />

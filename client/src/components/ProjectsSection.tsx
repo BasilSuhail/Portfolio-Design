@@ -79,6 +79,7 @@ export default function ProjectsSection({ projects, intro }: ProjectsSectionProp
                 githubUrl={project.githubUrl}
                 tags={project.tags || []}
                 index={index}
+                priority={index < 2}
               />
             ))}
           </motion.div>

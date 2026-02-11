@@ -6,8 +6,11 @@ const UPLOADS_DIR = path.resolve("client/public/uploads");
 const OPTIMIZED_DIR = path.resolve("client/public/uploads/optimized");
 
 // Define target sizes based on how images are actually displayed
+// Project screenshots also generate a smaller "-sm" variant for mobile
+const PROJECT_IMAGES = ["Budgeting.png", "Investment.png", "interview.png"];
+
 const IMAGE_CONFIGS: Record<string, { width: number; quality: number }> = {
-  // Project screenshots: displayed at ~714x389 (aspect-video), generate 2x for retina
+  // Project screenshots: 1440w for desktop (2x), 780w variant generated separately
   "Budgeting.png": { width: 1440, quality: 80 },
   "Investment.png": { width: 1440, quality: 80 },
   "interview.png": { width: 1440, quality: 80 },
@@ -88,6 +91,29 @@ async function optimizeImages() {
           `${inputSize.toFixed(0)} KB -> ${outputSize.toFixed(0)} KB | ` +
           `Saved ${savings.toFixed(0)} KB (${pct}%)\n`
       );
+
+      // Generate smaller mobile variant for project screenshots
+      if (PROJECT_IMAGES.includes(file)) {
+        const smOutputPath = path.join(OPTIMIZED_DIR, `${baseName}-sm.webp`);
+        const smWidth = 780;
+
+        let smPipeline = sharp(inputPath);
+        if (metadata.width && metadata.width > smWidth) {
+          smPipeline = smPipeline.resize(smWidth, undefined, {
+            withoutEnlargement: true,
+            fit: "inside",
+          });
+        }
+        await smPipeline
+          .webp({ quality: config.quality, effort: 6 })
+          .toFile(smOutputPath);
+
+        const smMeta = await sharp(smOutputPath).metadata();
+        const smSize = (smMeta.size || 0) / 1024;
+        console.log(
+          `  -> ${baseName}-sm.webp (${smMeta.width}x${smMeta.height}) | ${smSize.toFixed(0)} KB (mobile)\n`
+        );
+      }
     } catch (err) {
       console.error(`  Error processing ${file}:`, err);
     }
