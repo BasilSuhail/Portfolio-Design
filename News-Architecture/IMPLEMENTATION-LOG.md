@@ -164,6 +164,55 @@ Implemented strategic upgrades based on external analyst audit:
 
 ---
 
+## 🔬 Milestone 11: Next Phase - Intelligence Platform Upgrades
+**Status:** Planned (2026-02-14)
+**References:** [11-NEXT-PHASE-ROADMAP.md](./11-NEXT-PHASE-ROADMAP.md)
+
+Strategic roadmap based on web research, academic literature, market analysis, and GitHub open-source audit.
+
+### Phase 1: Hindsight Validator (Backtesting)
+- [ ] Finnhub API integration for historical market data
+- [ ] Correlation engine: sentiment score vs next-day S&P 500 returns
+- [ ] Time alignment following academic standards (post-market → next day)
+- [ ] Dashboard: accuracy gauge + scatter plot + GPR vs market overlay
+- [ ] **Why:** Proves signals have predictive value - the #1 interview differentiator
+
+### Phase 2: Semantic Embeddings Clustering
+- [ ] Replace TF-IDF with `all-MiniLM-L6-v2` sentence embeddings (via existing `@xenova/transformers`)
+- [ ] Cosine similarity or HDBSCAN clustering (auto-detects cluster count)
+- [ ] Gemini-generated topic labels from cluster contents
+- [ ] TF-IDF retained as automatic fallback
+- [ ] **Why:** "Oil prices rise" and "Energy sector booming" should be in the same cluster
+
+### Phase 3: Entity Sentiment Timelines
+- [ ] Aggregate sentiment per entity per day (NER data already exists)
+- [ ] New SQLite table: `entity_sentiment`
+- [ ] API endpoint: `GET /api/intelligence/entity/:name?days=30`
+- [ ] Dashboard: sparkline trends for top entities, full timeline on click
+- [ ] **Why:** This is what Bloomberg Terminal charges thousands for
+
+### Phase 4: Quick Wins
+- [ ] **Cross-Source Confidence:** Score clusters by unique source count (1 source = low, 4+ = high)
+- [ ] **Anomaly Detection:** Z-score alerting when topic volume exceeds 2 std devs from 7-day mean
+- [ ] **GDELT Provider:** Free, global, 100+ languages, 15-min updates
+
+### Phase 5: Narrative Threading (Advanced)
+- [ ] Link clusters across dates by entity overlap + semantic similarity
+- [ ] Track story arcs: escalation, de-escalation, new actors
+- [ ] Display as connected timeline on dashboard
+
+### Phase 6: Export & Sharing
+- [ ] PDF briefing export (pdfkit/jspdf)
+- [ ] Email digest via Resend (already installed) with configurable thresholds
+
+### Research References
+- [LLM Sentiment + DRL: 26% returns, 1.2 Sharpe](https://arxiv.org/html/2507.09739v1)
+- [BERT Embeddings > TF-IDF for Clustering](https://www.sciencedirect.com/science/article/pii/S2666307424000482)
+- [ACL 2025: Semantic-Aware Clustering](https://aclanthology.org/2025.acl-long.902.pdf)
+- [Finnhub: Best Free Tier at 60 calls/min](https://finnhub.io/finnhub-stock-api-vs-alternatives)
+
+---
+
 ## 📁 Final File Structure
 
 ```
@@ -221,3 +270,6 @@ client/src/components/intelligence/
 | `/api/feedback/impact` | POST | ✅ | Submit impact feedback |
 | `/api/feedback/stats` | GET | ✅ | Get feedback stats |
 | `/api/feedback/export` | GET | ✅ | Export feedback CSV |
+| `/api/intelligence/entity/:name` | GET | Planned | Entity sentiment timeline |
+| `/api/intelligence/backtest` | GET | Planned | Hindsight validation results |
+| `/api/intelligence/anomalies` | GET | Planned | Volume anomaly alerts |
