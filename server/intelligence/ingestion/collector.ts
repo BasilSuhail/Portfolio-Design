@@ -5,6 +5,7 @@ import {
 } from '../core/types';
 import { NewsAPIProvider } from './providers/newsapi.provider';
 import { RSSProvider } from './providers/rss.provider';
+import { GDELTProvider } from './providers/gdelt.provider';
 import { storage } from '../core/storage';
 
 /**
@@ -17,7 +18,8 @@ export class NewsCollector {
     constructor() {
         this.providers = [
             new NewsAPIProvider(),
-            new RSSProvider()
+            new RSSProvider(),
+            new GDELTProvider()
         ];
     }
 

@@ -10,6 +10,10 @@ import * as newsService from "./newsService";
 import { storage as intStorage } from "./intelligence/core/storage";
 import { pipeline } from "./intelligence/core/pipeline";
 import { feedbackStore } from "./intelligence/metrics/feedback";
+import { hindsightValidator } from "./intelligence/validation/backtest";
+import { marketDataFetcher } from "./intelligence/validation/market-data";
+import { anomalyDetector } from "./intelligence/metrics/anomaly";
+import { narrativeEngine } from "./intelligence/clustering/narrative";
 import { body, validationResult } from "express-validator";
 import sanitizeHtml from "sanitize-html";
 import { doubleCsrfProtection } from "./index";
@@ -681,6 +685,176 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("[Intelligence] Pipeline failed:", error);
       res.status(500).json({ message: "Pipeline execution failed", error: error.message });
+    }
+  });
+
+  // ========================================
+  // HINDSIGHT VALIDATOR ROUTES (Phase 1)
+  // ========================================
+
+  // Get latest backtest results
+  app.get("/api/intelligence/backtest", async (_req: Request, res: Response) => {
+    try {
+      const result = hindsightValidator.getLatestResult();
+      if (!result) {
+        return res.json({
+          isEmpty: true,
+          message: "No backtest results yet. Trigger a backtest run first.",
+          sentimentAccuracy: 0,
+          pearsonCorrelation: 0,
+          spearmanCorrelation: 0,
+          sampleSize: 0,
+          dataPoints: []
+        });
+      }
+      res.json(result);
+    } catch (error: any) {
+      console.error("[Backtest] Failed to get results:", error);
+      res.status(500).json({ message: "Failed to get backtest results" });
+    }
+  });
+
+  // Run a fresh backtest
+  app.get("/api/intelligence/backtest/run", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      console.log(`[Backtest] Running backtest for ${days} days...`);
+      const result = await hindsightValidator.runBacktest(Math.min(days, 90));
+      res.json(result);
+    } catch (error: any) {
+      console.error("[Backtest] Run failed:", error);
+      res.status(500).json({ message: "Backtest failed", error: error.message });
+    }
+  });
+
+  // Get cached market data
+  app.get("/api/intelligence/market-data", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const data = marketDataFetcher.getCachedData(Math.min(days, 90));
+      res.json({ data, isConfigured: marketDataFetcher.isConfigured() });
+    } catch (error: any) {
+      console.error("[MarketData] Failed to get data:", error);
+      res.status(500).json({ message: "Failed to get market data" });
+    }
+  });
+
+  // ========================================
+  // ENTITY SENTIMENT ROUTES (Phase 2)
+  // ========================================
+
+  // Get sentiment timeline for a specific entity
+  app.get("/api/intelligence/entity/:name", async (req: Request, res: Response) => {
+    try {
+      const entityName = decodeURIComponent(req.params.name);
+      const days = parseInt(req.query.days as string) || 30;
+      const timeline = intStorage.getEntityTimeline(entityName, Math.min(days, 90));
+      res.json({ entity: entityName, timeline });
+    } catch (error: any) {
+      console.error("[Entity] Failed to get timeline:", error);
+      res.status(500).json({ message: "Failed to get entity timeline" });
+    }
+  });
+
+  // Get top entities by mention count
+  app.get("/api/intelligence/entities/top", async (req: Request, res: Response) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const entities = intStorage.getTopEntities(Math.min(limit, 50));
+      res.json({ entities });
+    } catch (error: any) {
+      console.error("[Entity] Failed to get top entities:", error);
+      res.status(500).json({ message: "Failed to get top entities" });
+    }
+  });
+
+  // ========================================
+  // ANOMALY DETECTION ROUTES (Phase 3B)
+  // ========================================
+
+  // Get current anomaly alerts
+  app.get("/api/intelligence/anomalies", async (_req: Request, res: Response) => {
+    try {
+      const anomalies = anomalyDetector.getAnomalies();
+      res.json({ anomalies });
+    } catch (error: any) {
+      console.error("[Anomaly] Failed to get anomalies:", error);
+      res.status(500).json({ message: "Failed to get anomaly alerts" });
+    }
+  });
+
+  // ========================================
+  // NARRATIVE THREADING ROUTES (Phase 5)
+  // ========================================
+
+  // Get narrative threads (stories developing over multiple days)
+  app.get("/api/intelligence/narratives", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 14;
+      const threads = narrativeEngine.getThreads(Math.min(days, 30));
+      res.json({ threads });
+    } catch (error: any) {
+      console.error("[Narrative] Failed to get threads:", error);
+      res.status(500).json({ message: "Failed to get narrative threads" });
+    }
+  });
+
+  // ========================================
+  // EXPORT & SHARING ROUTES (Phase 6)
+  // ========================================
+
+  // Export briefing as printable HTML (for PDF via browser print)
+  app.get("/api/intelligence/export/pdf", async (req: Request, res: Response) => {
+    try {
+      const { pdfBriefingGenerator } = await import("./intelligence/export/pdf-briefing");
+      const requestedDate = (req.query.date as string) || new Date().toISOString().split('T')[0];
+      const briefing = intStorage.getBriefing(requestedDate);
+
+      if (!briefing) {
+        return res.status(404).json({ message: "No briefing found for this date" });
+      }
+
+      const html = pdfBriefingGenerator.generateBriefingHTML(briefing);
+      res.setHeader('Content-Type', 'text/html');
+      res.send(html);
+    } catch (error: any) {
+      console.error("[Export] PDF generation failed:", error);
+      res.status(500).json({ message: "Failed to generate PDF briefing" });
+    }
+  });
+
+  // Send email digest
+  app.post("/api/intelligence/export/email", async (req: Request, res: Response) => {
+    try {
+      const { emailDigestService } = await import("./intelligence/export/email-digest");
+      const { email, gprThreshold, impactThreshold, alwaysSend } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: "Email address required" });
+      }
+
+      if (!emailDigestService.isConfigured()) {
+        return res.status(503).json({ message: "Email service not configured (RESEND_API_KEY not set)" });
+      }
+
+      const requestedDate = (req.body.date as string) || new Date().toISOString().split('T')[0];
+      const briefing = intStorage.getBriefing(requestedDate);
+
+      if (!briefing) {
+        return res.status(404).json({ message: "No briefing found for this date" });
+      }
+
+      const result = await emailDigestService.sendDigest(briefing, {
+        recipientEmail: email,
+        gprThreshold: gprThreshold || 60,
+        impactThreshold: impactThreshold || 80,
+        alwaysSend: alwaysSend !== false
+      });
+
+      res.json(result);
+    } catch (error: any) {
+      console.error("[Export] Email digest failed:", error);
+      res.status(500).json({ message: "Failed to send email digest" });
     }
   });
 

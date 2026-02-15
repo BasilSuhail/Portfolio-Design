@@ -5,3 +5,8 @@ export { ClusterNode, nodeTypes } from "./CustomNodes";
 export { CorrelationEdge, edgeTypes } from "./CustomEdges";
 export { IntelligenceOverview } from "./IntelligenceOverview";
 export { IntelligenceDashboard } from "./IntelligenceDashboard";
+export { HindsightValidator } from "./HindsightValidator";
+export { EntityTimeline } from "./EntityTimeline";
+export { AnomalyBanner } from "./AnomalyBanner";
+export { NarrativeTimeline } from "./NarrativeTimeline";
+export { ExportBriefing } from "./ExportBriefing";

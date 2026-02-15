@@ -5,6 +5,8 @@ import {
     ClusteringResult
 } from '../core/types';
 import { clusteringEngine } from './tfidf';
+import { semanticClusterEngine } from './semantic-cluster';
+import { confidenceScorer } from './confidence';
 import { storage } from '../core/storage';
 import { clusterCache } from '../core/cache';
 
@@ -27,9 +29,18 @@ export class ClusteringPipeline {
             return cached;
         }
 
-        // 2. Run Clustering
+        // 2. Run Clustering (semantic embeddings first, TF-IDF fallback)
         console.log(`[Clustering] Running engine on ${articles.length} articles...`);
-        const clusters = await clusteringEngine.cluster(articles);
+        let clusters: ArticleCluster[];
+        try {
+            clusters = await semanticClusterEngine.cluster(articles);
+        } catch (err) {
+            console.error('[Clustering] Semantic engine failed, using TF-IDF fallback:', err);
+            clusters = await clusteringEngine.cluster(articles);
+        }
+
+        // 2b. Score source confidence per cluster
+        confidenceScorer.scoreClusters(clusters);
 
         // 3. Update Enriched Articles with Cluster IDs
         const updatedArticles: EnrichedArticle[] = [];

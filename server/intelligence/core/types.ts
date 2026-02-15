@@ -308,3 +308,121 @@ export const DEFAULT_PIPELINE_CONFIG: PipelineConfig = {
   retentionDays: 365,
   enableSupabaseBackup: false,
 };
+
+// =============================================================================
+// HINDSIGHT VALIDATION TYPES (Phase 1)
+// =============================================================================
+
+/**
+ * Daily market data point from Finnhub
+ */
+export interface MarketDataPoint {
+  date: string;       // YYYY-MM-DD
+  symbol: string;     // e.g., "SPY"
+  close: number;
+  changePct: number;  // % change from previous close
+  volume: number;
+}
+
+/**
+ * A single data point linking sentiment to market return
+ */
+export interface BacktestDataPoint {
+  date: string;
+  sentimentScore: number;    // Our pipeline's aggregate sentiment (-100 to 100)
+  marketReturn: number;      // Next-day SPY % change
+  directionMatch: boolean;   // Did sentiment direction match return direction?
+  gprScore: number;          // GPR index for that day
+}
+
+/**
+ * Aggregate validation results over a time period
+ */
+export interface ValidationResult {
+  id: string;
+  periodStart: string;
+  periodEnd: string;
+  sentimentAccuracy: number;      // % of days where direction matched
+  pearsonCorrelation: number;     // -1 to 1
+  spearmanCorrelation: number;    // -1 to 1 (rank-based, more robust)
+  gprCorrelation: number;         // GPR vs market drawdowns
+  sampleSize: number;
+  dataPoints: BacktestDataPoint[];
+  calculatedAt: string;
+}
+
+// =============================================================================
+// ENTITY SENTIMENT TYPES (Phase 2)
+// =============================================================================
+
+/**
+ * Aggregated sentiment for a single entity on a single day
+ */
+export interface EntitySentimentPoint {
+  entity: string;
+  entityType: 'person' | 'organization' | 'place' | 'topic';
+  date: string;
+  avgSentiment: number;
+  articleCount: number;
+}
+
+/**
+ * Entity with its full timeline data
+ */
+export interface EntityTimeline {
+  entity: string;
+  entityType: string;
+  totalMentions: number;
+  timeline: EntitySentimentPoint[];
+}
+
+// =============================================================================
+// CLUSTER CONFIDENCE TYPES (Phase 3A)
+// =============================================================================
+
+/**
+ * Source confidence scoring for a cluster
+ */
+export interface ClusterConfidence {
+  uniqueSources: number;
+  sourceList: string[];
+  confidenceScore: number;   // 0-100 normalized
+  tier: 'high' | 'medium' | 'low';
+}
+
+// =============================================================================
+// NARRATIVE THREADING TYPES (Phase 5)
+// =============================================================================
+
+/**
+ * A narrative thread linking related clusters across multiple days
+ */
+export interface NarrativeThread {
+  id: string;
+  title: string;                     // "Developing: Semiconductor Trade Restrictions"
+  firstSeen: string;                 // Date story first appeared
+  lastSeen: string;                  // Most recent cluster date
+  durationDays: number;
+  clusterIds: string[];              // Linked cluster IDs
+  sentimentArc: number[];            // Sentiment over time
+  entities: string[];                // All entities involved
+  escalation: 'rising' | 'stable' | 'declining';
+}
+
+// =============================================================================
+// ANOMALY DETECTION TYPES (Phase 3B)
+// =============================================================================
+
+/**
+ * Volume anomaly alert for a category
+ */
+export interface AnomalyAlert {
+  category: string;
+  currentVolume: number;
+  rollingAvg7d: number;
+  standardDev: number;
+  zScore: number;
+  isAnomaly: boolean;
+  message: string;
+  date: string;
+}

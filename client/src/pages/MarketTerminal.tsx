@@ -24,7 +24,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
-import { IntelligenceDashboard } from "@/components/intelligence";
+import {
+  IntelligenceDashboard,
+  HindsightValidator,
+  EntityTimeline,
+  AnomalyBanner,
+  NarrativeTimeline,
+  ExportBriefing,
+} from "@/components/intelligence";
 
 // =============================================================================
 // TYPES (Updated for Modular Intelligence)
@@ -79,6 +86,8 @@ const terminalSections = [
   { id: "metrics", label: "Metrics" },
   { id: "causal", label: "Topics" },
   { id: "analysis", label: "Analysis" },
+  { id: "entities", label: "Entities" },
+  { id: "validation", label: "Validation" },
   { id: "clusters", label: "Clusters" },
   { id: "risks", label: "Risks" },
 ];
@@ -191,6 +200,9 @@ export default function MarketTerminal() {
 
         {briefing && !briefing.isEmpty && (
           <div className="space-y-12">
+            {/* Anomaly Alert Banner */}
+            <AnomalyBanner />
+
             {/* Top Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-section="metrics">
               <GPRGauge
@@ -235,12 +247,28 @@ export default function MarketTerminal() {
               <IntelligenceDashboard clusters={briefing.topClusters} />
             )}
 
+            {/* Entity Sentiment Tracker */}
+            <div data-section="entities">
+              <EntityTimeline />
+            </div>
+
+            {/* Developing Stories (Narrative Threading) */}
+            <NarrativeTimeline />
+
+            {/* Hindsight Validator */}
+            <div data-section="validation">
+              <HindsightValidator />
+            </div>
+
             {/* AI Executive Summary */}
             <section data-section="analysis">
-              <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-4 flex items-center gap-2">
-                Executive Briefing
-                <Badge variant="secondary" className="text-[10px] h-4 px-1">Gemini Pro</Badge>
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 flex items-center gap-2">
+                  Executive Briefing
+                  <Badge variant="secondary" className="text-[10px] h-4 px-1">Gemini Pro</Badge>
+                </h2>
+                <ExportBriefing date={briefing.date} />
+              </div>
               <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-neutral-400 leading-relaxed bg-gray-50/50 dark:bg-neutral-800/30 p-6 rounded-2xl border border-gray-100 dark:border-neutral-800/50">
                 {briefing.executiveSummary.split('\n\n').map((para, i) => (
                   <p key={i} className="mb-4 last:mb-0">{para}</p>

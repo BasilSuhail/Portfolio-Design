@@ -10,6 +10,9 @@ import { enrichmentPipeline } from '../enrichment/pipeline';
 import { clusteringPipeline } from '../clustering/pipeline';
 import { briefingGenerator } from '../synthesis/briefing';
 import { gprCalculator } from '../metrics/gpr';
+import { entityTracker } from '../metrics/entity-tracker';
+import { anomalyDetector } from '../metrics/anomaly';
+import { narrativeEngine } from '../clustering/narrative';
 import { storage } from './storage';
 
 /**
@@ -43,6 +46,30 @@ export class IntelligencePipeline {
             storage.saveGPRPoint(gprData); // Persist GPR data
             const gprHistory = storage.getGPRHistory(14); // Load history for trend analysis
             const gprIndex = gprCalculator.getIndex(gprHistory.length > 0 ? gprHistory : [gprData]);
+
+            // 4b. Entity Sentiment Tracking (Phase 2)
+            try {
+                entityTracker.trackEntities(enrichedArticles, date);
+            } catch (err: any) {
+                console.error('[Pipeline] Entity tracking failed (non-fatal):', err.message);
+                errors.push(`Entity tracking: ${err.message}`);
+            }
+
+            // 4c. Anomaly Detection (Phase 3B)
+            try {
+                anomalyDetector.detectAnomalies(enrichedArticles, date);
+            } catch (err: any) {
+                console.error('[Pipeline] Anomaly detection failed (non-fatal):', err.message);
+                errors.push(`Anomaly detection: ${err.message}`);
+            }
+
+            // 4d. Narrative Threading (Phase 5)
+            try {
+                narrativeEngine.buildThreads(clusters, date);
+            } catch (err: any) {
+                console.error('[Pipeline] Narrative threading failed (non-fatal):', err.message);
+                errors.push(`Narrative threading: ${err.message}`);
+            }
 
             // 5. Market Sentiment Calculation
             const marketSentiment = this.calculateMarketSentiment(enrichedArticles);

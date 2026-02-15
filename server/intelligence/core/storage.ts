@@ -15,7 +15,12 @@ import {
   DailyBriefing,
   GPRDataPoint,
   ArticleCategory,
-  GPRIndex
+  GPRIndex,
+  MarketDataPoint,
+  ValidationResult,
+  EntitySentimentPoint,
+  AnomalyAlert,
+  NarrativeThread
 } from './types';
 
 class IntelligenceStorage {
@@ -118,6 +123,65 @@ class IntelligenceStorage {
       CREATE INDEX IF NOT EXISTS idx_raw_category ON raw_articles(category);
       CREATE INDEX IF NOT EXISTS idx_enriched_impact ON enriched_articles(impact_score);
       CREATE INDEX IF NOT EXISTS idx_enriched_cluster ON enriched_articles(cluster_id);
+
+      -- Market data for backtesting (Phase 1)
+      CREATE TABLE IF NOT EXISTS market_data (
+        date TEXT PRIMARY KEY,
+        symbol TEXT NOT NULL,
+        close REAL,
+        change_pct REAL,
+        volume INTEGER,
+        fetched_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Backtest results (Phase 1)
+      CREATE TABLE IF NOT EXISTS backtest_results (
+        id TEXT PRIMARY KEY,
+        period_start TEXT,
+        period_end TEXT,
+        sentiment_accuracy REAL,
+        pearson_correlation REAL,
+        spearman_correlation REAL,
+        sample_size INTEGER,
+        data_points TEXT, -- JSON array of BacktestDataPoint
+        calculated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Entity sentiment tracking (Phase 2)
+      CREATE TABLE IF NOT EXISTS entity_sentiment (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        entity TEXT NOT NULL,
+        entity_type TEXT NOT NULL,
+        date TEXT NOT NULL,
+        avg_sentiment REAL NOT NULL,
+        article_count INTEGER NOT NULL,
+        UNIQUE(entity, date)
+      );
+      CREATE INDEX IF NOT EXISTS idx_entity_date ON entity_sentiment(entity, date);
+      CREATE INDEX IF NOT EXISTS idx_entity_name ON entity_sentiment(entity);
+
+      -- Daily volume tracking for anomaly detection (Phase 3B)
+      CREATE TABLE IF NOT EXISTS daily_volume (
+        date TEXT NOT NULL,
+        category TEXT NOT NULL,
+        article_count INTEGER NOT NULL,
+        PRIMARY KEY(date, category)
+      );
+
+      -- Narrative threads (Phase 5)
+      CREATE TABLE IF NOT EXISTS narrative_threads (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        first_seen TEXT NOT NULL,
+        last_seen TEXT NOT NULL,
+        duration_days INTEGER NOT NULL,
+        cluster_ids TEXT NOT NULL,       -- JSON array
+        sentiment_arc TEXT NOT NULL,     -- JSON array of numbers
+        entities TEXT NOT NULL,          -- JSON array
+        escalation TEXT NOT NULL,        -- 'rising' | 'stable' | 'declining'
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_thread_lastseen ON narrative_threads(last_seen);
     `);
 
     // Run migrations for existing databases that might be missing columns
@@ -468,6 +532,316 @@ class IntelligenceStorage {
       JSON.stringify(point.topKeywords),
       point.articleCount
     );
+  }
+
+  // ===========================================================================
+  // MARKET DATA OPERATIONS (Hindsight Validator - Phase 1)
+  // ===========================================================================
+
+  /**
+   * Save market data points in batch
+   */
+  saveMarketData(points: MarketDataPoint[]): void {
+    const upsert = this.db.prepare(`
+      INSERT INTO market_data (date, symbol, close, change_pct, volume)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(date) DO UPDATE SET
+        close = excluded.close,
+        change_pct = excluded.change_pct,
+        volume = excluded.volume
+    `);
+
+    const transaction = this.db.transaction((items: MarketDataPoint[]) => {
+      for (const point of items) {
+        upsert.run(point.date, point.symbol, point.close, point.changePct, point.volume);
+      }
+    });
+
+    transaction(points);
+    console.log(`[Storage] Saved ${points.length} market data points`);
+  }
+
+  /**
+   * Get market data for a date range
+   */
+  getMarketData(days = 30): MarketDataPoint[] {
+    const rows = this.db.prepare(
+      'SELECT * FROM market_data ORDER BY date DESC LIMIT ?'
+    ).all(days) as any[];
+
+    return rows.map(row => ({
+      date: row.date,
+      symbol: row.symbol,
+      close: row.close,
+      changePct: row.change_pct,
+      volume: row.volume
+    }));
+  }
+
+  /**
+   * Get market data for specific dates
+   */
+  getMarketDataByDates(dates: string[]): MarketDataPoint[] {
+    if (dates.length === 0) return [];
+    const placeholders = dates.map(() => '?').join(',');
+    const rows = this.db.prepare(
+      `SELECT * FROM market_data WHERE date IN (${placeholders}) ORDER BY date ASC`
+    ).all(...dates) as any[];
+
+    return rows.map(row => ({
+      date: row.date,
+      symbol: row.symbol,
+      close: row.close,
+      changePct: row.change_pct,
+      volume: row.volume
+    }));
+  }
+
+  /**
+   * Get dates that already have market data (to avoid re-fetching)
+   */
+  getExistingMarketDates(): Set<string> {
+    const rows = this.db.prepare('SELECT date FROM market_data').all() as any[];
+    return new Set(rows.map(r => r.date));
+  }
+
+  /**
+   * Save backtest result
+   */
+  saveBacktestResult(result: ValidationResult): void {
+    this.db.prepare(`
+      INSERT INTO backtest_results (id, period_start, period_end, sentiment_accuracy,
+        pearson_correlation, spearman_correlation, sample_size, data_points, calculated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        sentiment_accuracy = excluded.sentiment_accuracy,
+        pearson_correlation = excluded.pearson_correlation,
+        spearman_correlation = excluded.spearman_correlation,
+        sample_size = excluded.sample_size,
+        data_points = excluded.data_points,
+        calculated_at = excluded.calculated_at
+    `).run(
+      result.id,
+      result.periodStart,
+      result.periodEnd,
+      result.sentimentAccuracy,
+      result.pearsonCorrelation,
+      result.spearmanCorrelation,
+      result.sampleSize,
+      JSON.stringify(result.dataPoints),
+      result.calculatedAt
+    );
+    console.log(`[Storage] Saved backtest result: ${result.id}`);
+  }
+
+  /**
+   * Get the most recent backtest result
+   */
+  getLatestBacktest(): ValidationResult | null {
+    const row = this.db.prepare(
+      'SELECT * FROM backtest_results ORDER BY calculated_at DESC LIMIT 1'
+    ).get() as any;
+
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      periodStart: row.period_start,
+      periodEnd: row.period_end,
+      sentimentAccuracy: row.sentiment_accuracy,
+      pearsonCorrelation: row.pearson_correlation,
+      spearmanCorrelation: row.spearman_correlation,
+      gprCorrelation: 0, // Calculated on-the-fly
+      sampleSize: row.sample_size,
+      dataPoints: JSON.parse(row.data_points),
+      calculatedAt: row.calculated_at
+    };
+  }
+
+  /**
+   * Get daily sentiment scores for backtesting (from briefings)
+   */
+  getSentimentHistory(days = 30): { date: string; sentiment: number }[] {
+    const rows = this.db.prepare(
+      'SELECT date, market_sentiment FROM daily_briefings ORDER BY date DESC LIMIT ?'
+    ).all(days) as any[];
+
+    return rows.map(row => ({
+      date: row.date,
+      sentiment: row.market_sentiment
+    }));
+  }
+
+  // ===========================================================================
+  // ENTITY SENTIMENT OPERATIONS (Phase 2)
+  // ===========================================================================
+
+  /**
+   * Save entity sentiment data in batch
+   */
+  saveEntitySentiment(points: EntitySentimentPoint[]): void {
+    const upsert = this.db.prepare(`
+      INSERT INTO entity_sentiment (entity, entity_type, date, avg_sentiment, article_count)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(entity, date) DO UPDATE SET
+        avg_sentiment = excluded.avg_sentiment,
+        article_count = excluded.article_count
+    `);
+
+    const transaction = this.db.transaction((items: EntitySentimentPoint[]) => {
+      for (const point of items) {
+        upsert.run(point.entity, point.entityType, point.date, point.avgSentiment, point.articleCount);
+      }
+    });
+
+    transaction(points);
+    console.log(`[Storage] Saved ${points.length} entity sentiment points`);
+  }
+
+  /**
+   * Get sentiment timeline for a specific entity
+   */
+  getEntityTimeline(entity: string, days = 30): EntitySentimentPoint[] {
+    const rows = this.db.prepare(`
+      SELECT * FROM entity_sentiment
+      WHERE entity = ?
+      ORDER BY date DESC LIMIT ?
+    `).all(entity, days) as any[];
+
+    return rows.map(row => ({
+      entity: row.entity,
+      entityType: row.entity_type,
+      date: row.date,
+      avgSentiment: row.avg_sentiment,
+      articleCount: row.article_count
+    }));
+  }
+
+  /**
+   * Get top entities by total mention count
+   */
+  getTopEntities(limit = 10): { entity: string; entityType: string; totalMentions: number; avgSentiment: number }[] {
+    const rows = this.db.prepare(`
+      SELECT entity, entity_type,
+        SUM(article_count) as total_mentions,
+        AVG(avg_sentiment) as overall_sentiment
+      FROM entity_sentiment
+      GROUP BY entity
+      ORDER BY total_mentions DESC
+      LIMIT ?
+    `).all(limit) as any[];
+
+    return rows.map(row => ({
+      entity: row.entity,
+      entityType: row.entity_type,
+      totalMentions: row.total_mentions,
+      avgSentiment: row.overall_sentiment
+    }));
+  }
+
+  // ===========================================================================
+  // DAILY VOLUME / ANOMALY OPERATIONS (Phase 3B)
+  // ===========================================================================
+
+  /**
+   * Save daily article volume per category
+   */
+  saveDailyVolume(date: string, category: string, count: number): void {
+    this.db.prepare(`
+      INSERT INTO daily_volume (date, category, article_count)
+      VALUES (?, ?, ?)
+      ON CONFLICT(date, category) DO UPDATE SET
+        article_count = excluded.article_count
+    `).run(date, category, count);
+  }
+
+  /**
+   * Get volume history for anomaly calculation
+   */
+  getVolumeHistory(category: string, days = 7): { date: string; count: number }[] {
+    const rows = this.db.prepare(`
+      SELECT date, article_count FROM daily_volume
+      WHERE category = ?
+      ORDER BY date DESC LIMIT ?
+    `).all(category, days) as any[];
+
+    return rows.map(row => ({
+      date: row.date,
+      count: row.article_count
+    }));
+  }
+
+  /**
+   * Get all categories with volume data for a specific date
+   */
+  getDailyVolumeByDate(date: string): { category: string; count: number }[] {
+    const rows = this.db.prepare(
+      'SELECT category, article_count FROM daily_volume WHERE date = ?'
+    ).all(date) as any[];
+
+    return rows.map(row => ({
+      category: row.category,
+      count: row.article_count
+    }));
+  }
+
+  // ========================================
+  // NARRATIVE THREADS (Phase 5)
+  // ========================================
+
+  /**
+   * Save or update narrative threads
+   */
+  saveNarrativeThreads(threads: NarrativeThread[]): void {
+    const stmt = this.db.prepare(`
+      INSERT OR REPLACE INTO narrative_threads
+      (id, title, first_seen, last_seen, duration_days, cluster_ids, sentiment_arc, entities, escalation)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const transaction = this.db.transaction(() => {
+      for (const thread of threads) {
+        stmt.run(
+          thread.id,
+          thread.title,
+          thread.firstSeen,
+          thread.lastSeen,
+          thread.durationDays,
+          JSON.stringify(thread.clusterIds),
+          JSON.stringify(thread.sentimentArc),
+          JSON.stringify(thread.entities),
+          thread.escalation
+        );
+      }
+    });
+
+    transaction();
+    console.log(`[Storage] Saved ${threads.length} narrative threads`);
+  }
+
+  /**
+   * Get narrative threads from the last N days
+   */
+  getNarrativeThreads(days = 14): NarrativeThread[] {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    const cutoffStr = cutoff.toISOString().split('T')[0];
+
+    const rows = this.db.prepare(
+      'SELECT * FROM narrative_threads WHERE last_seen >= ? ORDER BY last_seen DESC, duration_days DESC'
+    ).all(cutoffStr) as any[];
+
+    return rows.map(row => ({
+      id: row.id,
+      title: row.title,
+      firstSeen: row.first_seen,
+      lastSeen: row.last_seen,
+      durationDays: row.duration_days,
+      clusterIds: JSON.parse(row.cluster_ids || '[]'),
+      sentimentArc: JSON.parse(row.sentiment_arc || '[]'),
+      entities: JSON.parse(row.entities || '[]'),
+      escalation: row.escalation
+    }));
   }
 }
 

@@ -77,3 +77,63 @@ export interface EntityPanelProps {
   cluster: ArticleCluster | null;
   onClose: () => void;
 }
+
+// =============================================================================
+// HINDSIGHT VALIDATION TYPES (Phase 1)
+// =============================================================================
+
+export interface BacktestDataPoint {
+  date: string;
+  sentimentScore: number;
+  marketReturn: number;
+  directionMatch: boolean;
+  gprScore: number;
+}
+
+export interface ValidationResult {
+  id: string;
+  periodStart: string;
+  periodEnd: string;
+  sentimentAccuracy: number;
+  pearsonCorrelation: number;
+  spearmanCorrelation: number;
+  gprCorrelation: number;
+  sampleSize: number;
+  dataPoints: BacktestDataPoint[];
+  calculatedAt: string;
+  isEmpty?: boolean;
+  message?: string;
+}
+
+// =============================================================================
+// ENTITY SENTIMENT TYPES (Phase 2)
+// =============================================================================
+
+export interface EntitySentimentPoint {
+  entity: string;
+  entityType: string;
+  date: string;
+  avgSentiment: number;
+  articleCount: number;
+}
+
+export interface TopEntity {
+  entity: string;
+  entityType: string;
+  totalMentions: number;
+  avgSentiment: number;
+}
+
+// =============================================================================
+// ANOMALY TYPES (Phase 3B)
+// =============================================================================
+
+export interface AnomalyAlert {
+  category: string;
+  currentVolume: number;
+  rollingAvg7d: number;
+  zScore: number;
+  isAnomaly: boolean;
+  message: string;
+  date: string;
+}
