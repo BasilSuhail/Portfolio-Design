@@ -65,8 +65,8 @@ class EntityTracker {
     for (let i = 0; i < entityEntries.length; i++) {
       const entity = entityEntries[i][0];
       const data = entityEntries[i][1];
-      // Skip entities with only 1 mention (noise)
-      if (data.sentiments.length < 1) continue;
+      // Skip entities with only 1 mention (noise reduction)
+      if (data.sentiments.length < 2) continue;
 
       const avgSentiment = data.sentiments.reduce((s: number, v: number) => s + v, 0) / data.sentiments.length;
 
@@ -112,15 +112,33 @@ class EntityTracker {
     const trimmed = name.trim();
 
     // Skip very short names (likely noise)
-    if (trimmed.length < 2) return null;
+    if (trimmed.length < 3) return null;
+
+    // Skip contractions (It's, Here's, Bloomberg's — straight and curly quotes)
+    if (/[''\u2018\u2019]/.test(trimmed)) return null;
+
+    // Skip bracket noise ([…], [...], etc.)
+    if (/[\[\]…]/.test(trimmed)) return null;
+
+    // Skip entities with trailing/leading punctuation (Cnbc,  Colby:  .Europe  etc.)
+    if (/[,;:!?.]$/.test(trimmed)) return null;
+    if (/^[.,;:!?]/.test(trimmed)) return null;
+
+    // Skip entries starting with articles/determiners ("The Company", "A Price Tag")
+    if (/^(a|an|the|some|any|no|my|his|her|its|our|your|their)\s/i.test(trimmed)) return null;
 
     // Skip common generic terms
     const skipList = new Set([
-      'the', 'a', 'an', 'it', 'they', 'we', 'us', 'our',
+      'the', 'a', 'an', 'it', 'they', 'we', 'us', 'our', 'i',
       'today', 'yesterday', 'monday', 'tuesday', 'wednesday',
       'thursday', 'friday', 'saturday', 'sunday',
       'january', 'february', 'march', 'april', 'may', 'june',
-      'july', 'august', 'september', 'october', 'november', 'december'
+      'july', 'august', 'september', 'october', 'november', 'december',
+      'company', 'companies', 'market', 'markets', 'report', 'reports',
+      'price', 'prices', 'stock', 'stocks', 'share', 'shares',
+      'source', 'sources', 'data', 'news', 'article', 'articles',
+      'year', 'years', 'month', 'months', 'week', 'weeks',
+      'percent', 'million', 'billion', 'trillion'
     ]);
 
     if (skipList.has(trimmed.toLowerCase())) return null;

@@ -70,12 +70,15 @@ export class NEREngine {
 
     return nouns
       .filter(noun => {
-        const lower = noun.toLowerCase();
+        const lower = noun.toLowerCase().trim();
         return (
           noun.length > 2 &&
           !excludeSet.has(lower) &&
           !stopWords.has(lower) &&
-          !/^\d+$/.test(noun) // Exclude pure numbers
+          !/^\d+$/.test(noun) && // Exclude pure numbers
+          !/[''\u2018\u2019\[\]…]/.test(noun) && // Exclude contractions, brackets, ellipsis
+          !/^(a|an|the|some|any|no|my|his|her|its|our|your|their)\s/i.test(noun) && // Exclude articles/determiners as prefix ("A Price Tag", "The Company")
+          !/^[a-z]/.test(noun.trim()) // Exclude lowercase-starting words (not proper nouns)
         );
       })
       .map(noun => noun.trim());
