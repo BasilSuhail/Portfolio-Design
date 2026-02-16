@@ -99,6 +99,21 @@
         "Data Science",
         "Education"
       ]
+    },
+    {
+      "id": "4",
+      "title": "Market Intelligence Platform",
+      "description": "Bloomberg Terminal-style intelligence platform processing 100+ sources with ML-powered sentiment analysis.",
+      "category": "Machine Learning & NLP",
+      "liveUrl": "/news",
+      "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
+      "imageUrl": "/uploads/intelligence-platform.png",
+      "tags": [
+        "TypeScript",
+        "ML",
+        "React",
+        "SQLite"
+      ]
     }
   ],
   "experiences": [
