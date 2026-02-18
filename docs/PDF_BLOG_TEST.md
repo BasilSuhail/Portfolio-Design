@@ -24,7 +24,7 @@ $ cat blogs.json
 
 ### Step 2: Login to Admin
 ```
-1. Navigate to: http://localhost:5000/admin/login
+1. Navigate to: http://localhost:3000/admin/login
 2. Enter password from .env: Fancyacock@2393
 3. Click Login
 ```
@@ -54,7 +54,7 @@ $ cat blogs.json
 
 #### On Blog List Page:
 ```
-1. Navigate to: http://localhost:5000/blog
+1. Navigate to: http://localhost:3000/blog
 2. You should see "Test PDF Blog" in the list
 3. Date should show your custom date (e.g., December 15, 2024)
 4. Click on the blog card
@@ -62,7 +62,7 @@ $ cat blogs.json
 
 #### On Blog Detail Page:
 ```
-1. Should navigate to: http://localhost:5000/blog/test-pdf-blog
+1. Should navigate to: http://localhost:3000/blog/test-pdf-blog
 2. Should see:
    - Title: "Test PDF Blog"
    - Custom date: December 15, 2024
@@ -80,7 +80,7 @@ $ cat blogs.json
 
 ### Step 5: Verify Custom Date
 ```
-1. Go back to homepage: http://localhost:5000
+1. Go back to homepage: http://localhost:3000
 2. Scroll to "Writing" section
 3. Should see your blog listed with custom date (12/15/2024)
 4. Date should match what you set, NOT today's date

@@ -113,7 +113,8 @@ const ProjectCard3D = ({
                 srcSet={getResponsiveSrcSet(imageUrl)}
                 sizes={getResponsiveSrcSet(imageUrl) ? "(max-width: 768px) 100vw, 50vw" : undefined}
                 alt={title}
-                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${imageUrl?.includes('intelligence-platform') ? 'object-[center_-80px]' : 'object-top'
+                  }`}
                 loading={priority ? "eager" : "lazy"}
                 decoding={priority ? "sync" : "async"}
                 fetchPriority={priority ? "high" : "auto"}

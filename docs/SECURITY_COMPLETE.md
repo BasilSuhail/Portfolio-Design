@@ -117,7 +117,7 @@ See [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md) for DDoS protection instruction
 ```bash
 # Send 25 rapid requests to contact endpoint (should get rate limited after 20)
 for i in {1..25}; do
-  curl -X POST http://localhost:5000/api/contact \
+  curl -X POST http://localhost:3000/api/contact \
     -H "Content-Type: application/json" \
     -d '{"name":"test","email":"test@test.com","message":"test"}' &
 done
@@ -126,7 +126,7 @@ done
 ### Test CSRF Protection:
 ```bash
 # Try to POST without CSRF token (should fail with 403)
-curl -X POST http://localhost:5000/api/admin/blogs \
+curl -X POST http://localhost:3000/api/admin/blogs \
   -H "Content-Type: application/json" \
   -d '{"title":"Hack","slug":"hack","content":"test"}'
 ```

@@ -34,7 +34,7 @@
 
 ### Step 1: Login to Admin
 ```
-Navigate to: http://localhost:5000/admin/login
+Navigate to: http://localhost:3000/admin/login
 Password: (your ADMIN_PASSWORD from .env)
 ```
 
@@ -53,7 +53,7 @@ Password: (your ADMIN_PASSWORD from .env)
 8. Click **"Create Blog"**
 
 ### Step 3: View Your Blog
-1. Navigate to: `http://localhost:5000/blog`
+1. Navigate to: `http://localhost:3000/blog`
 2. You should see your blog in the list
 3. Click on it
 4. PDF should display with the custom viewer ✅
