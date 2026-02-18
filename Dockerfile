@@ -62,7 +62,7 @@ ENV PORT=5000
 ENV GALLERY_DATA_DIR=/app/gallery-data
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
   CMD node -e "require('http').get('http://localhost:5000/api/content', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Use startup script instead of npm start directly

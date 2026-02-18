@@ -167,6 +167,11 @@ export async function callGemini(
   const apiKey = agent ? getKeyForAgent(agent) : getNextGeminiKey();
 
   try {
+    // Use AbortController to enforce a 15-second timeout
+    // This prevents the pipeline from hanging for 50+ seconds when the API is rate-limited
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
@@ -185,8 +190,11 @@ export async function callGemini(
             maxOutputTokens,
           },
         }),
+        signal: controller.signal,
       }
     );
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorText = await response.text();
