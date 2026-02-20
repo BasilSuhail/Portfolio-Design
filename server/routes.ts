@@ -12,7 +12,11 @@ import { pipeline } from "./intelligence/core/pipeline";
 import { feedbackStore } from "./intelligence/metrics/feedback";
 import { hindsightValidator } from "./intelligence/validation/backtest";
 import { marketDataFetcher } from "./intelligence/validation/market-data";
+import { weightOptimizer } from "./intelligence/validation/weight-optimizer";
 import { anomalyDetector } from "./intelligence/metrics/anomaly";
+import { healthMonitor } from "./intelligence/core/health";
+import { signalGenerator } from "./intelligence/synthesis/signal";
+import { scorecardEngine } from "./intelligence/validation/scorecard";
 import { narrativeEngine } from "./intelligence/clustering/narrative";
 import { body, validationResult } from "express-validator";
 import sanitizeHtml from "sanitize-html";
@@ -740,6 +744,45 @@ export async function registerRoutes(
   });
 
   // ========================================
+  // WEIGHT OPTIMIZATION ROUTES
+  // ========================================
+
+  // Trigger weight optimization (grid search)
+  app.get("/api/intelligence/optimize-weights", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      console.log(`[WeightOptimizer] Optimization requested for ${days} days...`);
+      const result = await weightOptimizer.optimize(Math.min(days, 90));
+      res.json(result);
+    } catch (error: any) {
+      console.error("[WeightOptimizer] Optimization failed:", error);
+      res.status(500).json({ message: "Weight optimization failed", error: error.message });
+    }
+  });
+
+  // Get currently active weights
+  app.get("/api/intelligence/current-weights", async (_req: Request, res: Response) => {
+    try {
+      const { weights, isOptimized } = weightOptimizer.getCurrentWeights();
+      res.json({
+        weights: weights || {
+          sentimentWeight: 0.4,
+          clusterWeight: 0.3,
+          sourceWeight: 0.2,
+          recencyWeight: 0.1
+        },
+        isOptimized,
+        message: isOptimized
+          ? `Using optimized weights (r=${weights!.pearsonCorrelation.toFixed(4)})`
+          : 'Using default weights'
+      });
+    } catch (error: any) {
+      console.error("[WeightOptimizer] Failed to get weights:", error);
+      res.status(500).json({ message: "Failed to get current weights" });
+    }
+  });
+
+  // ========================================
   // ENTITY SENTIMENT ROUTES (Phase 2)
   // ========================================
 
@@ -780,6 +823,64 @@ export async function registerRoutes(
     } catch (error: any) {
       console.error("[Anomaly] Failed to get anomalies:", error);
       res.status(500).json({ message: "Failed to get anomaly alerts" });
+    }
+  });
+
+  // ========================================
+  // PIPELINE HEALTH ROUTES
+  // ========================================
+
+  // Get pipeline health summary
+  app.get("/api/intelligence/health", async (req: Request, res: Response) => {
+    try {
+      const days = parseInt(req.query.days as string) || 7;
+      const health = healthMonitor.getHealth(Math.min(days, 30));
+      res.json(health);
+    } catch (error: any) {
+      console.error("[Health] Failed to get health:", error);
+      res.status(500).json({ message: "Failed to get pipeline health" });
+    }
+  });
+
+  // ========================================
+  // TODAY'S SIGNAL ROUTE
+  // ========================================
+
+  // Get today's actionable signal
+  app.get("/api/intelligence/signal", async (_req: Request, res: Response) => {
+    try {
+      const signal = signalGenerator.generate();
+      res.json(signal);
+    } catch (error: any) {
+      console.error("[Signal] Failed to generate signal:", error);
+      res.status(500).json({ message: "Failed to generate signal" });
+    }
+  });
+
+  // ========================================
+  // WEEKLY SCORECARD ROUTES
+  // ========================================
+
+  // Get current week's scorecard (or generate fresh)
+  app.get("/api/intelligence/scorecard", async (req: Request, res: Response) => {
+    try {
+      const report = await scorecardEngine.generateCurrentWeek();
+      res.json(report);
+    } catch (error: any) {
+      console.error("[Scorecard] Failed to generate:", error);
+      res.status(500).json({ message: "Failed to generate scorecard" });
+    }
+  });
+
+  // Get scorecard history
+  app.get("/api/intelligence/scorecard/history", async (req: Request, res: Response) => {
+    try {
+      const weeks = parseInt(req.query.weeks as string) || 8;
+      const history = scorecardEngine.getHistory(Math.min(weeks, 52));
+      res.json({ history });
+    } catch (error: any) {
+      console.error("[Scorecard] Failed to get history:", error);
+      res.status(500).json({ message: "Failed to get scorecard history" });
     }
   });
 
