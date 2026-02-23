@@ -288,6 +288,15 @@ app.use((req, res, next) => {
   }, 6 * 60 * 60 * 1000); // Every 6 hours
 
   log('Auto-refresh news service started (every 6 hours)');
+
+  // Start Supabase keep-alive ping to prevent free-tier pausing
+  try {
+    const { startKeepAlive } = await import('./intelligence/core/supabase-backup');
+    startKeepAlive();
+    log('Supabase keep-alive service started');
+  } catch (error) {
+    log(`Supabase keep-alive setup failed (non-fatal): ${error}`);
+  }
 })();
 
 // Export for Vercel serverless

@@ -18,6 +18,9 @@ services:
       - GALLERY_DATA_DIR=/app/gallery-data
       # News feed directory for volume mount (365 days / 1 year of history)
       - NEWS_FEED_DIR=/app/news-data
+      # Supabase backup for news data persistence
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
     volumes:
       # Persist uploads across container restarts
       - ./uploads:/app/client/public/uploads

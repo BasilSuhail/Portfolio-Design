@@ -15,6 +15,7 @@ import { anomalyDetector } from '../metrics/anomaly';
 import { narrativeEngine } from '../clustering/narrative';
 import { storage } from './storage';
 import { healthMonitor } from './health';
+import { backupToSupabase } from './supabase-backup';
 
 /**
  * Market Intelligence Pipeline - Main Orchestrator
@@ -107,7 +108,7 @@ export class IntelligencePipeline {
             const processingTimeMs = Date.now() - startTime;
             console.log(`=== Pipeline Complete in ${processingTimeMs}ms ===\n`);
 
-            return {
+            const result: DailyAnalysis = {
                 date,
                 briefing,
                 clusters: {
@@ -129,6 +130,13 @@ export class IntelligencePipeline {
                     errors
                 }
             };
+
+            // Non-blocking Supabase backup (failures logged, never propagated)
+            backupToSupabase(result).catch(err =>
+                console.error('[Pipeline] Supabase backup failed (non-fatal):', err.message)
+            );
+
+            return result;
         } catch (error: any) {
             console.error(`[Pipeline] Fatal error:`, error);
             throw error;
