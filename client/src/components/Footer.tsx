@@ -41,7 +41,7 @@ export function Footer({ name = "Portfolio", socialLinks }: FooterProps) {
   };
 
   return (
-    <footer className="mt-16 mb-10">
+    <footer className="mt-16 pb-6">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-6 border-t border-gray-200 dark:border-neutral-700">
           <div className="flex flex-wrap justify-between items-center gap-4">
