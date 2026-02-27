@@ -61,6 +61,21 @@
   },
   "projects": [
     {
+      "id": "4",
+      "title": "Market Intelligence Platform",
+      "description": "Bloomberg Terminal-style intelligence platform processing 100+ sources with ML-powered sentiment analysis.",
+      "category": "Machine Learning & NLP",
+      "liveUrl": "/news",
+      "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
+      "imageUrl": "/uploads/intelligence-platform.png",
+      "tags": [
+        "TypeScript",
+        "ML",
+        "React",
+        "SQLite"
+      ]
+    },
+    {
       "id": "1",
       "title": "Budgeting Schedule Automation",
       "description": "Automates 13-worksheet master budgets with instant cross-schedule calculations.",
@@ -98,21 +113,6 @@
         "Python",
         "Data Science",
         "Education"
-      ]
-    },
-    {
-      "id": "4",
-      "title": "Market Intelligence Platform",
-      "description": "Bloomberg Terminal-style intelligence platform processing 100+ sources with ML-powered sentiment analysis.",
-      "category": "Machine Learning & NLP",
-      "liveUrl": "/news",
-      "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
-      "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": [
-        "TypeScript",
-        "ML",
-        "React",
-        "SQLite"
       ]
     }
   ],
@@ -194,24 +194,6 @@
           "url": ""
         }
       ]
-    },
-    {
-      "id": "1765560844953",
-      "dateRange": "Jun 2020 - Aug 2020",
-      "role": "Intern",
-      "company": "Vinkimiya Private Limited",
-      "companyLogoUrl": "",
-      "companyColor": "#00ff7b",
-      "description": "Gained hands-on exposure to Warehouse Management, Supply Chain Logistics, and Financial Analysis. Assisted in tracking inventory movement and supporting the finance team with daily operational reporting.",
-      "tags": [
-        "Logistics"
-      ],
-      "stats": {
-        "value": 98,
-        "label": "Stock Accuracy",
-        "prefix": "",
-        "suffix": "%"
-      }
     }
   ],
   "education": [
@@ -311,6 +293,32 @@
       ],
       "tags": [
         "Financial Modeling"
+      ]
+    },
+    {
+      "id": "3",
+      "dateRange": "2026 - Present",
+      "degree": "Continuous Learning",
+      "institution": "Professional Certifications & Self-Directed Development",
+      "institutionLogoUrl": "",
+      "institutionColor": "#7c3aed",
+      "coursework": "SQL, Tableau, Power BI, DAX, Power Query, Statistical Modeling, Data Visualization, Database Design, ETL, Time Intelligence",
+      "description": "Actively pursuing professional certifications and self-directed courses to deepen my expertise in business intelligence, data visualization, and analytics tooling.",
+      "certifications": [
+        {
+          "name": "Business Intelligence Analyst",
+          "description": "365 Careers\nDatabase theory • SQL • Tableau • Statistical modeling\n\nKey Learning:\n• Relational database design & normalization\n• Complex SQL queries, joins & data extraction\n• Tableau dashboards & visual analytics\n• Statistical testing & business forecasting\n• SQL + Tableau integration for real-world BI tasks\n\n↳ Credential: UC-cd3f85fa-05a2-41b8-afd7-f4b743cfb045",
+          "url": "https://ude.my/UC-cd3f85fa-05a2-41b8-afd7-f4b743cfb045"
+        },
+        {
+          "name": "Microsoft Power BI Desktop for Business Intelligence",
+          "description": "Maven Analytics\nIn Progress • Power Query • DAX • Data modeling • Dashboard design\n\nCurrent Focus:\n• ETL automation with Power Query (M language)\n• DAX measures, calculated columns & time intelligence\n• Star & snowflake schema modeling\n• Filter context, relationships & cardinality\n• Enterprise dashboard design with drill-through & bookmarks\n• AI features: decomposition trees, key influencers, smart narratives",
+          "url": ""
+        }
+      ],
+      "achievements": [],
+      "tags": [
+        "Self Development"
       ]
     }
   ],

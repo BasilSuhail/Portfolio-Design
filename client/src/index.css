@@ -171,8 +171,12 @@
     @apply border-border;
   }
 
+  html, body {
+    @apply bg-background;
+  }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground min-h-screen;
   }
 }
 

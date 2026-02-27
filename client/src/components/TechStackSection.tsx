@@ -109,7 +109,7 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
   return (
     <section className="mt-10 sm:mt-14" data-testid="section-stack" data-section="techStack">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-5 font-medium text-gray-800 dark:text-neutral-200">
+        <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-neutral-100">
           Skills
         </h2>
 

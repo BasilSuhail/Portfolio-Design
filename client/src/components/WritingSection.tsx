@@ -54,7 +54,7 @@ export default function WritingSection({ intro }: WritingSectionProps) {
     <section className="mt-10 sm:mt-14" data-testid="section-writing" data-section="writing">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="font-medium text-gray-800 dark:text-neutral-200">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-neutral-100">
             Writing
           </h2>
           <Link href="/blog">

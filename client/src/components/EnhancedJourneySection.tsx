@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronDown, ExternalLink, GraduationCap, Briefcase, Heart, Trees as Tree } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { ChevronDown, ExternalLink, GraduationCap, Briefcase, Heart, Trees as Tree, TrendingUp, ArrowRight } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 import { getOptimizedImageUrl } from "@/lib/imageUtils"
 
 type TimelineItemType = "education" | "work" | "volunteer" | "activity"
@@ -55,289 +56,207 @@ const typeConfig: Record<TimelineItemType, { icon: typeof GraduationCap; label: 
     activity: { icon: Tree, label: "Activity" },
 }
 
-function TimelineItem({ entry, isLast, index }: { entry: TimelineEntry; isLast: boolean; index: number }) {
-    const [isOpen, setIsOpen] = useState(false)
-    const [projectsOpen, setProjectsOpen] = useState(false)
-    const config = typeConfig[entry.type]
-    const Icon = config.icon
+/** Extract a display year from a period string like "Jul 2024 - Aug 2025" or "Sept 2025 – Present" */
+function extractYear(period: string): string {
+    const isPresent = period.toLowerCase().includes("present") || period.toLowerCase().includes("now")
+    if (isPresent) return "Now"
+    // Grab all years and return the first one
+    const years = period.match(/\d{4}/g)
+    return years ? years[0] : ""
+}
 
-    const hasExpandableContent = entry.description || entry.skills?.length || entry.achievements?.length || entry.projects?.length
+function TimelineItem({
+    entry,
+    isExpanded,
+    onToggle,
+    isLast,
+}: {
+    entry: TimelineEntry
+    isExpanded: boolean
+    onToggle: () => void
+    isLast: boolean
+}) {
+    const [projectsOpen, setProjectsOpen] = useState(false)
+    const isWork = entry.type === "work"
+    const Icon = typeConfig[entry.type]?.icon || Briefcase
+    const year = extractYear(entry.period)
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative pb-8"
-            style={{ perspective: "1200px" }}
-        >
-            {/* Timeline connector line */}
-            {!isLast && (
-                <div
-                    className="absolute left-[19px] top-12 w-px bg-gradient-to-b from-gray-300 via-gray-200 to-transparent dark:from-neutral-600 dark:via-neutral-700 dark:to-transparent"
-                    style={{ height: "calc(100% - 20px)" }}
-                />
-            )}
-
-            {/* The levitating card */}
-            <motion.div
-                layout
-                onClick={() => hasExpandableContent && setIsOpen(!isOpen)}
-                animate={{
-                    y: isOpen ? -16 : 0,
-                    rotateX: isOpen ? -1.5 : 0,
-                }}
-                transition={{
-                    type: "spring",
-                    stiffness: 280,
-                    damping: 26,
-                    mass: 0.7,
-                }}
-                style={{
-                    transformStyle: "preserve-3d",
-                    perspective: "1000px",
-                }}
-                className={`
-                    relative flex gap-4 p-4 -m-4 rounded-2xl
-                    ${hasExpandableContent ? "cursor-pointer" : "cursor-default"}
-                    ${isOpen
-                        ? "bg-white dark:bg-neutral-900 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25),0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] z-20"
-                        : "bg-transparent hover:bg-gray-50/50 dark:hover:bg-neutral-800/30 z-0"
-                    }
-                    transition-colors duration-300
-                `}
+        <div className="group">
+            {/* Clickable header row */}
+            <button
+                onClick={onToggle}
+                className="flex w-full items-start gap-4 py-4 text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/40 rounded-lg px-3 -mx-3"
             >
-                {/* Subtle glow effect when lifted */}
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"
-                    />
-                )}
+                {/* Year pill */}
+                <span className="mt-0.5 flex h-7 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 tabular-nums">
+                    {year}
+                </span>
 
-                {/* Timeline dot / Logo */}
-                <div className="relative z-10 flex-shrink-0">
-                    <motion.div
-                        animate={{
-                            scale: isOpen ? 1.1 : 1,
-                            boxShadow: isOpen
-                                ? "0 8px 25px -5px rgba(0,0,0,0.2)"
-                                : "0 1px 3px rgba(0,0,0,0.1)",
-                        }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className={`
-                            w-10 h-10 rounded-full flex items-center justify-center overflow-hidden
-                            bg-white dark:bg-neutral-800 border-2
-                            ${isOpen
-                                ? "border-gray-300 dark:border-neutral-600"
-                                : "border-gray-200 dark:border-neutral-700"
-                            }
-                        `}
-                    >
-                        {entry.logoUrl ? (
-                            <img src={getOptimizedImageUrl(entry.logoUrl)} alt={entry.organization} className="w-6 h-6 object-contain" width={24} height={24} loading="lazy" decoding="async" />
-                        ) : (
-                            <Icon className={`w-4 h-4 ${isOpen ? "text-gray-700 dark:text-neutral-200" : "text-gray-400 dark:text-neutral-500"}`} />
-                        )}
-                    </motion.div>
+                {/* Icon / Logo */}
+                <div
+                    className={`mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full overflow-hidden ${entry.logoUrl
+                        ? "bg-neutral-100 dark:bg-neutral-800"
+                        : isWork
+                            ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                            : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
+                        }`}
+                >
+                    {entry.logoUrl ? (
+                        <img
+                            src={getOptimizedImageUrl(entry.logoUrl)}
+                            alt={entry.organization}
+                            className="w-5 h-5 object-contain"
+                        />
+                    ) : (
+                        <Icon className="size-3.5" />
+                    )}
                 </div>
 
-                {/* Content */}
+                {/* Title area */}
                 <div className="flex-1 min-w-0">
-                    {/* Header */}
-                    <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 pt-0.5">
-                            <h3 className={`font-semibold text-base leading-snug transition-colors duration-200 ${isOpen ? "text-gray-900 dark:text-white" : "text-gray-700 dark:text-neutral-200"}`}>
-                                {entry.title}
-                            </h3>
-                            <p className="text-sm text-gray-500 dark:text-neutral-400 mt-0.5 font-medium">
-                                {entry.organization}
-                            </p>
-                            <p className="text-xs text-gray-400 dark:text-neutral-500 mt-1 font-mono tracking-tight">
-                                {entry.period}
-                            </p>
-                        </div>
-
-                        {hasExpandableContent && (
-                            <motion.div
-                                animate={{
-                                    rotate: isOpen ? 180 : 0,
-                                    scale: isOpen ? 1.1 : 1,
-                                }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                className="mt-1.5 p-1 rounded-full bg-gray-100 dark:bg-neutral-800"
-                            >
-                                <ChevronDown className={`w-4 h-4 ${isOpen ? "text-gray-700 dark:text-neutral-200" : "text-gray-400 dark:text-neutral-500"}`} />
-                            </motion.div>
-                        )}
-                    </div>
-
-                    {/* Expandable content with 3D reveal */}
-                    <AnimatePresence>
-                        {isOpen && (
-                            <motion.div
-                                initial={{
-                                    height: 0,
-                                    opacity: 0,
-                                    y: -10,
-                                }}
-                                animate={{
-                                    height: "auto",
-                                    opacity: 1,
-                                    y: 0,
-                                }}
-                                exit={{
-                                    height: 0,
-                                    opacity: 0,
-                                    y: -10,
-                                }}
-                                transition={{
-                                    height: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
-                                    opacity: { duration: 0.3, delay: 0.1 },
-                                    y: { duration: 0.3, delay: 0.1 },
-                                }}
-                                className="overflow-hidden"
-                            >
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.15, duration: 0.3 }}
-                                    className="pt-4 mt-4 border-t border-gray-100 dark:border-neutral-800 space-y-4"
-                                >
-                                    {/* Description */}
-                                    {entry.description && (
-                                        <p className="text-sm text-gray-600 dark:text-neutral-300 leading-relaxed">
-                                            {entry.description}
-                                        </p>
-                                    )}
-
-                                    {/* Skills as floating pills */}
-                                    {entry.skills && entry.skills.length > 0 && (
-                                        <motion.div
-                                            initial="hidden"
-                                            animate="visible"
-                                            variants={{
-                                                visible: {
-                                                    transition: { staggerChildren: 0.05 }
-                                                }
-                                            }}
-                                            className="flex flex-wrap gap-2"
-                                        >
-                                            {entry.skills.map((skill, i) => (
-                                                <motion.span
-                                                    key={skill}
-                                                    variants={{
-                                                        hidden: { opacity: 0, scale: 0.8, y: 10 },
-                                                        visible: { opacity: 1, scale: 1, y: 0 }
-                                                    }}
-                                                    className="px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-neutral-300 rounded-full border border-gray-200 dark:border-neutral-700 shadow-sm"
-                                                >
-                                                    {skill}
-                                                </motion.span>
-                                            ))}
-                                        </motion.div>
-                                    )}
-
-                                    {/* Achievements */}
-                                    {entry.achievements && entry.achievements.length > 0 && (
-                                        <div className="space-y-2">
-                                            <span className="text-xs text-gray-500 dark:text-neutral-500 font-semibold uppercase tracking-wider">
-                                                Key Achievements
-                                            </span>
-                                            <ul className="space-y-2">
-                                                {entry.achievements.map((achievement, i) => (
-                                                    <motion.li
-                                                        key={i}
-                                                        initial={{ opacity: 0, x: -10 }}
-                                                        animate={{ opacity: 1, x: 0 }}
-                                                        transition={{ delay: 0.2 + i * 0.05 }}
-                                                        className="text-sm text-gray-600 dark:text-neutral-400 pl-4 relative before:absolute before:left-0 before:top-[0.5em] before:w-1.5 before:h-1.5 before:bg-gradient-to-r before:from-blue-400 before:to-purple-400 before:rounded-full"
-                                                    >
-                                                        {achievement}
-                                                    </motion.li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-
-                                    {/* Projects/Certifications */}
-                                    {entry.projects && entry.projects.length > 0 && (
-                                        <div className="space-y-2 pt-2">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setProjectsOpen(!projectsOpen)
-                                                }}
-                                                className="flex items-center gap-2 text-xs text-gray-500 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors group"
-                                            >
-                                                <span className="font-semibold uppercase tracking-wider">
-                                                    {entry.type === "education" && !entry.organization.includes("UMT") ? "Certifications" : "Projects"} ({entry.projects.length})
-                                                </span>
-                                                <motion.div
-                                                    animate={{ rotate: projectsOpen ? 180 : 0 }}
-                                                    transition={{ duration: 0.2 }}
-                                                >
-                                                    <ChevronDown className="w-3 h-3" />
-                                                </motion.div>
-                                            </button>
-
-                                            <AnimatePresence>
-                                                {projectsOpen && (
-                                                    <motion.div
-                                                        initial={{ height: 0, opacity: 0 }}
-                                                        animate={{ height: "auto", opacity: 1 }}
-                                                        exit={{ height: 0, opacity: 0 }}
-                                                        transition={{ duration: 0.25 }}
-                                                        className="overflow-hidden"
-                                                    >
-                                                        <div className="space-y-2 pl-3 border-l-2 border-gray-200 dark:border-neutral-700 my-2">
-                                                            {entry.projects.map((project, i) => (
-                                                                <div key={i} className="py-1.5">
-                                                                    <div className="flex items-start justify-between gap-2">
-                                                                        <span className="text-sm text-gray-700 dark:text-neutral-300 font-medium">
-                                                                            {project.title}
-                                                                        </span>
-                                                                        {project.link && (
-                                                                            <a
-                                                                                href={project.link}
-                                                                                target="_blank"
-                                                                                rel="noopener noreferrer"
-                                                                                onClick={(e) => e.stopPropagation()}
-                                                                                className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 transition-colors"
-                                                                            >
-                                                                                View
-                                                                                <ExternalLink className="w-3 h-3" />
-                                                                            </a>
-                                                                        )}
-                                                                    </div>
-                                                                    {project.description && (
-                                                                        <p className="text-xs text-gray-500 dark:text-neutral-500 mt-0.5">
-                                                                            {project.description}
-                                                                        </p>
-                                                                    )}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
-                                        </div>
-                                    )}
-                                </motion.div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 leading-snug">
+                        {entry.title}
+                    </h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                        {entry.organization}
+                    </p>
                 </div>
-            </motion.div>
-        </motion.div>
+
+                {/* Expand indicator */}
+                <ChevronDown
+                    className={`mt-1 size-4 shrink-0 text-neutral-400 dark:text-neutral-500 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                        }`}
+                />
+            </button>
+
+            {/* Expandable content */}
+            <div
+                className={`grid transition-all duration-300 ease-in-out ${isExpanded
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0"
+                    }`}
+            >
+                <div className="overflow-hidden">
+                    <div className="pb-4 pl-[7.5rem] pr-3">
+                        {entry.description && (
+                            <p className="text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+                                {entry.description}
+                            </p>
+                        )}
+
+                        {/* Achievements shown as impact lines */}
+                        {entry.achievements && entry.achievements.filter(a => a.trim()).length > 0 && (
+                            <div className="mt-3 space-y-1">
+                                {entry.achievements.filter(a => a.trim()).map((achievement, i) => (
+                                    <div key={i} className="flex items-center gap-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                        <TrendingUp className="size-3.5" />
+                                        <span>{achievement}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {entry.skills && entry.skills.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-1.5">
+                                {entry.skills.map((skill) => (
+                                    <Badge
+                                        key={skill}
+                                        variant="secondary"
+                                        className="px-2 py-0.5 text-[10px] font-normal"
+                                    >
+                                        {skill}
+                                    </Badge>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Projects / Certifications */}
+                        {entry.projects && entry.projects.length > 0 && (() => {
+                            const isUMT = entry.organization.includes("UMT")
+                            const isSelfDev = entry.title.includes("Continuous Learning")
+                            const alwaysExpanded = isUMT || isSelfDev
+                            const label = isUMT ? "Projects" : isSelfDev ? "Courses" : "Certifications"
+
+                            const projectsList = (
+                                <div className="space-y-2 pl-3 border-l border-neutral-200 dark:border-neutral-700">
+                                    {entry.projects!.map((project, i) => (
+                                        <div key={i} className="py-1">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <span className="text-sm text-neutral-600 dark:text-neutral-400">{project.title}</span>
+                                                {project.link && (
+                                                    <a
+                                                        href={project.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-1 text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors shrink-0"
+                                                    >
+                                                        View
+                                                        <ExternalLink className="w-3 h-3" />
+                                                    </a>
+                                                )}
+                                            </div>
+                                            {project.description && (
+                                                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5 whitespace-pre-line">{project.description}</p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )
+
+                            if (alwaysExpanded) {
+                                // UMT / Continuous Learning: always visible
+                                return (
+                                    <div className="mt-3 space-y-2">
+                                        <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500">
+                                            {label} ({entry.projects!.length})
+                                        </span>
+                                        {projectsList}
+                                    </div>
+                                )
+                            }
+
+                            // Everything else: collapsible, labeled "Certifications"
+                            return (
+                                <div className="mt-3 space-y-2">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setProjectsOpen(!projectsOpen)
+                                        }}
+                                        className="flex items-center gap-2 text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+                                    >
+                                        <span className="font-medium">
+                                            {label} ({entry.projects!.length})
+                                        </span>
+                                        <ChevronDown
+                                            className={`w-3 h-3 transition-transform duration-200 ${projectsOpen ? "rotate-180" : ""}`}
+                                        />
+                                    </button>
+                                    <div
+                                        className={`grid transition-all duration-300 ${projectsOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                                    >
+                                        <div className="overflow-hidden">
+                                            {projectsList}
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })()}
+                    </div>
+                </div>
+            </div>
+
+            {/* Separator between items */}
+            {!isLast && <Separator />}
+        </div>
     )
 }
 
 export default function JourneySection() {
     const [timelineData, setTimelineData] = useState<TimelineEntry[]>(fallbackTimelineData)
     const [isLoading, setIsLoading] = useState(true)
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
 
     useEffect(() => {
         async function fetchContent() {
@@ -357,7 +276,7 @@ export default function JourneySection() {
                             organization: edu.institution,
                             period: edu.dateRange,
                             logoUrl: edu.institutionLogoUrl || undefined,
-                            description: edu.coursework || undefined,
+                            description: edu.description || edu.coursework || undefined,
                             skills: edu.coursework ? edu.coursework.split(",").map((s: string) => s.trim()).filter((s: string) => s) : undefined,
                             achievements: edu.achievements?.filter((a: string) => a.trim()) || undefined,
                             projects: edu.certifications?.map((cert: any) => ({
@@ -411,44 +330,35 @@ export default function JourneySection() {
         <section className="mt-10 sm:mt-14" data-section="journey">
             <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
-                    <h2 className="font-semibold text-lg text-gray-900 dark:text-neutral-100">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-neutral-100">
                         My Journey
                     </h2>
-                    <p className="text-sm text-gray-500 dark:text-neutral-400 mt-1">
-                        A timeline of where I{"'"}ve been and what I{"'"}ve learned along the way.
-                    </p>
                 </div>
 
                 <div className="relative">
-                    <AnimatePresence mode="wait">
-                        {isLoading ? (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="flex items-center gap-3 text-gray-400 dark:text-neutral-500 text-sm py-12"
-                            >
-                                <div className="w-4 h-4 border-2 border-gray-300 dark:border-neutral-600 border-t-gray-500 dark:border-t-neutral-400 rounded-full animate-spin" />
-                                Loading timeline...
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                {timelineData.map((entry, index) => (
-                                    <TimelineItem
-                                        key={entry.id}
-                                        entry={entry}
-                                        isLast={index === timelineData.length - 1}
-                                        index={index}
-                                    />
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    {isLoading ? (
+                        <div className="flex items-center gap-3 text-gray-400 dark:text-neutral-500 text-sm py-12">
+                            <div className="w-4 h-4 border-2 border-gray-300 dark:border-neutral-600 border-t-gray-500 dark:border-t-neutral-400 rounded-full animate-spin" />
+                            Loading timeline...
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-0">
+                            {timelineData.map((entry, index) => (
+                                <TimelineItem
+                                    key={entry.id}
+                                    entry={entry}
+                                    isExpanded={expandedIndex === index}
+                                    onToggle={() =>
+                                        setExpandedIndex(expandedIndex === index ? null : index)
+                                    }
+                                    isLast={index === timelineData.length - 1}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
+
+
             </div>
         </section>
     )

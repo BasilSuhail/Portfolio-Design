@@ -21,7 +21,7 @@ export default function TestimonialsSection({
   return (
     <section className="mt-10 sm:mt-14" data-testid="section-testimonials" data-section="testimonials">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-3 font-medium text-gray-800 dark:text-neutral-200">
+        <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-neutral-100">
           Testimonials
         </h2>
 
