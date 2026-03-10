@@ -148,7 +148,7 @@ export default function News() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-neutral-950 flex items-center justify-center">
         <div className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-gray-400 rounded-full dark:text-neutral-500" role="status" aria-label="loading">
           <span className="sr-only">Loading...</span>
         </div>
@@ -157,7 +157,7 @@ export default function News() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-900">
+    <div className="min-h-screen bg-white dark:bg-neutral-950">
       <ScrollIndicator sections={newsSections} />
       <Navigation name={content?.profile?.name || "Portfolio"} />
 

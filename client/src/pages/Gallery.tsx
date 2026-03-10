@@ -53,7 +53,7 @@ export default function Gallery() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <div className="min-h-screen bg-white dark:bg-neutral-950">
         <Navigation name={content?.profile?.name || "Portfolio"} />
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="flex items-center justify-center">
@@ -69,7 +69,7 @@ export default function Gallery() {
 
   if (error || !isVisible) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <div className="min-h-screen bg-white dark:bg-neutral-950">
         <Navigation name={content?.profile?.name || "Portfolio"} />
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center space-y-4">
@@ -91,7 +91,7 @@ export default function Gallery() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-900">
+    <div className="min-h-screen bg-white dark:bg-neutral-950">
       <Helmet>
         <title>Gallery | {content?.profile?.name || "Basil Suhail"}</title>
         <meta name="description" content="Photo gallery - moments captured through my lens" />

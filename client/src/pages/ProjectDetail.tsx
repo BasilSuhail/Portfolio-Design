@@ -29,7 +29,7 @@ export default function ProjectDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <div className="min-h-screen bg-white dark:bg-neutral-950">
         <Navigation name={content?.profile?.name || "Portfolio"} />
         <div className="flex items-center justify-center py-20">
           <div className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-gray-400 rounded-full dark:text-neutral-500" role="status" aria-label="loading">
@@ -43,7 +43,7 @@ export default function ProjectDetail() {
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <div className="min-h-screen bg-white dark:bg-neutral-950">
         <Navigation name={content?.profile?.name || "Portfolio"} />
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
@@ -62,7 +62,7 @@ export default function ProjectDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-900">
+    <div className="min-h-screen bg-white dark:bg-neutral-950">
       <Helmet>
         <title>{project.title} | {content?.profile?.name || "Basil Suhail"}</title>
         <meta name="description" content={project.description || project.title} />
