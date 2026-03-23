@@ -718,9 +718,16 @@ export async function registerRoutes(
     }
   });
 
-  // Run a fresh backtest
+  // Run a fresh backtest (rate-limited: 1 run per 10 minutes)
+  let lastBacktestRun = 0;
   app.get("/api/intelligence/backtest/run", async (req: Request, res: Response) => {
     try {
+      const now = Date.now();
+      if (now - lastBacktestRun < 10 * 60 * 1000) {
+        const waitSec = Math.ceil((10 * 60 * 1000 - (now - lastBacktestRun)) / 1000);
+        return res.status(429).json({ message: `Rate limited. Try again in ${waitSec}s.` });
+      }
+      lastBacktestRun = now;
       const days = parseInt(req.query.days as string) || 30;
       console.log(`[Backtest] Running backtest for ${days} days...`);
       const result = await hindsightValidator.runBacktest(Math.min(days, 90));
@@ -747,9 +754,16 @@ export async function registerRoutes(
   // WEIGHT OPTIMIZATION ROUTES
   // ========================================
 
-  // Trigger weight optimization (grid search)
+  // Trigger weight optimization (rate-limited: 1 run per 10 minutes)
+  let lastOptimizeRun = 0;
   app.get("/api/intelligence/optimize-weights", async (req: Request, res: Response) => {
     try {
+      const now = Date.now();
+      if (now - lastOptimizeRun < 10 * 60 * 1000) {
+        const waitSec = Math.ceil((10 * 60 * 1000 - (now - lastOptimizeRun)) / 1000);
+        return res.status(429).json({ message: `Rate limited. Try again in ${waitSec}s.` });
+      }
+      lastOptimizeRun = now;
       const days = parseInt(req.query.days as string) || 30;
       console.log(`[WeightOptimizer] Optimization requested for ${days} days...`);
       const result = await weightOptimizer.optimize(Math.min(days, 90));
