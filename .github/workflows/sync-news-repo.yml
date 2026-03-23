@@ -1,0 +1,157 @@
+# .github/workflows/sync-news-repo.yml
+#
+# Auto-syncs news intelligence code to the standalone showcase repo.
+# Triggers only when news-related files change on main.
+#
+# ONE-TIME SETUP:
+# 1. Go to https://github.com/settings/tokens -> Generate new token (classic)
+#    - Give it "repo" scope -> copy the token
+# 2. Portfolio-Design repo -> Settings -> Secrets -> Actions
+#    - Add secret: STANDALONE_REPO_TOKEN = your token
+# 3. Push this file. Done.
+
+name: Sync News Intelligence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # --- Backend intelligence pipeline ---
+      - 'server/intelligence/**'
+      - 'server/geminiPool.ts'
+      - 'server/marketIntelligence.ts'
+      - 'server/newsService.ts'
+      - 'server/rssService.ts'
+      - 'server/sentimentService.ts'
+      - 'server/supabase.ts'
+      # --- Frontend intelligence ---
+      - 'client/src/components/intelligence/**'
+      - 'client/src/pages/MarketTerminal.tsx'
+      - 'client/src/components/GPRGauge.tsx'
+      - 'client/src/types/intelligence.ts'
+      # --- Shared & config ---
+      - 'shared/schema.ts'
+      - '.env.example'
+      # --- Docs ---
+      - 'News-Architecture/**'
+
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout portfolio repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone standalone repo
+        run: |
+          git clone https://x-access-token:${{ secrets.STANDALONE_REPO_TOKEN }}@github.com/BasilSuhail/news-intelligence-platform.git standalone
+          cd standalone
+          git config user.name "Basil Suhail"
+          git config user.email "basilsuhailkhan@gmail.com"
+
+      - name: Sync intelligence code
+        run: |
+          # Only remove the folders we manage — never touch standalone-only files
+          # like README.md, .gitignore, LICENSE, standalone package.json, etc.
+          rm -rf standalone/server
+          rm -rf standalone/client
+          rm -rf standalone/shared
+          rm -rf standalone/News-Architecture
+
+          # ========== BACKEND ==========
+
+          # Core intelligence pipeline (the full system)
+          mkdir -p standalone/server/intelligence
+          cp -r server/intelligence/* standalone/server/intelligence/
+
+          # Direct server dependencies the pipeline imports
+          cp server/geminiPool.ts         standalone/server/
+          cp server/marketIntelligence.ts standalone/server/
+          cp server/newsService.ts        standalone/server/
+          cp server/rssService.ts         standalone/server/
+          cp server/sentimentService.ts   standalone/server/
+          cp server/supabase.ts           standalone/server/
+
+          # Server config directory (if it exists)
+          if [ -d "server/config" ]; then
+            mkdir -p standalone/server/config
+            cp -r server/config/* standalone/server/config/
+          fi
+
+          # ========== FRONTEND ==========
+
+          # Intelligence components
+          mkdir -p standalone/client/src/components/intelligence
+          cp -r client/src/components/intelligence/* standalone/client/src/components/intelligence/
+
+          # Main dashboard page
+          mkdir -p standalone/client/src/pages
+          cp client/src/pages/MarketTerminal.tsx standalone/client/src/pages/
+
+          # Components imported by MarketTerminal / intelligence
+          cp client/src/components/GPRGauge.tsx       standalone/client/src/components/
+
+          # UI components used by intelligence (only badge & button)
+          mkdir -p standalone/client/src/components/ui
+          cp client/src/components/ui/badge.tsx  standalone/client/src/components/ui/
+          cp client/src/components/ui/button.tsx standalone/client/src/components/ui/
+
+          # Types
+          mkdir -p standalone/client/src/types
+          if [ -f "client/src/types/intelligence.ts" ]; then
+            cp client/src/types/intelligence.ts standalone/client/src/types/
+          fi
+
+          # Hooks used by intelligence components
+          mkdir -p standalone/client/src/hooks
+          for hook in use-toast.ts use-mobile.tsx; do
+            [ -f "client/src/hooks/$hook" ] && cp "client/src/hooks/$hook" standalone/client/src/hooks/
+          done
+
+          # Lib utilities
+          mkdir -p standalone/client/src/lib
+          for lib in utils.ts queryClient.ts; do
+            [ -f "client/src/lib/$lib" ] && cp "client/src/lib/$lib" standalone/client/src/lib/
+          done
+
+          # ========== SHARED ==========
+
+          mkdir -p standalone/shared
+          cp shared/schema.ts standalone/shared/
+
+          # ========== DOCS ==========
+
+          if [ -d "News-Architecture" ]; then
+            mkdir -p standalone/News-Architecture
+            cp -r News-Architecture/* standalone/News-Architecture/
+          fi
+
+          # ========== CONFIG (safe copies) ==========
+
+          # .env.example only (never .env)
+          cp .env.example standalone/ 2>/dev/null || true
+          cp tsconfig.json standalone/ 2>/dev/null || true
+          cp drizzle.config.ts standalone/ 2>/dev/null || true
+          cp tailwind.config.ts standalone/ 2>/dev/null || true
+
+      - name: Push to standalone repo
+        run: |
+          cd standalone
+
+          git add -A
+
+          # Exit cleanly if nothing changed
+          if git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+
+          # Use the portfolio commit message, prefixed with "sync:"
+          COMMIT_MSG=$(cd .. && git log -1 --pretty=format:"%s")
+          git commit -m "sync: $COMMIT_MSG"
+          git push origin main
