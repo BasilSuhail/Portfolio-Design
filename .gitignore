@@ -1,20 +1,29 @@
-node_modules
+# OS files
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
 .env
 .env.local
-.env.production
-dist
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Don't track gallery data (persisted via Docker volumes)
-gallery.json
-gallery_settings.json
-gallery-data/*.json
-!gallery-data/.gitkeep
+# IDE
+.vscode/
+.idea/
 
-# Don't track news data (persisted via Docker volumes)
-news_feed.json
-news-data/*.json
-!news-data/.gitkeep
+# Next.js
+.next/
+out/
+build/
+
+# Local/Gemini
+.gemini/
+docs/superpowers/
