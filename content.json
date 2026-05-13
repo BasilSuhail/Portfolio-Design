@@ -1,13 +1,14 @@
 {
   "hero": {
     "name": "Basil Suhail",
-    "title": "Full Stack Engineer",
+    "title": "AI Developer",
     "titles": [
-      "Full Stack Engineer",
-      "AI Enthusiast",
+      "AI Developer",
+      "Data Scientist",
+      "Finance Engineer",
       "Product Builder"
     ],
-    "bio": "Building robust and scalable applications with modern technologies. Passionate about user experience and clean code.",
+    "bio": "I sit at the intersection of financial logic and AI engineering. Four years in accounting and finance taught me where spreadsheets break down and where data lies. Now I build the tools that replace them.",
     "avatarUrl": "",
     "avatarFallback": "BS"
   },
@@ -47,19 +48,28 @@
   },
   "profile": {
     "name": "Basil Suhail",
-    "title": "Data Science & Business Student",
+    "title": "AI Developer & Data Scientist",
     "titles": [
-      "Data Science Student",
-      "Finance Enthusiast",
-      "Business Analyst",
-      "Aspiring Data Scientist"
+      "AI Developer",
+      "Data Scientist",
+      "Finance Engineer",
+      "Product Builder"
     ],
-    "bio": "Hey, I'm Basil a student at University of Aberdeen [img:/uploads/UoA.png], Scotland [img:/uploads/Scotflag.png]. I spend most of my time integrating Data Science into the world of Accounting & Finance. I'm passionate about Business Management, accessible AI, and building the future of automated financial reporting.",
+    "bio": "I sit at the intersection of financial logic and AI engineering. Four years in accounting and finance taught me where spreadsheets break down and where data lies. Now I build the tools that replace them.",
     "email": "basilsuhailkhan@gmail.com",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
   "projects": [
+    {
+      "id": "5",
+      "title": "HomeForge (dhobs)",
+      "description": "High-availability private cloud and AI appliance. Hub-and-Spokes architecture with Docker-in-Docker, zero-trust secrets via HKDF-SHA512, TOTP 2FA, and 15+ integrated services including Ollama, Nextcloud, and Matrix.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/dlobs-co/dhobs",
+      "imageUrl": "",
+      "tags": ["TypeScript", "Docker", "Next.js", "Go", "Linux"]
+    },
     {
       "id": "4",
       "title": "Market Intelligence Platform",
@@ -68,12 +78,7 @@
       "liveUrl": "/news",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": [
-        "TypeScript",
-        "ML",
-        "React",
-        "SQLite"
-      ]
+      "tags": ["TypeScript", "ML", "React", "SQLite"]
     },
     {
       "id": "1",
@@ -83,11 +88,32 @@
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
       "imageUrl": "/uploads/Budgeting.png",
-      "tags": [
-        "React",
-        "TypeScript",
-        "Finance"
-      ]
+      "tags": ["React", "TypeScript", "Finance"]
+    },
+    {
+      "id": "6",
+      "title": "deerflow",
+      "description": "High-performance research and task management application for the HomeForge ecosystem. Centralized intelligence hub for deep work sessions with local LLM integration.",
+      "category": "AI Tools",
+      "imageUrl": "",
+      "tags": ["Next.js", "TypeScript", "Ollama", "Tailwind"]
+    },
+    {
+      "id": "7",
+      "title": "Felix 🦊 + Maria",
+      "description": "Terminal agent launchers for macOS. Felix tiles side-by-side Claude, Gemini, and Aider windows via Spotlight. Maria handles research workflows. Preset-driven layouts for multi-agent AI development.",
+      "category": "Developer Tools",
+      "imageUrl": "",
+      "tags": ["Python", "AppleScript", "macOS"]
+    },
+    {
+      "id": "8",
+      "title": "GitHub Protocols",
+      "description": "4-layer governance framework for AI-native development. Enforces 1:1:1 workflow (1 issue, 1 branch, 1 PR, 1 commit), identity standards, Gitleaks secret detection, and agent guardrails for Claude Code and Gemini CLI.",
+      "category": "DevOps & Governance",
+      "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
+      "imageUrl": "",
+      "tags": ["Git", "Bash", "DevOps", "Security"]
     },
     {
       "id": "2",
@@ -96,11 +122,7 @@
       "category": "Machine Learning",
       "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
       "imageUrl": "/uploads/Investment.png",
-      "tags": [
-        "Python",
-        "Machine Learning",
-        "Finance"
-      ]
+      "tags": ["Python", "Machine Learning", "Finance"]
     },
     {
       "id": "3",
@@ -109,14 +131,29 @@
       "category": "Education",
       "githubUrl": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
       "imageUrl": "/uploads/interview.png",
-      "tags": [
-        "Python",
-        "Data Science",
-        "Education"
-      ]
+      "tags": ["Python", "Data Science", "Education"]
     }
   ],
   "experiences": [
+    {
+      "id": "1765999999002",
+      "dateRange": "Feb 2026 - Apr 2026",
+      "role": "Graduate Consultant",
+      "company": "CAG Consultants",
+      "companyColor": "#16a34a",
+      "description": "Fixed-term consultancy project for a nature and biodiversity practice. Mapped 35+ competitor consultancies and identified 20+ specialist partners to strengthen bid capacity. Produced carbon benchmarking analysis showing CAG's footprint significantly below SME average — carbon scoring was weighted 20% in a recent tender. Developed a 3-phase content strategy (Forecasting, Insider, Value-driven) and a 3-step email nurture funnel with a lead magnet concept.",
+      "customSections": [
+        {
+          "label": "Core Focus:",
+          "items": [
+            {
+              "name": "Market Research, Carbon Analysis, Content Strategy, SEO"
+            }
+          ]
+        }
+      ],
+      "tags": ["Consulting"]
+    },
     {
       "id": "1",
       "dateRange": "Jul 2024 - Aug 2025",
@@ -135,9 +172,7 @@
         }
       ],
       "companyLogoUrl": "/uploads/dubizzle.png",
-      "tags": [
-        "Automation"
-      ],
+      "tags": ["Automation"],
       "stats": {
         "value": 1000,
         "label": "Daily Trans",
@@ -163,9 +198,7 @@
           ]
         }
       ],
-      "tags": [
-        "ERP Systems"
-      ]
+      "tags": ["ERP Systems"]
     },
     {
       "id": "1765560749602",
@@ -185,9 +218,7 @@
           ]
         }
       ],
-      "tags": [
-        "Finance Fundamentals"
-      ],
+      "tags": ["Finance Fundamentals"],
       "certifications": [
         {
           "name": "Dynamics 365",
@@ -248,9 +279,7 @@
         }
       ],
       "achievements": [],
-      "tags": [
-        "AI Architect"
-      ]
+      "tags": ["AI Architect"]
     },
     {
       "id": "2",
@@ -291,20 +320,43 @@
         "Rector's Merit Award (Jul 2024)",
         "Dean's Merit Award (Sep 2023)"
       ],
-      "tags": [
-        "Financial Modeling"
-      ]
+      "tags": ["Financial Modeling"]
     },
     {
       "id": "3",
-      "dateRange": "2026 - Present",
+      "dateRange": "2024 - Present",
       "degree": "Continuous Learning",
       "institution": "Professional Certifications & Self-Directed Development",
       "institutionLogoUrl": "",
       "institutionColor": "#7c3aed",
       "coursework": "SQL, Tableau, Power BI, DAX, Power Query, Statistical Modeling, Data Visualization, Database Design, ETL, Time Intelligence",
-      "description": "Actively pursuing professional certifications and self-directed courses to deepen my expertise in business intelligence, data visualization, and analytics tooling.",
+      "description": "Actively pursuing professional certifications and self-directed courses to deepen expertise in AI engineering, business intelligence, and data analytics.",
       "certifications": [
+        {
+          "name": "Claude with the Anthropic API",
+          "description": "Anthropic · April 2026\nBuilding AI applications with the Claude API including tool use, prompt engineering, and context management.",
+          "url": ""
+        },
+        {
+          "name": "Claude Code in Action",
+          "description": "Anthropic · April 2026\nAgentic coding workflows, hooks, MCP integration, and AI-native development with Claude Code CLI.",
+          "url": ""
+        },
+        {
+          "name": "Introduction to Model Context Protocol",
+          "description": "Anthropic · April 2026\nBuilding and integrating MCP servers for cross-application data sharing and agentic tool use.",
+          "url": ""
+        },
+        {
+          "name": "Introduction to Agent Skills",
+          "description": "Anthropic · April 2026\nDesigning and deploying custom agent skills for AI-native development workflows.",
+          "url": ""
+        },
+        {
+          "name": "McKinsey Forward Program",
+          "description": "McKinsey & Company · July 2024\nProblem solving, structured thinking, and leadership frameworks from McKinsey's global learning platform.",
+          "url": ""
+        },
         {
           "name": "Business Intelligence Analyst",
           "description": "365 Careers\nDatabase theory • SQL • Tableau • Statistical modeling\n\nKey Learning:\n• Relational database design & normalization\n• Complex SQL queries, joins & data extraction\n• Tableau dashboards & visual analytics\n• Statistical testing & business forecasting\n• SQL + Tableau integration for real-world BI tasks\n\n↳ Credential: UC-cd3f85fa-05a2-41b8-afd7-f4b743cfb045",
@@ -317,9 +369,7 @@
         }
       ],
       "achievements": [],
-      "tags": [
-        "Self Development"
-      ]
+      "tags": ["Self Development"]
     }
   ],
   "testimonials": [
@@ -349,55 +399,121 @@
     },
     {
       "id": "2",
+      "name": "TypeScript",
+      "icon": "typescript",
+      "category": "Development"
+    },
+    {
+      "id": "3",
       "name": "JavaScript",
       "icon": "javascript",
       "category": "Development"
     },
     {
-      "id": "3",
+      "id": "4",
       "name": "SQL",
       "icon": "sql",
       "category": "Development"
     },
     {
-      "id": "4",
+      "id": "20",
+      "name": "React",
+      "icon": "react",
+      "category": "Development"
+    },
+    {
+      "id": "21",
+      "name": "Next.js",
+      "icon": "nextjs",
+      "category": "Development"
+    },
+    {
+      "id": "22",
+      "name": "FastAPI",
+      "icon": "fastapi",
+      "category": "Development"
+    },
+    {
+      "id": "23",
+      "name": "Tailwind CSS",
+      "icon": "tailwind",
+      "category": "Development"
+    },
+    {
+      "id": "5",
       "name": "NumPy",
       "icon": "numpy",
       "category": "Development"
     },
     {
-      "id": "5",
+      "id": "6",
       "name": "Pandas",
       "icon": "pandas",
       "category": "Development"
     },
     {
-      "id": "6",
+      "id": "7",
       "name": "Matplotlib",
       "icon": "/uploads/matplotlib.svg",
       "category": "Development"
     },
     {
-      "id": "7",
+      "id": "24",
+      "name": "Supabase",
+      "icon": "supabase",
+      "category": "Infrastructure"
+    },
+    {
+      "id": "25",
+      "name": "Docker",
+      "icon": "docker",
+      "category": "Infrastructure"
+    },
+    {
+      "id": "26",
+      "name": "Linux",
+      "icon": "linux",
+      "category": "Infrastructure"
+    },
+    {
+      "id": "27",
+      "name": "Ollama",
+      "icon": "ollama",
+      "category": "AI & ML"
+    },
+    {
+      "id": "28",
+      "name": "LLaMA",
+      "icon": "llama",
+      "category": "AI & ML"
+    },
+    {
+      "id": "29",
+      "name": "MCP (Model Context Protocol)",
+      "icon": "mcp",
+      "category": "AI & ML"
+    },
+    {
+      "id": "30",
+      "name": "FinBERT",
+      "icon": "finbert",
+      "category": "AI & ML"
+    },
+    {
+      "id": "8",
       "name": "Sage 300",
       "icon": "/uploads/Sage.png",
       "category": "Data Skills"
     },
     {
-      "id": "8",
+      "id": "9",
       "name": "Microsoft Dynamics 365",
       "icon": "/uploads/msdynamics.png",
       "category": "Data Skills"
     },
     {
-      "id": "9",
-      "name": "Advanced Excel (Pivot Tables, Vlookup)",
-      "icon": "/uploads/excel.png",
-      "category": "Data Skills"
-    },
-    {
       "id": "10",
-      "name": "Variance Analysis",
+      "name": "Advanced Excel (Pivot Tables, Vlookup)",
       "icon": "/uploads/excel.png",
       "category": "Data Skills"
     },
@@ -409,20 +525,14 @@
     },
     {
       "id": "12",
-      "name": "Flowcharting",
-      "icon": "/uploads/excel.png",
+      "name": "Tableau",
+      "icon": "tableau",
       "category": "Data Skills"
     },
     {
       "id": "13",
-      "name": "Canva",
-      "icon": "canva",
-      "category": "Data Skills"
-    },
-    {
-      "id": "14",
-      "name": "PowerPoint",
-      "icon": "/uploads/powerpoint.png",
+      "name": "Power BI",
+      "icon": "/uploads/powerbi.png",
       "category": "Data Skills"
     },
     {
