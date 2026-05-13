@@ -27,3 +27,13 @@ build/
 # Local/Gemini
 .gemini/
 docs/superpowers/
+
+# Local dev
+*.log
+.DS_Store
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
