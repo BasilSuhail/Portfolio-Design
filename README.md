@@ -1,96 +1,57 @@
-# Portfolio Website
+# Basil Suhail — Portfolio
 
-Modern portfolio website with CMS capabilities, built with Next.js, React, and TypeScript.
+Personal portfolio and CMS built with React, TypeScript, Express, and SQLite.
 
-> **Live Demo:** [basilsuhail.com](https://basilsuhail.com)
-
----
-
-## 🎯 Project Goals
-
-- **Personal Brand:** Showcase projects, skills, and experience in a clean, modern interface.
-- **Content Management:** Integrated CMS to easily update blogs, project details, and contact information.
-- **Performance:** Fast page loads and SEO optimization using Next.js.
-- **Responsiveness:** Seamless experience across mobile, tablet, and desktop devices.
+> **Live:** [basilsuhail.com](https://basilsuhail.com) · **Market Terminal:** [basilsuhail.com/market-terminal](https://basilsuhail.com/market-terminal)
 
 ---
 
-## 🚀 Features
+## Stack
 
-- ✅ **Admin CMS** - Manage content at `/admin`
-- ✅ **Blog System** - Support for HTML and PDF blogs
-- ✅ **Interactive Project Gallery** - Filter and search through professional work.
-- ✅ **Dark Mode** - Full support for system-based or manual theme switching.
-- ✅ **Contact Integration** - Secure form handling powered by Formspree.
-
----
-
-## 🛠️ Tech Stack
-
-- **Framework:** Next.js (App Router), React 18
-- **Language:** TypeScript 5
-- **Styling:** Tailwind CSS, Framer Motion (Animations), Shadcn UI (Components)
-- **Backend:** Node.js, Express
-- **Documentation:** Markdown-based guides
+- **Frontend:** React 18, TypeScript, Tailwind CSS, Framer Motion, shadcn/ui
+- **Backend:** Express.js, SQLite (better-sqlite3), Drizzle ORM
+- **AI/ML:** FinBERT sentiment analysis, TF-IDF clustering, Geopolitical Risk Index
+- **Infra:** Docker, Dokploy, Nginx, GitHub Actions CI
 
 ---
 
-## 📂 Project Structure
-
-- `src/app/` - Next.js App Router pages and layouts.
-- `src/components/` - Reusable UI components.
-- `src/lib/` - Utility functions and data fetching logic.
-- `docs/` - Comprehensive guides for deployment and security.
-
----
-
-## 🔧 Quick Start
-
-### Installation
+## Local Development
 
 ```bash
-# Clone the repository
-git clone https://github.com/BasilSuhail/Portfolio-Design.git
-
-# Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your credentials
+npm run dev        # starts on port 3001 (port 5000 is taken by macOS)
 ```
 
-### Running Locally
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-```
+Admin panel: `http://localhost:3001/admin`
 
 ---
 
-## 📡 Admin Access
+## CI Pipeline
 
-Navigate to `/admin/login` and use your `ADMIN_PASSWORD` from `.env`.
+Every PR runs three checks via GitHub Actions:
+
+| Job | Command | Blocks |
+|---|---|---|
+| Type Check | `npm run check` | Yes |
+| Lint | `npm run lint` | Yes |
+| Build | `npm run build` | Yes (after typecheck + lint) |
 
 ---
 
-## 📜 License
+## Content Management
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+All portfolio content lives in `content.json`. Edit directly or use the admin panel at `/admin`.
+
+Key sections: `profile`, `projects`, `experiences`, `education`, `technologies`, `testimonials`.
 
 ---
 
-<div align="center">
+## Deployment
 
-**Built with ❤️ by Basil Suhail**
+Deployed via [Dokploy](https://dokploy.com) with Docker. Push to `main` triggers auto-deploy.
 
-[**Visit Portfolio**](https://basilsuhail.com) · [**Report Issue**](https://github.com/BasilSuhail/Portfolio-Design/issues)
+---
 
-</div>
+## License
+
+MIT
