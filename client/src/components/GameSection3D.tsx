@@ -297,8 +297,8 @@ function RetroPC({ gameCanvasRef, isZoomed, onScreenClick }: RetroPCProps) {
         </mesh>
 
         {/* Power button */}
-        <mesh position={[0.24, -0.25, 0.2]}>
-          <cylinderGeometry args={[0.04, 0.04, 0.02, 16]} rotation={[0, 0, Math.PI / 2]} />
+        <mesh position={[0.24, -0.25, 0.2]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.02, 16]} />
           <meshStandardMaterial color="#4a4a4a" roughness={0.3} />
         </mesh>
 
@@ -398,8 +398,8 @@ function RetroPC({ gameCanvasRef, isZoomed, onScreenClick }: RetroPCProps) {
           <meshStandardMaterial color="#333333" roughness={0.6} />
         </mesh>
         {/* Mouse cable */}
-        <mesh position={[0, 0.02, -0.15]}>
-          <cylinderGeometry args={[0.008, 0.008, 0.3, 8]} rotation={[Math.PI / 2, 0, 0]} />
+        <mesh position={[0, 0.02, -0.15]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.008, 0.008, 0.3, 8]} />
           <meshStandardMaterial color="#333333" roughness={0.7} />
         </mesh>
       </group>
@@ -422,14 +422,14 @@ function RetroPC({ gameCanvasRef, isZoomed, onScreenClick }: RetroPCProps) {
           CABLES (decorative)
       ═══════════════════════════════════════════════════════════════════════ */}
       {/* Monitor cable */}
-      <mesh position={[0.5, 0, -0.8]}>
-        <cylinderGeometry args={[0.015, 0.015, 1, 8]} rotation={[0, 0, Math.PI / 2]} />
+      <mesh position={[0.5, 0, -0.8]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.015, 0.015, 1, 8]} />
         <meshStandardMaterial color="#1a1a1a" roughness={0.8} />
       </mesh>
 
       {/* Keyboard cable */}
       <mesh position={[0, 0, 0.5]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[0.01, 0.01, 0.5, 8]} rotation={[Math.PI / 2, 0, 0]} />
+        <cylinderGeometry args={[0.01, 0.01, 0.5, 8]} />
         <meshStandardMaterial color="#1a1a1a" roughness={0.8} />
       </mesh>
     </group>

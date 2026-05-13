@@ -88,7 +88,7 @@ export default function Admin() {
     }
   };
 
-  const updateContent = (path: string[], value: any) => {
+  const updateContent = (path: (string | number)[], value: any) => {
     const updated = JSON.parse(JSON.stringify(currentContent));
     let current = updated;
 

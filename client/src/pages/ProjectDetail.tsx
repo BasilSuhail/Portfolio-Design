@@ -10,7 +10,7 @@ import { Helmet } from "react-helmet-async";
 
 export default function ProjectDetail() {
   const [, params] = useRoute("/project/:id");
-  const { data: content, isLoading } = useContent();
+  const { data: content, isLoading } = useContent() as { data: any; isLoading: boolean };
   const [project, setProject] = useState<any>(null);
 
   // Extract social links from content
@@ -22,7 +22,7 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     if (content && params?.id) {
-      const foundProject = content.projects.find((p) => p.id === params.id);
+      const foundProject = content.projects.find((p: any) => p.id === params.id);
       setProject(foundProject);
     }
   }, [content, params]);
