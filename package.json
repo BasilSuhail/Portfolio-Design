@@ -12,6 +12,7 @@
     "build": "tsx script/build.ts",
     "start": "rm -f /app/news_feed.json 2>/dev/null; ln -sf /app/news-data/news_feed.json /app/news_feed.json 2>/dev/null; echo '[Startup] Symlink created'; node init-news.js && NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
+    "lint": "eslint .",
     "db:push": "drizzle-kit push",
     "scrape-news": "node scrape-news.js"
   },
@@ -113,6 +114,7 @@
     "zod-validation-error": "^3.4.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@replit/vite-plugin-cartographer": "^0.4.4",
     "@replit/vite-plugin-dev-banner": "^0.1.1",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
@@ -132,10 +134,15 @@
     "@types/sanitize-html": "^2.16.0",
     "@types/sentiment": "^5.0.4",
     "@types/ws": "^8.5.13",
+    "@typescript-eslint/eslint-plugin": "^8.59.3",
+    "@typescript-eslint/parser": "^8.59.3",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
     "drizzle-kit": "^0.31.4",
     "esbuild": "^0.25.0",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",
     "terser": "^5.44.1",
