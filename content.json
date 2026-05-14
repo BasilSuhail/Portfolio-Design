@@ -8,7 +8,7 @@
       "Finance Engineer",
       "Product Builder"
     ],
-    "bio": "I sit at the intersection of financial logic and AI engineering. Four years in accounting and finance taught me where spreadsheets break down and where data lies. Now I build the tools that replace them.",
+    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
     "avatarUrl": "",
     "avatarFallback": "BS"
   },
@@ -28,7 +28,7 @@
     "experience": true,
     "education": true,
     "techStack": true,
-    "testimonials": true,
+    "testimonials": false,
     "writing": false,
     "contact": true,
     "game": true
@@ -55,8 +55,8 @@
       "Finance Engineer",
       "Product Builder"
     ],
-    "bio": "I sit at the intersection of financial logic and AI engineering. Four years in accounting and finance taught me where spreadsheets break down and where data lies. Now I build the tools that replace them.",
-    "email": "basilsuhailkhan@gmail.com",
+    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
+    "email": "basilsuhail3@gmail.com",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
