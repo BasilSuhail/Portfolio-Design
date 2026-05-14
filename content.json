@@ -9,7 +9,7 @@
       "Product Builder"
     ],
     "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
-    "avatarUrl": "",
+    "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
   "sectionOrder": [
@@ -31,7 +31,7 @@
     "testimonials": false,
     "writing": false,
     "contact": true,
-    "game": true
+    "game": false
   },
   "sectionIntros": {
     "projects": "Below are some select projects.",
@@ -62,15 +62,6 @@
   },
   "projects": [
     {
-      "id": "5",
-      "title": "HomeForge (dhobs)",
-      "description": "High-availability private cloud and AI appliance. Hub-and-Spokes architecture with Docker-in-Docker, zero-trust secrets via HKDF-SHA512, TOTP 2FA, and 15+ integrated services including Ollama, Nextcloud, and Matrix.",
-      "category": "Infrastructure & DevOps",
-      "githubUrl": "https://github.com/dlobs-co/dhobs",
-      "imageUrl": "",
-      "tags": ["TypeScript", "Docker", "Next.js", "Go", "Linux"]
-    },
-    {
       "id": "4",
       "title": "Market Intelligence Platform",
       "description": "Bloomberg Terminal-style intelligence platform processing 100+ sources with ML-powered sentiment analysis.",
@@ -79,6 +70,15 @@
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
       "tags": ["TypeScript", "ML", "React", "SQLite"]
+    },
+    {
+      "id": "5",
+      "title": "HomeForge (dhobs)",
+      "description": "High-availability private cloud and AI appliance. Hub-and-Spokes architecture with Docker-in-Docker, zero-trust secrets via HKDF-SHA512, TOTP 2FA, and 15+ integrated services including Ollama, Nextcloud, and Matrix.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/dlobs-co/dhobs",
+      "imageUrl": "",
+      "tags": ["TypeScript", "Docker", "Next.js", "Go", "Linux"]
     },
     {
       "id": "1",
@@ -95,6 +95,7 @@
       "title": "deerflow",
       "description": "High-performance research and task management application for the HomeForge ecosystem. Centralized intelligence hub for deep work sessions with local LLM integration.",
       "category": "AI Tools",
+      "githubUrl": "https://github.com/dlobs-co/dhobs",
       "imageUrl": "",
       "tags": ["Next.js", "TypeScript", "Ollama", "Tailwind"]
     },
