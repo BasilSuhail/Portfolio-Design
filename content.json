@@ -110,15 +110,6 @@
       "tags": ["React", "Finance"]
     },
     {
-      "id": "7",
-      "title": "Felix + Maria",
-      "description": "Two little macOS utilities I built for myself. Felix opens Claude, Gemini, and Aider side-by-side with one keystroke. Maria shuts them all down cleanly. Simple tools for a multi-agent workflow.",
-      "category": "Developer Tools",
-      "githubUrl": "https://github.com/BasilSuhail/felix-launcher",
-      "imageUrl": "",
-      "tags": ["Python", "AppleScript", "macOS"]
-    },
-    {
       "id": "8",
       "title": "GitHub Protocols",
       "description": "Rules I wrote to keep my repos clean when AI agents are committing code. Enforces one issue per branch, blocks secrets from being committed, and stops AI tools from overriding safety checks. This site's pre-commit hooks run on it.",
