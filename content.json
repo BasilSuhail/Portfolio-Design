@@ -8,7 +8,7 @@
       "Finance Engineer",
       "Product Builder"
     ],
-    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
+    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and infrastructure that runs on its own. TypeScript, Python, React, FastAPI — generalist by design.",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
@@ -28,13 +28,13 @@
     "experience": true,
     "education": true,
     "techStack": true,
-    "testimonials": false,
+    "testimonials": true,
     "writing": false,
     "contact": true,
     "game": false
   },
   "sectionIntros": {
-    "projects": "Below are some select projects.",
+    "projects": "Systems I have built, from intelligence pipelines to bare-metal infrastructure.",
     "journey": "A timeline of my career and education.",
     "experience": "Here's a brief overview of my career.",
     "education": "",
@@ -55,21 +55,40 @@
       "Finance Engineer",
       "Product Builder"
     ],
-    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
-    "email": "basilsuhail3@gmail.com",
+    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and infrastructure that runs on its own. TypeScript, Python, React, FastAPI — generalist by design.",
+    "email": "",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
   "projects": [
     {
+      "id": "10",
+      "title": "OSINT World Monitor",
+      "description": "Self-hosted world-event monitor. Collects news, conflict data, disasters, markets, cyber indicators, satellite fires, and aircraft presence. Composite country stress index. Backtests its own predictions and publishes where they failed.",
+      "category": "Intelligence & Data Engineering",
+      "liveUrl": "https://basilsuhail.github.io/OSINT/",
+      "githubUrl": "https://github.com/BasilSuhail/OSINT",
+      "imageUrl": "",
+      "tags": ["Python", "FastAPI", "Celery", "PostgreSQL"]
+    },
+    {
+      "id": "11",
+      "title": "Raspberry Pi Homelab",
+      "description": "Two-board homelab. One board runs OSINT ingest under Docker Compose, the other is a k3s control plane with a fleet dashboard. Nine self-hosted services including Jellyfin, Vaultwarden, Immich, and Kiwix. Tailscale mesh networking with real TLS.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/BasilSuhail/PI",
+      "imageUrl": "",
+      "tags": ["k3s", "Docker", "Tailscale", "Linux"]
+    },
+    {
       "id": "4",
       "title": "Market Intelligence Platform",
-      "description": "Bloomberg Terminal-style intelligence platform processing 100+ sources with ML-powered sentiment analysis.",
+      "description": "Bloomberg Terminal-style intelligence platform processing 500+ daily articles with FinBERT sentiment analysis, TF-IDF clustering, and a Geopolitical Risk Index engine.",
       "category": "Machine Learning & NLP",
       "liveUrl": "/news",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": ["TypeScript", "ML", "React", "SQLite"]
+      "tags": ["TypeScript", "FinBERT", "React", "SQLite"]
     },
     {
       "id": "5",
@@ -83,7 +102,7 @@
     {
       "id": "1",
       "title": "Budgeting Schedule Automation",
-      "description": "Automates 13-worksheet master budgets with instant cross-schedule calculations.",
+      "description": "Replaces traditional Excel master budgets. 13 linked financial schedules from sales forecast to cash flow, with automatic inter-schedule dependency resolution.",
       "category": "Finance Automation",
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
@@ -91,35 +110,44 @@
       "tags": ["React", "TypeScript", "Finance"]
     },
     {
-      "id": "6",
-      "title": "deerflow",
-      "description": "High-performance research and task management application for the HomeForge ecosystem. Centralized intelligence hub for deep work sessions with local LLM integration.",
+      "id": "12",
+      "title": "BallersBank Video Studio",
+      "description": "Agentic content engine for autonomous video production. LangGraph orchestrates a multi-step pipeline from script generation to final render via FastAPI.",
       "category": "AI Tools",
-      "githubUrl": "https://github.com/dlobs-co/dhobs",
       "imageUrl": "",
-      "tags": ["Next.js", "TypeScript", "Ollama", "Tailwind"]
+      "tags": ["Python", "LangGraph", "FastAPI"]
     },
     {
       "id": "7",
-      "title": "Felix 🦊 + Maria",
-      "description": "Terminal agent launchers for macOS. Felix tiles side-by-side Claude, Gemini, and Aider windows via Spotlight. Maria handles research workflows. Preset-driven layouts for multi-agent AI development.",
+      "title": "Felix + Maria",
+      "description": "Terminal agent launchers for macOS. Felix tiles side-by-side Claude, Gemini, and Aider windows via Spotlight. Maria handles graceful shutdown. Preset-driven layouts for multi-agent AI development.",
       "category": "Developer Tools",
+      "githubUrl": "https://github.com/BasilSuhail/felix-launcher",
       "imageUrl": "",
       "tags": ["Python", "AppleScript", "macOS"]
     },
     {
       "id": "8",
       "title": "GitHub Protocols",
-      "description": "4-layer governance framework for AI-native development. Enforces 1:1:1 workflow (1 issue, 1 branch, 1 PR, 1 commit), identity standards, Gitleaks secret detection, and agent guardrails for Claude Code and Gemini CLI.",
+      "description": "4-layer governance framework for AI-native development. Enforces 1:1:1 workflow (1 issue, 1 branch, 1 PR), identity standards, Gitleaks secret detection, and agent guardrails for Claude Code and Gemini CLI.",
       "category": "DevOps & Governance",
       "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
       "imageUrl": "",
       "tags": ["Git", "Bash", "DevOps", "Security"]
     },
     {
+      "id": "13",
+      "title": "GitHub Profile README",
+      "description": "Auto-refreshing neofetch-style SVG card with an ASCII portrait generated from my GitHub avatar. Light and dark mode. CSS-animated uptime counter. Rebuilt every 30 minutes by GitHub Actions.",
+      "category": "Developer Tools",
+      "githubUrl": "https://github.com/BasilSuhail/BasilSuhail",
+      "imageUrl": "",
+      "tags": ["Python", "GitHub Actions", "SVG"]
+    },
+    {
       "id": "2",
       "title": "AI Investment Dashboard",
-      "description": "Real-time portfolio analytics with ML-powered market predictions.",
+      "description": "Portfolio optimizer built on Modern Portfolio Theory with efficient frontier charts and an S&P 500 benchmark.",
       "category": "Machine Learning",
       "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
       "imageUrl": "/uploads/Investment.png",
@@ -236,7 +264,7 @@
       "institution": "University of Aberdeen",
       "institutionLogoUrl": "/uploads/UoA.png",
       "institutionColor": "#ff0019",
-      "coursework": "Advanced Analytics, Machine Learning, Business Strategy",
+      "coursework": "Advanced Analytics, Machine Learning, Business Strategy, Digital Marketing, HR Essentials",
       "certifications": [
         {
           "name": "Introduction to Calculus Level 1",
@@ -477,6 +505,18 @@
       "category": "Infrastructure"
     },
     {
+      "id": "31",
+      "name": "Kubernetes (k3s)",
+      "icon": "kubernetes",
+      "category": "Infrastructure"
+    },
+    {
+      "id": "32",
+      "name": "Tailscale",
+      "icon": "tailscale",
+      "category": "Infrastructure"
+    },
+    {
       "id": "27",
       "name": "Ollama",
       "icon": "ollama",
@@ -498,6 +538,18 @@
       "id": "30",
       "name": "FinBERT",
       "icon": "finbert",
+      "category": "AI & ML"
+    },
+    {
+      "id": "33",
+      "name": "LangGraph",
+      "icon": "langgraph",
+      "category": "AI & ML"
+    },
+    {
+      "id": "34",
+      "name": "Celery",
+      "icon": "celery",
       "category": "AI & ML"
     },
     {
