@@ -1,14 +1,13 @@
 {
   "hero": {
     "name": "Basil Suhail",
-    "title": "Builder",
+    "title": "AI Engineer",
     "titles": [
-      "Builder",
-      "Finance turned Tech",
-      "Generalist",
-      "Problem Solver"
+      "AI Engineer",
+      "Data Scientist",
+      "Finance × Technology"
     ],
-    "bio": "Accounting graduate who couldn't stop automating things. Four years in finance operations — reconciliations, audits, variance analysis — taught me where systems break. Somewhere along the way I started building the tools myself. Now I ship software, run a homelab, and study data science at Aberdeen. I pick up whatever the problem needs.",
+    "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
@@ -34,11 +33,11 @@
     "game": false
   },
   "sectionIntros": {
-    "projects": "Things I've built — some from scratch, some with AI, all of them real and working.",
-    "journey": "A timeline of my career and education.",
-    "experience": "Here's a brief overview of my career.",
+    "projects": "Production systems I've built and deployed. Each one solves a real problem.",
+    "journey": "From finance operations to AI engineering.",
+    "experience": "Four years across corporate finance, consulting, and freelance development.",
     "education": "",
-    "techStack": "Tools and technologies I use to build things. I'm not an expert in all of them — I'm a generalist who picks up what the problem needs.",
+    "techStack": "The stack I build with, deploy on, and think with.",
     "testimonials": "",
     "writing": ""
   },
@@ -48,15 +47,14 @@
   },
   "profile": {
     "name": "Basil Suhail",
-    "title": "Builder & Generalist",
+    "title": "AI Engineer",
     "titles": [
-      "Builder",
-      "Finance turned Tech",
-      "Generalist",
-      "Problem Solver"
+      "AI Engineer",
+      "Data Scientist",
+      "Finance × Technology"
     ],
-    "bio": "Accounting graduate who couldn't stop automating things. Four years in finance operations — reconciliations, audits, variance analysis — taught me where systems break. Somewhere along the way I started building the tools myself. Now I ship software, run a homelab, and study data science at Aberdeen. I pick up whatever the problem needs.",
-    "email": "",
+    "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
+    "email": "basilsuhailkhan@proton.me",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
@@ -64,77 +62,50 @@
     {
       "id": "10",
       "title": "OSINT World Monitor",
-      "description": "Watches the world for me. Pulls news, conflict data, disasters, markets, cyber threats, satellite fires, and flight activity into one dashboard. Scores each country on how stressed it is, then checks its own predictions and publishes where it was wrong.",
+      "description": "MSc dissertation project. A self-hosted intelligence platform that collects news, conflict data, disasters, markets, cyber threats, satellite fire detections, and military aircraft activity. Computes a composite country stress index, then backtests its own predictions and publishes where they failed. Runs on a Raspberry Pi 5.",
       "category": "Intelligence & Data Engineering",
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
       "imageUrl": "",
-      "tags": ["Python", "FastAPI", "PostgreSQL"]
-    },
-    {
-      "id": "11",
-      "title": "Raspberry Pi Homelab",
-      "description": "Two Raspberry Pis running my entire infrastructure. One handles data collection, the other manages nine self-hosted services — media server, password vault, photo backup, offline encyclopedia. Connected over a private mesh network with real certificates.",
-      "category": "Infrastructure & DevOps",
-      "githubUrl": "https://github.com/BasilSuhail/PI",
-      "imageUrl": "",
-      "tags": ["Docker", "Linux", "Tailscale"]
+      "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"]
     },
     {
       "id": "4",
       "title": "Market Intelligence Platform",
-      "description": "Reads 500+ news articles a day and tells you what matters. Detects sentiment, groups related stories together, and tracks a geopolitical risk score over time. Built it because I wanted a Bloomberg Terminal I didn't have to pay for.",
+      "description": "Bloomberg Terminal on a budget. Processes 500 to 1,000 financial articles daily from 100+ sources using FinBERT sentiment analysis (90% accuracy). Features a custom Geopolitical Risk Index, TF-IDF story clustering, and a Hindsight Validator that backtests sentiment predictions against real market returns. Cut LLM API costs 80% by running BERT locally.",
       "category": "Machine Learning & NLP",
       "liveUrl": "/news",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": ["TypeScript", "React", "SQLite"]
+      "tags": ["TypeScript", "FinBERT", "React", "NLP"]
     },
     {
       "id": "5",
-      "title": "HomeForge (dhobs)",
-      "description": "Private cloud you can run at home. Sets up 15+ services — AI chat, file storage, messaging — in one command. Handles security, two-factor authentication, and keeps everything isolated so one broken service doesn't take down the rest.",
+      "title": "HomeForge",
+      "description": "A private cloud you can run at home in one command. Deploys 15+ services (AI chat, file storage, messaging, VPN) using Docker-in-Docker for zero-dependency installation. Built zero-trust secret derivation with HKDF-SHA512, encrypted storage with SQLCipher, and custom TOTP 2FA with BIP39 recovery. Three-tier network segmentation keeps services isolated.",
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/dlobs-co/dhobs",
       "imageUrl": "",
-      "tags": ["Docker", "Next.js", "Linux"]
+      "tags": ["Docker", "Next.js", "TypeScript", "Security"]
     },
     {
       "id": "1",
       "title": "Budgeting Schedule Automation",
-      "description": "The budgeting tool I wish I had during my accounting degree. Connects 13 financial schedules — sales forecast through to cash flow — so when you change one number, everything downstream updates automatically. No more broken Excel links.",
+      "description": "Replaces Excel master budgets with a logic-based engine. Links 13 financial schedules from sales forecasts through to the budgeted balance sheet and cash flow. When one number changes, every downstream schedule recalculates automatically. Reduced processing time from 240 minutes to 24 minutes (90% reduction).",
       "category": "Finance Automation",
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
       "imageUrl": "/uploads/Budgeting.png",
-      "tags": ["React", "Finance"]
+      "tags": ["TypeScript", "Python", "Finance"]
     },
     {
-      "id": "8",
-      "title": "GitHub Protocols",
-      "description": "Rules I wrote to keep my repos clean when AI agents are committing code. Enforces one issue per branch, blocks secrets from being committed, and stops AI tools from overriding safety checks. This site's pre-commit hooks run on it.",
-      "category": "DevOps & Governance",
-      "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
+      "id": "11",
+      "title": "Raspberry Pi Homelab",
+      "description": "Two-board homelab running production infrastructure. Board one handles OSINT data collection under Docker Compose. Board two is a k3s Kubernetes cluster hosting nine services: Jellyfin, Vaultwarden, Immich, Kiwix, Uptime Kuma, ArchiveBox, and more. Custom fleet dashboard built with raw Node.js (no framework). 1TB SSD + 6TB HDD, Tailscale mesh networking with real TLS certificates.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/BasilSuhail/PI",
       "imageUrl": "",
-      "tags": ["Git", "Bash", "Security"]
-    },
-    {
-      "id": "2",
-      "title": "AI Investment Dashboard",
-      "description": "Helps you build a stock portfolio using the same math hedge funds use. Shows you the efficient frontier — the best possible returns for a given risk level — and benchmarks it against the S&P 500.",
-      "category": "Machine Learning",
-      "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
-      "imageUrl": "/uploads/Investment.png",
-      "tags": ["Python", "Finance"]
-    },
-    {
-      "id": "3",
-      "title": "Data Science Interview Questions",
-      "description": "A collection of data science interview questions with worked solutions. Built it while studying — turned out other people found it useful too.",
-      "category": "Education",
-      "githubUrl": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
-      "imageUrl": "/uploads/interview.png",
-      "tags": ["Python", "Data Science"]
+      "tags": ["k3s", "Docker", "Linux", "Tailscale"]
     }
   ],
   "experiences": [
@@ -163,7 +134,7 @@
       "role": "Assistant Accountant",
       "company": "Dubizzle Group",
       "companyColor": "#ff0000",
-      "description": "My time at Dubizzle was all about finding smarter ways to handle big data. I took a manual process of checking over 1,000 daily payments and sped it up by 25% using Sage 300 and better workflows. I also realized our banking data needed to be clearer for the leadership team, so I cleaned up over 30 ledgers in Google Sheets and used advanced Excel to automate the boring stuff. By the end, I wasn't just reporting numbers; I was helping the team trust them.",
+      "description": "Processed 1,000+ daily receivables (£25M+ quarterly) across 3 CRMs and 6 banking partners. Engineered Sage 300 workflows that cut processing latency 25%, saving 520+ hours annually. Built multi-entity reconciliation covering 9 of 15 entities, improving accuracy 20% and compressing month-end close from 5 days to 2. Re-architected 30+ banking ledgers, reducing error rates 30% and eliminating 45+ manual entries daily. Top 2 performer in a 7-person team.",
       "customSections": [
         {
           "label": "Core Focus:",
@@ -190,7 +161,7 @@
       "company": "Parwaaz Financial Services Ltd",
       "companyLogoUrl": "/uploads/pfsl.png",
       "companyColor": "#006cfa",
-      "description": "This wasn't a standard role, I was awarded this Co-Op placement through a competitive selection process by the Corporate Linkages & Placements Department of The University of Management and Technology. Because of that trust, I was given real responsibility immediately. I managed the monthly financial close for the company, tracked depreciation for over 200 assets, and handled the benefits for the whole team. I also got to play 'detective' with the data, running variance analysis on client accounts to give senior management a clear picture of how the business was actually performing.",
+      "description": "Competitively selected Co-Op placement. Managed 300+ monthly transactions in Microsoft Dynamics 365 across 20 investment portfolios and a £2M lending portfolio (1% default rate vs 2.5% industry average). Executed fixed asset depreciation schedules for 200+ assets. Conducted variance analysis on 60+ client accounts for senior management decision-making.",
       "customSections": [
         {
           "label": "Core Focus:",
@@ -210,7 +181,7 @@
       "company": "Parwaaz Financial Services Ltd",
       "companyLogoUrl": "/uploads/pfsl.png",
       "companyColor": "#006cfa",
-      "description": "This is where I built my foundation. I learned the ropes of a finance department by processing hundreds of vouchers and making sure every single entry matched the physical tax records. I worked side-by-side with the Finance Manager to close the books at the end of the month and acted as the go-to person for external auditors, ensuring they had every document they needed without delay.",
+      "description": "Processed 100+ financial vouchers monthly and validated entries against physical tax records. Prepared month-end documents including bank reconciliations and summary reports. Coordinated with external audit teams, organizing financial statements and documentation for timely delivery.",
       "customSections": [
         {
           "label": "Core Focus:",
@@ -473,36 +444,6 @@
       "category": "I Think With"
     },
     {
-      "id": "35",
-      "name": "OpenAI Codex",
-      "icon": "openai",
-      "category": "I Think With"
-    },
-    {
-      "id": "36",
-      "name": "Warp",
-      "icon": "warp",
-      "category": "I Think With"
-    },
-    {
-      "id": "37",
-      "name": "Hermes",
-      "icon": "hermes",
-      "category": "I Think With"
-    },
-    {
-      "id": "38",
-      "name": "GLM",
-      "icon": "glm",
-      "category": "I Think With"
-    },
-    {
-      "id": "39",
-      "name": "Kimi",
-      "icon": "kimi",
-      "category": "I Think With"
-    },
-    {
       "id": "28",
       "name": "Ollama",
       "icon": "ollama",
@@ -577,6 +518,12 @@
       "label": "LinkedIn",
       "value": "/in/basilsuhail",
       "url": "https://www.linkedin.com/in/basilsuhail/"
+    },
+    {
+      "platform": "twitter",
+      "label": "X",
+      "value": "@basilsuhail",
+      "url": "https://x.com/basilsuhail"
     }
   ],
   "contactSettings": {

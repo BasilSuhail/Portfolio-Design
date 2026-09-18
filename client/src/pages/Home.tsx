@@ -104,6 +104,8 @@ export default function Home() {
           email={content.profile?.email}
           avatarUrl={content.profile?.avatarUrl || content.hero?.avatarUrl}
           avatarFallback={content.profile?.avatarFallback || content.hero?.avatarFallback}
+          status={content.hero?.status}
+          location="Aberdeen, Scotland"
           socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
             acc[link.platform] = link.url;
             return acc;
