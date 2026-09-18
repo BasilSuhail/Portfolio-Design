@@ -71,6 +71,15 @@
       "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"]
     },
     {
+      "id": "11",
+      "title": "Raspberry Pi Homelab",
+      "description": "Two-board homelab running production infrastructure. Board one handles OSINT data collection under Docker Compose. Board two is a k3s Kubernetes cluster hosting nine services: Jellyfin, Vaultwarden, Immich, Kiwix, Uptime Kuma, ArchiveBox, and more. Custom fleet dashboard built with raw Node.js (no framework). 1TB SSD + 6TB HDD, Tailscale mesh networking with real TLS certificates.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/BasilSuhail/PI",
+      "imageUrl": "/uploads/pi-homelab.jpeg",
+      "tags": ["k3s", "Docker", "Linux", "Tailscale"]
+    },
+    {
       "id": "4",
       "title": "Market Intelligence Platform",
       "description": "Bloomberg Terminal on a budget. Processes 500 to 1,000 financial articles daily from 100+ sources using FinBERT sentiment analysis (90% accuracy). Features a custom Geopolitical Risk Index, TF-IDF story clustering, and a Hindsight Validator that backtests sentiment predictions against real market returns. Cut LLM API costs 80% by running BERT locally.",
@@ -98,15 +107,6 @@
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
       "imageUrl": "/uploads/Budgeting.png",
       "tags": ["TypeScript", "Python", "Finance"]
-    },
-    {
-      "id": "11",
-      "title": "Raspberry Pi Homelab",
-      "description": "Two-board homelab running production infrastructure. Board one handles OSINT data collection under Docker Compose. Board two is a k3s Kubernetes cluster hosting nine services: Jellyfin, Vaultwarden, Immich, Kiwix, Uptime Kuma, ArchiveBox, and more. Custom fleet dashboard built with raw Node.js (no framework). 1TB SSD + 6TB HDD, Tailscale mesh networking with real TLS certificates.",
-      "category": "Infrastructure & DevOps",
-      "githubUrl": "https://github.com/BasilSuhail/PI",
-      "imageUrl": "",
-      "tags": ["k3s", "Docker", "Linux", "Tailscale"]
     }
   ],
   "experiences": [
@@ -460,6 +460,42 @@
       "id": "29",
       "name": "MCP",
       "icon": "mcp",
+      "category": "I Think With"
+    },
+    {
+      "id": "34",
+      "name": "OpenAI Codex",
+      "icon": "openai",
+      "category": "I Think With"
+    },
+    {
+      "id": "35",
+      "name": "GLM",
+      "icon": "glm",
+      "category": "I Think With"
+    },
+    {
+      "id": "36",
+      "name": "Kimi",
+      "icon": "kimi",
+      "category": "I Think With"
+    },
+    {
+      "id": "37",
+      "name": "Hermes",
+      "icon": "hermes",
+      "category": "I Think With"
+    },
+    {
+      "id": "38",
+      "name": "Warp",
+      "icon": "warp",
+      "category": "I Think With"
+    },
+    {
+      "id": "39",
+      "name": "VS Code",
+      "icon": "vscode",
       "category": "I Think With"
     },
     {
