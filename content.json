@@ -406,17 +406,17 @@
       "id": "2",
       "quote": "I had the pleasure of working with Basil for a year in the Accounts Receivable team at Bayut | dubizzle. Throughout his time on the team, Basil consistently demonstrated strong attention to detail, professionalism, and a proactive approach to solving problems.",
       "authorName": "Muskan Kheskani",
-      "authorRole": "Manager",
-      "authorFallback": "",
+      "authorRole": "Manager — Dubizzle Group",
+      "authorFallback": "MK",
       "companyColor": "#ff0019"
     },
     {
       "id": "1765565571199",
       "quote": "Basil is a young and enthusiastic individual who eagerly tackles challenges head-on. His commitment to his work is commendable, and he has shown great potential in various aspects, particularly in presentation and analytical skills. He approaches tasks with a high degree of professionalism and consistently demonstrates the ability to deliver results effectively.",
       "authorName": "Asad Abbas",
-      "authorRole": "Board Director",
-      "authorFallback": "",
-      "companyColor": "#000000"
+      "authorRole": "Board Director — Parwaaz Financial Services",
+      "authorFallback": "AA",
+      "companyColor": "#006cfa"
     }
   ],
   "technologies": [
