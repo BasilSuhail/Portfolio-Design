@@ -67,7 +67,7 @@
       "category": "Intelligence & Data Engineering",
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
-      "imageUrl": "",
+      "imageUrl": "/uploads/osint-dashboard.jpg",
       "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"]
     },
     {
