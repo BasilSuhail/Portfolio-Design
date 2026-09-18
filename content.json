@@ -110,14 +110,6 @@
       "tags": ["React", "Finance"]
     },
     {
-      "id": "12",
-      "title": "BallersBank Video Studio",
-      "description": "Automated video production pipeline. Give it a topic and it writes the script, generates visuals, and renders the final video. Built for a content brand that needed to publish faster than a human editor could keep up with.",
-      "category": "AI Tools",
-      "imageUrl": "",
-      "tags": ["Python", "LangGraph", "FastAPI"]
-    },
-    {
       "id": "7",
       "title": "Felix + Maria",
       "description": "Two little macOS utilities I built for myself. Felix opens Claude, Gemini, and Aider side-by-side with one keystroke. Maria shuts them all down cleanly. Simple tools for a multi-agent workflow.",
@@ -134,15 +126,6 @@
       "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
       "imageUrl": "",
       "tags": ["Git", "Bash", "Security"]
-    },
-    {
-      "id": "13",
-      "title": "GitHub Profile README",
-      "description": "My GitHub profile card. Generates an ASCII portrait from my avatar, shows live stats, and rebuilds itself every 30 minutes. Light and dark mode. A small project but I like how it turned out.",
-      "category": "Developer Tools",
-      "githubUrl": "https://github.com/BasilSuhail/BasilSuhail",
-      "imageUrl": "",
-      "tags": ["Python", "GitHub Actions"]
     },
     {
       "id": "2",
