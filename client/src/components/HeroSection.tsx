@@ -162,6 +162,7 @@ export default function HeroSection({
           {/* Contact Links */}
           <ul className="mt-5 flex flex-col gap-y-3">
             {/* Email */}
+            {email && (
             <li className="flex items-center gap-x-2.5">
               <Mail className="shrink-0 size-3.5 text-[#EA4335]" />
               <button
@@ -186,6 +187,7 @@ export default function HeroSection({
                 </span>
               )}
             </li>
+            )}
 
             {/* Social Links */}
             {socialLinks?.twitter && (
