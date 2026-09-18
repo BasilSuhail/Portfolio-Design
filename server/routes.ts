@@ -102,7 +102,11 @@ export async function registerRoutes(
   app.get("/api/content", async (_req: Request, res: Response) => {
     try {
       const content = await fs.readFile(contentPath, "utf-8");
-      res.json(JSON.parse(content));
+      const parsed = JSON.parse(content);
+      if (process.env.CONTACT_EMAIL && parsed.profile) {
+        parsed.profile.email = process.env.CONTACT_EMAIL;
+      }
+      res.json(parsed);
     } catch (error) {
       res.status(500).json({ message: "Failed to read content" });
     }
@@ -223,7 +227,7 @@ export async function registerRoutes(
         // Send email using Resend
         await resend.emails.send({
           from: 'Portfolio Contact <onboarding@resend.dev>', // Use Resend's default sender for testing
-          to: 'basilsuhail3@gmail.com',
+          to: process.env.CONTACT_EMAIL || '',
           replyTo: sanitizedEmail,
           subject: `Portfolio Contact: Message from ${sanitizedName}`,
           html: `

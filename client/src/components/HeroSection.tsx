@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Mail, Copy, Check } from "lucide-react";
+import { Mail, Copy, Check, MapPin } from "lucide-react";
 import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
 import TypewriterText from "./TypewriterText";
 // canvas-confetti loaded lazily on first email copy click
@@ -32,11 +32,13 @@ function parseBioWithImages(bio: string): BioPart[] {
 interface HeroSectionProps {
   name: string;
   title: string;
-  titles?: string[]; // Optional array of titles for typewriter effect
+  titles?: string[];
   bio: string;
   email: string;
   avatarUrl: string;
   avatarFallback: string;
+  status?: string;
+  location?: string;
   socialLinks?: {
     twitter?: string;
     linkedin?: string;
@@ -52,6 +54,8 @@ export default function HeroSection({
   email,
   avatarUrl,
   avatarFallback: _avatarFallback,
+  status,
+  location,
   socialLinks,
 }: HeroSectionProps) {
   const [copied, setCopied] = useState(false);
@@ -134,6 +138,12 @@ export default function HeroSection({
                 title
               )}
             </p>
+            {location && (
+              <p className="text-xs text-gray-500 dark:text-neutral-500 mt-0.5 flex items-center gap-1">
+                <MapPin className="size-3" />
+                {location}
+              </p>
+            )}
           </div>
         </div>
 
@@ -159,9 +169,17 @@ export default function HeroSection({
             })}
           </p>
 
+          {status && (
+            <p className="mt-4 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800">
+              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {status}
+            </p>
+          )}
+
           {/* Contact Links */}
           <ul className="mt-5 flex flex-col gap-y-3">
             {/* Email */}
+            {email && (
             <li className="flex items-center gap-x-2.5">
               <Mail className="shrink-0 size-3.5 text-[#EA4335]" />
               <button
@@ -186,6 +204,7 @@ export default function HeroSection({
                 </span>
               )}
             </li>
+            )}
 
             {/* Social Links */}
             {socialLinks?.twitter && (

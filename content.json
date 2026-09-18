@@ -1,16 +1,16 @@
 {
   "hero": {
     "name": "Basil Suhail",
-    "title": "AI Developer",
+    "title": "AI Engineer",
     "titles": [
-      "AI Developer",
+      "AI Engineer",
       "Data Scientist",
-      "Finance Engineer",
-      "Product Builder"
+      "Finance × Technology"
     ],
-    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
+    "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
     "avatarUrl": "/uploads/headshot.png",
-    "avatarFallback": "BS"
+    "avatarFallback": "BS",
+    "location": "Aberdeen, Scotland"
   },
   "sectionOrder": [
     "projects",
@@ -28,17 +28,17 @@
     "experience": true,
     "education": true,
     "techStack": true,
-    "testimonials": false,
+    "testimonials": true,
     "writing": false,
     "contact": true,
     "game": false
   },
   "sectionIntros": {
-    "projects": "Below are some select projects.",
-    "journey": "A timeline of my career and education.",
-    "experience": "Here's a brief overview of my career.",
+    "projects": "Production systems I've built and deployed. Each one solves a real problem.",
+    "journey": "From finance operations to AI engineering.",
+    "experience": "Four years across corporate finance, consulting, and freelance development.",
     "education": "",
-    "techStack": "",
+    "techStack": "The stack I build with, deploy on, and think with.",
     "testimonials": "",
     "writing": ""
   },
@@ -48,91 +48,65 @@
   },
   "profile": {
     "name": "Basil Suhail",
-    "title": "AI Developer & Data Scientist",
+    "title": "AI Engineer",
     "titles": [
-      "AI Developer",
+      "AI Engineer",
       "Data Scientist",
-      "Finance Engineer",
-      "Product Builder"
+      "Finance × Technology"
     ],
-    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and whatever the problem calls for. TypeScript, Python, React, FastAPI — generalist by design.",
-    "email": "basilsuhail3@gmail.com",
+    "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
+    "email": "basilsuhailkhan@proton.me",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
   "projects": [
     {
+      "id": "10",
+      "title": "OSINT World Monitor",
+      "description": "MSc dissertation project. A self-hosted intelligence platform that collects news, conflict data, disasters, markets, cyber threats, satellite fire detections, and military aircraft activity. Computes a composite country stress index, then backtests its own predictions and publishes where they failed. Runs on a Raspberry Pi 5.",
+      "category": "Intelligence & Data Engineering",
+      "liveUrl": "https://basilsuhail.github.io/OSINT/",
+      "githubUrl": "https://github.com/BasilSuhail/OSINT",
+      "imageUrl": "/uploads/osint-dashboard.jpg",
+      "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"]
+    },
+    {
+      "id": "11",
+      "title": "Raspberry Pi Homelab",
+      "description": "Two-board homelab running production infrastructure. Board one handles OSINT data collection under Docker Compose. Board two is a k3s Kubernetes cluster hosting nine services: Jellyfin, Vaultwarden, Immich, Kiwix, Uptime Kuma, ArchiveBox, and more. Custom fleet dashboard built with raw Node.js (no framework). 1TB SSD + 6TB HDD, Tailscale mesh networking with real TLS certificates.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/BasilSuhail/PI",
+      "imageUrl": "/uploads/pi-homelab.jpeg",
+      "tags": ["k3s", "Docker", "Linux", "Tailscale"]
+    },
+    {
       "id": "4",
       "title": "Market Intelligence Platform",
-      "description": "Bloomberg Terminal-style intelligence platform processing 100+ sources with ML-powered sentiment analysis.",
+      "description": "Bloomberg Terminal on a budget. Processes 500 to 1,000 financial articles daily from 100+ sources using FinBERT sentiment analysis (90% accuracy). Features a custom Geopolitical Risk Index, TF-IDF story clustering, and a Hindsight Validator that backtests sentiment predictions against real market returns. Cut LLM API costs 80% by running BERT locally.",
       "category": "Machine Learning & NLP",
       "liveUrl": "/news",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": ["TypeScript", "ML", "React", "SQLite"]
+      "tags": ["TypeScript", "FinBERT", "React", "NLP"]
     },
     {
       "id": "5",
-      "title": "HomeForge (dhobs)",
-      "description": "High-availability private cloud and AI appliance. Hub-and-Spokes architecture with Docker-in-Docker, zero-trust secrets via HKDF-SHA512, TOTP 2FA, and 15+ integrated services including Ollama, Nextcloud, and Matrix.",
+      "title": "HomeForge",
+      "description": "A private cloud you can run at home in one command. Deploys 15+ services (AI chat, file storage, messaging, VPN) using Docker-in-Docker for zero-dependency installation. Built zero-trust secret derivation with HKDF-SHA512, encrypted storage with SQLCipher, and custom TOTP 2FA with BIP39 recovery. Three-tier network segmentation keeps services isolated.",
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/dlobs-co/dhobs",
       "imageUrl": "",
-      "tags": ["TypeScript", "Docker", "Next.js", "Go", "Linux"]
+      "tags": ["Docker", "Next.js", "TypeScript", "Security"]
     },
     {
       "id": "1",
       "title": "Budgeting Schedule Automation",
-      "description": "Automates 13-worksheet master budgets with instant cross-schedule calculations.",
+      "description": "Replaces Excel master budgets with a logic-based engine. Links 13 financial schedules from sales forecasts through to the budgeted balance sheet and cash flow. When one number changes, every downstream schedule recalculates automatically. Reduced processing time from 240 minutes to 24 minutes (90% reduction).",
       "category": "Finance Automation",
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
       "imageUrl": "/uploads/Budgeting.png",
-      "tags": ["React", "TypeScript", "Finance"]
-    },
-    {
-      "id": "6",
-      "title": "deerflow",
-      "description": "High-performance research and task management application for the HomeForge ecosystem. Centralized intelligence hub for deep work sessions with local LLM integration.",
-      "category": "AI Tools",
-      "githubUrl": "https://github.com/dlobs-co/dhobs",
-      "imageUrl": "",
-      "tags": ["Next.js", "TypeScript", "Ollama", "Tailwind"]
-    },
-    {
-      "id": "7",
-      "title": "Felix 🦊 + Maria",
-      "description": "Terminal agent launchers for macOS. Felix tiles side-by-side Claude, Gemini, and Aider windows via Spotlight. Maria handles research workflows. Preset-driven layouts for multi-agent AI development.",
-      "category": "Developer Tools",
-      "imageUrl": "",
-      "tags": ["Python", "AppleScript", "macOS"]
-    },
-    {
-      "id": "8",
-      "title": "GitHub Protocols",
-      "description": "4-layer governance framework for AI-native development. Enforces 1:1:1 workflow (1 issue, 1 branch, 1 PR, 1 commit), identity standards, Gitleaks secret detection, and agent guardrails for Claude Code and Gemini CLI.",
-      "category": "DevOps & Governance",
-      "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
-      "imageUrl": "",
-      "tags": ["Git", "Bash", "DevOps", "Security"]
-    },
-    {
-      "id": "2",
-      "title": "AI Investment Dashboard",
-      "description": "Real-time portfolio analytics with ML-powered market predictions.",
-      "category": "Machine Learning",
-      "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
-      "imageUrl": "/uploads/Investment.png",
-      "tags": ["Python", "Machine Learning", "Finance"]
-    },
-    {
-      "id": "3",
-      "title": "Data Science Interview Questions",
-      "description": "Curated collection of DS interview questions with detailed solutions.",
-      "category": "Education",
-      "githubUrl": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
-      "imageUrl": "/uploads/interview.png",
-      "tags": ["Python", "Data Science", "Education"]
+      "tags": ["TypeScript", "Python", "Finance"]
     }
   ],
   "experiences": [
@@ -161,7 +135,7 @@
       "role": "Assistant Accountant",
       "company": "Dubizzle Group",
       "companyColor": "#ff0000",
-      "description": "My time at Dubizzle was all about finding smarter ways to handle big data. I took a manual process of checking over 1,000 daily payments and sped it up by 25% using Sage 300 and better workflows. I also realized our banking data needed to be clearer for the leadership team, so I cleaned up over 30 ledgers in Google Sheets and used advanced Excel to automate the boring stuff. By the end, I wasn't just reporting numbers; I was helping the team trust them.",
+      "description": "Processed 1,000+ daily receivables (£25M+ quarterly) across 3 CRMs and 6 banking partners. Engineered Sage 300 workflows that cut processing latency 25%, saving 520+ hours annually. Built multi-entity reconciliation covering 9 of 15 entities, improving accuracy 20% and compressing month-end close from 5 days to 2. Re-architected 30+ banking ledgers, reducing error rates 30% and eliminating 45+ manual entries daily. Top 2 performer in a 7-person team.",
       "customSections": [
         {
           "label": "Core Focus:",
@@ -188,7 +162,7 @@
       "company": "Parwaaz Financial Services Ltd",
       "companyLogoUrl": "/uploads/pfsl.png",
       "companyColor": "#006cfa",
-      "description": "This wasn't a standard role, I was awarded this Co-Op placement through a competitive selection process by the Corporate Linkages & Placements Department of The University of Management and Technology. Because of that trust, I was given real responsibility immediately. I managed the monthly financial close for the company, tracked depreciation for over 200 assets, and handled the benefits for the whole team. I also got to play 'detective' with the data, running variance analysis on client accounts to give senior management a clear picture of how the business was actually performing.",
+      "description": "Competitively selected Co-Op placement. Managed 300+ monthly transactions in Microsoft Dynamics 365 across 20 investment portfolios and a £2M lending portfolio (1% default rate vs 2.5% industry average). Executed fixed asset depreciation schedules for 200+ assets. Conducted variance analysis on 60+ client accounts for senior management decision-making.",
       "customSections": [
         {
           "label": "Core Focus:",
@@ -208,7 +182,7 @@
       "company": "Parwaaz Financial Services Ltd",
       "companyLogoUrl": "/uploads/pfsl.png",
       "companyColor": "#006cfa",
-      "description": "This is where I built my foundation. I learned the ropes of a finance department by processing hundreds of vouchers and making sure every single entry matched the physical tax records. I worked side-by-side with the Finance Manager to close the books at the end of the month and acted as the go-to person for external auditors, ensuring they had every document they needed without delay.",
+      "description": "Processed 100+ financial vouchers monthly and validated entries against physical tax records. Prepared month-end documents including bank reconciliations and summary reports. Coordinated with external audit teams, organizing financial statements and documentation for timely delivery.",
       "customSections": [
         {
           "label": "Core Focus:",
@@ -236,7 +210,7 @@
       "institution": "University of Aberdeen",
       "institutionLogoUrl": "/uploads/UoA.png",
       "institutionColor": "#ff0019",
-      "coursework": "Advanced Analytics, Machine Learning, Business Strategy",
+      "coursework": "Advanced Analytics, Machine Learning, Business Strategy, Digital Marketing, HR Essentials",
       "certifications": [
         {
           "name": "Introduction to Calculus Level 1",
@@ -289,7 +263,7 @@
       "institution": "University of Management and Technology - UMT",
       "institutionLogoUrl": "/uploads/UMT.png",
       "institutionColor": "#1E3A8A",
-      "coursework": "Business Writing, Microsoft Office, Sage 50, Microsoft Excel, Canva, Market Research, Accounting, Financial Statements, Interpersonal Communication\n",
+      "coursework": "Business Writing, Microsoft Office, Sage 50, Microsoft Excel, Canva, Market Research, Accounting, Financial Statements, Interpersonal Communication",
       "certifications": [
         {
           "name": "Fintech - Semester End Project",
@@ -378,17 +352,17 @@
       "id": "2",
       "quote": "I had the pleasure of working with Basil for a year in the Accounts Receivable team at Bayut | dubizzle. Throughout his time on the team, Basil consistently demonstrated strong attention to detail, professionalism, and a proactive approach to solving problems.",
       "authorName": "Muskan Kheskani",
-      "authorRole": "Manager",
-      "authorFallback": "",
+      "authorRole": "Manager — Dubizzle Group",
+      "authorFallback": "MK",
       "companyColor": "#ff0019"
     },
     {
       "id": "1765565571199",
       "quote": "Basil is a young and enthusiastic individual who eagerly tackles challenges head-on. His commitment to his work is commendable, and he has shown great potential in various aspects, particularly in presentation and analytical skills. He approaches tasks with a high degree of professionalism and consistently demonstrates the ability to deliver results effectively.",
       "authorName": "Asad Abbas",
-      "authorRole": "Board Director",
-      "authorFallback": "",
-      "companyColor": "#000000"
+      "authorRole": "Board Director — Parwaaz Financial Services",
+      "authorFallback": "AA",
+      "companyColor": "#006cfa"
     }
   ],
   "technologies": [
@@ -396,185 +370,172 @@
       "id": "1",
       "name": "Python",
       "icon": "python",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "2",
       "name": "TypeScript",
       "icon": "typescript",
-      "category": "Development"
-    },
-    {
-      "id": "3",
-      "name": "JavaScript",
-      "icon": "javascript",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "4",
       "name": "SQL",
       "icon": "sql",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "20",
       "name": "React",
       "icon": "react",
-      "category": "Development"
-    },
-    {
-      "id": "21",
-      "name": "Next.js",
-      "icon": "nextjs",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "22",
       "name": "FastAPI",
       "icon": "fastapi",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "23",
       "name": "Tailwind CSS",
       "icon": "tailwind",
-      "category": "Development"
-    },
-    {
-      "id": "5",
-      "name": "NumPy",
-      "icon": "numpy",
-      "category": "Development"
-    },
-    {
-      "id": "6",
-      "name": "Pandas",
-      "icon": "pandas",
-      "category": "Development"
-    },
-    {
-      "id": "7",
-      "name": "Matplotlib",
-      "icon": "/uploads/matplotlib.svg",
-      "category": "Development"
-    },
-    {
-      "id": "24",
-      "name": "Supabase",
-      "icon": "supabase",
-      "category": "Infrastructure"
+      "category": "I Build With"
     },
     {
       "id": "25",
       "name": "Docker",
       "icon": "docker",
-      "category": "Infrastructure"
+      "category": "I Run On"
     },
     {
       "id": "26",
       "name": "Linux",
       "icon": "linux",
-      "category": "Infrastructure"
+      "category": "I Run On"
     },
     {
-      "id": "27",
-      "name": "Ollama",
-      "icon": "ollama",
-      "category": "AI & ML"
+      "id": "31",
+      "name": "k3s",
+      "icon": "kubernetes",
+      "category": "I Run On"
     },
     {
-      "id": "28",
-      "name": "LLaMA",
-      "icon": "llama",
-      "category": "AI & ML"
-    },
-    {
-      "id": "29",
-      "name": "MCP (Model Context Protocol)",
-      "icon": "mcp",
-      "category": "AI & ML"
-    },
-    {
-      "id": "30",
-      "name": "FinBERT",
-      "icon": "finbert",
-      "category": "AI & ML"
-    },
-    {
-      "id": "8",
-      "name": "Sage 300",
-      "icon": "/uploads/Sage.png",
-      "category": "Data Skills"
-    },
-    {
-      "id": "9",
-      "name": "Microsoft Dynamics 365",
-      "icon": "/uploads/msdynamics.png",
-      "category": "Data Skills"
-    },
-    {
-      "id": "10",
-      "name": "Advanced Excel (Pivot Tables, Vlookup)",
-      "icon": "/uploads/excel.png",
-      "category": "Data Skills"
-    },
-    {
-      "id": "11",
-      "name": "Wolfram Mathematica",
-      "icon": "wolfram",
-      "category": "Data Skills"
-    },
-    {
-      "id": "12",
-      "name": "Tableau",
-      "icon": "tableau",
-      "category": "Data Skills"
-    },
-    {
-      "id": "13",
-      "name": "Power BI",
-      "icon": "/uploads/powerbi.png",
-      "category": "Data Skills"
+      "id": "32",
+      "name": "Tailscale",
+      "icon": "tailscale",
+      "category": "I Run On"
     },
     {
       "id": "15",
       "name": "Git",
       "icon": "git",
-      "category": "Collaboration"
+      "category": "I Run On"
     },
     {
       "id": "16",
       "name": "GitHub",
       "icon": "github",
-      "category": "Collaboration"
+      "category": "I Run On"
     },
     {
-      "id": "17",
-      "name": "Team Work & Collaboration",
-      "icon": "teamwork",
-      "category": "Soft Skills"
+      "id": "27",
+      "name": "Claude Code",
+      "icon": "claude",
+      "category": "I Think With"
     },
     {
-      "id": "18",
-      "name": "Problem Solving",
-      "icon": "problemsolving",
-      "category": "Soft Skills"
+      "id": "28",
+      "name": "Ollama",
+      "icon": "ollama",
+      "category": "I Think With"
     },
     {
-      "id": "19",
-      "name": "Cross-Functional Communication",
-      "icon": "communication",
-      "category": "Soft Skills"
+      "id": "33",
+      "name": "LangGraph",
+      "icon": "langgraph",
+      "category": "I Think With"
+    },
+    {
+      "id": "29",
+      "name": "MCP",
+      "icon": "mcp",
+      "category": "I Think With"
+    },
+    {
+      "id": "34",
+      "name": "OpenAI Codex",
+      "icon": "openai",
+      "category": "I Think With"
+    },
+    {
+      "id": "35",
+      "name": "GLM",
+      "icon": "glm",
+      "category": "I Think With"
+    },
+    {
+      "id": "36",
+      "name": "Kimi",
+      "icon": "kimi",
+      "category": "I Think With"
+    },
+    {
+      "id": "37",
+      "name": "Hermes",
+      "icon": "hermes",
+      "category": "I Think With"
+    },
+    {
+      "id": "38",
+      "name": "Warp",
+      "icon": "warp",
+      "category": "I Think With"
+    },
+    {
+      "id": "39",
+      "name": "VS Code",
+      "icon": "vscode",
+      "category": "I Think With"
+    },
+    {
+      "id": "10",
+      "name": "Excel (Pivot Tables, VBA)",
+      "icon": "/uploads/excel.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "8",
+      "name": "Sage 300",
+      "icon": "/uploads/Sage.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "9",
+      "name": "Dynamics 365",
+      "icon": "/uploads/msdynamics.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "12",
+      "name": "Tableau",
+      "icon": "tableau",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "13",
+      "name": "Power BI",
+      "icon": "/uploads/powerbi.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "11",
+      "name": "Wolfram Mathematica",
+      "icon": "wolfram",
+      "category": "Finance & Data"
     }
   ],
-  "posts": [
-    {
-      "id": "1765565149616",
-      "date": "12/12/2025",
-      "title": "New Blog Post",
-      "readTime": 5
-    }
-  ],
+  "posts": [],
   "socialLinks": [
     {
       "platform": "github",
@@ -587,6 +548,12 @@
       "label": "LinkedIn",
       "value": "/in/basilsuhail",
       "url": "https://www.linkedin.com/in/basilsuhail/"
+    },
+    {
+      "platform": "twitter",
+      "label": "X",
+      "value": "@basilsuhail",
+      "url": "https://x.com/basilsuhail"
     }
   ],
   "contactSettings": {

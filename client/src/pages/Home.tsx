@@ -44,23 +44,6 @@ export default function Home() {
   const visibility = content.sectionVisibility || {};
 
   const sections: Record<string, JSX.Element | null> = {
-    hero: (
-      <HeroSection
-        name={content.profile?.name || content.hero?.name}
-        title={content.profile?.title || content.hero?.title}
-        titles={content.profile?.titles || content.hero?.titles}
-        bio={content.profile?.bio || content.hero?.bio}
-        email={content.profile?.email}
-        avatarUrl={content.profile?.avatarUrl || content.hero?.avatarUrl}
-        avatarFallback={content.profile?.avatarFallback || content.hero?.avatarFallback}
-        socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
-          acc[link.platform] = link.url;
-          return acc;
-        }, {})}
-      />
-    ),
-    about: null,
-
     projects:
       visibility.projects && content.projects.length > 0 ? (
         <ProjectsSection
@@ -103,8 +86,6 @@ export default function Home() {
         calendarLinks={content.contactSettings?.calendarLinks}
       />
     ),
-
-    news: null,
   };
 
   return (
@@ -123,6 +104,8 @@ export default function Home() {
           email={content.profile?.email}
           avatarUrl={content.profile?.avatarUrl || content.hero?.avatarUrl}
           avatarFallback={content.profile?.avatarFallback || content.hero?.avatarFallback}
+          status={content.hero?.status}
+          location={content.hero?.location}
           socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
             acc[link.platform] = link.url;
             return acc;
@@ -130,7 +113,6 @@ export default function Home() {
         />
 
         {sectionOrder.map((sectionKey: string) => {
-          if (sectionKey === 'hero') return null; // Skip if in order
           const section = sections[sectionKey];
           return section ? (
             <div key={sectionKey} data-section={sectionKey}>

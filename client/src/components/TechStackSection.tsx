@@ -20,6 +20,19 @@ import {
   SiPandas,
   SiMysql,
   SiCanva,
+  SiDocker,
+  SiLinux,
+  SiKubernetes,
+  SiNextdotjs,
+  SiFastapi,
+  SiSupabase,
+  SiTableau,
+  SiOllama,
+  SiCelery,
+  SiTailscale,
+  SiLangchain,
+  SiWarp,
+  SiHermes,
 } from "react-icons/si";
 import { VscCode } from "react-icons/vsc";
 import { Users, Lightbulb, MessageSquare } from "lucide-react";
@@ -61,6 +74,19 @@ const iconMap = {
   pandas: SiPandas,
   sql: SiMysql,
   canva: SiCanva,
+  docker: SiDocker,
+  linux: SiLinux,
+  kubernetes: SiKubernetes,
+  nextjs: SiNextdotjs,
+  fastapi: SiFastapi,
+  supabase: SiSupabase,
+  tableau: SiTableau,
+  ollama: SiOllama,
+  celery: SiCelery,
+  tailscale: SiTailscale,
+  langgraph: SiLangchain,
+  warp: SiWarp,
+  hermes: SiHermes,
   teamwork: Users,
   problemsolving: Lightbulb,
   communication: MessageSquare,
@@ -89,6 +115,19 @@ const colorMap: Record<string, string> = {
   pandas: "#150458",
   sql: "#4479A1",
   canva: "#00C4CC",
+  docker: "#2496ED",
+  linux: "#FCC624",
+  kubernetes: "#326CE5",
+  nextjs: "#000000",
+  fastapi: "#009688",
+  supabase: "#3FCF8E",
+  tableau: "#E97627",
+  ollama: "#000000",
+  celery: "#37814A",
+  tailscale: "#000000",
+  langgraph: "#1C3C3C",
+  warp: "#01A4FF",
+  hermes: "#4A154B",
   teamwork: "#4F46E5",
   problemsolving: "#F59E0B",
   communication: "#10B981",
@@ -110,7 +149,7 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
     <section className="mt-10 sm:mt-14" data-testid="section-stack" data-section="techStack">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-neutral-100">
-          Skills
+          What I Work With
         </h2>
 
         {intro && (
@@ -136,7 +175,7 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                       const isImageUrl = tech.icon.startsWith('/') || tech.icon.startsWith('http');
                       const Icon = isImageUrl ? null : iconMap[tech.icon as keyof typeof iconMap];
                       const color = tech.color || colorMap[tech.icon] || "#6b7280";
-                      const needsInversion = ['github', 'claude', 'numpy', 'pandas'].includes(tech.icon);
+                      const needsInversion = ['github', 'claude', 'numpy', 'pandas', 'nextjs', 'ollama', 'tailscale', 'langgraph', 'openai', 'hermes'].includes(tech.icon);
                       const isLast = index === techs.length - 1;
 
                       return (
@@ -183,7 +222,7 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                     const isImageUrl = tech.icon.startsWith('/') || tech.icon.startsWith('http');
                     const Icon = isImageUrl ? null : iconMap[tech.icon as keyof typeof iconMap];
                     const color = tech.color || colorMap[tech.icon] || "#6b7280";
-                    const needsInversion = ['github', 'claude', 'numpy', 'pandas'].includes(tech.icon);
+                    const needsInversion = ['github', 'claude', 'numpy', 'pandas', 'nextjs', 'ollama', 'tailscale', 'langgraph'].includes(tech.icon);
                     const isLast = index === technologies.length - 1;
 
                     return (
