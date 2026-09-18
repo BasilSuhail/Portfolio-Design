@@ -1,14 +1,14 @@
 {
   "hero": {
     "name": "Basil Suhail",
-    "title": "AI Developer",
+    "title": "Builder",
     "titles": [
-      "AI Developer",
-      "Data Scientist",
-      "Finance Engineer",
-      "Product Builder"
+      "Builder",
+      "Finance turned Tech",
+      "Generalist",
+      "Problem Solver"
     ],
-    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and infrastructure that runs on its own. TypeScript, Python, React, FastAPI — generalist by design.",
+    "bio": "Accounting graduate who couldn't stop automating things. Four years in finance operations — reconciliations, audits, variance analysis — taught me where systems break. Somewhere along the way I started building the tools myself. Now I ship software, run a homelab, and study data science at Aberdeen. I pick up whatever the problem needs.",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
@@ -34,11 +34,11 @@
     "game": false
   },
   "sectionIntros": {
-    "projects": "Systems I have built, from intelligence pipelines to bare-metal infrastructure.",
+    "projects": "Things I've built — some from scratch, some with AI, all of them real and working.",
     "journey": "A timeline of my career and education.",
     "experience": "Here's a brief overview of my career.",
     "education": "",
-    "techStack": "",
+    "techStack": "Tools and technologies I use to build things. I'm not an expert in all of them — I'm a generalist who picks up what the problem needs.",
     "testimonials": "",
     "writing": ""
   },
@@ -48,14 +48,14 @@
   },
   "profile": {
     "name": "Basil Suhail",
-    "title": "AI Developer & Data Scientist",
+    "title": "Builder & Generalist",
     "titles": [
-      "AI Developer",
-      "Data Scientist",
-      "Finance Engineer",
-      "Product Builder"
+      "Builder",
+      "Finance turned Tech",
+      "Generalist",
+      "Problem Solver"
     ],
-    "bio": "I started in accounting, ended up building AI systems. Four years of finance operations taught me where data breaks and why it matters. Now I ship full-stack apps, ML pipelines, and infrastructure that runs on its own. TypeScript, Python, React, FastAPI — generalist by design.",
+    "bio": "Accounting graduate who couldn't stop automating things. Four years in finance operations — reconciliations, audits, variance analysis — taught me where systems break. Somewhere along the way I started building the tools myself. Now I ship software, run a homelab, and study data science at Aberdeen. I pick up whatever the problem needs.",
     "email": "",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
@@ -64,55 +64,55 @@
     {
       "id": "10",
       "title": "OSINT World Monitor",
-      "description": "Self-hosted world-event monitor. Collects news, conflict data, disasters, markets, cyber indicators, satellite fires, and aircraft presence. Composite country stress index. Backtests its own predictions and publishes where they failed.",
+      "description": "Watches the world for me. Pulls news, conflict data, disasters, markets, cyber threats, satellite fires, and flight activity into one dashboard. Scores each country on how stressed it is, then checks its own predictions and publishes where it was wrong.",
       "category": "Intelligence & Data Engineering",
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
       "imageUrl": "",
-      "tags": ["Python", "FastAPI", "Celery", "PostgreSQL"]
+      "tags": ["Python", "FastAPI", "PostgreSQL"]
     },
     {
       "id": "11",
       "title": "Raspberry Pi Homelab",
-      "description": "Two-board homelab. One board runs OSINT ingest under Docker Compose, the other is a k3s control plane with a fleet dashboard. Nine self-hosted services including Jellyfin, Vaultwarden, Immich, and Kiwix. Tailscale mesh networking with real TLS.",
+      "description": "Two Raspberry Pis running my entire infrastructure. One handles data collection, the other manages nine self-hosted services — media server, password vault, photo backup, offline encyclopedia. Connected over a private mesh network with real certificates.",
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/BasilSuhail/PI",
       "imageUrl": "",
-      "tags": ["k3s", "Docker", "Tailscale", "Linux"]
+      "tags": ["Docker", "Linux", "Tailscale"]
     },
     {
       "id": "4",
       "title": "Market Intelligence Platform",
-      "description": "Bloomberg Terminal-style intelligence platform processing 500+ daily articles with FinBERT sentiment analysis, TF-IDF clustering, and a Geopolitical Risk Index engine.",
+      "description": "Reads 500+ news articles a day and tells you what matters. Detects sentiment, groups related stories together, and tracks a geopolitical risk score over time. Built it because I wanted a Bloomberg Terminal I didn't have to pay for.",
       "category": "Machine Learning & NLP",
       "liveUrl": "/news",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": ["TypeScript", "FinBERT", "React", "SQLite"]
+      "tags": ["TypeScript", "React", "SQLite"]
     },
     {
       "id": "5",
       "title": "HomeForge (dhobs)",
-      "description": "High-availability private cloud and AI appliance. Hub-and-Spokes architecture with Docker-in-Docker, zero-trust secrets via HKDF-SHA512, TOTP 2FA, and 15+ integrated services including Ollama, Nextcloud, and Matrix.",
+      "description": "Private cloud you can run at home. Sets up 15+ services — AI chat, file storage, messaging — in one command. Handles security, two-factor authentication, and keeps everything isolated so one broken service doesn't take down the rest.",
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/dlobs-co/dhobs",
       "imageUrl": "",
-      "tags": ["TypeScript", "Docker", "Next.js", "Go", "Linux"]
+      "tags": ["Docker", "Next.js", "Linux"]
     },
     {
       "id": "1",
       "title": "Budgeting Schedule Automation",
-      "description": "Replaces traditional Excel master budgets. 13 linked financial schedules from sales forecast to cash flow, with automatic inter-schedule dependency resolution.",
+      "description": "The budgeting tool I wish I had during my accounting degree. Connects 13 financial schedules — sales forecast through to cash flow — so when you change one number, everything downstream updates automatically. No more broken Excel links.",
       "category": "Finance Automation",
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
       "imageUrl": "/uploads/Budgeting.png",
-      "tags": ["React", "TypeScript", "Finance"]
+      "tags": ["React", "Finance"]
     },
     {
       "id": "12",
       "title": "BallersBank Video Studio",
-      "description": "Agentic content engine for autonomous video production. LangGraph orchestrates a multi-step pipeline from script generation to final render via FastAPI.",
+      "description": "Automated video production pipeline. Give it a topic and it writes the script, generates visuals, and renders the final video. Built for a content brand that needed to publish faster than a human editor could keep up with.",
       "category": "AI Tools",
       "imageUrl": "",
       "tags": ["Python", "LangGraph", "FastAPI"]
@@ -120,7 +120,7 @@
     {
       "id": "7",
       "title": "Felix + Maria",
-      "description": "Terminal agent launchers for macOS. Felix tiles side-by-side Claude, Gemini, and Aider windows via Spotlight. Maria handles graceful shutdown. Preset-driven layouts for multi-agent AI development.",
+      "description": "Two little macOS utilities I built for myself. Felix opens Claude, Gemini, and Aider side-by-side with one keystroke. Maria shuts them all down cleanly. Simple tools for a multi-agent workflow.",
       "category": "Developer Tools",
       "githubUrl": "https://github.com/BasilSuhail/felix-launcher",
       "imageUrl": "",
@@ -129,38 +129,38 @@
     {
       "id": "8",
       "title": "GitHub Protocols",
-      "description": "4-layer governance framework for AI-native development. Enforces 1:1:1 workflow (1 issue, 1 branch, 1 PR), identity standards, Gitleaks secret detection, and agent guardrails for Claude Code and Gemini CLI.",
+      "description": "Rules I wrote to keep my repos clean when AI agents are committing code. Enforces one issue per branch, blocks secrets from being committed, and stops AI tools from overriding safety checks. This site's pre-commit hooks run on it.",
       "category": "DevOps & Governance",
       "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
       "imageUrl": "",
-      "tags": ["Git", "Bash", "DevOps", "Security"]
+      "tags": ["Git", "Bash", "Security"]
     },
     {
       "id": "13",
       "title": "GitHub Profile README",
-      "description": "Auto-refreshing neofetch-style SVG card with an ASCII portrait generated from my GitHub avatar. Light and dark mode. CSS-animated uptime counter. Rebuilt every 30 minutes by GitHub Actions.",
+      "description": "My GitHub profile card. Generates an ASCII portrait from my avatar, shows live stats, and rebuilds itself every 30 minutes. Light and dark mode. A small project but I like how it turned out.",
       "category": "Developer Tools",
       "githubUrl": "https://github.com/BasilSuhail/BasilSuhail",
       "imageUrl": "",
-      "tags": ["Python", "GitHub Actions", "SVG"]
+      "tags": ["Python", "GitHub Actions"]
     },
     {
       "id": "2",
       "title": "AI Investment Dashboard",
-      "description": "Portfolio optimizer built on Modern Portfolio Theory with efficient frontier charts and an S&P 500 benchmark.",
+      "description": "Helps you build a stock portfolio using the same math hedge funds use. Shows you the efficient frontier — the best possible returns for a given risk level — and benchmarks it against the S&P 500.",
       "category": "Machine Learning",
       "githubUrl": "https://github.com/BasilSuhail/AI-Investment-Dashboard-Project",
       "imageUrl": "/uploads/Investment.png",
-      "tags": ["Python", "Machine Learning", "Finance"]
+      "tags": ["Python", "Finance"]
     },
     {
       "id": "3",
       "title": "Data Science Interview Questions",
-      "description": "Curated collection of DS interview questions with detailed solutions.",
+      "description": "A collection of data science interview questions with worked solutions. Built it while studying — turned out other people found it useful too.",
       "category": "Education",
       "githubUrl": "https://github.com/BasilSuhail/Data_Science_Interview_Questions",
       "imageUrl": "/uploads/interview.png",
-      "tags": ["Python", "Data Science", "Education"]
+      "tags": ["Python", "Data Science"]
     }
   ],
   "experiences": [
@@ -424,199 +424,163 @@
       "id": "1",
       "name": "Python",
       "icon": "python",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "2",
       "name": "TypeScript",
       "icon": "typescript",
-      "category": "Development"
-    },
-    {
-      "id": "3",
-      "name": "JavaScript",
-      "icon": "javascript",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "4",
       "name": "SQL",
       "icon": "sql",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "20",
       "name": "React",
       "icon": "react",
-      "category": "Development"
-    },
-    {
-      "id": "21",
-      "name": "Next.js",
-      "icon": "nextjs",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "22",
       "name": "FastAPI",
       "icon": "fastapi",
-      "category": "Development"
+      "category": "I Build With"
     },
     {
       "id": "23",
       "name": "Tailwind CSS",
       "icon": "tailwind",
-      "category": "Development"
-    },
-    {
-      "id": "5",
-      "name": "NumPy",
-      "icon": "numpy",
-      "category": "Development"
-    },
-    {
-      "id": "6",
-      "name": "Pandas",
-      "icon": "pandas",
-      "category": "Development"
-    },
-    {
-      "id": "7",
-      "name": "Matplotlib",
-      "icon": "/uploads/matplotlib.svg",
-      "category": "Development"
-    },
-    {
-      "id": "24",
-      "name": "Supabase",
-      "icon": "supabase",
-      "category": "Infrastructure"
+      "category": "I Build With"
     },
     {
       "id": "25",
       "name": "Docker",
       "icon": "docker",
-      "category": "Infrastructure"
+      "category": "I Run On"
     },
     {
       "id": "26",
       "name": "Linux",
       "icon": "linux",
-      "category": "Infrastructure"
+      "category": "I Run On"
     },
     {
       "id": "31",
-      "name": "Kubernetes (k3s)",
+      "name": "k3s",
       "icon": "kubernetes",
-      "category": "Infrastructure"
+      "category": "I Run On"
     },
     {
       "id": "32",
       "name": "Tailscale",
       "icon": "tailscale",
-      "category": "Infrastructure"
-    },
-    {
-      "id": "27",
-      "name": "Ollama",
-      "icon": "ollama",
-      "category": "AI & ML"
-    },
-    {
-      "id": "28",
-      "name": "LLaMA",
-      "icon": "llama",
-      "category": "AI & ML"
-    },
-    {
-      "id": "29",
-      "name": "MCP (Model Context Protocol)",
-      "icon": "mcp",
-      "category": "AI & ML"
-    },
-    {
-      "id": "30",
-      "name": "FinBERT",
-      "icon": "finbert",
-      "category": "AI & ML"
-    },
-    {
-      "id": "33",
-      "name": "LangGraph",
-      "icon": "langgraph",
-      "category": "AI & ML"
-    },
-    {
-      "id": "34",
-      "name": "Celery",
-      "icon": "celery",
-      "category": "AI & ML"
-    },
-    {
-      "id": "8",
-      "name": "Sage 300",
-      "icon": "/uploads/Sage.png",
-      "category": "Data Skills"
-    },
-    {
-      "id": "9",
-      "name": "Microsoft Dynamics 365",
-      "icon": "/uploads/msdynamics.png",
-      "category": "Data Skills"
-    },
-    {
-      "id": "10",
-      "name": "Advanced Excel (Pivot Tables, Vlookup)",
-      "icon": "/uploads/excel.png",
-      "category": "Data Skills"
-    },
-    {
-      "id": "11",
-      "name": "Wolfram Mathematica",
-      "icon": "wolfram",
-      "category": "Data Skills"
-    },
-    {
-      "id": "12",
-      "name": "Tableau",
-      "icon": "tableau",
-      "category": "Data Skills"
-    },
-    {
-      "id": "13",
-      "name": "Power BI",
-      "icon": "/uploads/powerbi.png",
-      "category": "Data Skills"
+      "category": "I Run On"
     },
     {
       "id": "15",
       "name": "Git",
       "icon": "git",
-      "category": "Collaboration"
+      "category": "I Run On"
     },
     {
       "id": "16",
       "name": "GitHub",
       "icon": "github",
-      "category": "Collaboration"
+      "category": "I Run On"
     },
     {
-      "id": "17",
-      "name": "Team Work & Collaboration",
-      "icon": "teamwork",
-      "category": "Soft Skills"
+      "id": "27",
+      "name": "Claude Code",
+      "icon": "claude",
+      "category": "I Think With"
     },
     {
-      "id": "18",
-      "name": "Problem Solving",
-      "icon": "problemsolving",
-      "category": "Soft Skills"
+      "id": "35",
+      "name": "OpenAI Codex",
+      "icon": "openai",
+      "category": "I Think With"
     },
     {
-      "id": "19",
-      "name": "Cross-Functional Communication",
-      "icon": "communication",
-      "category": "Soft Skills"
+      "id": "36",
+      "name": "Warp",
+      "icon": "warp",
+      "category": "I Think With"
+    },
+    {
+      "id": "37",
+      "name": "Hermes",
+      "icon": "hermes",
+      "category": "I Think With"
+    },
+    {
+      "id": "38",
+      "name": "GLM",
+      "icon": "glm",
+      "category": "I Think With"
+    },
+    {
+      "id": "39",
+      "name": "Kimi",
+      "icon": "kimi",
+      "category": "I Think With"
+    },
+    {
+      "id": "28",
+      "name": "Ollama",
+      "icon": "ollama",
+      "category": "I Think With"
+    },
+    {
+      "id": "33",
+      "name": "LangGraph",
+      "icon": "langgraph",
+      "category": "I Think With"
+    },
+    {
+      "id": "29",
+      "name": "MCP",
+      "icon": "mcp",
+      "category": "I Think With"
+    },
+    {
+      "id": "10",
+      "name": "Excel (Pivot Tables, VBA)",
+      "icon": "/uploads/excel.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "8",
+      "name": "Sage 300",
+      "icon": "/uploads/Sage.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "9",
+      "name": "Dynamics 365",
+      "icon": "/uploads/msdynamics.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "12",
+      "name": "Tableau",
+      "icon": "tableau",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "13",
+      "name": "Power BI",
+      "icon": "/uploads/powerbi.png",
+      "category": "Finance & Data"
+    },
+    {
+      "id": "11",
+      "name": "Wolfram Mathematica",
+      "icon": "wolfram",
+      "category": "Finance & Data"
     }
   ],
   "posts": [
