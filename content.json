@@ -68,7 +68,48 @@
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
       "imageUrl": "/uploads/osint-dashboard.jpg",
-      "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"]
+      "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"],
+      "additionalImages": [
+        "/uploads/osint-guide.jpg",
+        "/uploads/osint-auroc.png",
+        "/uploads/osint-sensor-narrative.png"
+      ],
+      "caseStudy": {
+        "subtitle": "Building a self-hosted intelligence platform that tests its own predictions — and publishes where they fail.",
+        "sections": [
+          {
+            "title": "The Problem",
+            "content": "Open-source intelligence tools either cost thousands per seat or require you to trust a third party with your queries. News aggregators show headlines but don't cross-reference them against satellite data, conflict records, or market movements. I wanted a system that collects public data from every domain — geopolitical events, disasters, markets, cyber threats, fire detections, military aircraft — normalises it into one shape, and puts it on a map with the provenance attached. Everything local. Nothing leaves the machine."
+          },
+          {
+            "title": "Architecture",
+            "content": "69 data sources feed into a Python/FastAPI backend. 14 core fetchers (GDELT, ACLED, USGS, NASA FIRMS, ADS-B, Polymarket, and more) plus 55 RSS feeds from outlets across 4 ownership classes. Celery workers handle scheduled ingestion. PostgreSQL stores everything with a 30-day retention lifecycle that trims its own oldest data. The frontend is a Next.js console with an interactive world map, filterable by domain, severity, and time range. Ollama runs locally for LLM-powered situation summaries and story gists. The entire stack runs on a single Raspberry Pi 5 (8GB)."
+          },
+          {
+            "title": "Key Technical Decisions",
+            "content": "Every computed number carries a method_version string and is pre-registered before any output is inspected. The composite country stress index combines geopolitical, market, hazard, and wildfire domain signals — weights are fixed at ¼ each. Corroboration scoring tracks how many independent outlets cover the same event, distinguishing genuine cross-source confirmation from syndicated rewrites. Story clustering uses ownership metadata to prevent related outlets from inflating corroboration counts."
+          },
+          {
+            "title": "What Was Tested",
+            "content": "The composite index was evaluated against ACLED-derived ground truth labels across 3 pre-registered protocols: incidence evaluation (can the score distinguish high-event months?), onset evaluation (can it detect new escalations?), and within-country evaluation (does a country's own score predict its own future?). Labels define armed conflict onset (≥10 battle fatalities/week), mass protest escalation (≥20 demonstrations AND ≥5 riots/week), and state-based violence intensification (2× monthly fatality increase with ≥25 floor). Positive rates: 26.5% train, 21.8% held-out test."
+          },
+          {
+            "title": "What Failed — and Why That Matters",
+            "content": "The composite scored AUROC 0.502 on incidence (barely above coin-flip), 0.496–0.526 on onset (no predictive power), and failed the within-country test entirely. The held-out test set confirmed: the score dominates nothing. These results are published in the repository, not hidden. The system is honest about what it can and cannot do — it is a monitoring tool that shows evidence, not an oracle that predicts futures. Publishing failures is the point: a system that only reports successes is not doing science."
+          },
+          {
+            "title": "What I Learned",
+            "content": "Pre-registration is the difference between measurement and storytelling — without it, you can always find a metric that makes your system look good. Running ML on constrained hardware (8GB Pi) forces real engineering trade-offs: model selection matters when you can't just throw GPU at the problem. And the hardest part of building an intelligence system isn't the code — it's deciding what counts as ground truth."
+          }
+        ],
+        "stats": [
+          { "value": "69", "label": "Data Sources" },
+          { "value": "55", "label": "RSS Feeds" },
+          { "value": "7,038", "label": "Map Events" },
+          { "value": "3,180", "label": "Daily Articles" }
+        ],
+        "techStack": ["Python", "FastAPI", "PostgreSQL", "Celery", "Next.js", "Ollama", "Docker", "Raspberry Pi 5"]
+      }
     },
     {
       "id": "11",

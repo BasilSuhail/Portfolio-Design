@@ -1,4 +1,5 @@
-import { Github, ExternalLink, Terminal, Server, BarChart3, Bot, Shield, BookOpen, Cpu } from "lucide-react";
+import { Github, ExternalLink, Terminal, Server, BarChart3, Bot, Shield, BookOpen, Cpu, FileText } from "lucide-react";
+import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
@@ -18,6 +19,7 @@ export interface Project {
   liveUrl?: string;
   githubUrl?: string;
   tags?: string[];
+  caseStudy?: any;
 }
 
 interface ProjectsSectionProps {
@@ -124,7 +126,15 @@ export default function ProjectsSection({ projects, intro }: ProjectsSectionProp
                         ))}
                       </div>
                     )}
-                    <div className="flex items-center gap-2 pt-1">
+                    <div className="flex items-center gap-2 pt-1 flex-wrap">
+                      {project.caseStudy && (
+                        <Link href={`/project/${project.id}`}>
+                          <span className="inline-flex items-center gap-1.5 px-2 h-7 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors rounded-md hover:bg-emerald-50 dark:hover:bg-emerald-950/40 cursor-pointer">
+                            <FileText className="size-3.5" />
+                            Case Study
+                          </span>
+                        </Link>
+                      )}
                       {project.githubUrl && (
                         <a
                           href={project.githubUrl}

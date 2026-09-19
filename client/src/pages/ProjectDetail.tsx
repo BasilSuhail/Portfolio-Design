@@ -6,14 +6,15 @@ import { Footer } from "@/components/Footer";
 import { LiquidGlassButton } from "@/components/ui/liquid-glass";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 export default function ProjectDetail() {
   const [, params] = useRoute("/project/:id");
   const { data: content, isLoading } = useContent() as { data: any; isLoading: boolean };
   const [project, setProject] = useState<any>(null);
 
-  // Extract social links from content
   const socialLinks = {
     github: content?.socialLinks?.find((l: any) => l.platform === 'github')?.url,
     linkedin: content?.socialLinks?.find((l: any) => l.platform === 'linkedin')?.url,
@@ -61,6 +62,8 @@ export default function ProjectDetail() {
     );
   }
 
+  const cs = project.caseStudy;
+
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950">
       <Helmet>
@@ -79,27 +82,49 @@ export default function ProjectDetail() {
 
       <Navigation name={content?.profile?.name || "Portfolio"} />
 
-      <main className="pt-10 pb-8">
+      <main className="pt-10 pb-16">
         <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="mb-8">
-            <Link href="/">
-              <span className="inline-flex items-center gap-x-1 text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 cursor-pointer mb-2">
-                <ArrowLeft className="size-3" />
-                Back to Home
-              </span>
-            </Link>
-            <h1 className="text-2xl font-semibold text-gray-800 dark:text-neutral-200 mb-2">
-              {project.title}
-            </h1>
-            {project.description && (
-              <p className="text-sm text-gray-600 dark:text-neutral-400">
-                {project.description}
+          {/* Back link */}
+          <Link href="/">
+            <span className="inline-flex items-center gap-x-1 text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 cursor-pointer mb-4">
+              <ArrowLeft className="size-3" />
+              Back to Home
+            </span>
+          </Link>
+
+          {/* Hero image */}
+          {project.imageUrl && (
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-neutral-800 mb-8">
+              <img
+                src={getOptimizedImageUrl(project.imageUrl)}
+                alt={`${project.title} screenshot`}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          )}
+
+          {/* Title + meta */}
+          <div className="mb-6">
+            {project.category && (
+              <p className="text-xs font-medium text-gray-500 dark:text-neutral-500 uppercase tracking-wider mb-2">
+                {project.category}
               </p>
             )}
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-neutral-100 mb-3">
+              {project.title}
+            </h1>
+            {cs?.subtitle ? (
+              <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">
+                {cs.subtitle}
+              </p>
+            ) : project.description ? (
+              <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">
+                {project.description}
+              </p>
+            ) : null}
           </div>
 
-          {/* Action Buttons */}
+          {/* Action buttons */}
           <div className="flex gap-3 mb-8">
             {project.liveUrl && (
               <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
@@ -119,8 +144,54 @@ export default function ProjectDetail() {
             )}
           </div>
 
-          {/* Long Description */}
-          {project.longDescription && (
+          {/* Case study stats */}
+          {cs?.stats && cs.stats.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
+              {cs.stats.map((stat: any, i: number) => (
+                <div
+                  key={i}
+                  className="text-center py-4 px-3 rounded-lg border border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900"
+                >
+                  <div className="text-xl font-bold font-mono text-gray-900 dark:text-neutral-100">
+                    {stat.value}
+                  </div>
+                  <div className="text-[11px] text-gray-500 dark:text-neutral-500 mt-1">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Tech stack pills */}
+          {cs?.techStack && cs.techStack.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-10">
+              {cs.techStack.map((tech: string) => (
+                <Badge key={tech} variant="secondary" className="px-2.5 py-1 text-xs">
+                  {tech}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Case study sections */}
+          {cs?.sections && cs.sections.length > 0 && (
+            <div className="space-y-8">
+              {cs.sections.map((section: any, i: number) => (
+                <div key={i}>
+                  <h2 className="text-base font-semibold text-gray-900 dark:text-neutral-100 mb-3">
+                    {section.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed whitespace-pre-line">
+                    {section.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Fallback: longDescription for projects without case study */}
+          {!cs?.sections && project.longDescription && (
             <div className="mb-8">
               <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-3">
                 About This Project
@@ -131,33 +202,37 @@ export default function ProjectDetail() {
             </div>
           )}
 
-          {/* Gallery - includes main image and additional images */}
-          <div>
-            <h2 className="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-4">
-              Gallery
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Main Project Image as first item in gallery */}
-              <Card className="overflow-hidden border border-gray-200 dark:border-neutral-700">
-                <img
-                  src={project.imageUrl}
-                  alt={project.title}
-                  className="w-full h-auto object-cover"
-                />
-              </Card>
+          {/* Gallery */}
+          {(project.imageUrl || (project.additionalImages && project.additionalImages.length > 0)) && (
+            <div className="mt-12">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-neutral-100 mb-4">
+                Gallery
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {project.additionalImages && project.additionalImages.map((imageUrl: string, index: number) => (
+                  <Card key={index} className="overflow-hidden border border-gray-200 dark:border-neutral-700">
+                    <img
+                      src={getOptimizedImageUrl(imageUrl)}
+                      alt={`${project.title} — image ${index + 1}`}
+                      className="w-full h-auto object-cover"
+                      loading="lazy"
+                    />
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
 
-              {/* Additional Images */}
-              {project.additionalImages && project.additionalImages.map((imageUrl: string, index: number) => (
-                <Card key={index} className="overflow-hidden border border-gray-200 dark:border-neutral-700">
-                  <img
-                    src={imageUrl}
-                    alt={`${project.title} screenshot ${index + 1}`}
-                    className="w-full h-auto object-cover"
-                  />
-                </Card>
+          {/* Tags */}
+          {project.tags && project.tags.length > 0 && !cs?.techStack && (
+            <div className="flex flex-wrap gap-1.5 mt-8">
+              {project.tags.map((tag: string) => (
+                <Badge key={tag} variant="secondary" className="px-2 py-0.5 text-[10px]">
+                  {tag}
+                </Badge>
               ))}
             </div>
-          </div>
+          )}
         </div>
       </main>
 
