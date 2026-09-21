@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useRoute, Link } from "wouter";
 import { useContent } from "@/hooks/use-content";
 import { Navigation } from "@/components/Navigation";
@@ -9,6 +9,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
 import { getOptimizedImageUrl } from "@/lib/imageUtils";
+
+const MermaidDiagram = lazy(() => import("@/components/MermaidDiagram"));
 
 export default function ProjectDetail() {
   const [, params] = useRoute("/project/:id");
@@ -171,6 +173,20 @@ export default function ProjectDetail() {
                   {tech}
                 </Badge>
               ))}
+            </div>
+          )}
+
+          {/* Architecture diagram */}
+          {cs?.diagram && (
+            <div className="mb-10">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-neutral-100 mb-4">
+                Architecture
+              </h2>
+              <div className="rounded-lg border border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900 p-4 overflow-x-auto">
+                <Suspense fallback={<div className="text-xs text-gray-400 py-4 text-center">Loading diagram...</div>}>
+                  <MermaidDiagram chart={cs.diagram} />
+                </Suspense>
+              </div>
             </div>
           )}
 

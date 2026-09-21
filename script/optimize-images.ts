@@ -7,20 +7,33 @@ const OPTIMIZED_DIR = path.resolve("client/public/uploads/optimized");
 
 // Define target sizes based on how images are actually displayed
 // Project screenshots also generate a smaller "-sm" variant for mobile
-const PROJECT_IMAGES = ["Budgeting.png", "Investment.png", "interview.png"];
+const PROJECT_IMAGES = [
+  "Budgeting.png",
+  "osint-dashboard.png",
+  "pi-homelab.png",
+  "homeforge.png",
+  "intelligence-platform.png",
+  "osint-guide.jpg",
+  "osint-auroc.png",
+  "osint-sensor-narrative.png",
+];
 
 const IMAGE_CONFIGS: Record<string, { width: number; quality: number }> = {
-  // Project screenshots: 1440w for desktop (2x), 780w variant generated separately
-  "Budgeting.png": { width: 1440, quality: 80 },
-  "Investment.png": { width: 1440, quality: 80 },
-  "interview.png": { width: 1440, quality: 80 },
+  // Project screenshots: 1200w for desktop, 780w variant generated separately
+  "Budgeting.png": { width: 1200, quality: 80 },
+  "osint-dashboard.png": { width: 1200, quality: 80 },
+  "pi-homelab.png": { width: 1200, quality: 80 },
+  "homeforge.png": { width: 1200, quality: 80 },
+  "intelligence-platform.png": { width: 1200, quality: 80 },
+  "osint-guide.jpg": { width: 1200, quality: 80 },
+  "osint-auroc.png": { width: 1200, quality: 80 },
+  "osint-sensor-narrative.png": { width: 1200, quality: 80 },
 
   // Headshot: displayed at 128x128, generate 2x
   "headshot.png": { width: 256, quality: 85 },
 
   // Icons: displayed at 32x32 or smaller, generate 2x
   "msdynamics.png": { width: 64, quality: 80 },
-  "powerpoint.png": { width: 64, quality: 80 },
   "excel.png": { width: 64, quality: 80 },
   "Sage.png": { width: 64, quality: 80 },
 
@@ -29,16 +42,10 @@ const IMAGE_CONFIGS: Record<string, { width: number; quality: number }> = {
   "UMT.png": { width: 96, quality: 80 },
   "pfsl.png": { width: 96, quality: 80 },
   "dubizzle.png": { width: 96, quality: 80 },
-  "Scotflag.png": { width: 64, quality: 80 },
-
-  // Game assets: keep original dimensions, just convert format
-  "background.png": { width: 0, quality: 80 },
-  "sprites.png": { width: 0, quality: 80 },
-  "dino-sprite.png": { width: 0, quality: 80 },
 
   // Other
-  "Claude.png": { width: 64, quality: 80 },
-  "favicon.png": { width: 64, quality: 80 },
+  "og-preview.png": { width: 1200, quality: 85 },
+  "sprites.png": { width: 0, quality: 80 },
 };
 
 async function optimizeImages() {
@@ -47,7 +54,7 @@ async function optimizeImages() {
   }
 
   const files = readdirSync(UPLOADS_DIR).filter(
-    (f) => f.endsWith(".png") && !f.startsWith(".")
+    (f) => (f.endsWith(".png") || f.endsWith(".jpg") || f.endsWith(".jpeg")) && !f.startsWith(".")
   );
 
   console.log(`Found ${files.length} PNG files to optimize\n`);

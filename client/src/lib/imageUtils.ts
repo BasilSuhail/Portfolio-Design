@@ -1,9 +1,8 @@
 const OPTIMIZED_FILES = new Set([
-  "1765566380949-451783012", "background", "Budgeting", "Budgeting-sm",
-  "Claude", "dino-sprite", "dubizzle", "excel", "favicon", "headshot",
-  "image2", "image3", "intelligence-platform", "intelligence-platform-sm",
-  "interview", "interview-sm", "Investment", "Investment-sm", "matplotlib",
-  "msdynamics", "pfsl", "powerpoint", "Sage", "Scotflag", "sprites",
+  "background", "Budgeting", "dubizzle", "excel", "headshot",
+  "homeforge", "intelligence-platform", "msdynamics",
+  "og-preview", "osint-auroc", "osint-dashboard", "osint-guide",
+  "osint-sensor-narrative", "pfsl", "pi-homelab", "Sage", "sprites",
   "UMT", "UoA",
 ]);
 
@@ -19,7 +18,11 @@ export function getOptimizedImageUrl(originalUrl: string): string {
 }
 
 /** Project images that have a -sm (780w) variant for responsive loading. */
-const RESPONSIVE_IMAGES = ["Budgeting", "Investment", "interview"];
+const RESPONSIVE_IMAGES = [
+  "Budgeting", "osint-dashboard", "pi-homelab", "homeforge",
+  "intelligence-platform", "osint-guide", "osint-auroc",
+  "osint-sensor-narrative",
+];
 
 /**
  * Returns a srcSet string for project images that have multiple sizes.

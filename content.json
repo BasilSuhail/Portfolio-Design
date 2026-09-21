@@ -76,6 +76,7 @@
       ],
       "caseStudy": {
         "subtitle": "Building a self-hosted intelligence platform that tests its own predictions — and publishes where they fail.",
+        "diagram": "flowchart LR\n  subgraph Sources[\"69 Data Sources\"]\n    direction TB\n    GDELT[GDELT]\n    ACLED[ACLED]\n    USGS[USGS]\n    FIRMS[NASA FIRMS]\n    ADSB[ADS-B]\n    POLY[Polymarket]\n    RSS[55 RSS Feeds]\n  end\n  subgraph Pipeline[\"Ingestion Pipeline\"]\n    direction TB\n    CELERY[Celery Workers]\n    NORM[Normaliser]\n    DEDUP[Deduplication]\n    CORR[Corroboration\nScoring]\n  end\n  subgraph Storage\n    PG[(PostgreSQL)]\n    LIFE[30-day\nRetention]\n  end\n  subgraph Analysis\n    CSI[Composite\nStress Index]\n    EVAL[Pre-registered\nEvaluation]\n    OLLAMA[Ollama LLM\nSummaries]\n  end\n  subgraph Frontend[\"Next.js Console\"]\n    MAP[World Map]\n    FEED[News Feed]\n    DASH[Dashboard]\n  end\n  Sources --> CELERY\n  CELERY --> NORM --> DEDUP --> CORR\n  CORR --> PG\n  PG --> LIFE\n  PG --> CSI --> EVAL\n  PG --> OLLAMA\n  PG --> Frontend",
         "sections": [
           {
             "title": "The Problem",
@@ -118,7 +119,32 @@
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/BasilSuhail/PI",
       "imageUrl": "/uploads/pi-homelab.png",
-      "tags": ["k3s", "Docker", "Linux", "Tailscale"]
+      "tags": ["k3s", "Docker", "Linux", "Tailscale"],
+      "caseStudy": {
+        "subtitle": "Two Raspberry Pis running production infrastructure — Docker Compose on one, a k3s Kubernetes cluster on the other, connected by Tailscale.",
+        "diagram": "flowchart TB\n  subgraph NET[\"Tailscale Mesh Network\"]\n    direction LR\n    subgraph PI1[\"Pi 1 — Docker Compose\"]\n      direction TB\n      OSINT[OSINT Pipeline]\n      PG1[(PostgreSQL)]\n      NEXT[Next.js Console]\n      OSINT --> PG1 --> NEXT\n    end\n    subgraph PI2[\"Pi 2 — k3s Cluster\"]\n      direction TB\n      JF[Jellyfin]\n      VW[Vaultwarden]\n      IM[Immich]\n      KW[Kiwix]\n      UK[Uptime Kuma]\n      AB[ArchiveBox]\n      DASH2[Fleet Dashboard]\n    end\n  end\n  subgraph STORAGE[\"Storage\"]\n    SSD[1TB SSD]\n    HDD[6TB HDD]\n  end\n  TLS[Real TLS Certs] --> NET\n  PI1 --> SSD\n  PI2 --> SSD\n  PI2 --> HDD",
+        "stats": [
+          { "value": "2", "label": "Pi Boards" },
+          { "value": "9", "label": "Services" },
+          { "value": "1TB", "label": "SSD" },
+          { "value": "6TB", "label": "HDD" }
+        ],
+        "techStack": ["k3s", "Docker", "Linux", "Tailscale", "Node.js", "Raspberry Pi"],
+        "sections": [
+          {
+            "title": "The Setup",
+            "content": "Board one runs Docker Compose handling the OSINT data collection pipeline — PostgreSQL, Celery workers, and the Next.js console. Board two runs a k3s Kubernetes cluster hosting nine services: Jellyfin for media, Vaultwarden for passwords, Immich for photos, Kiwix for offline Wikipedia, Uptime Kuma for monitoring, ArchiveBox for web archiving, and more. A custom fleet dashboard built with raw Node.js (no framework) shows the health of everything."
+          },
+          {
+            "title": "Networking",
+            "content": "Tailscale mesh networking connects both boards with real TLS certificates — every service is accessible from any device on the tailnet without port forwarding or exposing anything to the public internet. The 1TB SSD handles database storage and frequently accessed files. The 6TB HDD handles media, backups, and archival data."
+          },
+          {
+            "title": "What I Learned",
+            "content": "Running production services on 8GB of RAM forces you to care about resource allocation in a way that cloud infrastructure never does. Every container's memory limit matters. k3s is genuinely production-ready on ARM — the only pain point is the occasional container image that doesn't publish an arm64 build. The fleet dashboard exists because every monitoring tool I tried consumed more resources than the services it was monitoring."
+          }
+        ]
+      }
     },
     {
       "id": "4",
