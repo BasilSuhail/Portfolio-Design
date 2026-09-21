@@ -10,7 +10,7 @@
     "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS",
-    "location": "Aberdeen, Scotland"
+    "location": "Scotland"
   },
   "sectionOrder": [
     "projects",
@@ -589,12 +589,6 @@
       "label": "LinkedIn",
       "value": "/in/basilsuhail",
       "url": "https://www.linkedin.com/in/basilsuhail/"
-    },
-    {
-      "platform": "twitter",
-      "label": "X",
-      "value": "@basilsuhail",
-      "url": "https://x.com/basilsuhail"
     }
   ],
   "contactSettings": {
