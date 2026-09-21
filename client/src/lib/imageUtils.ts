@@ -1,15 +1,20 @@
-/**
- * Maps an original image path to its optimized WebP version.
- * Falls back to the original path if no optimized version exists.
- */
+const OPTIMIZED_FILES = new Set([
+  "1765566380949-451783012", "background", "Budgeting", "Budgeting-sm",
+  "Claude", "dino-sprite", "dubizzle", "excel", "favicon", "headshot",
+  "image2", "image3", "intelligence-platform", "intelligence-platform-sm",
+  "interview", "interview-sm", "Investment", "Investment-sm", "matplotlib",
+  "msdynamics", "pfsl", "powerpoint", "Sage", "Scotflag", "sprites",
+  "UMT", "UoA",
+]);
+
 export function getOptimizedImageUrl(originalUrl: string): string {
   if (!originalUrl || !originalUrl.startsWith("/uploads/")) return originalUrl;
 
-  // Extract filename without extension
   const match = originalUrl.match(/^\/uploads\/(.+)\.(png|jpg|jpeg)$/i);
   if (!match) return originalUrl;
 
   const baseName = match[1];
+  if (!OPTIMIZED_FILES.has(baseName)) return originalUrl;
   return `/uploads/optimized/${baseName}.webp`;
 }
 

@@ -111,7 +111,7 @@ export function ContactSection({ email: _email, calendarLinks }: ContactSectionP
         </h2>
 
         {/* Contact Form - Preline Style */}
-        <form onSubmit={handleSubmit}>
+        {import.meta.env.VITE_FORMSPREE_ENDPOINT ? <form onSubmit={handleSubmit}>
           {/* Honeypot field */}
           <input
             type="text"
@@ -208,7 +208,40 @@ export function ContactSection({ email: _email, calendarLinks }: ContactSectionP
               </div>
             )}
           </div>
-        </form>
+        </form> : (
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {(calendarLinks?.link15min || calendarLinks?.link30min) && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 dark:text-neutral-400">
+                  <Calendar className="size-3.5 inline mr-1" />
+                  Book a meeting:
+                </span>
+                {calendarLinks?.link15min && (
+                  <LiquidGlassButton
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => window.open(calendarLinks.link15min, '_blank')}
+                    className="!bg-blue-500/10 !border-blue-500/30 hover:!bg-blue-500/20 text-blue-700 dark:text-blue-300"
+                  >
+                    15 min
+                  </LiquidGlassButton>
+                )}
+                {calendarLinks?.link30min && (
+                  <LiquidGlassButton
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => window.open(calendarLinks.link30min, '_blank')}
+                    className="!bg-emerald-500/10 !border-emerald-500/30 hover:!bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                  >
+                    30 min
+                  </LiquidGlassButton>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );
