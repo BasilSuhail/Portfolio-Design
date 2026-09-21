@@ -1,13 +1,13 @@
 {
   "hero": {
     "name": "Basil Suhail",
-    "title": "Software Engineer",
+    "title": "Data Scientist",
     "titles": [
-      "Software Engineer",
-      "Data Engineer",
-      "Systems Builder"
+      "Data Scientist",
+      "AI Developer",
+      "Finance × Technology"
     ],
-    "bio": "I build data systems end-to-end — from ingestion pipelines to dashboards to bare-metal deployment. My MSc thesis is a 69-source intelligence platform that runs on a Raspberry Pi. Before tech, four years in finance operations taught me where processes break and what automation actually needs to survive production. MSc Data Science, University of Aberdeen.",
+    "bio": "Data scientist with a finance background. I build intelligence pipelines, run ML experiments that publish their own failures, and deploy everything on hardware I own. Four years in corporate finance before this. MSc Data Science, University of Aberdeen.",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS",
     "location": "Scotland"
@@ -35,7 +35,7 @@
   },
   "sectionIntros": {
     "projects": "Production systems I've built and deployed. Each one solves a real problem.",
-    "journey": "From finance operations to building data systems.",
+    "journey": "From finance operations to data science.",
     "experience": "Four years across corporate finance, consulting, and freelance development.",
     "education": "",
     "techStack": "The stack I build with, deploy on, and think with.",
@@ -48,13 +48,13 @@
   },
   "profile": {
     "name": "Basil Suhail",
-    "title": "Software Engineer",
+    "title": "Data Scientist",
     "titles": [
-      "Software Engineer",
-      "Data Engineer",
-      "Systems Builder"
+      "Data Scientist",
+      "AI Developer",
+      "Finance × Technology"
     ],
-    "bio": "I build data systems end-to-end — from ingestion pipelines to dashboards to bare-metal deployment. My MSc thesis is a 69-source intelligence platform that runs on a Raspberry Pi. Before tech, four years in finance operations taught me where processes break and what automation actually needs to survive production. MSc Data Science, University of Aberdeen.",
+    "bio": "Data scientist with a finance background. I build intelligence pipelines, run ML experiments that publish their own failures, and deploy everything on hardware I own. Four years in corporate finance before this. MSc Data Science, University of Aberdeen.",
     "email": "basilsuhailkhan@proton.me",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
