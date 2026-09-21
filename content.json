@@ -592,7 +592,7 @@
     {
       "id": "13",
       "name": "Power BI",
-      "icon": "/uploads/powerbi.png",
+      "icon": "powerbi",
       "category": "Finance & Data"
     },
     {
