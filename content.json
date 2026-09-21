@@ -1,13 +1,13 @@
 {
   "hero": {
     "name": "Basil Suhail",
-    "title": "AI Engineer",
+    "title": "Software Engineer",
     "titles": [
-      "AI Engineer",
-      "Data Scientist",
-      "Finance × Technology"
+      "Software Engineer",
+      "Data Engineer",
+      "Systems Builder"
     ],
-    "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
+    "bio": "I build data systems end-to-end — from ingestion pipelines to dashboards to bare-metal deployment. My MSc thesis is a 69-source intelligence platform that runs on a Raspberry Pi. Before tech, four years in finance operations taught me where processes break and what automation actually needs to survive production. MSc Data Science, University of Aberdeen.",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS",
     "location": "Scotland"
@@ -35,7 +35,7 @@
   },
   "sectionIntros": {
     "projects": "Production systems I've built and deployed. Each one solves a real problem.",
-    "journey": "From finance operations to AI engineering.",
+    "journey": "From finance operations to building data systems.",
     "experience": "Four years across corporate finance, consulting, and freelance development.",
     "education": "",
     "techStack": "The stack I build with, deploy on, and think with.",
@@ -48,13 +48,13 @@
   },
   "profile": {
     "name": "Basil Suhail",
-    "title": "AI Engineer",
+    "title": "Software Engineer",
     "titles": [
-      "AI Engineer",
-      "Data Scientist",
-      "Finance × Technology"
+      "Software Engineer",
+      "Data Engineer",
+      "Systems Builder"
     ],
-    "bio": "Four years in finance operations taught me where systems break. Now I build the tools that replace them. I've managed 1,000+ daily receivables across 6 banks, built an OSINT intelligence platform as my MSc thesis, and run a self-hosted Kubernetes cluster on Raspberry Pis. MSc Data Science at Aberdeen, graduating September 2026.",
+    "bio": "I build data systems end-to-end — from ingestion pipelines to dashboards to bare-metal deployment. My MSc thesis is a 69-source intelligence platform that runs on a Raspberry Pi. Before tech, four years in finance operations taught me where processes break and what automation actually needs to survive production. MSc Data Science, University of Aberdeen.",
     "email": "basilsuhailkhan@proton.me",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
@@ -63,7 +63,7 @@
     {
       "id": "10",
       "title": "OSINT World Monitor",
-      "description": "MSc dissertation project. A self-hosted intelligence platform that collects news, conflict data, disasters, markets, cyber threats, satellite fire detections, and military aircraft activity. Computes a composite country stress index, then backtests its own predictions and publishes where they failed. Runs on a Raspberry Pi 5.",
+      "description": "Self-hosted intelligence platform collecting from 69 data sources — news, conflict records, satellite fire detections, military aircraft. Computes a country stress index, backtests its own predictions, and publishes where they fail. Runs on a Raspberry Pi 5.",
       "category": "Intelligence & Data Engineering",
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
@@ -372,7 +372,7 @@
       "institutionLogoUrl": "",
       "institutionColor": "#7c3aed",
       "coursework": "SQL, Tableau, Power BI, DAX, Power Query, Statistical Modeling, Data Visualization, Database Design, ETL, Time Intelligence",
-      "description": "Actively pursuing professional certifications and self-directed courses to deepen expertise in AI engineering, business intelligence, and data analytics.",
+      "description": "Actively pursuing professional certifications and self-directed courses to deepen expertise in data engineering, business intelligence, and systems design.",
       "certifications": [
         {
           "name": "Claude with the Anthropic API",

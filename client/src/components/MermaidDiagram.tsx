@@ -15,11 +15,7 @@ export default function MermaidDiagram({ chart, className }: MermaidDiagramProps
       const mermaid = m.default;
       mermaid.initialize({
         startOnLoad: false,
-        theme: document.documentElement.getAttribute("data-theme") === "dark" ||
-          (!document.documentElement.getAttribute("data-theme") &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches)
-          ? "dark"
-          : "default",
+        theme: document.documentElement.classList.contains("dark") ? "dark" : "default",
         fontFamily: "inherit",
         flowchart: { curve: "basis", padding: 12 },
       });
