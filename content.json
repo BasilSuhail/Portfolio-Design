@@ -67,7 +67,7 @@
       "category": "Intelligence & Data Engineering",
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
-      "imageUrl": "/uploads/osint-dashboard.jpg",
+      "imageUrl": "/uploads/osint-dashboard.png",
       "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"],
       "additionalImages": [
         "/uploads/osint-guide.jpg",
@@ -117,7 +117,7 @@
       "description": "Two-board homelab running production infrastructure. Board one handles OSINT data collection under Docker Compose. Board two is a k3s Kubernetes cluster hosting nine services: Jellyfin, Vaultwarden, Immich, Kiwix, Uptime Kuma, ArchiveBox, and more. Custom fleet dashboard built with raw Node.js (no framework). 1TB SSD + 6TB HDD, Tailscale mesh networking with real TLS certificates.",
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/BasilSuhail/PI",
-      "imageUrl": "/uploads/pi-homelab.jpeg",
+      "imageUrl": "/uploads/pi-homelab.png",
       "tags": ["k3s", "Docker", "Linux", "Tailscale"]
     },
     {
@@ -136,7 +136,7 @@
       "description": "A private cloud you can run at home in one command. Deploys 15+ services (AI chat, file storage, messaging, VPN) using Docker-in-Docker for zero-dependency installation. Built zero-trust secret derivation with HKDF-SHA512, encrypted storage with SQLCipher, and custom TOTP 2FA with BIP39 recovery. Three-tier network segmentation keeps services isolated.",
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/dlobs-co/dhobs",
-      "imageUrl": "",
+      "imageUrl": "/uploads/homeforge.png",
       "tags": ["Docker", "Next.js", "TypeScript", "Security"]
     },
     {
