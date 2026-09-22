@@ -106,9 +106,12 @@ export function ContactSection({ email: _email, calendarLinks }: ContactSectionP
   return (
     <section className="mt-10 sm:mt-14" data-section="contact">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-neutral-100">
+        <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-neutral-100">
           Contact Me
         </h2>
+        <p className="mb-5 text-sm text-gray-500 dark:text-neutral-400">
+          Looking for data science and AI roles at UK startups and tech companies.
+        </p>
 
         {/* Contact Form - Preline Style */}
         {import.meta.env.VITE_FORMSPREE_ENDPOINT ? <form onSubmit={handleSubmit}>

@@ -133,15 +133,23 @@
         "sections": [
           {
             "title": "The Setup",
-            "content": "Board one runs Docker Compose handling the OSINT data collection pipeline — PostgreSQL, Celery workers, and the Next.js console. Board two runs a k3s Kubernetes cluster hosting nine services: Jellyfin for media, Vaultwarden for passwords, Immich for photos, Kiwix for offline Wikipedia, Uptime Kuma for monitoring, ArchiveBox for web archiving, and more. A custom fleet dashboard built with raw Node.js (no framework) shows the health of everything."
+            "content": "Board one (pi) runs Docker Compose handling the OSINT data collection pipeline — PostgreSQL, Celery workers, and the Next.js console. Board two (pi2) runs a k3s Kubernetes cluster hosting nine services: Jellyfin for media, Vaultwarden for passwords, Immich for photos, Kiwix for offline Wikipedia, Uptime Kuma for monitoring, ArchiveBox for web archiving, and more. A custom fleet dashboard built with raw Node.js (no framework) shows the health of everything."
+          },
+          {
+            "title": "Storage Philosophy",
+            "content": "Two rules, and everything else follows from them. First: a drive is a folder. Open a board's share and you see its drives, named for what they are. Nothing that is not a drive sits beside them. Second: the split is by how a file is read, not by what it is called. Anything read at random — settings, databases, caches, artwork — lives on the SSD. Anything you'd recognise as a file — films, .zim archives, downloads — lives on the 6TB HDD. A database is called data and behaves like an app: Jellyfin's library index is 50MB and thousands of tiny seeks, and on a spinning disk it makes the whole interface feel slow."
           },
           {
             "title": "Networking",
-            "content": "Tailscale mesh networking connects both boards with real TLS certificates — every service is accessible from any device on the tailnet without port forwarding or exposing anything to the public internet. The 1TB SSD handles database storage and frequently accessed files. The 6TB HDD handles media, backups, and archival data."
+            "content": "Tailscale mesh networking connects both boards with real TLS certificates — every service is accessible from any device on the tailnet without port forwarding or exposing anything to the public internet. Each service gets its own tailnet hostname (jellyfin.tailnet.ts.net, vault.tailnet.ts.net, etc.) and any can be installed as a standalone app from a browser."
+          },
+          {
+            "title": "Deployment",
+            "content": "Everything deploys from the Mac, never from the Pi. A Makefile drives it: make bootstrap for first-time board setup, make dashboard-k8s for the fleet dashboard, make media for Jellyfin and Kiwix, make vault for Vaultwarden. Node agents run on each board — Glances for system metrics plus a Pi-specific shim for power draw and CPU throttle state. The build log, storage layout, and dashboard data contract are all documented in the repo."
           },
           {
             "title": "What I Learned",
-            "content": "Running production services on 8GB of RAM forces you to care about resource allocation in a way that cloud infrastructure never does. Every container's memory limit matters. k3s is genuinely production-ready on ARM — the only pain point is the occasional container image that doesn't publish an arm64 build. The fleet dashboard exists because every monitoring tool I tried consumed more resources than the services it was monitoring."
+            "content": "Running production services on 8GB of RAM forces you to care about resource allocation in a way that cloud infrastructure never does. Every container's memory limit matters. k3s is genuinely production-ready on ARM — the only pain point is the occasional container image that doesn't publish an arm64 build. The fleet dashboard exists because every monitoring tool I tried consumed more resources than the services it was monitoring. And three earlier attempts at organising storage each made the same files reachable by two paths at once, which is what a duplicate is — simplicity won."
           }
         ]
       }
@@ -154,7 +162,40 @@
       "liveUrl": "/news",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": ["TypeScript", "FinBERT", "React", "NLP"]
+      "tags": ["TypeScript", "FinBERT", "React", "NLP"],
+      "caseStudy": {
+        "subtitle": "Bloomberg Terminal on a budget. A 4-layer intelligence pipeline processing 500-1,000 articles daily with local ML, backtested against real market data.",
+        "diagram": "flowchart LR\n  subgraph Ingestion[\"Layer 1: Ingestion\"]\n    NEWS[NewsAPI]\n    RSS[RSS Feeds]\n    GDELT[GDELT]\n  end\n  subgraph Enrichment[\"Layer 2: Enrichment\"]\n    BERT[FinBERT\nSentiment]\n    NER[Entity\nRecognition]\n    IMPACT[Impact\nScoring]\n    GEO[Geopolitical\nTagging]\n  end\n  subgraph Clustering[\"Layer 3: Clustering\"]\n    TFIDF[TF-IDF]\n    EMB[Sentence\nEmbeddings]\n    THREAD[Narrative\nThreading]\n  end\n  subgraph Output[\"Layer 4: Intelligence\"]\n    GPR[Geopolitical\nRisk Index]\n    DASH[Dashboard]\n    HIND[Hindsight\nValidator]\n    BRIEF[AI Briefings]\n  end\n  Ingestion --> BERT\n  Ingestion --> NER\n  BERT --> IMPACT\n  NER --> IMPACT\n  IMPACT --> GEO\n  GEO --> TFIDF\n  GEO --> EMB\n  TFIDF --> THREAD\n  EMB --> THREAD\n  THREAD --> GPR\n  THREAD --> DASH\n  THREAD --> HIND\n  THREAD --> BRIEF",
+        "stats": [
+          { "value": "100+", "label": "News Sources" },
+          { "value": "~1,000", "label": "Articles/Day" },
+          { "value": "90%", "label": "Sentiment Accuracy" },
+          { "value": "80%", "label": "API Cost Reduction" }
+        ],
+        "techStack": ["TypeScript", "React", "Node.js", "FinBERT", "SQLite", "TF-IDF", "Gemini API", "GDELT"],
+        "sections": [
+          {
+            "title": "The Problem",
+            "content": "Bloomberg Terminal costs $24,000 a year. News aggregators show headlines but don't tell you what they mean — no sentiment scoring, no entity extraction, no cross-source clustering. If you want intelligence, not just information, you either pay enterprise prices or build it yourself."
+          },
+          {
+            "title": "The Pipeline",
+            "content": "Four layers. Layer 1 ingests from NewsAPI, RSS feeds (Reuters, Bloomberg, BBC, CNN), and GDELT's global events database — roughly 500-1,000 articles per day after deduplication. Layer 2 enriches every article: FinBERT scores sentiment (-1 to +1 with confidence), compromise.js extracts named entities, and a weighted formula calculates impact from sentiment strength, cluster size, source credibility, and recency. Layer 3 clusters stories using TF-IDF and sentence embeddings (all-MiniLM-L6-v2), then threads them across days so you can follow a developing situation. Layer 4 surfaces the intelligence: a custom Geopolitical Risk Index, sentiment timelines per entity, and a Hindsight Validator that backtests past predictions against actual market movements."
+          },
+          {
+            "title": "Local-First Architecture",
+            "content": "Most AI news platforms send every article to expensive LLM APIs. This pipeline runs FinBERT, NER, and TF-IDF locally — the heavy lifting happens on-device. LLMs (Gemini) are used only for high-value synthesis like executive briefings. Result: 80% cost reduction compared to an API-first approach, plus faster processing since there's no network round-trip for the core analysis."
+          },
+          {
+            "title": "The Hindsight Validator",
+            "content": "The most honest feature. It takes past sentiment predictions and checks them against what actually happened in the market. Did a negative sentiment spike on a company actually precede a stock drop? The validator shows the correlation — or the lack of it. No system that only shows wins is trustworthy."
+          },
+          {
+            "title": "What I Learned",
+            "content": "Source credibility weighting matters more than model accuracy — a perfect classifier on unreliable sources produces unreliable intelligence. Clustering is harder than classification because there's no ground truth for what constitutes 'the same story.' And local-first ML is viable for production: FinBERT on a CPU handles the throughput without any GPU infrastructure."
+          }
+        ]
+      }
     },
     {
       "id": "5",
@@ -527,42 +568,6 @@
       "id": "29",
       "name": "MCP",
       "icon": "mcp",
-      "category": "I Think With"
-    },
-    {
-      "id": "34",
-      "name": "OpenAI Codex",
-      "icon": "openai",
-      "category": "I Think With"
-    },
-    {
-      "id": "35",
-      "name": "GLM",
-      "icon": "glm",
-      "category": "I Think With"
-    },
-    {
-      "id": "36",
-      "name": "Kimi",
-      "icon": "kimi",
-      "category": "I Think With"
-    },
-    {
-      "id": "37",
-      "name": "Hermes",
-      "icon": "hermes",
-      "category": "I Think With"
-    },
-    {
-      "id": "38",
-      "name": "Warp",
-      "icon": "warp",
-      "category": "I Think With"
-    },
-    {
-      "id": "39",
-      "name": "VS Code",
-      "icon": "vscode",
       "category": "I Think With"
     },
     {
