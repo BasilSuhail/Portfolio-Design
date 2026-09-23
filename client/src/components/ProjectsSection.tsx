@@ -1,4 +1,5 @@
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, Terminal, Server, BarChart3, Bot, Shield, BookOpen, Cpu, FileText } from "lucide-react";
+import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
@@ -13,16 +14,42 @@ export interface Project {
   id: string;
   title: string;
   description?: string;
+  category?: string;
   imageUrl?: string;
   liveUrl?: string;
   githubUrl?: string;
   tags?: string[];
+  caseStudy?: any;
 }
 
 interface ProjectsSectionProps {
   projects: Project[];
   intro?: string;
 }
+
+const categoryGradients: Record<string, string> = {
+  "Intelligence & Data Engineering": "from-blue-600 to-cyan-500",
+  "Infrastructure & DevOps": "from-orange-500 to-amber-400",
+  "Machine Learning & NLP": "from-purple-600 to-pink-500",
+  "Machine Learning": "from-violet-600 to-fuchsia-500",
+  "Finance Automation": "from-emerald-600 to-teal-400",
+  "AI Tools": "from-rose-500 to-orange-400",
+  "Developer Tools": "from-gray-600 to-slate-400",
+  "DevOps & Governance": "from-red-600 to-rose-400",
+  "Education": "from-sky-500 to-indigo-400",
+};
+
+const categoryIcons: Record<string, React.ElementType> = {
+  "Intelligence & Data Engineering": BarChart3,
+  "Infrastructure & DevOps": Server,
+  "Machine Learning & NLP": Cpu,
+  "Machine Learning": Cpu,
+  "Finance Automation": BarChart3,
+  "AI Tools": Bot,
+  "Developer Tools": Terminal,
+  "DevOps & Governance": Shield,
+  "Education": BookOpen,
+};
 
 export default function ProjectsSection({ projects, intro }: ProjectsSectionProps) {
   return (
@@ -32,9 +59,15 @@ export default function ProjectsSection({ projects, intro }: ProjectsSectionProp
       data-section="projects"
     >
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-neutral-100">
+        <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-neutral-100">
           Projects
         </h2>
+
+        {intro && (
+          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-6">
+            {intro}
+          </p>
+        )}
 
         <Carousel
           opts={{
@@ -59,13 +92,15 @@ export default function ProjectsSection({ projects, intro }: ProjectsSectionProp
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                         loading="lazy"
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-4xl font-bold text-neutral-300 dark:text-neutral-600">
-                          {project.title.charAt(0)}
-                        </span>
-                      </div>
-                    )}
+                    ) : (() => {
+                      const gradient = categoryGradients[project.category || ""] || "from-neutral-600 to-neutral-400";
+                      const FallbackIcon = categoryIcons[project.category || ""] || Terminal;
+                      return (
+                        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${gradient}`}>
+                          <FallbackIcon className="size-10 text-white/80" strokeWidth={1.5} />
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Content */}
@@ -91,7 +126,15 @@ export default function ProjectsSection({ projects, intro }: ProjectsSectionProp
                         ))}
                       </div>
                     )}
-                    <div className="flex items-center gap-2 pt-1">
+                    <div className="flex items-center gap-2 pt-1 flex-wrap">
+                      {project.caseStudy && (
+                        <Link href={`/project/${project.id}`}>
+                          <span className="inline-flex items-center gap-1.5 px-2 h-7 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors rounded-md hover:bg-emerald-50 dark:hover:bg-emerald-950/40 cursor-pointer">
+                            <FileText className="size-3.5" />
+                            Case Study
+                          </span>
+                        </Link>
+                      )}
                       {project.githubUrl && (
                         <a
                           href={project.githubUrl}

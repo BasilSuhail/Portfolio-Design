@@ -1,20 +1,28 @@
-/**
- * Maps an original image path to its optimized WebP version.
- * Falls back to the original path if no optimized version exists.
- */
+const OPTIMIZED_FILES = new Set([
+  "background", "Budgeting", "dubizzle", "excel", "headshot",
+  "homeforge", "intelligence-platform", "msdynamics",
+  "og-preview", "osint-auroc", "osint-dashboard", "osint-guide",
+  "osint-sensor-narrative", "pfsl", "pi-homelab", "Sage", "sprites",
+  "UMT", "UoA",
+]);
+
 export function getOptimizedImageUrl(originalUrl: string): string {
   if (!originalUrl || !originalUrl.startsWith("/uploads/")) return originalUrl;
 
-  // Extract filename without extension
   const match = originalUrl.match(/^\/uploads\/(.+)\.(png|jpg|jpeg)$/i);
   if (!match) return originalUrl;
 
   const baseName = match[1];
+  if (!OPTIMIZED_FILES.has(baseName)) return originalUrl;
   return `/uploads/optimized/${baseName}.webp`;
 }
 
 /** Project images that have a -sm (780w) variant for responsive loading. */
-const RESPONSIVE_IMAGES = ["Budgeting", "Investment", "interview"];
+const RESPONSIVE_IMAGES = [
+  "Budgeting", "osint-dashboard", "pi-homelab", "homeforge",
+  "intelligence-platform", "osint-guide", "osint-auroc",
+  "osint-sensor-narrative",
+];
 
 /**
  * Returns a srcSet string for project images that have multiple sizes.
