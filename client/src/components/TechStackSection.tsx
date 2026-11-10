@@ -33,6 +33,10 @@ import {
   SiLangchain,
   SiWarp,
   SiHermes,
+  SiPostgresql,
+  SiNginx,
+  SiTraefikproxy,
+  SiGitea,
 } from "react-icons/si";
 import { VscCode } from "react-icons/vsc";
 import { Users, Lightbulb, MessageSquare } from "lucide-react";
@@ -87,6 +91,10 @@ const iconMap = {
   langgraph: SiLangchain,
   warp: SiWarp,
   hermes: SiHermes,
+  postgresql: SiPostgresql,
+  nginx: SiNginx,
+  traefik: SiTraefikproxy,
+  gitea: SiGitea,
   teamwork: Users,
   problemsolving: Lightbulb,
   communication: MessageSquare,
@@ -128,6 +136,10 @@ const colorMap: Record<string, string> = {
   langgraph: "#1C3C3C",
   warp: "#01A4FF",
   hermes: "#4A154B",
+  postgresql: "#4169E1",
+  nginx: "#009639",
+  traefik: "#24A1C1",
+  gitea: "#609926",
   teamwork: "#4F46E5",
   problemsolving: "#F59E0B",
   communication: "#10B981",
