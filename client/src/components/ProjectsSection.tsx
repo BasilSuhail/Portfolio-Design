@@ -82,7 +82,7 @@ export default function ProjectsSection({ projects, intro }: ProjectsSectionProp
                 key={project.id}
                 className="pl-4 basis-[85%] sm:basis-[48%]"
               >
-                <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+                <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800 bg-[#f6f3ea] dark:bg-neutral-900">
                   {/* Image */}
                   <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
                     {project.imageUrl ? (

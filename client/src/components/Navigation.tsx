@@ -75,7 +75,7 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
         saturation={1.1}
         className={`mt-4 max-w-3xl mx-2 sm:mx-auto transition-all duration-300 ${isScrolled ? "shadow-lg" : ""}`}
       >
-        <nav className="w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 relative bg-white/80 dark:bg-neutral-900/80 rounded-[24px]">
+        <nav className="w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 relative bg-[#f6f3ea]/80 dark:bg-neutral-900/80 rounded-[24px]">
         <div className="flex items-center">
           <Link href="/">
             <span
