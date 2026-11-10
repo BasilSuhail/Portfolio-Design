@@ -10,10 +10,10 @@
   --opaque-button-border-intensity: -8;
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
-  --background: 0 0% 94.12%;
+  --background: 43 25% 91.5%;
   --foreground: 0 0% 10.2%;
   --border: 0 0% 90.98%;
-  --card: 0 0% 98.82%;
+  --card: 43 35% 95.5%;
   --card-foreground: 0 0% 0%;
   --card-border: 0 0% 92%;
   --sidebar: 45 25% 97%;
@@ -329,4 +329,68 @@
   /* Stronger borders in dark mode */
   --border: 0 0% 40%;
   --card-border: 0 0% 45%;
+}
+
+/* HIGH CONTRAST: strong overrides. The site uses fixed grey utility classes, so
+   variables alone change almost nothing. These rules force real contrast. */
+.high-contrast:not(.dark) {
+  --foreground: 0 0% 0%;
+  --muted-foreground: 0 0% 0%;
+}
+.high-contrast:not(.dark) :is(
+  .text-neutral-300, .text-neutral-400, .text-neutral-500, .text-neutral-600, .text-neutral-700,
+  .text-gray-400, .text-gray-500, .text-gray-600, .text-gray-700, .text-muted-foreground,
+  .text-slate-500, .text-slate-600
+) {
+  color: #000000 !important;
+}
+.high-contrast:not(.dark) :is(
+  .border-neutral-100, .border-neutral-200, .border-neutral-300, .border-gray-100, .border-gray-200,
+  .border-gray-300, .border-border, .border-card-border, .border-t, .border-b
+) {
+  border-color: #000000 !important;
+}
+.high-contrast:not(.dark) :is(.bg-neutral-100, .bg-neutral-200, .bg-gray-100, .bg-gray-200) {
+  background-color: #e5e5e5 !important;
+  color: #000000 !important;
+}
+.high-contrast:not(.dark) :is(.bg-neutral-100, .bg-neutral-200, .bg-gray-100, .bg-gray-200) * {
+  color: #000000 !important;
+}
+
+.dark.high-contrast :is(
+  .dark\:text-neutral-300, .dark\:text-neutral-400, .dark\:text-neutral-500, .dark\:text-neutral-600,
+  .dark\:text-gray-400, .dark\:text-gray-500, .dark\:text-gray-300, .text-muted-foreground
+) {
+  color: #ffffff !important;
+}
+.dark.high-contrast :is(
+  .dark\:border-neutral-700, .dark\:border-neutral-800, .dark\:border-neutral-600, .border-border, .border-card-border
+) {
+  border-color: #ffffff !important;
+}
+
+/* Both modes: links and focus are always obvious */
+.high-contrast a:not([class*="bg-"]) {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+.high-contrast :is(a, button, input, textarea, select, [role="button"]):focus-visible {
+  outline: 3px solid #1d4ed8 !important;
+  outline-offset: 2px !important;
+}
+.dark.high-contrast :is(a, button, input, textarea, select, [role="button"]):focus-visible {
+  outline-color: #fde047 !important;
+}
+.high-contrast nav button {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.high-contrast img:not([src*=".svg"]) {
+  filter: contrast(1.05);
+}
+
+/* Keep intentionally transparent borders (nav items) transparent in high contrast */
+.high-contrast .border-transparent {
+  border-color: transparent !important;
 }

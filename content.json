@@ -5,7 +5,8 @@
     "titles": [
       "Data Scientist",
       "AI Developer",
-      "Finance × Technology"
+      "Finance × Technology",
+      "Finance Engineer"
     ],
     "bio": "Data scientist with a finance background. I build intelligence pipelines, run ML experiments that publish their own failures, and deploy everything on hardware I own. Four years in corporate finance before this. MSc Data Science, University of Aberdeen.",
     "avatarUrl": "/uploads/headshot.png",
@@ -52,7 +53,8 @@
     "titles": [
       "Data Scientist",
       "AI Developer",
-      "Finance × Technology"
+      "Finance × Technology",
+      "Finance Engineer"
     ],
     "bio": "Data scientist with a finance background. I build intelligence pipelines, run ML experiments that publish their own failures, and deploy everything on hardware I own. Four years in corporate finance before this. MSc Data Science, University of Aberdeen.",
     "email": "basilsuhailkhan@proton.me",
@@ -68,7 +70,13 @@
       "liveUrl": "https://basilsuhail.github.io/OSINT/",
       "githubUrl": "https://github.com/BasilSuhail/OSINT",
       "imageUrl": "/uploads/osint-dashboard.png",
-      "tags": ["Python", "FastAPI", "PostgreSQL", "Celery", "ML"],
+      "tags": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "Celery",
+        "ML"
+      ],
       "additionalImages": [
         "/uploads/osint-guide.jpg",
         "/uploads/osint-auroc.png",
@@ -104,75 +112,167 @@
           }
         ],
         "stats": [
-          { "value": "69", "label": "Data Sources" },
-          { "value": "55", "label": "RSS Feeds" },
-          { "value": "7,038", "label": "Map Events" },
-          { "value": "3,180", "label": "Daily Articles" }
+          {
+            "value": "69",
+            "label": "Data Sources"
+          },
+          {
+            "value": "55",
+            "label": "RSS Feeds"
+          },
+          {
+            "value": "7,038",
+            "label": "Map Events"
+          },
+          {
+            "value": "3,180",
+            "label": "Daily Articles"
+          }
         ],
-        "techStack": ["Python", "FastAPI", "PostgreSQL", "Celery", "Next.js", "Ollama", "Docker", "Raspberry Pi 5"]
+        "techStack": [
+          "Python",
+          "FastAPI",
+          "PostgreSQL",
+          "Celery",
+          "Next.js",
+          "Ollama",
+          "Docker",
+          "Raspberry Pi 5"
+        ]
       }
     },
     {
       "id": "11",
-      "title": "Raspberry Pi Homelab",
-      "description": "Two-board homelab running production infrastructure. Board one handles OSINT data collection under Docker Compose. Board two is a k3s Kubernetes cluster hosting nine services: Jellyfin, Vaultwarden, Immich, Kiwix, Uptime Kuma, ArchiveBox, and more. Custom fleet dashboard built with raw Node.js (no framework). 1TB SSD + 6TB HDD, Tailscale mesh networking with real TLS certificates.",
+      "title": "Homelab: From Raspberry Pis to One PC",
+      "description": "A family's apps on one headless PC, built the hard way. Started as a single Raspberry Pi running OSINT tooling, grew into two Pis and a k3s cluster, then hit the limits of USB disks and ARM. Now one Debian PC runs Jellyfin, Nextcloud, Immich, Vaultwarden and Gitea on k3s over Tailscale, with GPU transcoding, mirrored SSDs, VPN-gated downloads and a custom dashboard. Every step is documented, including what went wrong.",
       "category": "Infrastructure & DevOps",
-      "githubUrl": "https://github.com/BasilSuhail/PI",
+      "githubUrl": "https://github.com/BasilSuhail/homelab",
       "imageUrl": "/uploads/pi-homelab.png",
-      "tags": ["k3s", "Docker", "Linux", "Tailscale"],
+      "tags": [
+        "k3s",
+        "Docker",
+        "Linux",
+        "Tailscale"
+      ],
       "caseStudy": {
-        "subtitle": "Two Raspberry Pis running production infrastructure — Docker Compose on one, a k3s Kubernetes cluster on the other, connected by Tailscale.",
-        "diagram": "flowchart TB\n  subgraph NET[\"Tailscale Mesh Network\"]\n    direction LR\n    subgraph PI1[\"Pi 1 — Docker Compose\"]\n      direction TB\n      OSINT[OSINT Pipeline]\n      PG1[(PostgreSQL)]\n      NEXT[Next.js Console]\n      OSINT --> PG1 --> NEXT\n    end\n    subgraph PI2[\"Pi 2 — k3s Cluster\"]\n      direction TB\n      JF[Jellyfin]\n      VW[Vaultwarden]\n      IM[Immich]\n      KW[Kiwix]\n      UK[Uptime Kuma]\n      AB[ArchiveBox]\n      DASH2[Fleet Dashboard]\n    end\n  end\n  subgraph STORAGE[\"Storage\"]\n    SSD[1TB SSD]\n    HDD[6TB HDD]\n  end\n  TLS[Real TLS Certs] --> NET\n  PI1 --> SSD\n  PI2 --> SSD\n  PI2 --> HDD",
+        "subtitle": "One Raspberry Pi became two, then one PC. The story of building a backup server for a family, and what each stage taught me.",
+        "diagram": "flowchart LR\n  subgraph S1[\"Stage 1\"]\n    A[One Pi + loose SSD]\n  end\n  subgraph S2[\"Stages 2 and 3\"]\n    B[SSD bracket]\n    C[Second Pi as k3s server]\n  end\n  subgraph S3[\"Stage 4\"]\n    D[Two Pis + SSDs + 6TB HDD]\n  end\n  subgraph S4[\"Stage 5\"]\n    E[One headless Debian PC]\n    F[k3s over Tailscale]\n    G[Jellyfin / Nextcloud / Immich / Vaultwarden / Gitea]\n    H[Console dashboard]\n    E --> F --> G\n    E --> H\n  end\n  A --> B --> C --> D -->|\"Pis ran out\"| E",
         "stats": [
-          { "value": "2", "label": "Pi Boards" },
-          { "value": "9", "label": "Services" },
-          { "value": "1TB", "label": "SSD" },
-          { "value": "6TB", "label": "HDD" }
+          {
+            "value": "5",
+            "label": "Build Stages"
+          },
+          {
+            "value": "10",
+            "label": "Apps Hosted"
+          },
+          {
+            "value": "24GB",
+            "label": "RAM"
+          },
+          {
+            "value": "13TB",
+            "label": "Storage"
+          }
         ],
-        "techStack": ["k3s", "Docker", "Linux", "Tailscale", "Node.js", "Raspberry Pi"],
+        "techStack": [
+          "k3s",
+          "Docker",
+          "Debian",
+          "Tailscale",
+          "Node.js",
+          "Samba"
+        ],
         "sections": [
           {
-            "title": "The Setup",
-            "content": "Board one (pi) runs Docker Compose handling the OSINT data collection pipeline — PostgreSQL, Celery workers, and the Next.js console. Board two (pi2) runs a k3s Kubernetes cluster hosting nine services: Jellyfin for media, Vaultwarden for passwords, Immich for photos, Kiwix for offline Wikipedia, Uptime Kuma for monitoring, ArchiveBox for web archiving, and more. A custom fleet dashboard built with raw Node.js (no framework) shows the health of everything."
+            "title": "Stage 1: One Pi",
+            "content": "It began with a single Raspberry Pi, a SATA HAT and a loose SSD, running OSINT tooling around the clock. It worked, but the drive had nowhere to sit and nothing was backed up."
+          },
+          {
+            "title": "Stages 2 and 3: Growing the Stack",
+            "content": "An SSD bracket fixed the loose drive. Then a second Pi went on top, stacked on standoffs. One board kept the OSINT stack under Docker Compose. The second became a k3s server, so I could learn Kubernetes on real services rather than toy examples."
+          },
+          {
+            "title": "Stage 4: Two Pis, and the Limits",
+            "content": "Two Pis, two SSDs and a 6TB hard drive now ran Jellyfin, Nextcloud, Immich and a password vault for the family. Then the Pis ran out. USB disks kept dropping off. Film transcoding was beyond the boards. And one board going quiet for 16 hours took everything down with it. A homelab people rely on cannot work like that."
+          },
+          {
+            "title": "Stage 5: One PC",
+            "content": "One headless Debian PC replaced both boards. Ryzen 5, 24GB of RAM, a GTX 1050 Ti for GPU transcoding and a small local AI, mirrored SSDs for the system and every app's settings, and three hard drives for the bulk. No screen and no cable: it runs on Wi-Fi and is managed entirely over SSH. The Pis are retired."
+          },
+          {
+            "title": "What It Runs",
+            "content": "Jellyfin for films, Nextcloud for files with one space per person, Immich for phone photo backup, Vaultwarden for passwords, Gitea for self-hosted Git, Kiwix for offline Wikipedia, ArchiveBox for saved web pages, qBittorrent with every packet through a VPN and off by default, and Uptime Kuma watching everything and alerting on Discord. Each app has its own Tailscale name with real TLS certificates."
           },
           {
             "title": "Storage Philosophy",
-            "content": "Two rules, and everything else follows from them. First: a drive is a folder. Open a board's share and you see its drives, named for what they are. Nothing that is not a drive sits beside them. Second: the split is by how a file is read, not by what it is called. Anything read at random — settings, databases, caches, artwork — lives on the SSD. Anything you'd recognise as a file — films, .zim archives, downloads — lives on the 6TB HDD. A database is called data and behaves like an app: Jellyfin's library index is 50MB and thousands of tiny seeks, and on a spinning disk it makes the whole interface feel slow."
+            "content": "Two rules survived every stage. First: a drive is a folder. Open the PC's share and you see its drives, named for what they are. Second: the split is by how a file is read, not by what it is called. Anything read at random, like settings, databases and caches, lives on the SSD. Anything you would recognise as a file, like films, photos and archives, lives on a hard drive. A database behaves like an app: on a spinning disk it makes the whole interface feel slow."
           },
           {
-            "title": "Networking",
-            "content": "Tailscale mesh networking connects both boards with real TLS certificates — every service is accessible from any device on the tailnet without port forwarding or exposing anything to the public internet. Each service gets its own tailnet hostname (jellyfin.tailnet.ts.net, vault.tailnet.ts.net, etc.) and any can be installed as a standalone app from a browser."
-          },
-          {
-            "title": "Deployment",
-            "content": "Everything deploys from the Mac, never from the Pi. A Makefile drives it: make bootstrap for first-time board setup, make dashboard-k8s for the fleet dashboard, make media for Jellyfin and Kiwix, make vault for Vaultwarden. Node agents run on each board — Glances for system metrics plus a Pi-specific shim for power draw and CPU throttle state. The build log, storage layout, and dashboard data contract are all documented in the repo."
+            "title": "The Console",
+            "content": "A custom dashboard built on node:http with a Preact client and a single runtime dependency. It shows CPU per thread, memory, drives, GPU, temperatures, power draw and fans, plus which app is in use and by whom. Sign-in is by passkey or an admin password. It also runs in demo mode with no server at all."
           },
           {
             "title": "What I Learned",
-            "content": "Running production services on 8GB of RAM forces you to care about resource allocation in a way that cloud infrastructure never does. Every container's memory limit matters. k3s is genuinely production-ready on ARM — the only pain point is the occasional container image that doesn't publish an arm64 build. The fleet dashboard exists because every monitoring tool I tried consumed more resources than the services it was monitoring. And three earlier attempts at organising storage each made the same files reachable by two paths at once, which is what a duplicate is — simplicity won."
+            "content": "Hardware limits are information. The Pis taught me Kubernetes, resource limits and why a monitoring tool should never cost more than what it monitors. They also showed where ARM and USB storage stop being good enough for a family that depends on the service. Moving to one PC meant migrating real data, and that went wrong in useful ways: a database kept the old password, a re-run script re-owned every app's files and broke two services. Each failure is written up in the build log."
           }
         ]
-      }
+      },
+      "additionalImages": [
+        "/uploads/homelab-stage1.jpg",
+        "/uploads/homelab-stage2.jpg",
+        "/uploads/homelab-stage3.jpg",
+        "/uploads/homelab-stage4.jpg",
+        "/uploads/homelab-stage5.jpg",
+        "/uploads/homelab-console-server.png",
+        "/uploads/homelab-console-status.png"
+      ]
     },
     {
       "id": "4",
       "title": "Market Intelligence Platform",
       "description": "Bloomberg Terminal on a budget. Processes 500 to 1,000 financial articles daily from 100+ sources using FinBERT sentiment analysis (90% accuracy). Features a custom Geopolitical Risk Index, TF-IDF story clustering, and a Hindsight Validator that backtests sentiment predictions against real market returns. Cut LLM API costs 80% by running BERT locally.",
       "category": "Machine Learning & NLP",
-      "liveUrl": "/news",
+      "liveUrl": "/market-terminal",
       "githubUrl": "https://github.com/BasilSuhail/news-intelligence-platform",
       "imageUrl": "/uploads/intelligence-platform.png",
-      "tags": ["TypeScript", "FinBERT", "React", "NLP"],
+      "tags": [
+        "TypeScript",
+        "FinBERT",
+        "React",
+        "NLP"
+      ],
       "caseStudy": {
         "subtitle": "Bloomberg Terminal on a budget. A 4-layer intelligence pipeline processing 500-1,000 articles daily with local ML, backtested against real market data.",
         "diagram": "flowchart LR\n  subgraph Ingestion[\"Layer 1: Ingestion\"]\n    NEWS[NewsAPI]\n    RSS[RSS Feeds]\n    GDELT[GDELT]\n  end\n  subgraph Enrichment[\"Layer 2: Enrichment\"]\n    BERT[FinBERT\nSentiment]\n    NER[Entity\nRecognition]\n    IMPACT[Impact\nScoring]\n    GEO[Geopolitical\nTagging]\n  end\n  subgraph Clustering[\"Layer 3: Clustering\"]\n    TFIDF[TF-IDF]\n    EMB[Sentence\nEmbeddings]\n    THREAD[Narrative\nThreading]\n  end\n  subgraph Output[\"Layer 4: Intelligence\"]\n    GPR[Geopolitical\nRisk Index]\n    DASH[Dashboard]\n    HIND[Hindsight\nValidator]\n    BRIEF[AI Briefings]\n  end\n  Ingestion --> BERT\n  Ingestion --> NER\n  BERT --> IMPACT\n  NER --> IMPACT\n  IMPACT --> GEO\n  GEO --> TFIDF\n  GEO --> EMB\n  TFIDF --> THREAD\n  EMB --> THREAD\n  THREAD --> GPR\n  THREAD --> DASH\n  THREAD --> HIND\n  THREAD --> BRIEF",
         "stats": [
-          { "value": "100+", "label": "News Sources" },
-          { "value": "~1,000", "label": "Articles/Day" },
-          { "value": "90%", "label": "Sentiment Accuracy" },
-          { "value": "80%", "label": "API Cost Reduction" }
+          {
+            "value": "100+",
+            "label": "News Sources"
+          },
+          {
+            "value": "~1,000",
+            "label": "Articles/Day"
+          },
+          {
+            "value": "90%",
+            "label": "Sentiment Accuracy"
+          },
+          {
+            "value": "80%",
+            "label": "API Cost Reduction"
+          }
         ],
-        "techStack": ["TypeScript", "React", "Node.js", "FinBERT", "SQLite", "TF-IDF", "Gemini API", "GDELT"],
+        "techStack": [
+          "TypeScript",
+          "React",
+          "Node.js",
+          "FinBERT",
+          "SQLite",
+          "TF-IDF",
+          "Gemini API",
+          "GDELT"
+        ],
         "sections": [
           {
             "title": "The Problem",
@@ -204,7 +304,12 @@
       "category": "Infrastructure & DevOps",
       "githubUrl": "https://github.com/dlobs-co/dhobs",
       "imageUrl": "/uploads/homeforge.png",
-      "tags": ["Docker", "Next.js", "TypeScript", "Security"]
+      "tags": [
+        "Docker",
+        "Next.js",
+        "TypeScript",
+        "Security"
+      ]
     },
     {
       "id": "1",
@@ -214,7 +319,47 @@
       "liveUrl": "https://basilsuhail.github.io/Budgeting_Schedule_Automation/",
       "githubUrl": "https://github.com/BasilSuhail/Budgeting_Schedule_Automation",
       "imageUrl": "/uploads/Budgeting.png",
-      "tags": ["TypeScript", "Python", "Finance"]
+      "tags": [
+        "TypeScript",
+        "Python",
+        "Finance"
+      ]
+    },
+    {
+      "id": "12",
+      "title": "GitHub Protocols",
+      "description": "A workflow pack that makes AI coding agents follow strict Git rules. Enforces one issue, one branch, one PR, blocks secrets and personal details from commits, and keeps agents from merging or pushing to the wrong remote. Four layers: global Git config, agent guardrails, Git hooks with Gitleaks, and written agent rules. Violations are blocked by rule ID, not by hoping the agent behaves.",
+      "category": "Infrastructure & DevOps",
+      "githubUrl": "https://github.com/BasilSuhail/github-protocols-basil",
+      "tags": [
+        "Git",
+        "Bash",
+        "Gitleaks",
+        "AI Agents"
+      ]
+    },
+    {
+      "id": "13",
+      "title": "deerflow",
+      "description": "A research and task management app for the HomeForge stack. Fast task entry, deep work sessions, and local LLMs for research synthesis. Built with Next.js 15 and Tailwind CSS.",
+      "category": "Machine Learning & NLP",
+      "githubUrl": "https://github.com/BasilSuhail/deer-flow",
+      "tags": [
+        "Next.js",
+        "Tailwind CSS",
+        "Local LLMs"
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Felix",
+      "description": "A terminal agent launcher for macOS. One command opens Claude, Gemini and Aider in tiled side-by-side windows and starts the apps a session needs. Companion tools shut everything down cleanly and guide disk cleanup.",
+      "category": "Infrastructure & DevOps",
+      "tags": [
+        "Python",
+        "AppleScript",
+        "macOS"
+      ]
     }
   ],
   "experiences": [
@@ -235,7 +380,9 @@
           ]
         }
       ],
-      "tags": ["Consulting"]
+      "tags": [
+        "Consulting"
+      ]
     },
     {
       "id": "1",
@@ -255,7 +402,9 @@
         }
       ],
       "companyLogoUrl": "/uploads/dubizzle.png",
-      "tags": ["Automation"],
+      "tags": [
+        "Automation"
+      ],
       "stats": {
         "value": 1000,
         "label": "Daily Trans",
@@ -281,7 +430,9 @@
           ]
         }
       ],
-      "tags": ["ERP Systems"]
+      "tags": [
+        "ERP Systems"
+      ]
     },
     {
       "id": "1765560749602",
@@ -301,7 +452,9 @@
           ]
         }
       ],
-      "tags": ["Finance Fundamentals"],
+      "tags": [
+        "Finance Fundamentals"
+      ],
       "certifications": [
         {
           "name": "Dynamics 365",
@@ -362,7 +515,9 @@
         }
       ],
       "achievements": [],
-      "tags": ["AI Architect"]
+      "tags": [
+        "AI Architect"
+      ]
     },
     {
       "id": "2",
@@ -403,7 +558,9 @@
         "Rector's Merit Award (Jul 2024)",
         "Dean's Merit Award (Sep 2023)"
       ],
-      "tags": ["Financial Modeling"]
+      "tags": [
+        "Financial Modeling"
+      ]
     },
     {
       "id": "3",
@@ -452,7 +609,9 @@
         }
       ],
       "achievements": [],
-      "tags": ["Self Development"]
+      "tags": [
+        "Self Development"
+      ]
     }
   ],
   "testimonials": [
@@ -605,6 +764,42 @@
       "name": "Wolfram Mathematica",
       "icon": "wolfram",
       "category": "Finance & Data"
+    },
+    {
+      "id": "34",
+      "name": "PostgreSQL",
+      "icon": "postgresql",
+      "category": "I Build With"
+    },
+    {
+      "id": "35",
+      "name": "Next.js",
+      "icon": "nextjs",
+      "category": "I Build With"
+    },
+    {
+      "id": "36",
+      "name": "Celery",
+      "icon": "celery",
+      "category": "I Build With"
+    },
+    {
+      "id": "37",
+      "name": "Nginx",
+      "icon": "nginx",
+      "category": "I Run On"
+    },
+    {
+      "id": "38",
+      "name": "Traefik",
+      "icon": "traefik",
+      "category": "I Run On"
+    },
+    {
+      "id": "39",
+      "name": "Gitea",
+      "icon": "gitea",
+      "category": "I Run On"
     }
   ],
   "posts": [],

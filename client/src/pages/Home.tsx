@@ -89,7 +89,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
+    <div className="min-h-screen bg-[#efece3] dark:bg-neutral-950">
       {/* Pass name prop to Navigation if available */}
       <Navigation name={content.hero?.name} />
       <ScrollIndicator />
