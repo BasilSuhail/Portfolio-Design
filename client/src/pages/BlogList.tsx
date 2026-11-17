@@ -16,6 +16,7 @@ interface Blog {
   createdAt: string;
   updatedAt: string;
 }
+import { PageLoader } from "@/components/PageLoader";
 
 export default function BlogList() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -29,7 +30,8 @@ export default function BlogList() {
     try {
       const response = await fetch("/api/blogs");
       const data = await response.json();
-      setBlogs(data);
+      // An error reply is an object, not a list; showing "no posts" beats a blank page.
+      setBlogs(response.ok && Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch blogs:", error);
     } finally {
@@ -38,11 +40,7 @@ export default function BlogList() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
