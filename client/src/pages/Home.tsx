@@ -89,7 +89,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#efece3] dark:bg-neutral-950">
+    <div className="isolate min-h-screen bg-[#efece3] dark:bg-neutral-950">
+      <div className="ambient" aria-hidden="true" />
       {/* Pass name prop to Navigation if available */}
       <Navigation name={content.hero?.name} />
       <ScrollIndicator />
@@ -106,10 +107,6 @@ export default function Home() {
           avatarFallback={content.profile?.avatarFallback || content.hero?.avatarFallback}
           status={content.hero?.status}
           location={content.hero?.location}
-          socialLinks={content.socialLinks?.reduce((acc: any, link: any) => {
-            acc[link.platform] = link.url;
-            return acc;
-          }, {})}
         />
 
         {sectionOrder.map((sectionKey: string) => {

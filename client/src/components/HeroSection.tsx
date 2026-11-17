@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Mail, Copy, Check, MapPin } from "lucide-react";
-import { FaXTwitter, FaLinkedinIn, FaGithub } from "react-icons/fa6";
 import TypewriterText from "./TypewriterText";
 // canvas-confetti loaded lazily on first email copy click
 import { getOptimizedImageUrl } from "@/lib/imageUtils";
@@ -39,11 +38,6 @@ interface HeroSectionProps {
   avatarFallback: string;
   status?: string;
   location?: string;
-  socialLinks?: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
-  };
 }
 
 export default function HeroSection({
@@ -56,7 +50,6 @@ export default function HeroSection({
   avatarFallback: _avatarFallback,
   status,
   location,
-  socialLinks,
 }: HeroSectionProps) {
   const [copied, setCopied] = useState(false);
 
@@ -99,34 +92,33 @@ export default function HeroSection({
   }, [email]);
 
   return (
-    <section className="pt-10 pb-8" data-section="hero" data-testid="section-hero">
+    <section className="pt-10 sm:pt-12 pb-8" data-section="hero" data-testid="section-hero">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Profile Header */}
-        <div className="flex items-center gap-x-3">
-          <div className="shrink-0">
-            <img
-              className="shrink-0 size-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-neutral-700"
-              src={getOptimizedImageUrl(avatarUrl)}
-              alt={name}
-              width={64}
-              height={64}
-              fetchPriority="high"
-              decoding="sync"
-              data-testid="img-avatar"
-            />
-          </div>
+        {/* Portrait + headline */}
+        <div className="flex items-center gap-x-4">
+          <img
+            className="shrink-0 size-16 sm:size-[72px] rounded-full object-cover ring-1 ring-white/80 shadow-[0_12px_30px_-10px_rgba(70,55,25,.35)] dark:ring-white/15 dark:shadow-[0_12px_30px_-10px_rgba(0,0,0,.8)]"
+            src={getOptimizedImageUrl(avatarUrl)}
+            alt={name}
+            width={72}
+            height={72}
+            fetchPriority="high"
+            decoding="sync"
+            data-testid="img-avatar"
+          />
 
-          <div className="grow">
+          <div className="min-w-0">
+            {location && (
+              <p className="mb-1 flex items-center gap-1 text-xs text-gray-500 dark:text-neutral-400">
+                <MapPin className="size-3" />
+                {location}
+              </p>
+            )}
             <h1
-              className="text-lg font-medium text-gray-800 dark:text-neutral-200"
-              data-testid="text-name"
-            >
-              {name}
-            </h1>
-            <p
-              className="text-sm text-gray-600 dark:text-neutral-400"
+              className="text-2xl sm:text-[2rem] font-semibold tracking-tight leading-tight whitespace-nowrap text-gray-900 dark:text-neutral-100"
               data-testid="text-title"
             >
+              <span className="sr-only">{name}, </span>
               {titles && titles.length > 0 ? (
                 <TypewriterText
                   phrases={titles}
@@ -137,118 +129,67 @@ export default function HeroSection({
               ) : (
                 title
               )}
-            </p>
-            {location && (
-              <p className="text-xs text-gray-500 dark:text-neutral-500 mt-0.5 flex items-center gap-1">
-                <MapPin className="size-3" />
-                {location}
-              </p>
-            )}
+            </h1>
           </div>
         </div>
 
-        {/* About / Bio */}
-        <div className="mt-8">
-          <p className="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed" data-testid="text-bio">
-            {parseBioWithImages(bio).map((part, index) => {
-              if (part.type === 'image') {
-                return (
-                  <img
-                    key={index}
-                    src={getOptimizedImageUrl(part.content)}
-                    alt={part.alt || 'inline image'}
-                    className="inline-block w-5 h-5 mx-1 align-middle object-contain"
-                    width={20}
-                    height={20}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                );
-              }
-              return <span key={index}>{part.content}</span>;
-            })}
-          </p>
+        {/* Bio */}
+        <p
+          className="mt-7 text-[15px] sm:text-base leading-relaxed text-gray-600 dark:text-neutral-400"
+          data-testid="text-bio"
+        >
+          {parseBioWithImages(bio).map((part, index) => {
+            if (part.type === 'image') {
+              return (
+                <img
+                  key={index}
+                  src={getOptimizedImageUrl(part.content)}
+                  alt={part.alt || 'inline image'}
+                  className="inline-block w-5 h-5 mx-1 align-middle object-contain"
+                  width={20}
+                  height={20}
+                  loading="lazy"
+                  decoding="async"
+                />
+              );
+            }
+            return <span key={index}>{part.content}</span>;
+          })}
+        </p>
+
+        {/* Email + status */}
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          {email && (
+            <button
+              onClick={copyEmail}
+              className="glass-bar group inline-flex max-w-full items-center gap-2.5 rounded-full px-4 py-2 text-[13px] font-medium text-gray-800 transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 dark:text-neutral-200"
+              aria-label={`Copy email address ${email}`}
+              data-testid="button-copy-email"
+            >
+              <Mail className="shrink-0 size-3.5 text-gray-500 dark:text-neutral-400" />
+              <span className="truncate">{email}</span>
+              <span className="ms-1 flex items-center gap-1 border-s border-black/10 ps-3 text-xs text-gray-500 dark:border-white/15 dark:text-neutral-400">
+                {copied ? (
+                  <>
+                    <Check className="size-3.5 text-green-600 dark:text-green-400" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="size-3.5" />
+                    Copy
+                  </>
+                )}
+              </span>
+            </button>
+          )}
 
           {status && (
-            <p className="mt-4 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800">
+            <p className="inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800">
               <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
               {status}
             </p>
           )}
-
-          {/* Contact Links */}
-          <ul className="mt-5 flex flex-col gap-y-3">
-            {/* Email */}
-            {email && (
-            <li className="flex items-center gap-x-2.5">
-              <Mail className="shrink-0 size-3.5 text-[#EA4335]" />
-              <button
-                onClick={copyEmail}
-                className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400 flex items-center gap-1.5"
-                data-testid="button-copy-email"
-              >
-                {email}
-                {copied ? (
-                  <Check className="w-3 h-3 text-green-500" />
-                ) : (
-                  <Copy className="w-3 h-3 opacity-50" />
-                )}
-              </button>
-              {copied ? (
-                <span className="text-xs text-green-600 dark:text-green-400">
-                  Copied!
-                </span>
-              ) : (
-                <span className="text-xs text-gray-400 dark:text-neutral-500">
-                  click to copy
-                </span>
-              )}
-            </li>
-            )}
-
-            {/* Social Links */}
-            {socialLinks?.twitter && (
-              <li className="flex items-center gap-x-2.5">
-                <FaXTwitter className="shrink-0 size-3.5 text-gray-800 dark:text-neutral-200" />
-                <a
-                  className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400"
-                  href={socialLinks.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  @{socialLinks.twitter.split('/').pop()}
-                </a>
-              </li>
-            )}
-
-            {socialLinks?.linkedin && (
-              <li className="flex items-center gap-x-2.5">
-                <FaLinkedinIn className="shrink-0 size-3.5 text-[#0A66C2]" />
-                <a
-                  className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400"
-                  href={socialLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  LinkedIn
-                </a>
-              </li>
-            )}
-
-            {socialLinks?.github && (
-              <li className="flex items-center gap-x-2.5">
-                <FaGithub className="shrink-0 size-3.5 text-[#181717] dark:text-neutral-200" />
-                <a
-                  className="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-400"
-                  href={socialLinks.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  @{socialLinks.github.split('/').pop()}
-                </a>
-              </li>
-            )}
-          </ul>
         </div>
       </div>
     </section>
