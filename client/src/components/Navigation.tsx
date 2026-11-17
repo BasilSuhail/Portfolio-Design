@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun, Contrast } from "lucide-react";
+import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { Link, useLocation } from "wouter";
 import { LiquidGlassButton } from "./ui/liquid-glass";
-import GlassSurface from "./ui/GlassSurface";
+import { useContent } from "@/hooks/use-content";
 
 interface NavigationProps {
   name?: string;
@@ -12,6 +13,31 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [location, setLocation] = useLocation();
+  const [theme, setTheme] = useState<"light" | "dark">(() =>
+    document.documentElement.classList.contains("dark") ? "dark" : "light"
+  );
+  const [highContrast, setHighContrast] = useState(() =>
+    document.documentElement.classList.contains("high-contrast")
+  );
+
+  const { data } = useContent();
+  const socialLinks = (data as any)?.socialLinks as { platform: string; url: string }[] | undefined;
+  const github = socialLinks?.find((l) => l.platform === "github")?.url;
+  const linkedin = socialLinks?.find((l) => l.platform === "linkedin")?.url;
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
+
+  const toggleHighContrast = () => {
+    const newContrast = !highContrast;
+    setHighContrast(newContrast);
+    localStorage.setItem("highContrast", String(newContrast));
+    document.documentElement.classList.toggle("high-contrast", newContrast);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,30 +85,17 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
 
   return (
     <header className="sticky top-0 inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
-      <GlassSurface
-        width="100%"
-        height="auto"
-        borderRadius={24}
-        brightness={70}
-        opacity={0.85}
-        blur={8}
-        displace={0}
-        distortionScale={-40}
-        redOffset={0}
-        greenOffset={2}
-        blueOffset={4}
-        backgroundOpacity={0.5}
-        saturation={1.1}
-        className={`mt-4 max-w-3xl mx-2 sm:mx-auto transition-all duration-300 ${isScrolled ? "shadow-lg" : ""}`}
+      <div
+        className={`glass-bar mt-4 w-full max-w-4xl mx-2 sm:mx-auto rounded-[28px] md:rounded-full transition-shadow duration-300 ${isScrolled ? "glass-bar-raised" : ""}`}
       >
-        <nav className="w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1 ps-4 md:py-0 relative bg-[#f6f3ea]/80 dark:bg-neutral-900/80 rounded-[24px]">
+        <nav className="w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1.5 ps-6 md:py-1 relative">
         <div className="flex items-center">
           <Link href="/">
             <span
-              className="flex-none rounded-md text-xl inline-block font-semibold focus:outline-none focus:opacity-80 text-gray-800 dark:text-neutral-200 cursor-pointer"
+              className="flex-none rounded-md text-xl inline-block font-bold whitespace-nowrap focus:outline-none focus:opacity-80 text-gray-800 dark:text-neutral-200 cursor-pointer"
               aria-label={name}
             >
-              {name.split(" ")[0]}
+              {name}
             </span>
           </Link>
         </div>
@@ -119,18 +132,6 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
             } overflow-hidden transition-all duration-300 basis-full grow md:block`}
         >
           <div className="flex flex-col items-center md:flex-row md:items-center md:justify-end gap-2 md:gap-3 mt-3 md:mt-0 py-2 md:py-0 md:ps-7">
-            <button
-              onClick={() => scrollToSection("projects")}
-              className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200 text-center"
-            >
-              Projects
-            </button>
-            <button
-              onClick={() => scrollToSection("journey")}
-              className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200 text-center"
-            >
-              Journey
-            </button>
             <Link href="/gallery">
               <span
                 className="py-0.5 md:py-3 px-4 md:px-1 border-s-2 md:border-s-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-200 cursor-pointer block text-center"
@@ -147,10 +148,56 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
                 News
               </span>
             </Link>
+
+            <div className="flex items-center gap-3 mt-2 md:mt-0 md:ms-2">
+              <div className="hidden md:block w-px h-4 bg-gray-300 dark:bg-neutral-600" />
+              {github && (
+                <a
+                  className="inline-block text-[#181717] hover:text-black focus:outline-none dark:text-neutral-300 dark:hover:text-white transition-colors"
+                  href={github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <FaGithub className="shrink-0 size-4" />
+                </a>
+              )}
+              {linkedin && (
+                <a
+                  className="inline-block text-[#0A66C2] hover:text-[#004182] focus:outline-none dark:text-[#0A66C2] dark:hover:text-[#5eb1ff] transition-colors"
+                  href={linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <FaLinkedinIn className="shrink-0 size-4" />
+                </a>
+              )}
+
+              <div className="w-px h-4 bg-gray-300 dark:bg-neutral-600" />
+
+              <LiquidGlassButton
+                onClick={toggleTheme}
+                size="icon"
+                className="rounded-full size-8"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
+              </LiquidGlassButton>
+
+              <LiquidGlassButton
+                onClick={toggleHighContrast}
+                size="icon"
+                className={`rounded-full size-8 ${highContrast ? "bg-white/40" : ""}`}
+                aria-label="Toggle high contrast"
+              >
+                <Contrast className="size-3.5" />
+              </LiquidGlassButton>
+            </div>
           </div>
         </div>
         </nav>
-      </GlassSurface>
+      </div>
     </header>
   );
 }
