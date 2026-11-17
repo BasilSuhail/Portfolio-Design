@@ -35,7 +35,7 @@
     "game": false
   },
   "sectionIntros": {
-    "projects": "Production systems I've built and deployed. Each one solves a real problem.",
+    "projects": "",
     "journey": "From finance operations to data science.",
     "experience": "Four years across corporate finance, consulting, and freelance development.",
     "education": "",
@@ -57,7 +57,7 @@
       "Finance Engineer"
     ],
     "bio": "Data scientist with a finance background. I build intelligence pipelines, run ML experiments that publish their own failures, and deploy everything on hardware I own. Four years in corporate finance before this. MSc Data Science, University of Aberdeen.",
-    "email": "basilsuhailkhan@proton.me",
+    "email": "inquiry@basilsuhail.com",
     "avatarUrl": "/uploads/headshot.png",
     "avatarFallback": "BS"
   },
