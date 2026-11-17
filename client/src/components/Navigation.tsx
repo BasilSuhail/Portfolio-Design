@@ -3,6 +3,7 @@ import { Menu, X, Moon, Sun, Contrast } from "lucide-react";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { Link, useLocation } from "wouter";
 import { LiquidGlassButton } from "./ui/liquid-glass";
+import { EmailPopover } from "./EmailPopover";
 import { useContent } from "@/hooks/use-content";
 import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
@@ -29,6 +30,7 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
   const github = socialLinks?.find((l) => l.platform === "github")?.url;
   const linkedin = socialLinks?.find((l) => l.platform === "linkedin")?.url;
   const avatarUrl = data?.profile?.avatarUrl;
+  const email = data?.profile?.email;
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -105,17 +107,17 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
         ref={barRef}
         className={`glass-bar mt-4 w-full mx-2 sm:mx-auto rounded-[28px] md:rounded-full transition-[max-width,box-shadow] duration-500 ease-out ${pastIntro ? "max-w-[61rem]" : "max-w-4xl"} ${isScrolled ? "glass-bar-raised" : ""}`}
       >
-        <nav className={`w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1.5 md:py-1 relative transition-[padding] duration-500 ease-out ${pastIntro && avatarUrl ? "ps-2" : "ps-6"}`}>
+        <nav className={`w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1.5 md:py-1 relative transition-[padding] duration-500 ease-out ${pastIntro && avatarUrl ? "ps-6 min-[360px]:ps-2" : "ps-6"}`}>
         <div className="flex items-center">
           <Link href="/">
             <span
               className="flex items-center flex-none rounded-md text-xl font-bold whitespace-nowrap focus:outline-none focus:opacity-80 text-gray-800 dark:text-neutral-200 cursor-pointer"
               aria-label={name}
             >
-              {/* The photo joins the name once the intro has scrolled away */}
+              {/* The photo joins the name once the intro has scrolled away (not on the very narrowest screens) */}
               {avatarUrl && (
                 <span
-                  className={`flex shrink-0 justify-start transition-all duration-500 ease-out ${pastIntro ? "w-9 me-2.5 opacity-100 scale-100" : "w-0 me-0 opacity-0 scale-50"}`}
+                  className={`max-[359px]:hidden flex shrink-0 justify-start transition-all duration-500 ease-out ${pastIntro ? "w-9 me-2.5 opacity-100 scale-100" : "w-0 me-0 opacity-0 scale-50"}`}
                   aria-hidden="true"
                 >
                   <img
@@ -205,6 +207,8 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
                   <FaLinkedinIn className="shrink-0 size-4" />
                 </a>
               )}
+              {/* The email icon joins the socials once the intro's email pill has scrolled away */}
+              {email && <EmailPopover email={email} visible={pastIntro} />}
 
               <div className="w-px h-4 bg-gray-300 dark:bg-neutral-600" />
 
