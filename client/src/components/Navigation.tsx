@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, Moon, Sun, Contrast } from "lucide-react";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { Link, useLocation } from "wouter";
 import { LiquidGlassButton } from "./ui/liquid-glass";
 import { useContent } from "@/hooks/use-content";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 
 interface NavigationProps {
   name?: string;
@@ -12,6 +13,9 @@ interface NavigationProps {
 export function Navigation({ name = "Portfolio" }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  // True once the intro (photo and email) has scrolled away, so the bar carries them instead
+  const [pastIntro, setPastIntro] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
   const [location, setLocation] = useLocation();
   const [theme, setTheme] = useState<"light" | "dark">(() =>
     document.documentElement.classList.contains("dark") ? "dark" : "light"
@@ -24,6 +28,7 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
   const socialLinks = (data as any)?.socialLinks as { platform: string; url: string }[] | undefined;
   const github = socialLinks?.find((l) => l.platform === "github")?.url;
   const linkedin = socialLinks?.find((l) => l.platform === "linkedin")?.url;
+  const avatarUrl = data?.profile?.avatarUrl;
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -42,8 +47,19 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
+
+      // On the home page, switch as the intro photo slips behind the bar. Elsewhere, after a short scroll.
+      const introPhoto = document.querySelector('[data-testid="img-avatar"]');
+      const barBottom = barRef.current?.getBoundingClientRect().bottom ?? 72;
+      if (introPhoto) {
+        const rect = introPhoto.getBoundingClientRect();
+        setPastIntro(rect.top + rect.height / 2 < barBottom);
+      } else {
+        setPastIntro(window.scrollY > 120);
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -86,15 +102,31 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
   return (
     <header className="sticky top-0 inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm">
       <div
-        className={`glass-bar mt-4 w-full max-w-4xl mx-2 sm:mx-auto rounded-[28px] md:rounded-full transition-shadow duration-300 ${isScrolled ? "glass-bar-raised" : ""}`}
+        ref={barRef}
+        className={`glass-bar mt-4 w-full mx-2 sm:mx-auto rounded-[28px] md:rounded-full transition-[max-width,box-shadow] duration-500 ease-out ${pastIntro ? "max-w-[61rem]" : "max-w-4xl"} ${isScrolled ? "glass-bar-raised" : ""}`}
       >
-        <nav className="w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1.5 ps-6 md:py-1 relative">
+        <nav className={`w-full flex flex-wrap md:flex-nowrap items-center justify-between p-1.5 md:py-1 relative transition-[padding] duration-500 ease-out ${pastIntro && avatarUrl ? "ps-2" : "ps-6"}`}>
         <div className="flex items-center">
           <Link href="/">
             <span
-              className="flex-none rounded-md text-xl inline-block font-bold whitespace-nowrap focus:outline-none focus:opacity-80 text-gray-800 dark:text-neutral-200 cursor-pointer"
+              className="flex items-center flex-none rounded-md text-xl font-bold whitespace-nowrap focus:outline-none focus:opacity-80 text-gray-800 dark:text-neutral-200 cursor-pointer"
               aria-label={name}
             >
+              {/* The photo joins the name once the intro has scrolled away */}
+              {avatarUrl && (
+                <span
+                  className={`flex shrink-0 justify-start transition-all duration-500 ease-out ${pastIntro ? "w-9 me-2.5 opacity-100 scale-100" : "w-0 me-0 opacity-0 scale-50"}`}
+                  aria-hidden="true"
+                >
+                  <img
+                    src={getOptimizedImageUrl(avatarUrl)}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className="size-9 max-w-none rounded-full object-cover ring-1 ring-white/80 dark:ring-white/15"
+                  />
+                </span>
+              )}
               {name}
             </span>
           </Link>
