@@ -31,12 +31,13 @@ app.use(helmet({
   contentSecurityPolicy: isDev ? false : {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      // cloud.umami.is serves the analytics script that index.html loads
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://cloud.umami.is"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
-      connectSrc: ["'self'", "https://formspree.io", "https://www.google-analytics.com", "https://generativelanguage.googleapis.com", "https://newsapi.org"],
+      connectSrc: ["'self'", "https://formspree.io", "https://www.google-analytics.com", "https://generativelanguage.googleapis.com", "https://newsapi.org", "https://cloud.umami.is", "https://gateway.umami.is", "https://api-gateway.umami.dev"],
       frameSrc: ["'self'", "https://cal.com"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
