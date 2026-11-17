@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -57,7 +58,14 @@ app.use(helmet({
 app.use(cookieParser());
 
 // Session middleware - required for CSRF protection
-const sessionSecret = process.env.SESSION_SECRET || "dev-secret-change-in-production";
+// Without a configured secret the live site makes up a random one at start-up (sessions then
+// end on restart) instead of falling back to a value anyone can read in the source.
+const sessionSecret =
+  process.env.SESSION_SECRET ||
+  (process.env.NODE_ENV === "production" ? randomBytes(32).toString("hex") : "dev-secret-change-in-production");
+if (!process.env.SESSION_SECRET && process.env.NODE_ENV === "production") {
+  console.warn("[Security] SESSION_SECRET is not set; using a temporary secret for this run.");
+}
 
 // Use MemoryStore for session persistence in production
 const MemoryStore = createMemoryStore(session);
@@ -65,7 +73,11 @@ const sessionStore = new MemoryStore({
   checkPeriod: 86400000, // prune expired entries every 24h
 });
 
-app.use(session({
+// Files never need a session. Skipping it keeps cookies off them (so a CDN can cache them)
+// and stops every image request from adding an entry to the session store.
+const STATIC_PATH = /^\/(assets|uploads|gallery-images)\/|\.(js|css|map|png|jpe?g|webp|gif|svg|ico|woff2?|ttf|pdf|txt|xml|webmanifest)$/i;
+
+const sessionMiddleware = session({
   store: sessionStore,
   secret: sessionSecret,
   resave: false,
@@ -81,7 +93,9 @@ app.use(session({
     path: '/', // Explicitly set cookie path
     domain: undefined, // Let the browser determine the domain
   },
-}));
+});
+
+app.use((req, res, next) => (STATIC_PATH.test(req.path) ? next() : sessionMiddleware(req, res, next)));
 
 // CSRF protection middleware
 const csrfProtection = doubleCsrf({
