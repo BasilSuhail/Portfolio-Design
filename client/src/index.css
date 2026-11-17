@@ -471,3 +471,85 @@
 @media (prefers-reduced-motion: reduce) {
   .holiday-glow { animation: none; }
 }
+
+/* Loading screen: a glass pill with a running bar. Used full-page and, in small, on the holiday switch. */
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #efece3;
+  opacity: 0;
+  /* A short wait first, so a fast load never flashes it */
+  animation: site-loader-in .3s ease .15s forwards;
+}
+.dark .site-loader { background: #0a0a0a; }
+
+.site-loader-bar {
+  width: min(280px, 70vw);
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(250, 248, 241, .62), rgba(244, 240, 229, .42));
+  border: 1px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 8px 24px -8px rgba(70, 55, 25, .18), inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+.dark .site-loader-bar {
+  background: linear-gradient(180deg, rgba(44, 44, 44, .6), rgba(24, 24, 24, .45));
+  border-color: rgba(255, 255, 255, .14);
+  box-shadow: none;
+}
+
+.site-loader-track {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(26, 26, 26, .09);
+}
+.dark .site-loader-track { background: rgba(255, 255, 255, .12); }
+
+.site-loader-fill {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 38%;
+  border-radius: 999px;
+  background: #1a1a1a;
+  animation: site-loader-run 1.25s cubic-bezier(.45, 0, .2, 1) infinite;
+}
+.dark .site-loader-fill { background: #f2f2f2; }
+
+.site-loader-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, .45);
+}
+.dark .site-loader-label { color: rgba(255, 255, 255, .45); }
+
+/* Holiday mode fades in once its code has arrived */
+.holiday-scene {
+  opacity: 0;
+  animation: site-loader-in 1.6s ease forwards;
+}
+
+@keyframes site-loader-in { to { opacity: 1; } }
+@keyframes site-loader-run {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(290%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-loader-fill { animation: none; width: 100%; opacity: .35; }
+}
