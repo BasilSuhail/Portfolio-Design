@@ -29,11 +29,30 @@ export default function Admin() {
     const isAuthenticated = sessionStorage.getItem("admin_authenticated");
     if (!isAuthenticated) {
       setLocation("/admin/login");
+      return;
     }
+    // The browser's flag can outlive the server's session (a restart, or a day passing).
+    // Ask the server, which is the one that decides, and send stale visitors to sign in again.
+    let cancelled = false;
+    fetch("/api/admin/session", { credentials: "include" })
+      .then((res) => res.json())
+      .then((session) => {
+        if (!cancelled && !session.authenticated) {
+          sessionStorage.removeItem("admin_authenticated");
+          setLocation("/admin/login");
+        }
+      })
+      .catch(() => {
+        // Offline or server down: saving will fail with its own message.
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [setLocation]);
 
   const handleLogout = () => {
     sessionStorage.removeItem("admin_authenticated");
+    void secureFetch("/api/admin/logout", { method: "POST" }).catch(() => undefined);
     setLocation("/admin/login");
     toast({
       title: "Logged out",
