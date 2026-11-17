@@ -81,7 +81,7 @@ export function TerminalTOC({ sections, expandedIds, onScrollTo }: TerminalTOCPr
 
   return (
     <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 hidden lg:block w-[140px]">
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col items-start gap-0.5">
         {sections.map((section) => {
           const isActive = activeId === section.id;
           const isExpanded = expandedIds.has(section.id);
@@ -108,7 +108,7 @@ export function TerminalTOC({ sections, expandedIds, onScrollTo }: TerminalTOCPr
                   <span
                     className={`block text-[11px] leading-tight truncate transition-colors ${isActive
                       ? "text-gray-900 dark:text-white font-medium"
-                      : "text-gray-400 dark:text-neutral-500 group-hover:text-gray-600 dark:group-hover:text-neutral-300"
+                      : "text-gray-500 dark:text-neutral-500 group-hover:text-gray-900 dark:group-hover:text-neutral-200"
                       }`}
                   >
                     {section.label}
@@ -230,7 +230,7 @@ export function ScrollIndicator({ sections = homeSections }: { sections?: Legacy
 
   return (
     <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 hidden lg:block w-[140px]">
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col items-start gap-0.5">
         {displaySections.map((section) => {
           const isActive = activeId === section.id;
           return (
@@ -238,22 +238,18 @@ export function ScrollIndicator({ sections = homeSections }: { sections?: Legacy
               key={section.id}
               onClick={() => scrollToSection(section.id)}
               className={`
-                w-full text-left flex items-center gap-1.5 px-2 py-1 rounded-md transition-all duration-150 group
-                ${isActive
-                  ? "bg-gray-100 dark:bg-neutral-800"
-                  : "hover:bg-gray-50 dark:hover:bg-neutral-800/50"
-                }
+                text-left flex items-center gap-2 px-3 py-1.5 group
               `}
             >
               {/* Active pip */}
               <span
-                className={`flex-shrink-0 w-1 h-1 rounded-full transition-all duration-200 ${isActive ? "bg-violet-500 scale-125" : "bg-gray-300 dark:bg-neutral-600"
+                className={`flex-shrink-0 w-1 h-1 rounded-full transition-all duration-200 ${isActive ? "bg-gray-900 dark:bg-white scale-125" : "bg-transparent"
                   }`}
               />
               <span
-                className={`text-[11px] leading-tight truncate transition-colors ${isActive
+                className={`text-xs leading-tight truncate transition-colors ${isActive
                   ? "text-gray-900 dark:text-white font-medium"
-                  : "text-gray-400 dark:text-neutral-500 group-hover:text-gray-600 dark:group-hover:text-neutral-300"
+                  : "text-gray-500 dark:text-neutral-500 group-hover:text-gray-900 dark:group-hover:text-neutral-200"
                   }`}
               >
                 {section.label}
