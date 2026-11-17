@@ -1,8 +1,3 @@
-import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
-import { Moon, Sun, Contrast } from "lucide-react";
-import { useEffect, useState } from "react";
-import { LiquidGlassButton } from "./ui/liquid-glass";
-
 interface FooterProps {
   name?: string;
   socialLinks?: {
@@ -12,34 +7,7 @@ interface FooterProps {
   };
 }
 
-export function Footer({ name = "Portfolio", socialLinks }: FooterProps) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [highContrast, setHighContrast] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    const savedContrast = localStorage.getItem("highContrast") === "true";
-    const initialTheme = savedTheme || "light";
-
-    setTheme(initialTheme);
-    setHighContrast(savedContrast);
-    document.documentElement.classList.toggle("high-contrast", savedContrast);
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
-  };
-
-  const toggleHighContrast = () => {
-    const newContrast = !highContrast;
-    setHighContrast(newContrast);
-    localStorage.setItem("highContrast", String(newContrast));
-    document.documentElement.classList.toggle("high-contrast", newContrast);
-  };
-
+export function Footer({ name = "Portfolio" }: FooterProps) {
   return (
     <footer className="mt-16 pb-6">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,69 +19,6 @@ export function Footer({ name = "Portfolio", socialLinks }: FooterProps) {
               </p>
             </div>
 
-            {/* Social Links + Theme Toggles */}
-            <div className="flex items-center gap-3">
-              {/* Social Links */}
-              {socialLinks?.github && (
-                <a
-                  className="inline-block text-[#181717] hover:text-black focus:outline-none dark:text-neutral-300 dark:hover:text-white transition-colors"
-                  href={socialLinks.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                >
-                  <FaGithub className="shrink-0 size-4" />
-                </a>
-              )}
-              {socialLinks?.linkedin && (
-                <a
-                  className="inline-block text-[#0A66C2] hover:text-[#004182] focus:outline-none dark:text-[#0A66C2] dark:hover:text-[#5eb1ff] transition-colors"
-                  href={socialLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                >
-                  <FaLinkedinIn className="shrink-0 size-4" />
-                </a>
-              )}
-              {socialLinks?.twitter && (
-                <a
-                  className="inline-block text-gray-500 hover:text-gray-800 focus:outline-none dark:text-neutral-500 dark:hover:text-neutral-200"
-                  href={socialLinks.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Twitter"
-                >
-                  <FaXTwitter className="shrink-0 size-4" />
-                </a>
-              )}
-
-              {/* Divider */}
-              <div className="w-px h-4 bg-gray-300 dark:bg-neutral-600" />
-
-              {/* Theme Toggle Buttons - Liquid Glass Style */}
-              <LiquidGlassButton
-                onClick={toggleTheme}
-                size="icon"
-                className="rounded-full size-8"
-                aria-label="Toggle theme"
-              >
-                {theme === "light" ? (
-                  <Moon className="size-3.5" />
-                ) : (
-                  <Sun className="size-3.5" />
-                )}
-              </LiquidGlassButton>
-
-              <LiquidGlassButton
-                onClick={toggleHighContrast}
-                size="icon"
-                className={`rounded-full size-8 ${highContrast ? "bg-white/40" : ""}`}
-                aria-label="Toggle high contrast"
-              >
-                <Contrast className="size-3.5" />
-              </LiquidGlassButton>
-            </div>
           </div>
         </div>
       </div>
