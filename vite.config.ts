@@ -47,29 +47,17 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
+        // Only the libraries every page needs get a shared chunk. Everything else is left to
+        // split with whichever page imports it, so the home page never downloads the charting,
+        // diagram or 3D libraries that only the market terminal and admin pages use.
         manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            // Keep Three.js separate (used by dead-code components, tree-shaken but just in case)
-            if (id.includes('three') || id.includes('@react-three')) {
-              return 'vendor-three';
-            }
-            if (id.includes('framer-motion')) {
-              return 'vendor-framer';
-            }
-            if (id.includes('react-icons')) {
-              return 'vendor-icons';
-            }
-            // Let heavy libs used only by lazy routes split naturally with their consumers
-            if (
-              id.includes('recharts') || id.includes('d3-') ||
-              id.includes('canvas-confetti') || id.includes('victory') ||
-              id.includes('@xyflow') || id.includes('reactflow') ||
-              id.includes('elkjs') || id.includes('dagre')
-            ) {
-              return undefined;
-            }
+          if (!id.includes('node_modules')) return undefined;
+          if (/node_modules\/(react|react-dom|scheduler|wouter|@tanstack|@radix-ui|@floating-ui)\//.test(id)) {
             return 'vendor';
           }
+          if (id.includes('framer-motion')) return 'vendor-framer';
+          if (id.includes('react-icons')) return 'vendor-icons';
+          return undefined;
         },
       },
     },
