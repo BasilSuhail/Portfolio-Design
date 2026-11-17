@@ -423,3 +423,35 @@
 .dark .glass-bar-raised {
   box-shadow: 0 24px 50px -12px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .14);
 }
+
+/* Soft colour behind the page, so the glass has something to pick up */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(640px 460px at 12% 8%, hsla(342, 85%, 60%, .10), transparent 70%),
+    radial-gradient(760px 540px at 92% 38%, hsla(32, 90%, 58%, .12), transparent 70%),
+    radial-gradient(720px 520px at 18% 88%, hsla(212, 80%, 60%, .09), transparent 70%);
+}
+
+.dark .ambient {
+  background:
+    radial-gradient(640px 460px at 12% 8%, hsla(142, 50%, 45%, .13), transparent 70%),
+    radial-gradient(760px 540px at 92% 38%, hsla(200, 70%, 50%, .10), transparent 70%),
+    radial-gradient(720px 520px at 18% 88%, hsla(262, 60%, 55%, .10), transparent 70%);
+}
+
+.high-contrast .ambient {
+  display: none;
+}
+
+/* Oversized faint lettering that sits behind a glass bar */
+.backdrop-word {
+  color: rgba(26, 26, 26, .1);
+}
+
+.dark .backdrop-word {
+  color: rgba(255, 255, 255, .1);
+}
