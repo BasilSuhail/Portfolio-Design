@@ -84,7 +84,7 @@ export default function HeroSection({
             alt={name}
             width={72}
             height={72}
-            fetchPriority="high"
+            {...{ fetchpriority: "high" }}
             decoding="sync"
             data-testid="img-avatar"
           />
