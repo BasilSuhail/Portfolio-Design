@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Mail, Copy, Check } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { burstConfetti } from "@/lib/confetti";
 
 interface EmailPopoverProps {
   email: string;
@@ -33,10 +34,11 @@ export function EmailPopover({ email, visible }: EmailPopoverProps) {
     [],
   );
 
-  const copy = async () => {
+  const copy = async (from: Element) => {
     try {
       await navigator.clipboard.writeText(email);
       setCopied(true);
+      burstConfetti(from);
       clearTimeout(copiedTimer.current);
       copiedTimer.current = setTimeout(() => setCopied(false), COPIED_MS);
     } catch {
@@ -73,7 +75,7 @@ export function EmailPopover({ email, visible }: EmailPopoverProps) {
             e.preventDefault();
             clearTimeout(closeTimer.current);
             setOpen(true);
-            void copy();
+            void copy(e.currentTarget);
           }}
         >
           <button
@@ -102,7 +104,7 @@ export function EmailPopover({ email, visible }: EmailPopoverProps) {
           <span className="ms-1 h-4 w-px shrink-0 bg-black/10 dark:bg-white/15" aria-hidden="true" />
           <button
             type="button"
-            onClick={() => void copy()}
+            onClick={(e) => void copy(e.currentTarget)}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs text-gray-500 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 dark:text-neutral-400 dark:hover:text-neutral-100"
           >
             {copied ? (
