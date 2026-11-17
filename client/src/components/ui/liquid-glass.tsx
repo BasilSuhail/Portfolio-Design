@@ -135,21 +135,21 @@ export const LiquidGlassButton = React.forwardRef<HTMLButtonElement, LiquidGlass
             <motion.button
                 ref={ref}
                 className={cn(
-                    "relative inline-flex items-center justify-center font-medium rounded-lg",
-                    // Light mode: dark tints for visibility
-                    "bg-black/[0.03] border border-black/20 backdrop-blur-sm",
-                    "shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.08),0_3px_8px_rgba(0,0,0,0.1)]",
-                    "hover:bg-black/[0.08]",
-                    // Dark mode: white tints for glass effect
-                    "dark:bg-white/[0.025] dark:border-white/50",
-                    "dark:shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)]",
-                    "dark:hover:bg-white/30",
+                    "relative inline-flex items-center justify-center font-medium rounded-full",
+                    // Light mode: frosted white glass
+                    "bg-gradient-to-b from-white/70 to-white/30 border border-white/90 backdrop-blur-md",
+                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(70,55,25,0.12),0_6px_16px_-6px_rgba(70,55,25,0.25)]",
+                    "hover:from-white/90 hover:to-white/50",
+                    // Dark mode: smoked glass
+                    "dark:from-white/[0.14] dark:to-white/[0.04] dark:border-white/15",
+                    "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_6px_16px_-6px_rgba(0,0,0,0.7)]",
+                    "dark:hover:from-white/20 dark:hover:to-white/[0.08]",
                     "transition-all duration-300",
                     "disabled:opacity-50 disabled:cursor-not-allowed",
                     "text-gray-800 dark:text-white",
                     sizeClasses[size],
-                    variant === "outline" && "bg-transparent border-black/20 dark:border-white/30",
-                    variant === "ghost" && "bg-transparent border-transparent shadow-none hover:bg-black/[0.05] dark:hover:bg-white/10",
+                    variant === "outline" && "bg-none bg-transparent border-black/15 dark:border-white/30",
+                    variant === "ghost" && "bg-none bg-transparent border-transparent shadow-none hover:bg-black/[0.05] dark:hover:bg-white/10",
                     className
                 )}
                 disabled={disabled}
@@ -157,12 +157,6 @@ export const LiquidGlassButton = React.forwardRef<HTMLButtonElement, LiquidGlass
                 whileHover={!disabled ? { scale: 1.02 } : undefined}
                 {...props}
             >
-                {/* Top-left gradient overlay - dark tint for light mode, white for dark mode */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-black/10 via-transparent to-transparent opacity-70 pointer-events-none dark:from-white/60" />
-
-                {/* Bottom-right gradient overlay */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-tl from-black/5 via-transparent to-transparent opacity-50 pointer-events-none dark:from-white/30" />
-
                 {/* Content */}
                 <span className="relative z-10 flex items-center justify-center gap-2">
                     {children}

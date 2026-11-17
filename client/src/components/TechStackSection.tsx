@@ -158,20 +158,20 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
     (Object.keys(categorizedTech).length === 1 && Object.keys(categorizedTech)[0] !== 'Tools');
 
   return (
-    <section className="mt-10 sm:mt-14" data-testid="section-stack" data-section="techStack">
+    <section className="mt-16 sm:mt-24" data-testid="section-stack" data-section="techStack">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-5 text-lg font-semibold text-gray-900 dark:text-neutral-100">
+        <h2 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-neutral-100">
           What I Work With
         </h2>
 
         {intro && (
-          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-5">
+          <p className="text-[15px] text-gray-500 dark:text-neutral-400 mb-6">
             {intro}
           </p>
         )}
 
         {/* Skills List - Preline Style */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {hasCategories ? (
             // Categorized display
             Object.entries(categorizedTech).map(([category, techs]) => (
@@ -188,19 +188,18 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                       const Icon = isImageUrl ? null : iconMap[tech.icon as keyof typeof iconMap];
                       const color = tech.color || colorMap[tech.icon] || "#6b7280";
                       const needsInversion = ['github', 'claude', 'numpy', 'pandas', 'nextjs', 'ollama', 'tailscale', 'langgraph', 'openai', 'hermes'].includes(tech.icon);
-                      const isLast = index === techs.length - 1;
 
                       return (
                         <li
                           key={tech.id}
-                          className={`me-1 ${!isLast ? "after:content-[',']" : ""} inline-flex items-center text-sm text-gray-800 dark:text-neutral-200`}
+                          className="me-4 mb-1.5 inline-flex items-center text-[15px] text-gray-800 dark:text-neutral-200"
                           data-testid={`icon-tech-${tech.id}`}
                         >
                           {isImageUrl ? (
                             <img
                               src={getOptimizedImageUrl(tech.icon)}
                               alt={tech.name}
-                              className="shrink-0 size-4 me-1 object-contain"
+                              className="shrink-0 size-4 me-1.5 object-contain"
                               width={16}
                               height={16}
                               loading="lazy"
@@ -235,19 +234,18 @@ export default function TechStackSection({ technologies, intro }: TechStackSecti
                     const Icon = isImageUrl ? null : iconMap[tech.icon as keyof typeof iconMap];
                     const color = tech.color || colorMap[tech.icon] || "#6b7280";
                     const needsInversion = ['github', 'claude', 'numpy', 'pandas', 'nextjs', 'ollama', 'tailscale', 'langgraph'].includes(tech.icon);
-                    const isLast = index === technologies.length - 1;
 
                     return (
                       <li
                         key={tech.id}
-                        className={`me-1 ${!isLast ? "after:content-[',']" : ""} inline-flex items-center text-sm text-gray-800 dark:text-neutral-200`}
+                        className="me-4 mb-1.5 inline-flex items-center text-[15px] text-gray-800 dark:text-neutral-200"
                         data-testid={`icon-tech-${tech.id}`}
                       >
                         {isImageUrl ? (
                           <img
                             src={tech.icon}
                             alt={tech.name}
-                            className="shrink-0 size-4 me-1 object-contain"
+                            className="shrink-0 size-4 me-1.5 object-contain"
                           />
                         ) : Icon ? (
                           <Icon

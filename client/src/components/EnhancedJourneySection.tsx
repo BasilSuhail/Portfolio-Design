@@ -86,10 +86,10 @@ function TimelineItem({
             {/* Clickable header row */}
             <button
                 onClick={onToggle}
-                className="flex w-full items-start gap-4 py-4 text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/40 rounded-lg px-3 -mx-3"
+                className="flex w-full items-start gap-4 py-4 text-left transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.04] rounded-2xl px-3 -mx-3"
             >
                 {/* Year pill */}
-                <span className="mt-0.5 flex h-7 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 tabular-nums">
+                <span className="mt-0.5 flex h-7 w-14 shrink-0 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/10 text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 tabular-nums">
                     {year}
                 </span>
 
@@ -248,7 +248,7 @@ function TimelineItem({
             </div>
 
             {/* Separator between items */}
-            {!isLast && <Separator />}
+            {!isLast && <Separator className="ms-[116px] w-auto bg-black/[0.07] dark:bg-white/[0.08]" />}
         </div>
     )
 }
@@ -327,10 +327,10 @@ export default function JourneySection() {
     }, [])
 
     return (
-        <section className="mt-10 sm:mt-14" data-section="journey">
+        <section className="mt-16 sm:mt-24" data-section="journey">
             <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="mb-8">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-neutral-100">
+                <div className="mb-6">
+                    <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-neutral-100">
                         My Journey
                     </h2>
                 </div>

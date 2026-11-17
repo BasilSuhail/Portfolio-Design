@@ -7,6 +7,7 @@ import convert from "heic-convert";
 import { Resend } from "resend";
 import * as blogService from "./blogService";
 import * as newsService from "./newsService";
+import { getGithubActivity } from "./githubService";
 import { storage as intStorage } from "./intelligence/core/storage";
 import { pipeline } from "./intelligence/core/pipeline";
 import { feedbackStore } from "./intelligence/metrics/feedback";
@@ -246,6 +247,22 @@ export async function registerRoutes(
       }
     }
   );
+
+  // Public GitHub contribution calendar for the profile linked in content.json
+  app.get("/api/github/activity", async (_req: Request, res: Response) => {
+    try {
+      const content = JSON.parse(await fs.readFile(contentPath, "utf-8"));
+      const url: string | undefined = content.socialLinks?.find((l: any) => l.platform === "github")?.url;
+      const username = url?.replace(/\/+$/, "").split("/").pop();
+      if (!username) {
+        return res.status(404).json({ message: "No GitHub profile is set in the site content" });
+      }
+      res.json(await getGithubActivity(username));
+    } catch (error) {
+      console.error("[GitHub] Failed to load activity:", error);
+      res.status(502).json({ message: "Could not load GitHub activity" });
+    }
+  });
 
   // Blog API endpoints
 

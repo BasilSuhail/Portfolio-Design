@@ -1,14 +1,8 @@
-import { Github, ExternalLink, Terminal, Server, BarChart3, Bot, Shield, BookOpen, Cpu, FileText } from "lucide-react";
+import { useState } from "react";
+import { Github, ExternalLink, Terminal, Server, BarChart3, Bot, Shield, BookOpen, Cpu, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
-import { Badge } from "@/components/ui/badge";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
 import { getOptimizedImageUrl } from "@/lib/imageUtils";
+import GithubActivity from "./GithubActivity";
 
 export interface Project {
   id: string;
@@ -51,123 +45,144 @@ const categoryIcons: Record<string, React.ElementType> = {
   "Education": BookOpen,
 };
 
+// Dot colours for the main technology, as GitHub shows beside a repository
+const techColors: Record<string, string> = {
+  Python: "#3572A5",
+  TypeScript: "#3178c6",
+  JavaScript: "#f1e05a",
+  "Next.js": "#3178c6",
+  Docker: "#2496ed",
+  k3s: "#ffc61c",
+  Git: "#f05032",
+  Bash: "#89e051",
+};
+
+const PINNED = 6;
+
+function ProjectCard({ project }: { project: Project }) {
+  const main = project.tags?.[0];
+  const rest = project.tags?.slice(1, 4) ?? [];
+
+  return (
+    <article className="group relative flex flex-col rounded-2xl border border-black/[0.09] p-4 transition-colors hover:border-black/25 dark:border-white/10 dark:hover:border-white/30">
+      <div className="flex items-start gap-3.5">
+        {/* Small picture */}
+        <div className="size-14 shrink-0 overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800">
+          {project.imageUrl ? (
+            <img
+              src={getOptimizedImageUrl(project.imageUrl)}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          ) : (() => {
+            const gradient = categoryGradients[project.category || ""] || "from-neutral-600 to-neutral-400";
+            const FallbackIcon = categoryIcons[project.category || ""] || Terminal;
+            return (
+              <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${gradient}`}>
+                <FallbackIcon className="size-6 text-white/85" strokeWidth={1.5} />
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[15px] font-semibold leading-snug tracking-tight text-[#0066cc] dark:text-[#2997ff]">
+            {/* The link stretches over the whole card */}
+            <Link href={`/project/${project.id}`} className="after:absolute after:inset-0 after:rounded-2xl group-hover:underline">
+              {project.title}
+            </Link>
+          </h3>
+          {project.category && (
+            <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-500">{project.category}</p>
+          )}
+        </div>
+      </div>
+
+      {project.description && (
+        <p className="mt-3 flex-1 text-[13px] leading-relaxed text-neutral-600 line-clamp-3 dark:text-neutral-400">
+          {project.description}
+        </p>
+      )}
+
+      <div className="mt-4 flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-500">
+        {main && (
+          <span className="inline-flex shrink-0 items-center gap-1.5 text-neutral-700 dark:text-neutral-300">
+            <span className="size-2.5 rounded-full" style={{ backgroundColor: techColors[main] || "#8b8b8b" }} />
+            {main}
+          </span>
+        )}
+        <span className="min-w-0 flex-1 truncate">{rest.join(" · ")}</span>
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${project.title} source code on GitHub`}
+            className="relative z-10 shrink-0 hover:text-neutral-900 transition-colors dark:hover:text-neutral-100"
+          >
+            <Github className="size-4" />
+          </a>
+        )}
+        {project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${project.title} live site`}
+            className="relative z-10 shrink-0 hover:text-neutral-900 transition-colors dark:hover:text-neutral-100"
+          >
+            <ExternalLink className="size-4" />
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
+
 export default function ProjectsSection({ projects, intro }: ProjectsSectionProps) {
+  const [showAll, setShowAll] = useState(false);
+  const extra = projects.length - PINNED;
+  const visible = showAll ? projects : projects.slice(0, PINNED);
+
   return (
     <section
-      className="relative mt-10 sm:mt-14 py-8"
+      className="relative mt-16 sm:mt-24"
       data-testid="section-projects"
       data-section="projects"
     >
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-neutral-100">
+        <h2 className="mb-6 text-2xl font-semibold tracking-tight text-gray-900 dark:text-neutral-100">
           Projects
         </h2>
 
         {intro && (
-          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-6">
+          <p className="-mt-4 mb-7 text-[15px] text-gray-500 dark:text-neutral-400">
             {intro}
           </p>
         )}
 
-        <Carousel
-          opts={{
-            align: "start",
-            loop: false,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-4">
-            {projects.map((project) => (
-              <CarouselItem
-                key={project.id}
-                className="pl-4 basis-[85%] sm:basis-[48%]"
-              >
-                <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800 bg-[#f6f3ea] dark:bg-neutral-900">
-                  {/* Image */}
-                  <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-                    {project.imageUrl ? (
-                      <img
-                        src={getOptimizedImageUrl(project.imageUrl)}
-                        alt={`Screenshot of ${project.title}`}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                        loading="lazy"
-                      />
-                    ) : (() => {
-                      const gradient = categoryGradients[project.category || ""] || "from-neutral-600 to-neutral-400";
-                      const FallbackIcon = categoryIcons[project.category || ""] || Terminal;
-                      return (
-                        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${gradient}`}>
-                          <FallbackIcon className="size-10 text-white/80" strokeWidth={1.5} />
-                        </div>
-                      );
-                    })()}
-                  </div>
+        <GithubActivity />
 
-                  {/* Content */}
-                  <div className="flex flex-1 flex-col gap-3 p-4">
-                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                      {project.title}
-                    </h3>
-                    {project.description && (
-                      <p className="flex-1 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
-                        {project.description}
-                      </p>
-                    )}
-                    {project.tags && project.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {project.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className="px-2 py-0.5 text-[10px]"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 pt-1 flex-wrap">
-                      {project.caseStudy && (
-                        <Link href={`/project/${project.id}`}>
-                          <span className="inline-flex items-center gap-1.5 px-2 h-7 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors rounded-md hover:bg-emerald-50 dark:hover:bg-emerald-950/40 cursor-pointer">
-                            <FileText className="size-3.5" />
-                            Case Study
-                          </span>
-                        </Link>
-                      )}
-                      {project.githubUrl && (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-2 h-7 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                        >
-                          <Github className="size-3.5" />
-                          Code
-                        </a>
-                      )}
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-2 h-7 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                        >
-                          <ExternalLink className="size-3.5" />
-                          Live
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="mt-4 flex items-center justify-end gap-2">
-            <CarouselPrevious className="static size-8 translate-y-0" />
-            <CarouselNext className="static size-8 translate-y-0" />
+        <div className="mt-8 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+          {visible.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+
+        {extra > 0 && (
+          <div className="mt-5 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setShowAll(!showAll)}
+              aria-expanded={showAll}
+              className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-black/[0.04] dark:border-white/15 dark:text-neutral-300 dark:hover:bg-white/[0.06]"
+            >
+              {showAll ? "Show less" : `Show ${extra} more`}
+              <ChevronDown className={`size-4 transition-transform ${showAll ? "rotate-180" : ""}`} />
+            </button>
           </div>
-        </Carousel>
+        )}
       </div>
     </section>
   );
