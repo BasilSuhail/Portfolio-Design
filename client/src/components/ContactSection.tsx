@@ -11,7 +11,7 @@ interface ContactSectionProps {
   };
 }
 
-export function ContactSection({ email: _email, calendarLinks }: ContactSectionProps) {
+export function ContactSection({ email, calendarLinks }: ContactSectionProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,17 +104,63 @@ export function ContactSection({ email: _email, calendarLinks }: ContactSectionP
   };
 
   return (
-    <section className="mt-10 sm:mt-14" data-section="contact">
+    <section className="mt-16 sm:mt-24" data-section="contact">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-neutral-100">
+        <h2 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-neutral-100">
           Contact Me
         </h2>
-        <p className="mb-5 text-sm text-gray-500 dark:text-neutral-400">
-          Looking for data science and AI roles at UK startups and tech companies.
+        <p className="text-[15px] text-gray-500 dark:text-neutral-400">
+          Tell me what's slow, manual or broken in your business. I'll tell you how I'd fix it.
         </p>
 
+        {/* Glass bar over oversized lettering, the same idea as the 404 page */}
+        <div className="relative mt-6 grid place-items-center">
+          <div
+            className="backdrop-word select-none text-[26vw] sm:text-[190px] font-extrabold leading-[1.15] tracking-tighter"
+            aria-hidden="true"
+          >
+            Hello
+          </div>
+          <div className="glass-bar absolute left-1/2 top-1/2 flex w-full max-w-xl -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-between gap-3 rounded-[28px] px-5 py-4 sm:flex-row sm:rounded-full sm:py-3 sm:ps-6 sm:pe-3">
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="text-[15px] font-semibold text-gray-900 hover:opacity-70 transition-opacity dark:text-neutral-100"
+              >
+                {email}
+              </a>
+            )}
+            {(calendarLinks?.link15min || calendarLinks?.link30min) && (
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-neutral-400">
+                  <Calendar className="size-3.5" />
+                  Book a call
+                </span>
+                {calendarLinks?.link15min && (
+                  <LiquidGlassButton
+                    type="button"
+                    size="sm"
+                    onClick={() => window.open(calendarLinks.link15min, '_blank')}
+                  >
+                    15 min
+                  </LiquidGlassButton>
+                )}
+                {calendarLinks?.link30min && (
+                  <LiquidGlassButton
+                    type="button"
+                    size="sm"
+                    onClick={() => window.open(calendarLinks.link30min, '_blank')}
+                  >
+                    30 min
+                  </LiquidGlassButton>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Contact Form - Preline Style */}
-        {import.meta.env.VITE_FORMSPREE_ENDPOINT ? <form onSubmit={handleSubmit}>
+        {import.meta.env.VITE_FORMSPREE_ENDPOINT ? <form onSubmit={handleSubmit} className="glass-card mt-4 rounded-3xl p-4 sm:p-5">
           {/* Honeypot field */}
           <input
             type="text"
@@ -177,74 +223,8 @@ export function ContactSection({ email: _email, calendarLinks }: ContactSectionP
               {isSubmitting ? "Sending..." : "Send Message"}
             </LiquidGlassButton>
 
-            {(calendarLinks?.link15min || calendarLinks?.link30min) && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 dark:text-neutral-400 hidden sm:inline">
-                  Book a quick meeting:
-                </span>
-                <span className="text-xs text-gray-500 dark:text-neutral-400 sm:hidden">
-                  <Calendar className="size-3.5 inline mr-1" />
-                  Book:
-                </span>
-                {calendarLinks?.link15min && (
-                  <LiquidGlassButton
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(calendarLinks.link15min, '_blank')}
-                    className="!bg-blue-500/10 !border-blue-500/30 hover:!bg-blue-500/20 text-blue-700 dark:text-blue-300"
-                  >
-                    15 min
-                  </LiquidGlassButton>
-                )}
-                {calendarLinks?.link30min && (
-                  <LiquidGlassButton
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(calendarLinks.link30min, '_blank')}
-                    className="!bg-emerald-500/10 !border-emerald-500/30 hover:!bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
-                  >
-                    30 min
-                  </LiquidGlassButton>
-                )}
-              </div>
-            )}
           </div>
-        </form> : (
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            {(calendarLinks?.link15min || calendarLinks?.link30min) && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 dark:text-neutral-400">
-                  <Calendar className="size-3.5 inline mr-1" />
-                  Book a meeting:
-                </span>
-                {calendarLinks?.link15min && (
-                  <LiquidGlassButton
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(calendarLinks.link15min, '_blank')}
-                    className="!bg-blue-500/10 !border-blue-500/30 hover:!bg-blue-500/20 text-blue-700 dark:text-blue-300"
-                  >
-                    15 min
-                  </LiquidGlassButton>
-                )}
-                {calendarLinks?.link30min && (
-                  <LiquidGlassButton
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(calendarLinks.link30min, '_blank')}
-                    className="!bg-emerald-500/10 !border-emerald-500/30 hover:!bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
-                  >
-                    30 min
-                  </LiquidGlassButton>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+        </form> : null}
       </div>
     </section>
   );
