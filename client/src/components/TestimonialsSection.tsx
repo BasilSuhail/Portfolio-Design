@@ -19,33 +19,33 @@ export default function TestimonialsSection({
   intro,
 }: TestimonialsSectionProps) {
   return (
-    <section className="mt-10 sm:mt-14" data-testid="section-testimonials" data-section="testimonials">
+    <section className="mt-16 sm:mt-24" data-testid="section-testimonials" data-section="testimonials">
       <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-neutral-100">
+        <h2 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-neutral-100">
           Testimonials
         </h2>
 
         {intro && (
-          <p className="text-sm text-gray-600 dark:text-neutral-400 mb-5">
+          <p className="text-[15px] text-gray-500 dark:text-neutral-400 mb-6">
             {intro}
           </p>
         )}
 
         {/* Grid - Preline Style */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 border-y border-gray-200 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
-          {testimonials.map((testimonial, index) => (
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
+          {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className={`${index === 0 ? "sm:-ms-4" : ""} py-6 sm:px-4`}
+              className="border-s-2 border-black/10 ps-5 dark:border-white/15"
               data-testid={`testimonial-${testimonial.id}`}
             >
               {/* Review */}
               <blockquote>
-                <span className="text-sm text-gray-800 dark:text-neutral-200">
+                <span className="text-[15px] leading-relaxed text-gray-800 dark:text-neutral-200">
                   {testimonial.quote}
                 </span>
 
-                <footer className="mt-3">
+                <footer className="mt-4">
                   <div className="flex items-center gap-x-2">
                     {testimonial.authorAvatar ? (
                       <img
