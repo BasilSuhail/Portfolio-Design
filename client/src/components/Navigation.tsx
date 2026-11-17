@@ -25,6 +25,14 @@ export function Navigation({ name = "Portfolio" }: NavigationProps) {
     document.documentElement.classList.contains("high-contrast")
   );
 
+  // Holiday mode can change the theme from outside this component; keep the button's icon in step.
+  useEffect(() => {
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => setTheme(root.classList.contains("dark") ? "dark" : "light"));
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
   const { data } = useContent();
   const socialLinks = (data as any)?.socialLinks as { platform: string; url: string }[] | undefined;
   const github = socialLinks?.find((l) => l.platform === "github")?.url;
