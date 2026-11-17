@@ -17,6 +17,7 @@ const News = lazy(() => import("@/pages/News"));
 const NewsDetail = lazy(() => import("@/pages/NewsDetail"));
 const Gallery = lazy(() => import("@/pages/Gallery"));
 const MarketTerminal = lazy(() => import("@/pages/MarketTerminal"));
+import { HolidayMode } from "@/components/HolidayMode";
 
 function Router() {
   return (
@@ -44,6 +45,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <HolidayMode />
       </TooltipProvider>
     </QueryClientProvider>
   );
