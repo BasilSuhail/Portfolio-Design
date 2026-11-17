@@ -455,3 +455,19 @@
 .dark .backdrop-word {
   color: rgba(255, 255, 255, .1);
 }
+
+/* Holiday mode: the halo around each bulb breathes at its own pace */
+.holiday-glow {
+  mix-blend-mode: screen;
+  animation: holiday-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes holiday-twinkle {
+  0%, 100% { opacity: 1; }
+  45% { opacity: .5; }
+  55% { opacity: .62; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holiday-glow { animation: none; }
+}
