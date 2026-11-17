@@ -394,3 +394,32 @@
 .high-contrast .border-transparent {
   border-color: transparent !important;
 }
+
+/* Glass: frosted panels used by the navigation, cards and pills */
+.glass-bar,
+.glass-card {
+  background: linear-gradient(180deg, rgba(250, 248, 241, .62), rgba(244, 240, 229, .42));
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 8px 24px -8px rgba(70, 55, 25, .18), inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+
+.glass-card {
+  box-shadow: 0 10px 28px -14px rgba(70, 55, 25, .22), inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+
+.glass-bar-raised {
+  box-shadow: 0 24px 50px -12px rgba(70, 55, 25, .28), 0 2px 6px rgba(70, 55, 25, .08), inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+
+.dark .glass-bar,
+.dark .glass-card {
+  background: linear-gradient(180deg, rgba(44, 44, 44, .6), rgba(24, 24, 24, .45));
+  border-color: rgba(255, 255, 255, .14);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .14);
+}
+
+.dark .glass-bar-raised {
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .14);
+}
