@@ -11,6 +11,7 @@ import { ContactSection } from "@/components/ContactSection";
 import { Navigation } from "@/components/Navigation";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { Footer } from "@/components/Footer";
+import { PageLoader } from "@/components/PageLoader";
 
 const sectionOrder = [
   "projects",
@@ -26,11 +27,7 @@ export default function Home() {
   const content = data as any; // Cast to any to avoid type errors
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (error || !content) {

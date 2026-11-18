@@ -25,6 +25,16 @@ const RESPONSIVE_IMAGES = [
 ];
 
 /**
+ * Small square version of a project image, for places that show it as a thumbnail.
+ * Falls back to the normal optimised image when no thumbnail exists.
+ */
+export function getThumbnailUrl(originalUrl: string): string {
+  const match = originalUrl?.match(/^\/uploads\/(.+)\.(png|jpg|jpeg)$/i);
+  if (match && RESPONSIVE_IMAGES.includes(match[1])) return `/uploads/optimized/${match[1]}-thumb.webp`;
+  return getOptimizedImageUrl(originalUrl);
+}
+
+/**
  * Returns a srcSet string for project images that have multiple sizes.
  * Returns undefined for images without responsive variants.
  */

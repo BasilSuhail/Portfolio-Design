@@ -97,8 +97,9 @@ export async function getAllBlogs(): Promise<Blog[]> {
       .eq('published', true)
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return (data || []).map(normalizeBlog);
+    if (!error) return (data || []).map(normalizeBlog);
+    // The database being unreachable should not take the public blog page down with it.
+    console.error("[Blogs] Database read failed, using the local file instead:", error.message);
   }
 
   // Fallback to JSON file

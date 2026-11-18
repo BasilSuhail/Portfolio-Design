@@ -22,6 +22,7 @@ import { narrativeEngine } from "./intelligence/clustering/narrative";
 import { body, validationResult } from "express-validator";
 import sanitizeHtml from "sanitize-html";
 import { doubleCsrfProtection } from "./index";
+import { guardAdminRoutes, login, loginLimiter, logout, sessionStatus } from "./adminAuth";
 
 // Sanitize HTML content - allows safe tags, strips scripts
 function sanitizeHTML(dirty: string): string {
@@ -99,6 +100,10 @@ export async function registerRoutes(
 ): Promise<Server> {
   // Ensure uploads directory exists at startup
   await fs.mkdir(uploadsDir, { recursive: true });
+
+  // Everything that changes the site needs a signed-in admin, checked here on the server.
+  app.use(guardAdminRoutes);
+
   // Get portfolio content
   app.get("/api/content", async (_req: Request, res: Response) => {
     try {
@@ -159,21 +164,10 @@ export async function registerRoutes(
     }
   });
 
-  // Admin login
-  app.post("/api/admin/login", doubleCsrfProtection, async (req: Request, res: Response) => {
-    try {
-      const { password } = req.body;
-      const adminPassword = process.env.ADMIN_PASSWORD || "admin123"; // Default password for development
-
-      if (password === adminPassword) {
-        res.json({ success: true });
-      } else {
-        res.status(401).json({ success: false, message: "Invalid password" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Login failed" });
-    }
-  });
+  // Admin sign-in. The session it sets is what guardAdminRoutes checks.
+  app.post("/api/admin/login", loginLimiter, doubleCsrfProtection, login);
+  app.post("/api/admin/logout", doubleCsrfProtection, logout);
+  app.get("/api/admin/session", sessionStatus);
 
   // Contact form submission - with validation and sanitization
   app.post(

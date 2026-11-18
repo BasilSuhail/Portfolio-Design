@@ -18,10 +18,11 @@ const NewsDetail = lazy(() => import("@/pages/NewsDetail"));
 const Gallery = lazy(() => import("@/pages/Gallery"));
 const MarketTerminal = lazy(() => import("@/pages/MarketTerminal"));
 import { HolidayMode } from "@/components/HolidayMode";
+import { PageLoader } from "@/components/PageLoader";
 
 function Router() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>}>
+    <Suspense fallback={<PageLoader />}>
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/admin/login" component={AdminLogin} />

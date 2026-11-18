@@ -18,6 +18,9 @@ const PROJECT_IMAGES = [
   "osint-sensor-narrative.png",
 ];
 
+// Three times the 56px the project list shows, so it stays sharp on dense screens
+const THUMB_SIZE = 168;
+
 const IMAGE_CONFIGS: Record<string, { width: number; quality: number }> = {
   // Project screenshots: 1200w for desktop, 780w variant generated separately
   "Budgeting.png": { width: 1200, quality: 80 },
@@ -120,6 +123,15 @@ async function optimizeImages() {
         console.log(
           `  -> ${baseName}-sm.webp (${smMeta.width}x${smMeta.height}) | ${smSize.toFixed(0)} KB (mobile)\n`
         );
+
+        // Square thumbnail for the project list, where the picture is shown at 56px
+        const thumbPath = path.join(OPTIMIZED_DIR, `${baseName}-thumb.webp`);
+        await sharp(inputPath)
+          .resize(THUMB_SIZE, THUMB_SIZE, { fit: "cover", position: "centre" })
+          .webp({ quality: 78, effort: 6 })
+          .toFile(thumbPath);
+        const thumbSize = ((await sharp(thumbPath).metadata()).size || 0) / 1024;
+        console.log(`  -> ${baseName}-thumb.webp (${THUMB_SIZE}x${THUMB_SIZE}) | ${thumbSize.toFixed(0)} KB (list)\n`);
       }
     } catch (err) {
       console.error(`  Error processing ${file}:`, err);

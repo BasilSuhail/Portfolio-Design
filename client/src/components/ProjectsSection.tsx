@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Github, ExternalLink, Terminal, Server, BarChart3, Bot, Shield, BookOpen, Cpu, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
-import { getOptimizedImageUrl } from "@/lib/imageUtils";
+import { getThumbnailUrl } from "@/lib/imageUtils";
 import GithubActivity from "./GithubActivity";
 
 export interface Project {
@@ -70,10 +70,13 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="size-14 shrink-0 overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800">
           {project.imageUrl ? (
             <img
-              src={getOptimizedImageUrl(project.imageUrl)}
+              src={getThumbnailUrl(project.imageUrl)}
               alt=""
+              width={56}
+              height={56}
               className="h-full w-full object-cover"
               loading="lazy"
+              decoding="async"
             />
           ) : (() => {
             const gradient = categoryGradients[project.category || ""] || "from-neutral-600 to-neutral-400";

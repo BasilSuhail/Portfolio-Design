@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { Snowflake } from "lucide-react";
-import { Snowfall } from "./holiday/Snowfall";
-import { HolidayDecor } from "./holiday/HolidayDecor";
+
+// The snow and lights are only downloaded once the mode is switched on.
+const HolidayScene = lazy(() => import("./holiday/HolidayScene"));
 
 const STORAGE_KEY = "holidayMode";
 const WAS_DARK_KEY = "holidayWasDark";
@@ -27,6 +28,26 @@ function write(key: string, value: string) {
  */
 export function HolidayMode() {
   const [on, setOn] = useState(() => read(STORAGE_KEY) === "true");
+  // A visitor returning with the mode already on gets the page first and the snow a moment later.
+  const [wanted, setWanted] = useState(false);
+  const [ready, setReady] = useState(false);
+  const onReady = useCallback(() => setReady(true), []);
+
+  useEffect(() => {
+    if (!on) {
+      setWanted(false);
+      setReady(false);
+      return;
+    }
+    if (wanted) return;
+    const start = () => setWanted(true);
+    if (document.readyState === "complete") {
+      const timer = setTimeout(start, 600);
+      return () => clearTimeout(timer);
+    }
+    window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, [on, wanted]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -48,6 +69,7 @@ export function HolidayMode() {
     if (!on) {
       write(WAS_DARK_KEY, String(root.classList.contains("dark")));
       setOn(true);
+      setWanted(true); // asked for by hand: fetch it straight away
     } else {
       setOn(false);
       if (read(WAS_DARK_KEY) === "false") root.classList.remove("dark");
@@ -56,18 +78,30 @@ export function HolidayMode() {
 
   return (
     <>
-      {on && <HolidayDecor />}
-      {on && <Snowfall />}
+      {on && wanted && (
+        <Suspense fallback={null}>
+          <HolidayScene onReady={onReady} />
+        </Suspense>
+      )}
       <button
         type="button"
         onClick={toggle}
         aria-pressed={on}
         aria-label={on ? "Switch off holiday mode" : "Switch to holiday mode"}
+        aria-busy={on && !ready}
         className="glass-bar fixed bottom-4 right-4 z-50 inline-flex items-center gap-1.5 rounded-full p-2.5 text-xs font-medium text-gray-700 transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 dark:text-neutral-200 min-[1080px]:bottom-auto min-[1080px]:top-[26px] min-[1440px]:px-3.5 min-[1440px]:py-2"
         data-testid="button-holiday-mode"
       >
-        <Snowflake className={`size-4 ${on ? "text-sky-400" : ""}`} />
-        <span className="hidden min-[1440px]:inline">{on ? "Holiday mode on" : "Switch to holiday mode"}</span>
+        <Snowflake className={`size-4 ${on ? "text-sky-400" : ""} ${on && !ready ? "animate-spin" : ""}`} />
+        <span className="hidden min-[1440px]:inline">
+          {!on ? "Switch to holiday mode" : ready ? "Holiday mode on" : "Bringing the snow"}
+        </span>
+        {/* The same loading bar as the full-page loader, tucked along the bottom of the pill */}
+        {on && !ready && (
+          <span className="site-loader-track !absolute inset-x-3 bottom-1 !h-0.5 !w-auto">
+            <span className="site-loader-fill" />
+          </span>
+        )}
       </button>
     </>
   );
