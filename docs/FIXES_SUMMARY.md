@@ -101,7 +101,7 @@
 - [ ] Navigate to contact section
 - [ ] Fill out form (wait 3+ seconds)
 - [ ] Submit form
-- [ ] Check email at basilsuhail3@gmail.com
+- [ ] Check the site owner's inbox
 - [ ] Check Formspree dashboard: https://formspree.io/forms/xjgbgkdz/submissions
 
 ### PDF Blog Upload
@@ -126,17 +126,17 @@
 
 ```env
 # Session Secret
-SESSION_SECRET=82d37a92340d341dc2b43953882b83b17e2c0a1506fd7b361b3ebff085433c4c
+SESSION_SECRET=<generate with: openssl rand -hex 32>
 
 # Formspree (NEW!)
-VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/xjgbgkdz
+VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/<your-form-id>
 
 # Admin Password
-ADMIN_PASSWORD=Fancyacock@2393
+ADMIN_PASSWORD=<set a long random password in Dokploy, never in the repo>
 
 # Supabase (Optional)
-SUPABASE_URL=https://ckrovigxjuoccfukwsst.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_URL=https://<your-project>.supabase.co
+SUPABASE_ANON_KEY=<your-anon-key>
 ```
 
 ### For Production (Dokploy):
@@ -214,7 +214,7 @@ VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/xjgbgkdz
 
 ### Formspree Features:
 - 50 submissions/month on free tier
-- Email notifications to basilsuhail3@gmail.com
+- Email notifications to the site owner's inbox
 - Spam filtering included
 - No credit card required
 

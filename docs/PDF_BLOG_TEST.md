@@ -25,7 +25,7 @@ $ cat blogs.json
 ### Step 2: Login to Admin
 ```
 1. Navigate to: http://localhost:3000/admin/login
-2. Enter password from .env: Fancyacock@2393
+2. Enter the ADMIN_PASSWORD value from your .env
 3. Click Login
 ```
 
